@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account – Movin.ie</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    .auth-wrap { min-height:calc(100vh - 64px); display:flex; align-items:center; justify-content:center; padding:2rem; }
+    .auth-card { background:#fff; border-radius:20px; padding:2.5rem; width:100%; max-width:440px; border:1px solid var(--border); box-shadow:var(--shadow-lg); }
+    .auth-logo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--green); text-align:center; margin-bottom:.5rem; cursor:pointer; }
+    .auth-logo span { color:var(--orange); }
+    .auth-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; text-align:center; margin-bottom:.5rem; }
+    .auth-sub { font-size:14px; color:#999; text-align:center; margin-bottom:2rem; font-weight:300; }
+    .auth-switch { text-align:center; margin-top:1.5rem; font-size:14px; color:#888; }
+    .auth-switch a { color:var(--green); font-weight:500; cursor:pointer; }
+    .free-badge { background:var(--green-light); color:var(--green); font-size:12px; font-weight:500; padding:6px 14px; border-radius:var(--radius-pill); text-align:center; margin-bottom:1.75rem; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-logo" onclick="window.location.href='../index.html'">mov<span>in</span></div>
+      <h1 class="auth-title">Create your account</h1>
+      <p class="auth-sub">Join thousands of people finding and listing homes on Movin.ie</p>
+      <div class="free-badge">🎉 Your first property listing is completely free</div>
+      <div id="auth-alert"></div>
+      <form onsubmit="doRegister(event)">
+        <div class="form-group">
+          <label class="form-label">Full name <span class="req">*</span></label>
+          <input class="form-input" type="text" id="name" placeholder="Aoife Murphy" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email address <span class="req">*</span></label>
+          <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone number</label>
+          <input class="form-input" type="tel" id="phone" placeholder="085 123 4567" autocomplete="tel" />
+          <div class="form-hint">Shown to buyers/renters on your listings</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password <span class="req">*</span></label>
+          <input class="form-input" type="password" id="password" placeholder="At least 8 characters" required autocomplete="new-password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm password <span class="req">*</span></label>
+          <input class="form-input" type="password" id="confirm" placeholder="Repeat your password" required />
+        </div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:1rem;line-height:1.6">
+          By creating an account you agree to our <a href="#" style="color:var(--green)">Terms of Service</a> and <a href="#" style="color:var(--green)">Privacy Policy</a>.
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="reg-btn">Create account</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="login.html">Sign in →</a></p>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    if (API.auth.isLoggedIn()) window.location.href = 'dashboard.html'
+    renderNav()
+
+    async function doRegister(e) {
+      e.preventDefault()
+      const btn = document.getElementById('reg-btn')
+      const alert = document.getElementById('auth-alert')
+      const pw = document.getElementById('password').value
+      const confirm = document.getElementById('confirm').value
+      alert.innerHTML = ''
+
+      if (pw !== confirm) {
+        alert.innerHTML = '<div class="alert alert-error">Passwords do not match.</div>'
+        return
+      }
+      if (pw.length < 8) {
+        alert.innerHTML = '<div class="alert alert-error">Password must be at least 8 characters.</div>'
+        return
+      }
+
+      btn.classList.add('btn-loading'); btn.disabled = true
+      try {
+        await API.auth.register(
+          document.getElementById('name').value,
+          document.getElementById('email').value,
+          pw,
+          document.getElementById('phone').value
+        )
+        toast('Account created! Welcome to Movin.ie 🎉')
+        window.location.href = 'dashboard.html'
+      } catch(err) {
+        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
+        btn.classList.remove('btn-loading'); btn.disabled = false
+      }
+    }
+  </script>
+</body>
+</html>

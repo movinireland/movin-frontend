@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Properties – Movin.ie</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    .sr-topbar { background:#fff; border-bottom:1px solid var(--border); padding:.85rem 1.5rem; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .sr-input { flex:1; min-width:200px; border:1.5px solid var(--border); border-radius:var(--radius-pill); padding:9px 18px; font-size:14px; outline:none; background:#fafaf8; }
+    .sr-input:focus { border-color:var(--green); }
+    .pill { border:1.5px solid var(--border); border-radius:var(--radius-pill); padding:8px 16px; font-size:13px; background:#fafaf8; cursor:pointer; color:#555; transition:all .15s; white-space:nowrap; }
+    .pill:hover { border-color:var(--green); color:var(--green); }
+    .pill.active { background:var(--green); color:#fff; border-color:var(--green); }
+    .sr-layout { display:grid; grid-template-columns:270px 1fr; min-height:calc(100vh - 130px); }
+    .sidebar { background:#fff; border-right:1px solid var(--border); padding:1.5rem; overflow-y:auto; }
+    .sb-title { font-size:12px; font-weight:500; color:#aaa; text-transform:uppercase; letter-spacing:1px; margin-bottom:1.25rem; }
+    .fg { margin-bottom:1.75rem; }
+    .fg-label { font-size:13px; font-weight:500; color:#333; margin-bottom:8px; }
+    .f-opts { display:flex; flex-wrap:wrap; gap:6px; }
+    .f-opt { border:1.5px solid var(--border); border-radius:8px; padding:5px 12px; font-size:12px; cursor:pointer; background:#fafaf8; color:#666; transition:all .15s; }
+    .f-opt:hover,.f-opt.on { border-color:var(--green); color:var(--green); }
+    .f-opt.on { background:var(--green-light); }
+    .range-row { display:flex; gap:8px; align-items:center; }
+    .range-sel { flex:1; border:1.5px solid var(--border); border-radius:8px; padding:8px; font-size:12px; background:#fafaf8; outline:none; color:#555; font-family:inherit; }
+    .range-sel:focus { border-color:var(--green); }
+    .cb-col { display:flex; flex-direction:column; gap:8px; }
+    .cb-row { display:flex; align-items:center; gap:8px; cursor:pointer; }
+    .cb-row input { accent-color:var(--green); width:14px; height:14px; cursor:pointer; }
+    .cb-row label { font-size:13px; color:#555; cursor:pointer; }
+    .ber-row { display:flex; flex-wrap:wrap; gap:5px; }
+    .ber-btn { width:34px; height:26px; border-radius:5px; border:1.5px solid var(--border); font-size:11px; font-weight:500; cursor:pointer; background:#fafaf8; font-family:inherit; }
+    .ber-btn.on { background:#2aaa50; color:#fff; border-color:#2aaa50; }
+    .apply-btn { width:100%; background:var(--green); color:#fff; border:none; padding:11px; border-radius:var(--radius-pill); font-size:14px; font-weight:500; cursor:pointer; font-family:inherit; margin-top:.5rem; }
+    .sr-main { padding:1.5rem; }
+    .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:.75rem; }
+    .results-count { font-size:16px; font-weight:500; }
+    .results-count span { font-size:13px; color:#aaa; font-weight:300; }
+    .sort-row { display:flex; gap:8px; align-items:center; }
+    .sort-sel { border:1.5px solid var(--border); border-radius:8px; padding:8px 12px; font-size:13px; background:#fafaf8; outline:none; font-family:inherit; }
+    .results-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.1rem; }
+    @media(max-width:900px){ .sr-layout{grid-template-columns:1fr;} .sidebar{display:none;} .results-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+
+  <div class="sr-topbar">
+    <input class="sr-input" type="text" id="q-input" placeholder="Area, county or Eircode…" />
+    <button class="pill" data-type="sale"   onclick="toggleType(this)">Buy</button>
+    <button class="pill" data-type="rent"   onclick="toggleType(this)">Rent</button>
+    <button class="pill" data-type="share"  onclick="toggleType(this)">Sharing</button>
+    <button class="btn btn-primary btn-sm" onclick="doSearch()">Search</button>
+    <button class="pill" style="margin-left:auto" onclick="doSearch()">🔄 Refresh</button>
+  </div>
+
+  <div class="sr-layout">
+    <!-- Sidebar filters -->
+    <aside class="sidebar">
+      <div class="sb-title">Filters</div>
+
+      <div class="fg">
+        <div class="fg-label">Price range</div>
+        <div class="range-row">
+          <select class="range-sel" id="f-min-price">
+            <option value="">Min</option>
+            <option value="50000">€50k</option><option value="100000">€100k</option>
+            <option value="200000">€200k</option><option value="300000">€300k</option>
+            <option value="400000">€400k</option><option value="500000">€500k</option>
+          </select>
+          <span style="color:#ccc">—</span>
+          <select class="range-sel" id="f-max-price">
+            <option value="">Max</option>
+            <option value="200000">€200k</option><option value="300000">€300k</option>
+            <option value="400000">€400k</option><option value="500000">€500k</option>
+            <option value="700000">€700k</option><option value="1000000">€1m+</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">Bedrooms</div>
+        <div class="f-opts">
+          <div class="f-opt" data-val="0">Studio</div>
+          <div class="f-opt" data-val="1">1+</div>
+          <div class="f-opt" data-val="2">2+</div>
+          <div class="f-opt" data-val="3">3+</div>
+          <div class="f-opt" data-val="4">4+</div>
+          <div class="f-opt" data-val="5">5+</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">Bathrooms</div>
+        <div class="f-opts">
+          <div class="f-opt" data-val="1">1+</div>
+          <div class="f-opt" data-val="2">2+</div>
+          <div class="f-opt" data-val="3">3+</div>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">Property type</div>
+        <div class="cb-col" id="prop-type-filters">
+          <label class="cb-row"><input type="checkbox" value="house" /><label>House</label></label>
+          <label class="cb-row"><input type="checkbox" value="apartment" /><label>Apartment</label></label>
+          <label class="cb-row"><input type="checkbox" value="bungalow" /><label>Bungalow</label></label>
+          <label class="cb-row"><input type="checkbox" value="site" /><label>Site / Land</label></label>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">County</div>
+        <select class="range-sel" id="f-county" style="width:100%">
+          <option value="">All counties</option>
+          <option>Dublin</option><option>Cork</option><option>Galway</option>
+          <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+          <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">BER rating</div>
+        <div class="ber-row" id="ber-filters">
+          <button class="ber-btn" data-val="A1">A1</button>
+          <button class="ber-btn" data-val="A2">A2</button>
+          <button class="ber-btn" data-val="A3">A3</button>
+          <button class="ber-btn" data-val="B1">B1</button>
+          <button class="ber-btn" data-val="B2">B2</button>
+          <button class="ber-btn" data-val="B3">B3</button>
+          <button class="ber-btn" data-val="C1">C1</button>
+          <button class="ber-btn" data-val="C2">C2</button>
+          <button class="ber-btn" data-val="C3">C3</button>
+          <button class="ber-btn" data-val="D1">D1</button>
+          <button class="ber-btn" data-val="D2">D2</button>
+          <button class="ber-btn" data-val="E">E</button>
+          <button class="ber-btn" data-val="F">F</button>
+          <button class="ber-btn" data-val="G">G</button>
+        </div>
+      </div>
+
+      <div class="fg">
+        <div class="fg-label">Facilities</div>
+        <div class="cb-col">
+          <label class="cb-row"><input type="checkbox" id="f-parking" /><label>Parking</label></label>
+          <label class="cb-row"><input type="checkbox" id="f-garden"  /><label>Garden</label></label>
+          <label class="cb-row"><input type="checkbox" id="f-garage"  /><label>Garage</label></label>
+        </div>
+      </div>
+
+      <button class="apply-btn" onclick="doSearch()">Apply filters</button>
+    </aside>
+
+    <!-- Results -->
+    <main class="sr-main">
+      <div class="results-header">
+        <div class="results-count" id="result-count">Loading…</div>
+        <div class="sort-row">
+          <select class="sort-sel" id="sort-sel" onchange="doSearch()">
+            <option value="newest">Most recent</option>
+            <option value="price_asc">Price: low → high</option>
+            <option value="price_desc">Price: high → low</option>
+            <option value="most_viewed">Most viewed</option>
+          </select>
+        </div>
+      </div>
+      <div id="results-grid" class="results-grid">
+        <div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div><span>Loading properties…</span></div>
+      </div>
+      <div id="pagination" class="pagination"></div>
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderNav()
+    let currentPage = 1
+    let activeType = ''
+    let activeBed = ''
+    let activeBath = ''
+    let activeBer = ''
+
+    // Read URL params on load
+    const urlP = new URLSearchParams(window.location.search)
+    if (urlP.get('listing_type')) {
+      activeType = urlP.get('listing_type')
+      document.querySelectorAll('.pill[data-type]').forEach(p => {
+        if (p.dataset.type === activeType) p.classList.add('active')
+      })
+    }
+    if (urlP.get('county')) document.getElementById('f-county').value = urlP.get('county')
+    document.getElementById('q-input').value = urlP.get('q') || ''
+
+    function toggleType(el) {
+      const t = el.dataset.type
+      if (activeType === t) {
+        activeType = ''
+        el.classList.remove('active')
+      } else {
+        activeType = t
+        document.querySelectorAll('.pill[data-type]').forEach(p => p.classList.remove('active'))
+        el.classList.add('active')
+      }
+    }
+
+    document.querySelectorAll('#ber-filters .ber-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        b.classList.toggle('on')
+        activeBer = Array.from(document.querySelectorAll('#ber-filters .ber-btn.on')).map(x => x.dataset.val).join(',')
+      })
+    })
+
+    document.querySelectorAll('.fg .f-opts').forEach(group => {
+      group.querySelectorAll('.f-opt').forEach(opt => {
+        opt.addEventListener('click', () => {
+          group.querySelectorAll('.f-opt').forEach(o => o.classList.remove('on'))
+          opt.classList.add('on')
+        })
+      })
+    })
+
+    function getFilters() {
+      const beds  = document.querySelector('#results-grid ~ * .f-opt.on') // handled per group
+      const bedEl   = document.querySelectorAll('.fg')[1]?.querySelector('.f-opt.on')
+      const bathEl  = document.querySelectorAll('.fg')[2]?.querySelector('.f-opt.on')
+      return {
+        listing_type: activeType || undefined,
+        county: document.getElementById('f-county').value || undefined,
+        min_price: document.getElementById('f-min-price').value || undefined,
+        max_price: document.getElementById('f-max-price').value || undefined,
+        bedrooms:  bedEl?.dataset.val || undefined,
+        bathrooms: bathEl?.dataset.val || undefined,
+        ber: activeBer || undefined,
+        parking: document.getElementById('f-parking').checked ? '1' : undefined,
+        garden:  document.getElementById('f-garden').checked  ? '1' : undefined,
+        sort: document.getElementById('sort-sel').value,
+        page: currentPage,
+        limit: 12
+      }
+    }
+
+    async function doSearch(page = 1) {
+      currentPage = page
+      const grid = document.getElementById('results-grid')
+      grid.innerHTML = '<div class="loading-wrap" style="grid-column:1/-1"><div class="spinner"></div></div>'
+
+      const filters = getFilters()
+      // Remove undefined keys
+      Object.keys(filters).forEach(k => filters[k] === undefined && delete filters[k])
+
+      try {
+        const savedIds = API.auth.isLoggedIn() ? (await API.saved.all().catch(() => ([]))).map(s => s.id) : []
+        const res = await API.listings.search(filters)
+
+        document.getElementById('result-count').innerHTML =
+          `<strong>${res.total.toLocaleString()}</strong> <span>propert${res.total === 1 ? 'y' : 'ies'} found</span>`
+
+        if (!res.listings.length) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No properties found</h3>
+            <p>Try adjusting your filters or search in a different area.</p>
+          </div>`
+          document.getElementById('pagination').innerHTML = ''
+          return
+        }
+
+        grid.innerHTML = res.listings.map(l => buildPropertyCard(l, savedIds)).join('')
+
+        // Pagination
+        const pg = document.getElementById('pagination')
+        if (res.pages <= 1) { pg.innerHTML = ''; return }
+        let html = ''
+        if (res.page > 1) html += `<button class="page-btn" onclick="doSearch(${res.page - 1})">‹</button>`
+        for (let i = 1; i <= Math.min(res.pages, 7); i++) {
+          html += `<button class="page-btn ${i === res.page ? 'active' : ''}" onclick="doSearch(${i})">${i}</button>`
+        }
+        if (res.pages > 7) html += `<button class="page-btn" disabled>…</button><button class="page-btn" onclick="doSearch(${res.pages})">${res.pages}</button>`
+        if (res.page < res.pages) html += `<button class="page-btn" onclick="doSearch(${res.page + 1})">›</button>`
+        pg.innerHTML = html
+      } catch(e) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><p>Could not load listings. Is the backend running?</p></div>`
+        document.getElementById('result-count').textContent = 'Error loading results'
+      }
+    }
+
+    doSearch()
+  </script>
+</body>
+</html>

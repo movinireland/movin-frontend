@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful – Movin.ie</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    .success-wrap { min-height:calc(100vh - 64px); display:flex; align-items:center; justify-content:center; padding:2rem; }
+    .success-card { background:#fff; border-radius:20px; padding:3rem; width:100%; max-width:480px; border:1px solid var(--border); text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.1); }
+    .success-icon { font-size:64px; margin-bottom:1rem; }
+    .success-title { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#111; margin-bottom:.75rem; }
+    .success-sub { font-size:15px; color:#666; font-weight:300; line-height:1.7; margin-bottom:2rem; }
+    .success-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div class="success-wrap">
+    <div class="success-card">
+      <div class="success-icon">🎉</div>
+      <h1 class="success-title">Your listing is live!</h1>
+      <p class="success-sub" id="success-msg">Payment confirmed. Your property is now live on Movin.ie and visible to thousands of buyers and renters across Ireland.</p>
+      <div class="success-actions">
+        <a href="dashboard.html" class="btn btn-ghost">Go to dashboard</a>
+        <a id="view-listing-btn" href="search.html" class="btn btn-primary">View your listing →</a>
+      </div>
+    </div>
+  </div>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderNav()
+    const listingId = new URLSearchParams(window.location.search).get('listing')
+    if (listingId) {
+      document.getElementById('view-listing-btn').href = `listing.html?id=${listingId}`
+      API.payments.confirmSuccess(listingId).then(res => {
+        if (res?.message) document.getElementById('success-msg').textContent = res.message
+      }).catch(() => {})
+    }
+  </script>
+</body>
+</html>

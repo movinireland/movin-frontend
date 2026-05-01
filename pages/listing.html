@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Property – Movin.ie</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    .breadcrumb { padding:.75rem 1.5rem; font-size:12px; color:#aaa; background:#fff; border-bottom:1px solid #f5f2ec; }
+    .breadcrumb a { color:var(--green); cursor:pointer; }
+    .gallery { display:grid; grid-template-columns:2fr 1fr 1fr; grid-template-rows:185px 185px; gap:6px; margin:1.25rem 1.5rem; border-radius:18px; overflow:hidden; }
+    .gimg { display:flex; align-items:center; justify-content:center; font-size:54px; position:relative; overflow:hidden; background:linear-gradient(135deg,#c8dfd4,#e9f4ef); cursor:pointer; transition:filter .2s; }
+    .gimg:hover { filter:brightness(.88); }
+    .gimg-main { grid-row:1/3; }
+    .gimg img { width:100%;height:100%;object-fit:cover;position:absolute;inset:0; }
+    .photos-btn { position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:var(--radius-pill);padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit; }
+    .detail-layout { display:grid; grid-template-columns:1fr 330px; gap:1.75rem; padding:0 1.5rem 3rem; max-width:1200px; margin:0 auto; }
+    .detail-card { background:#fff;border-radius:var(--radius);padding:1.75rem;margin-bottom:1.1rem;border:1px solid var(--border); }
+    .tag-row { display:flex;gap:8px;align-items:center;margin-bottom:.9rem;flex-wrap:wrap; }
+    .dtag-age { font-size:12px;color:#bbb; }
+    .d-title { font-size:28px; font-weight:700; color:#111; margin-bottom:.4rem; }
+    .d-loc   { font-size:14px; color:#aaa; margin-bottom:1rem; }
+    .d-price { font-size:34px; font-weight:500; color:var(--green); margin-bottom:1.1rem; }
+    .d-stats { display:flex; gap:2rem; padding-top:1rem; border-top:1px solid #f0ede6; flex-wrap:wrap; }
+    .ds-item { text-align:center; }
+    .ds-n { font-size:21px; font-weight:500; color:#111; }
+    .ds-l { font-size:11px; color:#bbb; margin-top:3px; }
+    .action-row { display:flex;gap:10px;margin-top:1.25rem; }
+    .action-row .btn { flex:1;justify-content:center; border-radius:var(--radius-pill); }
+    .desc-text { font-size:14px;color:#666;line-height:1.85;font-weight:300; }
+    .feat-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem; }
+    .feat-item { display:flex;align-items:center;gap:10px;font-size:13px;color:#555; }
+    .feat-ico { width:34px;height:34px;border-radius:9px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0; }
+    .map-box { height:190px;background:linear-gradient(135deg,#d4e8df,#e9f4ef);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--green);border:1px solid #c8dfd4; }
+    .enq-card { background:#fff;border-radius:var(--radius);padding:1.75rem;border:1px solid var(--border);margin-bottom:1.1rem; }
+    .enq-title { font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#111;margin-bottom:.25rem; }
+    .enq-by { font-size:12px;color:#aaa;margin-bottom:1.4rem; }
+    .enq-form { display:flex;flex-direction:column;gap:10px; }
+    .divider { display:flex;align-items:center;gap:8px;margin:.25rem 0; }
+    .divider span { font-size:11px;color:#ddd; }
+    .divider::before,.divider::after { content:'';flex:1;border-top:1px solid var(--border); }
+    .call-btn { width:100%;background:transparent;border:1.5px solid var(--green);color:var(--green);padding:12px;border-radius:var(--radius-pill);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit; }
+    .agent-row { display:flex;gap:10px;align-items:center;padding-top:1rem;margin-top:1rem;border-top:1px solid #f0ede6; }
+    .agent-av { width:44px;height:44px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--green);flex-shrink:0; }
+    .sim-grid { display:grid;grid-template-columns:1fr 1fr;gap:.85rem; }
+    .sim-card { border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff;cursor:pointer;transition:transform .15s; }
+    .sim-card:hover { transform:translateY(-2px); }
+    .sim-img { height:95px;display:flex;align-items:center;justify-content:center;font-size:30px; }
+    .sim-body { padding:.65rem .8rem .8rem; }
+    .sim-price { font-size:15px;font-weight:500;color:var(--green);margin-bottom:2px; }
+    .sim-loc { font-size:11px;color:#bbb; }
+    @media(max-width:768px){ .gallery{grid-template-columns:1fr;grid-template-rows:auto;} .gimg-main{grid-row:auto;} .gimg{height:220px;} .detail-layout{grid-template-columns:1fr;padding:0 1rem 2rem;} .feat-grid{grid-template-columns:1fr 1fr;} }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div class="breadcrumb">
+    <a href="../index.html">Home</a> ›
+    <a href="search.html">Search</a> ›
+    <span id="bc-title">Loading…</span>
+  </div>
+
+  <div id="page-content">
+    <div class="loading-wrap"><div class="spinner"></div><span>Loading property…</span></div>
+  </div>
+
+  <footer class="footer" style="margin-top:2rem">
+    <div class="footer-inner">
+      <div><strong>movin.ie</strong> — © 2025 Movin Technologies Ltd</div>
+      <div class="footer-links"><span>Privacy</span><span>Terms</span><span>Contact</span></div>
+    </div>
+  </footer>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderNav()
+    const listingId = new URLSearchParams(window.location.search).get('id')
+    if (!listingId) window.location.href = 'search.html'
+
+    async function load() {
+      try {
+        const listing = await API.listings.get(listingId)
+        API.listings.trackView(listingId)
+        document.title = `${listing.title} – Movin.ie`
+        document.getElementById('bc-title').textContent = listing.title
+
+        const isSaved = API.auth.isLoggedIn()
+          ? (await API.saved.all().catch(() => [])).some(s => s.id === listingId)
+          : false
+
+        const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
+        const badgeClass = listing.listing_type === 'rent' ? 'badge-orange' : listing.listing_type === 'share' ? 'badge-blue' : 'badge-green'
+
+        const photos = listing.photos || []
+        const galleryItems = [
+          photos[0], photos[1], photos[2], photos[3], photos[4]
+        ]
+
+        function imgEl(p, cls='') {
+          if (!p) return `<div class="gimg ${cls}" style="background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">🏡</div>`
+          return `<div class="gimg ${cls}"><img src="${window.MOVIN_API_URL}${p.url}" alt="Photo" /></div>`
+        }
+
+        document.getElementById('page-content').innerHTML = `
+          <div class="gallery">
+            ${imgEl(galleryItems[0], 'gimg-main')}
+            ${imgEl(galleryItems[1])}
+            ${imgEl(galleryItems[2])}
+            ${imgEl(galleryItems[3])}
+            <div class="gimg" style="background:linear-gradient(135deg,#d4f5d4,#eafcea)">
+              ${galleryItems[4] ? `<img src="${window.MOVIN_API_URL}${galleryItems[4].url}" alt="Photo" />` : '<span>🌿</span>'}
+              ${photos.length > 5 ? `<button class="photos-btn">+${photos.length - 5} photos</button>` : ''}
+            </div>
+          </div>
+
+          <div class="detail-layout">
+            <div>
+              <div class="detail-card">
+                <div class="tag-row">
+                  <span class="badge ${badgeClass}">${typeLabel}</span>
+                  ${listing.ber_rating ? `<span class="badge badge-green">BER: ${listing.ber_rating}</span>` : ''}
+                  <span class="dtag-age">Listed ${timeAgo(listing.created_at)}</span>
+                </div>
+                <h1 class="d-title serif">${listing.title}</h1>
+                <div class="d-loc">📍 ${listing.address_line1}${listing.address_area ? ', ' + listing.address_area : ''}, ${listing.county}${listing.eircode ? ' · ' + listing.eircode : ''}</div>
+                <div class="d-price">${formatPrice(listing.price, listing.listing_type)}</div>
+                <div class="d-stats">
+                  ${listing.bedrooms ? `<div class="ds-item"><div class="ds-n">${listing.bedrooms}</div><div class="ds-l">Bedrooms</div></div>` : ''}
+                  ${listing.bathrooms ? `<div class="ds-item"><div class="ds-n">${listing.bathrooms}</div><div class="ds-l">Bathrooms</div></div>` : ''}
+                  ${listing.floor_size_m2 ? `<div class="ds-item"><div class="ds-n">${listing.floor_size_m2}</div><div class="ds-l">m² area</div></div>` : ''}
+                  <div class="ds-item"><div class="ds-n">${listing.property_type}</div><div class="ds-l">Type</div></div>
+                  ${listing.ber_rating ? `<div class="ds-item"><div class="ds-n">${listing.ber_rating}</div><div class="ds-l">BER</div></div>` : ''}
+                  <div class="ds-item"><div class="ds-n">${listing.views}</div><div class="ds-l">Views</div></div>
+                </div>
+                <div class="action-row">
+                  <button class="btn btn-primary" onclick="document.getElementById('enq-form-wrap').scrollIntoView({behavior:'smooth'})">📨 Enquire now</button>
+                  ${listing.lister_phone ? `<button class="btn btn-ghost">📞 ${listing.lister_phone}</button>` : ''}
+                  <button class="btn btn-ghost" id="save-btn" onclick="handleSave()">${isSaved ? '♥ Saved' : '♡ Save'}</button>
+                </div>
+              </div>
+
+              <div class="detail-card">
+                <h2 class="serif" style="font-size:19px;margin-bottom:1rem">About this property</h2>
+                <p class="desc-text">${listing.description.replace(/\n/g, '<br>')}</p>
+              </div>
+
+              ${(listing.parking || listing.garden || listing.garage || listing.alarm || listing.wheelchair) ? `
+              <div class="detail-card">
+                <h2 class="serif" style="font-size:19px;margin-bottom:1rem">Features & facilities</h2>
+                <div class="feat-grid">
+                  ${listing.parking    ? '<div class="feat-item"><div class="feat-ico">🅿</div>Parking</div>' : ''}
+                  ${listing.garden     ? '<div class="feat-item"><div class="feat-ico">🌿</div>Garden</div>' : ''}
+                  ${listing.garage     ? '<div class="feat-item"><div class="feat-ico">🚗</div>Garage</div>' : ''}
+                  ${listing.alarm      ? '<div class="feat-item"><div class="feat-ico">🔒</div>Alarm system</div>' : ''}
+                  ${listing.wheelchair ? '<div class="feat-item"><div class="feat-ico">♿</div>Wheelchair access</div>' : ''}
+                </div>
+              </div>` : ''}
+
+              <div class="detail-card">
+                <h2 class="serif" style="font-size:19px;margin-bottom:1rem">Location</h2>
+                <div class="map-box">🗺 ${listing.address_area || listing.county}</div>
+              </div>
+            </div>
+
+            <div>
+              <div class="enq-card" id="enq-form-wrap">
+                <div class="enq-title">Send an enquiry</div>
+                <div class="enq-by">Listed by <strong>${listing.lister_name}</strong></div>
+                <div id="enq-alert"></div>
+                <form class="enq-form" onsubmit="sendEnquiry(event, '${listing.id}')">
+                  <input class="form-input" name="sender_name" type="text" placeholder="Your name" required />
+                  <input class="form-input" name="sender_email" type="email" placeholder="Email address" required />
+                  <input class="form-input" name="sender_phone" type="tel" placeholder="Phone (optional)" />
+                  <textarea class="form-input form-textarea" name="message" placeholder="Hi, I'd like to arrange a viewing…" required></textarea>
+                  <button type="submit" class="btn btn-primary btn-block" id="enq-btn">Send enquiry</button>
+                </form>
+                ${listing.lister_phone ? `
+                <div class="divider"><span>or</span></div>
+                <button class="call-btn">📞 ${listing.lister_phone}</button>` : ''}
+                <div class="agent-row">
+                  <div class="agent-av">${listing.lister_name?.charAt(0)?.toUpperCase() || 'L'}</div>
+                  <div>
+                    <div style="font-size:13px;font-weight:500">${listing.lister_name}</div>
+                    <div style="font-size:11px;color:#bbb">Property owner · movin.ie</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+      } catch(e) {
+        document.getElementById('page-content').innerHTML = `<div class="empty-state"><div class="empty-state-icon">😕</div><h3>Property not found</h3><p>${e.message}</p><a href="search.html" class="btn btn-primary">Back to search</a></div>`
+      }
+    }
+
+    async function sendEnquiry(e, listingId) {
+      e.preventDefault()
+      const btn = document.getElementById('enq-btn')
+      const alert = document.getElementById('enq-alert')
+      btn.classList.add('btn-loading')
+      btn.disabled = true
+      const form = e.target
+      try {
+        await API.enquiries.send(listingId, {
+          sender_name:  form.sender_name.value,
+          sender_email: form.sender_email.value,
+          sender_phone: form.sender_phone.value,
+          message:      form.message.value
+        })
+        alert.innerHTML = '<div class="alert alert-success">✓ Enquiry sent! The owner will be in touch soon.</div>'
+        form.reset()
+      } catch(err) {
+        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
+      } finally {
+        btn.classList.remove('btn-loading')
+        btn.disabled = false
+      }
+    }
+
+    async function handleSave() {
+      if (!API.auth.isLoggedIn()) { toast('Sign in to save listings', 'info'); return }
+      const btn = document.getElementById('save-btn')
+      const isSaved = btn.textContent.includes('♥')
+      try {
+        if (isSaved) { await API.saved.unsave(listingId); btn.textContent = '♡ Save'; toast('Removed from saved') }
+        else         { await API.saved.save(listingId);   btn.textContent = '♥ Saved'; toast('Saved! ♥') }
+      } catch(e) { toast(e.message, 'error') }
+    }
+
+    load()
+  </script>
+</body>
+</html>

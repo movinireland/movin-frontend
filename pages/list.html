@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>List Your Property – Movin.ie</title>
+  <link rel="stylesheet" href="../css/main.css" />
+  <style>
+    .list-hero { background:linear-gradient(135deg,var(--green),var(--green-dark)); padding:3rem 2rem; text-align:center; }
+    .list-hero-badge { display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem; }
+    .list-hero h1 { font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:.5rem; }
+    .list-hero p { font-size:15px;color:rgba(255,255,255,.65);font-weight:300; }
+    .form-wrap { max-width:700px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+    .type-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.1rem; }
+    .type-btn { border:1.5px solid var(--border);border-radius:13px;padding:.85rem .5rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .15s; }
+    .type-btn:hover { border-color:var(--green); }
+    .type-btn.on { border-color:var(--green);background:var(--green-light); }
+    .type-ico { font-size:24px;margin-bottom:5px; }
+    .type-lbl { font-size:11px;color:#666; }
+    .type-btn.on .type-lbl { color:var(--green);font-weight:500; }
+    .plan-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem; }
+    .plan-opt { border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s; }
+    .plan-opt:hover,.plan-opt.on { border-color:var(--green);background:var(--green-light); }
+    .plan-badge { font-size:10px;font-weight:500;padding:2px 9px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;display:inline-block;margin-bottom:.6rem; }
+    .plan-price { font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#111;margin-bottom:2px; }
+    .plan-opt.on .plan-price { color:var(--green); }
+    .plan-desc { font-size:12px;color:#bbb;margin-bottom:.85rem; }
+    .plan-list { list-style:none;display:flex;flex-direction:column;gap:5px; }
+    .plan-list li { font-size:12px;color:#666;display:flex;gap:6px; }
+    .plan-list li::before { content:'✓';color:var(--green);font-weight:500; }
+    .photo-preview { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:1rem; }
+    .photo-item { position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg); }
+    .photo-item img { width:100%;height:100%;object-fit:cover; }
+    .photo-del { position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+
+  <div class="list-hero">
+    <div class="list-hero-badge">✦ First listing always free</div>
+    <h1>List your property on Movin.ie</h1>
+    <p>Reach thousands of buyers and renters across Ireland — in minutes</p>
+  </div>
+
+  <div class="steps-bar" id="steps-bar">
+    <div class="step-item active" data-step="1"><div class="step-num">1</div><div class="step-label">Details</div></div>
+    <div class="step-sep">›</div>
+    <div class="step-item" data-step="2"><div class="step-num">2</div><div class="step-label">Location</div></div>
+    <div class="step-sep">›</div>
+    <div class="step-item" data-step="3"><div class="step-num">3</div><div class="step-label">Specs</div></div>
+    <div class="step-sep">›</div>
+    <div class="step-item" data-step="4"><div class="step-num">4</div><div class="step-label">Photos</div></div>
+    <div class="step-sep">›</div>
+    <div class="step-item" data-step="5"><div class="step-num">5</div><div class="step-label">Publish</div></div>
+  </div>
+
+  <div class="form-wrap">
+    <div id="form-alert"></div>
+
+    <!-- Step 1: Type & basics -->
+    <div id="step-1">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">What type of property is it?</div>
+        <div class="card-sub">Choose the best match</div>
+        <div class="type-grid" id="type-grid">
+          <div class="type-btn on" data-val="house"><div class="type-ico">🏠</div><div class="type-lbl">House</div></div>
+          <div class="type-btn" data-val="apartment"><div class="type-ico">🏢</div><div class="type-lbl">Apartment</div></div>
+          <div class="type-btn" data-val="bungalow"><div class="type-ico">🏡</div><div class="type-lbl">Bungalow</div></div>
+          <div class="type-btn" data-val="site"><div class="type-ico">🏗</div><div class="type-lbl">Site / Land</div></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Listing type <span class="req">*</span></label>
+            <select class="form-input form-select" id="listing_type">
+              <option value="sale">For Sale</option>
+              <option value="rent">To Rent</option>
+              <option value="share">Sharing</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Property style</label>
+            <select class="form-input form-select" id="property_style">
+              <option value="">Select…</option>
+              <option value="semi-d">Semi-detached</option>
+              <option value="detached">Detached</option>
+              <option value="terraced">Terraced</option>
+              <option value="duplex">Duplex</option>
+              <option value="end-terrace">End of terrace</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Listing title <span class="req">*</span></label>
+          <input class="form-input" type="text" id="title" placeholder="e.g. Bright 3-bed semi-detached, Rathmines" maxlength="100" />
+          <div class="form-hint">Be descriptive — good titles get more clicks</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description <span class="req">*</span></label>
+          <textarea class="form-input form-textarea" id="description" style="min-height:130px" placeholder="Describe your property — location, features, condition, what makes it special…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Asking price (€) <span class="req">*</span></label>
+          <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0" />
+          <div class="form-hint" id="price-hint">Enter monthly rent in € for rentals</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button class="btn btn-primary" onclick="goStep(2)">Next: Location →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Location -->
+    <div id="step-2" style="display:none">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">Address & location</div>
+        <div class="card-sub">Enter the full address of the property</div>
+        <div class="form-group">
+          <label class="form-label">Address line 1 <span class="req">*</span></label>
+          <input class="form-input" type="text" id="address_line1" placeholder="e.g. 14 Leinster Road" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Town / Area</label>
+            <input class="form-input" type="text" id="address_area" placeholder="e.g. Rathmines" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">County <span class="req">*</span></label>
+            <select class="form-input form-select" id="county">
+              <option value="">Select county…</option>
+              <option>Dublin</option><option>Cork</option><option>Galway</option>
+              <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+              <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+              <option>Wexford</option><option>Kilkenny</option><option>Clare</option>
+              <option>Tipperary</option><option>Donegal</option><option>Mayo</option>
+              <option>Sligo</option><option>Leitrim</option><option>Roscommon</option>
+              <option>Longford</option><option>Westmeath</option><option>Offaly</option>
+              <option>Laois</option><option>Carlow</option><option>Louth</option>
+              <option>Monaghan</option><option>Cavan</option><option>Fermanagh</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Eircode</label>
+          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" style="max-width:180px" />
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:.5rem">
+          <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
+          <button class="btn btn-primary" onclick="goStep(3)">Next: Specs →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Specs -->
+    <div id="step-3" style="display:none">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">Property specs</div>
+        <div class="card-sub">Help buyers and renters filter accurately</div>
+        <div class="form-row-3">
+          <div class="form-group">
+            <label class="form-label">Bedrooms</label>
+            <select class="form-input form-select" id="bedrooms">
+              <option value="">—</option><option>1</option><option>2</option>
+              <option>3</option><option>4</option><option>5</option><option>6</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bathrooms</label>
+            <select class="form-input form-select" id="bathrooms">
+              <option value="">—</option><option>1</option><option>2</option>
+              <option>3</option><option>4</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Floor size (m²)</label>
+            <input class="form-input" type="number" id="floor_size_m2" placeholder="e.g. 128" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">BER rating</label>
+            <select class="form-input form-select" id="ber_rating">
+              <option value="">Unknown</option>
+              <option>A1</option><option>A2</option><option>A3</option>
+              <option>B1</option><option>B2</option><option>B3</option>
+              <option>C1</option><option>C2</option><option>C3</option>
+              <option>D1</option><option>D2</option><option>E</option>
+              <option>F</option><option>G</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Facilities</label>
+          <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.25rem">
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-parking" style="accent-color:var(--green)" /> Parking</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garden"  style="accent-color:var(--green)" /> Garden</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garage"  style="accent-color:var(--green)" /> Garage</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-alarm"   style="accent-color:var(--green)" /> Alarm</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-wheelchair" style="accent-color:var(--green)" /> Wheelchair access</label>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:.5rem">
+          <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
+          <button class="btn btn-primary" onclick="goStep(4)">Next: Photos →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Photos -->
+    <div id="step-4" style="display:none">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">Add photos</div>
+        <div class="card-sub">Listings with photos get 5× more enquiries</div>
+        <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+          <div class="upload-zone-icon">📷</div>
+          <div class="upload-zone-text">Click to add photos, or drag & drop here</div>
+          <div class="upload-zone-hint">JPG or PNG · Max 10MB each · Up to 20 photos</div>
+        </div>
+        <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handlePhotos(this.files)" />
+        <div id="photo-preview" class="photo-preview"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:1rem">
+          <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
+          <button class="btn btn-primary" onclick="goStep(5)">Next: Publish →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 5: Plan & publish -->
+    <div id="step-5" style="display:none">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">Choose your plan</div>
+        <div class="card-sub" id="plan-sub">Your first listing is completely free — no card required</div>
+        <div class="plan-grid" id="plan-grid">
+          <div class="plan-opt on" data-plan="free">
+            <div class="plan-badge">Your first listing</div>
+            <div class="plan-price">€0</div>
+            <div class="plan-desc">Free, always</div>
+            <ul class="plan-list"><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live</li></ul>
+          </div>
+          <div class="plan-opt" data-plan="paid">
+            <div class="plan-badge" style="background:var(--green)">Standard listing</div>
+            <div class="plan-price">€9</div>
+            <div class="plan-desc">Per listing after first</div>
+            <ul class="plan-list"><li>Everything in free</li><li>Boost visibility</li><li>Analytics</li><li>Priority support</li></ul>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem">
+          <button class="btn btn-ghost" onclick="goStep(4)">← Back</button>
+          <button class="btn btn-orange btn-lg" id="publish-btn" onclick="publishListing()">🚀 Publish listing</button>
+        </div>
+        <p style="text-align:center;font-size:12px;color:var(--green);margin-top:.85rem" id="free-note">🎉 This is your first listing — it's free! No payment needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    if (!requireLogin()) {}
+    renderNav('list')
+
+    let selectedPhotos = []
+    let createdListingId = null
+
+    // Type selector
+    document.querySelectorAll('#type-grid .type-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#type-grid .type-btn').forEach(x => x.classList.remove('on'))
+        b.classList.add('on')
+      })
+    })
+
+    // Plan selector
+    document.querySelectorAll('.plan-opt').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.plan-opt').forEach(x => x.classList.remove('on'))
+        b.classList.add('on')
+      })
+    })
+
+    // Listing type change
+    document.getElementById('listing_type').addEventListener('change', function() {
+      document.getElementById('price-hint').textContent =
+        this.value === 'rent' || this.value === 'share' ? 'Enter monthly rent in €' : 'Enter asking price in €'
+    })
+
+    // Drag and drop
+    const zone = document.getElementById('upload-zone')
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over') })
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'))
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); handlePhotos(e.dataTransfer.files) })
+
+    function handlePhotos(files) {
+      const preview = document.getElementById('photo-preview')
+      Array.from(files).forEach(file => {
+        if (selectedPhotos.length >= 20) { toast('Max 20 photos', 'error'); return }
+        if (file.size > 10 * 1024 * 1024) { toast(`${file.name} is too large (max 10MB)`, 'error'); return }
+        selectedPhotos.push(file)
+        const reader = new FileReader()
+        const idx = selectedPhotos.length - 1
+        reader.onload = e => {
+          const div = document.createElement('div')
+          div.className = 'photo-item' + (idx === 0 ? ' primary' : '')
+          div.dataset.idx = idx
+          div.innerHTML = `<img src="${e.target.result}" /><button class="photo-del" onclick="removePhoto(${idx}, this.parentElement)">×</button>`
+          preview.appendChild(div)
+        }
+        reader.readAsDataURL(file)
+      })
+    }
+
+    function removePhoto(idx, el) {
+      selectedPhotos[idx] = null
+      el.remove()
+    }
+
+    function goStep(n) {
+      // Validate current step
+      if (n === 2) {
+        if (!document.getElementById('title').value.trim()) { toast('Please enter a listing title', 'error'); return }
+        if (!document.getElementById('description').value.trim()) { toast('Please add a description', 'error'); return }
+        if (!document.getElementById('price').value) { toast('Please enter a price', 'error'); return }
+      }
+      if (n === 3) {
+        if (!document.getElementById('address_line1').value.trim()) { toast('Please enter the address', 'error'); return }
+        if (!document.getElementById('county').value) { toast('Please select a county', 'error'); return }
+      }
+
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`step-${i}`)
+        if (el) el.style.display = i === n ? 'block' : 'none'
+      }
+
+      document.querySelectorAll('.step-item').forEach(s => {
+        const sn = parseInt(s.dataset.step)
+        s.classList.remove('active', 'done')
+        if (sn === n) s.classList.add('active')
+        if (sn < n)  s.classList.add('done')
+        if (sn < n)  s.querySelector('.step-num').textContent = '✓'
+        else s.querySelector('.step-num').textContent = sn
+      })
+
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    async function publishListing() {
+      const btn = document.getElementById('publish-btn')
+      const alert = document.getElementById('form-alert')
+      btn.classList.add('btn-loading'); btn.disabled = true
+
+      try {
+        const payload = {
+          title:          document.getElementById('title').value.trim(),
+          description:    document.getElementById('description').value.trim(),
+          listing_type:   document.getElementById('listing_type').value,
+          property_type:  document.querySelector('#type-grid .type-btn.on')?.dataset.val || 'house',
+          property_style: document.getElementById('property_style').value,
+          address_line1:  document.getElementById('address_line1').value.trim(),
+          address_area:   document.getElementById('address_area').value.trim(),
+          county:         document.getElementById('county').value,
+          eircode:        document.getElementById('eircode').value.trim(),
+          price:          parseInt(document.getElementById('price').value),
+          bedrooms:       document.getElementById('bedrooms').value || null,
+          bathrooms:      document.getElementById('bathrooms').value || null,
+          floor_size_m2:  document.getElementById('floor_size_m2').value || null,
+          ber_rating:     document.getElementById('ber_rating').value || null,
+          parking:        document.getElementById('f-parking').checked,
+          garden:         document.getElementById('f-garden').checked,
+          garage:         document.getElementById('f-garage').checked,
+          alarm:          document.getElementById('f-alarm').checked,
+          wheelchair:     document.getElementById('f-wheelchair').checked,
+        }
+
+        const res = await API.listings.create(payload)
+        createdListingId = res.listing.id
+
+        // Upload photos if any
+        const filesToUpload = selectedPhotos.filter(Boolean)
+        if (filesToUpload.length > 0) {
+          try {
+            await API.photos.upload(createdListingId, filesToUpload)
+          } catch(e) {
+            console.warn('Photo upload failed:', e.message)
+          }
+        }
+
+        // Needs payment?
+        if (res.requires_payment) {
+          toast('Redirecting to payment…', 'info')
+          const payment = await API.payments.startCheckout(createdListingId)
+          window.location.href = payment.checkout_url
+        } else {
+          toast('🎉 Your listing is live!')
+          window.location.href = `listing.html?id=${createdListingId}`
+        }
+
+      } catch(err) {
+        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        btn.classList.remove('btn-loading'); btn.disabled = false
+      }
+    }
+  </script>
+</body>
+</html>

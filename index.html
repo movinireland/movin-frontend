@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movin.ie – Ireland's Smartest Property Platform</title>
+  <meta name="description" content="Search thousands of properties for sale and rent across Ireland. List your home free on Movin.ie." />
+  <link rel="stylesheet" href="css/main.css" />
+  <style>
+    .hero { display:grid; grid-template-columns:1fr 1fr; min-height:560px; }
+    .hero-left { background:#fff; padding:5rem 3.5rem 4rem; display:flex; flex-direction:column; justify-content:center; }
+    .hero-badge { display:inline-block; background:var(--green-light); color:var(--green); font-size:12px; font-weight:500; padding:5px 14px; border-radius:var(--radius-pill); margin-bottom:1.5rem; }
+    .hero-h1 { font-size:52px; font-weight:700; line-height:1.08; margin-bottom:1.25rem; }
+    .hero-h1 em { font-style:normal; color:var(--green); }
+    .hero-sub { font-size:16px; color:#666; line-height:1.7; margin-bottom:2rem; max-width:440px; font-weight:300; }
+    .hero-ctas { display:flex; gap:12px; flex-wrap:wrap; }
+    .hero-right { background:linear-gradient(135deg,var(--green),var(--green-dark)); display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; overflow:hidden; }
+    .hero-right::before { content:''; position:absolute; width:400px; height:400px; border-radius:50%; background:rgba(255,255,255,.04); top:-100px; right:-100px; }
+    .hero-card { background:#fff; border-radius:20px; overflow:hidden; width:290px; box-shadow:0 24px 64px rgba(0,0,0,.3); position:relative; z-index:2; }
+    .hero-card-img { height:170px; background:linear-gradient(180deg,#c8e0d4,#e9f4ef); display:flex; align-items:center; justify-content:center; font-size:64px; }
+    .hero-card-body { padding:1.1rem 1.3rem 1.4rem; }
+    .hero-card-tag { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--green); font-weight:500; margin-bottom:4px; }
+    .hero-card-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#111; margin-bottom:8px; }
+    .hero-card-price { font-size:22px; font-weight:500; color:#111; margin-bottom:10px; }
+    .hero-card-meta { display:flex; gap:14px; font-size:12px; color:#777; padding-top:10px; border-top:1px solid #f0ede6; }
+    .search-wrap { background:#fff; padding:1.5rem 2rem; border-bottom:1px solid var(--border); }
+    .search-bar { display:flex; align-items:center; gap:8px; max-width:900px; margin:0 auto; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-pill); padding:6px 8px 6px 20px; box-shadow:var(--shadow); }
+    .search-bar input { flex:1; border:none; outline:none; font-size:15px; background:transparent; color:#333; padding:6px 0; }
+    .search-bar select { border:none; border-left:1px solid var(--border); outline:none; padding:8px 14px; font-size:14px; color:#555; background:transparent; cursor:pointer; }
+    .stats-bar { display:flex; background:var(--green); }
+    .stat-item { flex:1; padding:1.75rem 2rem; text-align:center; border-right:1px solid rgba(255,255,255,.15); }
+    .stat-item:last-child { border-right:none; }
+    .stat-n { font-family:'Playfair Display',serif; font-size:34px; font-weight:700; color:#fff; }
+    .stat-l { font-size:12px; color:rgba(255,255,255,.6); margin-top:4px; font-weight:300; }
+    .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .feature-card { border-radius:var(--radius); padding:2.25rem 2rem; border:1px solid var(--border); background:#fff; }
+    .feature-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:1.1rem; }
+    .icon-green { background:var(--green-light); }
+    .icon-orange { background:#fdf0e6; }
+    .icon-blue  { background:#e8f0fd; }
+    .feature-card h3 { font-family:'Playfair Display',serif; font-size:19px; margin-bottom:8px; }
+    .feature-card p { font-size:14px; color:#777; line-height:1.75; font-weight:300; }
+    .pricing-section { background:#fff; padding:5rem 2rem; }
+    .pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:640px; margin:0 auto; }
+    .price-card { border-radius:20px; padding:2.25rem; border:1.5px solid var(--border); background:#fafaf8; }
+    .price-card.featured { background:var(--green); border-color:var(--green); }
+    .price-label { font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:500; color:#999; margin-bottom:.75rem; }
+    .price-card.featured .price-label { color:rgba(255,255,255,.55); }
+    .price-n { font-family:'Playfair Display',serif; font-size:52px; font-weight:700; color:#111; line-height:1; margin-bottom:4px; }
+    .price-card.featured .price-n { color:#fff; }
+    .price-per { font-size:13px; color:#bbb; margin-bottom:1.75rem; }
+    .price-card.featured .price-per { color:rgba(255,255,255,.5); }
+    .price-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:2rem; }
+    .price-list li { font-size:14px; color:#666; font-weight:300; display:flex; gap:8px; }
+    .price-list li::before { content:'✓'; color:var(--green); font-weight:500; }
+    .price-card.featured .price-list li { color:rgba(255,255,255,.75); }
+    .price-card.featured .price-list li::before { color:#7ec9a8; }
+    .price-btn { width:100%; padding:13px; border-radius:var(--radius-pill); font-size:15px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; border:1.5px solid var(--green); background:transparent; color:var(--green); transition:all .2s; }
+    .price-btn:hover { background:var(--green); color:#fff; }
+    .price-card.featured .price-btn { background:#fff; color:var(--green); border-color:#fff; }
+    .test-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .test-card { background:#fff; border-radius:var(--radius); padding:1.75rem; border:1px solid var(--border); }
+    .test-stars { color:var(--orange); font-size:16px; margin-bottom:.75rem; }
+    .test-text { font-size:14px; color:#555; line-height:1.75; font-weight:300; font-style:italic; margin-bottom:1.1rem; }
+    .test-author { font-size:13px; font-weight:500; color:#333; }
+    .test-role { font-size:12px; color:#aaa; }
+    .section { padding:4.5rem 2rem; }
+    .section-title { font-size:38px; text-align:center; margin-bottom:.75rem; }
+    .section-sub { text-align:center; color:#666; font-size:16px; font-weight:300; margin-bottom:3rem; }
+    @media(max-width:768px){ .hero{grid-template-columns:1fr;} .hero-right{display:none;} .hero-left{padding:3rem 1.5rem;} .hero-h1{font-size:36px;} .features-grid,.test-grid,.pricing-grid{grid-template-columns:1fr;} .stats-bar{flex-wrap:wrap;} }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-left">
+      <span class="hero-badge">✦ Ireland's smartest property platform</span>
+      <h1 class="hero-h1">Find your place<br>to call <em>home</em></h1>
+      <p class="hero-sub">Search thousands of properties across Ireland — to buy or rent. List yours free, with no hidden surprises.</p>
+      <div class="hero-ctas">
+        <a href="pages/search.html" class="btn btn-primary btn-lg">Search properties</a>
+        <a href="pages/list.html" class="btn btn-ghost btn-lg">List your home</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <div class="hero-card-img">🏡</div>
+        <div class="hero-card-body">
+          <div class="hero-card-tag">For Sale · Dublin 6</div>
+          <div class="hero-card-title">Charming Victorian Semi-D</div>
+          <div class="hero-card-price">€595,000</div>
+          <div class="hero-card-meta"><span>4 beds</span><span>2 baths</span><span>142m²</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div class="search-wrap">
+    <form class="search-bar" onsubmit="doSearch(event)">
+      <input type="text" id="search-q" placeholder="Search by area, county or Eircode…" />
+      <select id="search-type">
+        <option value="">Buy or Rent</option>
+        <option value="sale">Buy</option>
+        <option value="rent">Rent</option>
+        <option value="share">Sharing</option>
+      </select>
+      <select id="search-county">
+        <option value="">Any county</option>
+        <option>Dublin</option><option>Cork</option><option>Galway</option>
+        <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+        <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+        <option>Wexford</option><option>Kilkenny</option><option>Clare</option>
+        <option>Tipperary</option><option>Donegal</option><option>Mayo</option>
+      </select>
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-n" id="stat-listings">—</div><div class="stat-l">Active listings</div></div>
+    <div class="stat-item"><div class="stat-n">32</div><div class="stat-l">Counties covered</div></div>
+    <div class="stat-item"><div class="stat-n">Free</div><div class="stat-l">First listing, always</div></div>
+    <div class="stat-item"><div class="stat-n">€9</div><div class="stat-l">Listings after that</div></div>
+  </div>
+
+  <!-- Features -->
+  <div class="section">
+    <h2 class="section-title">Why Movin?</h2>
+    <p class="section-sub">We built what Ireland's property market deserved — and didn't have.</p>
+    <div class="features-grid container">
+      <div class="feature-card">
+        <div class="feature-icon icon-green">🎯</div>
+        <h3>Free first listing</h3>
+        <p>List your property for the first time at no cost. See how it performs before you ever pay a cent.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-orange">💸</div>
+        <h3>Radically fair pricing</h3>
+        <p>Just €9 per listing after your first. That's over 90% less than the competition. No subscriptions, no surprises.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon icon-blue">✨</div>
+        <h3>Modern & fast</h3>
+        <p>A clean, intuitive experience built for how people actually search for homes — on mobile, on the go, right now.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured listings -->
+  <div class="section" style="background:#fff; padding:4rem 2rem;">
+    <h2 class="section-title">Latest listings</h2>
+    <p class="section-sub">Fresh properties added across Ireland today.</p>
+    <div id="featured-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;max-width:1200px;margin:0 auto 2rem;">
+      <div class="loading-wrap"><div class="spinner"></div></div>
+    </div>
+    <div style="text-align:center">
+      <a href="pages/search.html" class="btn btn-ghost">View all listings →</a>
+    </div>
+  </div>
+
+  <!-- Pricing -->
+  <div class="pricing-section">
+    <h2 class="section-title">Simple pricing</h2>
+    <p class="section-sub">No monthly fees. Pay only when you list.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-label">First listing</div>
+        <div class="price-n">€0</div>
+        <div class="price-per">completely free</div>
+        <ul class="price-list">
+          <li>Full listing page</li><li>Photo gallery</li>
+          <li>Enquiry inbox</li><li>30-day visibility</li>
+        </ul>
+        <button class="price-btn" onclick="window.location.href='pages/list.html'">Get started free</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-label">Every listing after</div>
+        <div class="price-n">€9</div>
+        <div class="price-per">per listing</div>
+        <ul class="price-list">
+          <li>Everything in free</li><li>Boost visibility</li>
+          <li>Analytics dashboard</li><li>Priority support</li>
+        </ul>
+        <button class="price-btn" onclick="window.location.href='pages/list.html'">List now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="section">
+    <h2 class="section-title">What people are saying</h2>
+    <p class="section-sub">Thousands of Irish homeowners and renters trust Movin.</p>
+    <div class="test-grid container">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. Got more enquiries here in a day than on the other site in a month."</p>
+        <div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"€9 to list my rental instead of €99 on the other site. Identical results. Absolute no-brainer."</p>
+        <div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">"Found our forever home through Movin. The search filters are so much better than anything else out there."</p>
+        <div class="test-author">Aoife & Tadhg R.</div><div class="test-role">First-time buyers, Galway</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div><strong>movin.ie</strong> — Ireland's home for property · © 2025 Movin Technologies Ltd</div>
+      <div class="footer-links">
+        <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    renderNav()
+
+    function doSearch(e) {
+      e.preventDefault()
+      const q      = document.getElementById('search-q').value
+      const type   = document.getElementById('search-type').value
+      const county = document.getElementById('search-county').value
+      const params = new URLSearchParams()
+      if (q)      params.set('q', q)
+      if (type)   params.set('listing_type', type)
+      if (county) params.set('county', county)
+      window.location.href = `pages/search.html?${params.toString()}`
+    }
+
+    async function loadFeatured() {
+      try {
+        const res = await API.listings.search({ sort: 'newest', limit: 4 })
+        document.getElementById('stat-listings').textContent = res.total.toLocaleString() + '+'
+        const grid = document.getElementById('featured-grid')
+        if (!res.listings.length) {
+          grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏡</div><p>No listings yet — be the first to list!</p></div>'
+          return
+        }
+        grid.innerHTML = res.listings.map(l => buildPropertyCard(l)).join('')
+      } catch(e) {
+        document.getElementById('featured-grid').innerHTML = '<p style="color:#aaa;text-align:center;grid-column:1/-1">Could not load listings.</p>'
+      }
+    }
+
+    loadFeatured()
+  </script>
+</body>
+</html>
