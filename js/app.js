@@ -1,7 +1,7 @@
 // js/app.js — Shared utilities, nav, toast notifications
 
 // ── Config ────────────────────────────────────────────────────────────────────
-window.MOVIN_API_URL = 'http://localhost:3001' // Change to your Railway URL for production
+window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app' // Change to your Railway URL for production
 
 // ── Toast notifications ───────────────────────────────────────────────────────
 function toast(message, type = 'success', duration = 3500) {
