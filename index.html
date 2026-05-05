@@ -302,34 +302,73 @@ button,input,select{font-family:inherit}
 /* ══ BOTTOM TAB BAR ══════════════════════════════════ */
 .tab-bar{
   position:fixed;bottom:0;left:0;right:0;
-  background:#fff;border-top:1px solid var(--border);
+  background:#fff;
+  border-top:1px solid #ebebeb;
   display:flex;align-items:stretch;
-  height:calc(56px + var(--safe-b));
+  height:calc(62px + var(--safe-b));
   padding-bottom:var(--safe-b);
   z-index:100;
+  box-shadow:0 -4px 20px rgba(0,0,0,.06);
 }
 .tab-item{
   flex:1;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:3px;
+  align-items:center;justify-content:center;gap:4px;
   cursor:pointer;border:none;background:transparent;
-  color:var(--muted);font-size:10px;font-weight:500;
+  color:#b0b0b0;font-size:10px;font-weight:500;
   font-family:'DM Sans',sans-serif;
-  padding:6px 2px 0;-webkit-tap-highlight-color:transparent;
+  padding:8px 4px 0;
+  -webkit-tap-highlight-color:transparent;
+  transition:color .15s;
+  position:relative;
 }
-.tab-item.active{color:var(--g)}
-.tab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-.tab-add-btn{
-  width:40px;height:40px;background:var(--g);border-radius:50%;
+.tab-item.active{color:#1a5c45}
+.tab-item.active .tab-icon-wrap svg{stroke:#1a5c45}
+.tab-item:not(.tab-list-item):active{color:#1a5c45}
+
+/* icon wrapper with active background pill */
+.tab-icon-wrap{
+  width:32px;height:28px;
   display:flex;align-items:center;justify-content:center;
-  margin-top:-10px;border:3px solid #f5f5f5;
+  border-radius:10px;
+  transition:background .15s;
 }
+.tab-item.active .tab-icon-wrap{
+  background:#e9f4ef;
+}
+.tab-icon-wrap svg{
+  width:22px;height:22px;
+  stroke:#b0b0b0;
+  transition:stroke .15s;
+}
+.tab-item.active .tab-icon-wrap svg{stroke:#1a5c45}
+
+/* Centre list button */
+.tab-list-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  cursor:pointer;border:none;background:transparent;
+  padding:0;-webkit-tap-highlight-color:transparent;
+}
+.tab-list-circle{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(26,92,69,.35);
+  border:3px solid #fff;
+  margin-top:-14px;
+  transition:transform .15s,box-shadow .15s;
+}
+.tab-list-circle:active{transform:scale(.93)}
+.tab-list-circle svg{width:20px;height:20px;stroke:#fff}
+.tab-list-label{font-size:10px;font-weight:500;color:#b0b0b0;margin-top:4px}
 
 /* Hide tab bar on desktop */
 @media(min-width:768px){
   .tab-bar{display:none}
   .page-body{padding-bottom:0}
 }
-.page-body{padding-bottom:calc(64px + var(--safe-b))}
+.page-body{padding-bottom:calc(70px + var(--safe-b))}
 
 /* ══ LOADING / EMPTY ═════════════════════════════════ */
 .spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite}
@@ -641,38 +680,62 @@ button,input,select{font-family:inherit}
 
 <!-- ══ BOTTOM TAB BAR ════════════════════════════════════ -->
 <div class="tab-bar">
+
+  <!-- Home -->
   <button class="tab-item active" id="tab-home" onclick="go('index.html')">
-    <div class="tab-icon">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3l8 6.5V19a1 1 0 01-1 1H14v-5H8v5H4a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    <div class="tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10.5z"/>
+      </svg>
     </div>
     Home
   </button>
+
+  <!-- Search -->
   <button class="tab-item" onclick="go('pages/search.html')">
-    <div class="tab-icon">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M15 15l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="10.5" cy="10.5" r="6.5"/>
+        <path d="M15.5 15.5L21 21"/>
+      </svg>
     </div>
     Search
   </button>
-  <button class="tab-item" onclick="go('pages/list.html')">
-    <div class="tab-icon">
-      <div class="tab-add-btn">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
-      </div>
+
+  <!-- List — centre elevated button -->
+  <button class="tab-list-item" onclick="go('pages/list.html')">
+    <div class="tab-list-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
     </div>
-    List
+    <span class="tab-list-label">List</span>
   </button>
+
+  <!-- Tools -->
   <button class="tab-item" onclick="go('pages/tools.html')">
-    <div class="tab-icon">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+    <div class="tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
     </div>
     Tools
   </button>
+
+  <!-- Account -->
   <button class="tab-item" id="tab-account" onclick="go('pages/dashboard.html')">
-    <div class="tab-icon">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.866 3.134-7 7-7h.5c3.866 0 7 3.134 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <div class="tab-icon-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="8" r="4"/>
+        <path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/>
+      </svg>
     </div>
     Account
   </button>
+
 </div>
 
 <script>
