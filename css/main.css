@@ -294,3 +294,41 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
   .form-row, .form-row-3 { grid-template-columns: 1fr; }
   .photo-grid { grid-template-columns: repeat(3, 1fr); }
 }
+/* ── Add these styles to your css/main.css file ── */
+/* ── Tools nav dropdown ── */
+.nav-has-dropdown{position:relative;cursor:pointer;user-select:none}
+.nav-tools-dropdown{
+  position:absolute;
+  top:calc(100% + 12px);
+  left:50%;
+  transform:translateX(-50%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:16px;
+  box-shadow:0 8px 32px rgba(0,0,0,.12);
+  width:280px;
+  z-index:200;
+  display:none;
+  overflow:hidden;
+  padding:.5rem 0;
+}
+.nav-tools-dropdown.open{display:block}
+.ntd-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:.85rem 1.25rem;
+  cursor:pointer;
+  transition:background .12s;
+  border-bottom:1px solid #f5f2ec;
+}
+.ntd-item:last-child{border-bottom:none}
+.ntd-item:hover{background:var(--gl)}
+.ntd-icon{font-size:22px;flex-shrink:0;width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:var(--gl);border-radius:8px}
+.ntd-title{font-size:13px;font-weight:500;color:#111;margin-bottom:2px}
+.ntd-sub{font-size:11px;color:#aaa;font-weight:300}
+
+/* Mobile — tools dropdown becomes full width */
+@media(max-width:768px){
+  .nav-has-dropdown{display:none}
+}

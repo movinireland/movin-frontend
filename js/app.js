@@ -61,24 +61,70 @@ function requireLogin() {
 }
 
 // ── Inject nav ────────────────────────────────────────────────────────────────
+// REPLACE the renderNav function in your js/app.js with this entire function
+ 
 function renderNav(activePage = '') {
-  const user = window.API.getUser()
-  const isLoggedIn = window.API.auth.isLoggedIn()
+  const user = window.API ? window.API.getUser() : null
+  const isLoggedIn = window.API ? window.API.auth.isLoggedIn() : false
   const root = window.location.pathname.includes('/pages/') ? '../' : './'
-
+ 
   const nav = document.getElementById('main-nav')
   if (!nav) return
-
+ 
   nav.innerHTML = `
     <div class="nav-inner">
       <a href="${root}index.html" class="nav-logo">mov<span>in</span></a>
+ 
       <ul class="nav-links">
-        <li class="${activePage === 'buy' ? 'active' : ''}" onclick="window.location.href='${root}pages/search.html?type=sale'">Buy</li>
-        <li class="${activePage === 'rent' ? 'active' : ''}" onclick="window.location.href='${root}pages/search.html?type=rent'">Rent</li>
-        <li class="${activePage === 'list' ? 'active' : ''}" onclick="window.location.href='${root}pages/list.html'">List your property</li>
+        <li class="${activePage === 'buy' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/search.html?listing_type=sale'">Buy</li>
+ 
+        <li class="${activePage === 'rent' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/search.html?listing_type=rent'">Rent</li>
+ 
+        <li class="${activePage === 'list' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/list.html'">List your property</li>
+ 
         <li onclick="window.location.href='${root}pages/search.html?new_dev=1'">New homes</li>
-        <li onclick="window.location.href='${root}pages/tools.html'">Tools</li>
+ 
+        <!-- Tools dropdown -->
+        <li class="nav-has-dropdown ${activePage === 'tools' ? 'active' : ''}"
+            id="tools-nav-item"
+            onclick="toggleToolsDropdown(event)">
+          Tools ▾
+          <div class="nav-tools-dropdown" id="tools-dropdown">
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#mortgage'">
+              <span class="ntd-icon">🏦</span>
+              <div>
+                <div class="ntd-title">Mortgage calculator</div>
+                <div class="ntd-sub">Monthly repayments & affordability</div>
+              </div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#valuation'">
+              <span class="ntd-icon">🏡</span>
+              <div>
+                <div class="ntd-title">Home valuation</div>
+                <div class="ntd-sub">Instant estimate based on Irish data</div>
+              </div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#stamp'">
+              <span class="ntd-icon">📋</span>
+              <div>
+                <div class="ntd-title">Stamp duty calculator</div>
+                <div class="ntd-sub">Calculate your stamp duty costs</div>
+              </div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#ftb'">
+              <span class="ntd-icon">🔑</span>
+              <div>
+                <div class="ntd-title">First-time buyer guide</div>
+                <div class="ntd-sub">HTB, First Home Scheme & more</div>
+              </div>
+            </div>
+          </div>
+        </li>
       </ul>
+ 
       <div class="nav-right" style="position:relative">
         ${isLoggedIn ? `
           <div class="nav-user" id="nav-user-btn" onclick="toggleNavDropdown()">
@@ -92,9 +138,6 @@ function renderNav(activePage = '') {
             </div>
             <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/dashboard.html?tab=enquiries'">
               <span>📨</span> Enquiries
-            </div>
-            <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/saved.html'">
-              <span>♡</span> Saved
             </div>
             <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/dashboard.html?tab=profile'">
               <span>👤</span> Profile
@@ -111,21 +154,42 @@ function renderNav(activePage = '') {
       </div>
     </div>
   `
+ 
+  // Handle deep link to specific tool tab
+  const hash = window.location.hash
+  if (hash && ['#mortgage','#valuation','#stamp','#ftb'].includes(hash)) {
+    const tabMap = { '#mortgage': 'mortgage', '#valuation': 'valuation', '#stamp': 'stamp', '#ftb': 'ftb' }
+    setTimeout(() => {
+      const tabId = tabMap[hash]
+      const el = document.querySelector(`.tool-tab[onclick*="${tabId}"]`)
+      if (el && typeof switchTab === 'function') switchTab(tabId, el)
+    }, 100)
+  }
 }
-
+ 
+function toggleToolsDropdown(e) {
+  e.stopPropagation()
+  const dd = document.getElementById('tools-dropdown')
+  if (dd) dd.classList.toggle('open')
+}
+ 
 function toggleNavDropdown() {
   document.getElementById('nav-dropdown')?.classList.toggle('open')
 }
-
-// Close dropdown on outside click
+ 
+// Close dropdowns on outside click
 document.addEventListener('click', e => {
   const dd = document.getElementById('nav-dropdown')
   const btn = document.getElementById('nav-user-btn')
   if (dd && !btn?.contains(e.target) && !dd.contains(e.target)) {
     dd.classList.remove('open')
   }
+  const tdd = document.getElementById('tools-dropdown')
+  const tli = document.getElementById('tools-nav-item')
+  if (tdd && !tli?.contains(e.target)) {
+    tdd.classList.remove('open')
+  }
 })
-
 // ── Property card HTML builder ────────────────────────────────────────────────
 function buildPropertyCard(listing, savedIds = []) {
   const root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
