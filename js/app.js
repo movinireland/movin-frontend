@@ -77,6 +77,7 @@ function renderNav(activePage = '') {
         <li class="${activePage === 'rent' ? 'active' : ''}" onclick="window.location.href='${root}pages/search.html?type=rent'">Rent</li>
         <li class="${activePage === 'list' ? 'active' : ''}" onclick="window.location.href='${root}pages/list.html'">List your property</li>
         <li onclick="window.location.href='${root}pages/search.html?new_dev=1'">New homes</li>
+        <li onclick="window.location.href='${root}pages/tools.html'">Tools</li>
       </ul>
       <div class="nav-right" style="position:relative">
         ${isLoggedIn ? `

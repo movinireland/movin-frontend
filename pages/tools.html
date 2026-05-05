@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mortgage Calculator & Home Valuation – Movin.ie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+/* ── Page layout ── */
+.tools-hero{background:linear-gradient(135deg,var(--g),var(--gd));padding:2rem 1rem 2.5rem;text-align:center}
+.tools-hero h1{font-family:'Playfair Display',serif;font-size:clamp(24px,6vw,36px);font-weight:900;color:#fff;margin-bottom:.5rem}
+.tools-hero p{font-size:14px;color:rgba(255,255,255,.7);font-weight:300;max-width:380px;margin:0 auto}
+
+.tools-tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto}
+.tools-tabs::-webkit-scrollbar{display:none}
+.tool-tab{flex:1;padding:.9rem 1rem;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;text-align:center;transition:all .15s;min-width:140px}
+.tool-tab.active{color:var(--g);border-bottom-color:var(--g)}
+
+.tool-panel{display:none;padding:1.25rem 1rem;max-width:680px;margin:0 auto}
+.tool-panel.active{display:block}
+
+/* ── Cards ── */
+.calc-card{background:#fff;border-radius:16px;padding:1.5rem;border:1px solid var(--border);margin-bottom:1rem}
+.calc-card-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:.25rem;color:#111}
+.calc-card-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;font-weight:300}
+
+/* ── Form elements ── */
+.calc-label{font-size:12px;font-weight:500;color:#555;margin-bottom:5px;display:block;letter-spacing:.2px}
+.calc-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:15px;background:#fafaf8;color:#333;outline:none;transition:border .15s;font-family:'DM Sans',sans-serif;-webkit-appearance:none}
+.calc-input:focus{border-color:var(--g);background:#fff}
+.input-prefix-wrap{position:relative}
+.input-prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:#aaa;pointer-events:none}
+.input-prefix-wrap .calc-input{padding-left:26px}
+.calc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+@media(max-width:400px){.calc-row{grid-template-columns:1fr}}
+.calc-group{margin-bottom:1rem}
+
+/* ── Slider ── */
+.slider-wrap{margin-top:6px}
+.calc-slider{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+.calc-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--g);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.calc-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--g);cursor:pointer;border:2px solid #fff}
+.slider-labels{display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-top:4px}
+
+/* ── Results ── */
+.result-card{background:var(--g);border-radius:16px;padding:1.5rem;margin-bottom:1rem}
+.result-main{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#fff;line-height:1;margin-bottom:4px}
+.result-label{font-size:13px;color:rgba(255,255,255,.65);font-weight:300}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;margin-top:1rem}
+.result-item{background:rgba(255,255,255,.12);border-radius:10px;padding:.75rem;text-align:center}
+.result-item-n{font-size:18px;font-weight:500;color:#fff}
+.result-item-l{font-size:10px;color:rgba(255,255,255,.55);margin-top:3px}
+
+.breakdown-card{background:#fafaf8;border-radius:14px;padding:1.25rem;border:1px solid var(--border);margin-bottom:1rem}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid #f0ede6;font-size:14px}
+.breakdown-row:last-child{border-bottom:none;font-weight:500;color:var(--g)}
+.breakdown-label{color:#666}
+.breakdown-value{font-weight:500;color:#111}
+
+/* ── Affordability bar ── */
+.afford-bar-wrap{margin:1rem 0}
+.afford-bar-label{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:6px}
+.afford-bar-bg{background:var(--border);border-radius:4px;height:8px;overflow:hidden}
+.afford-bar-fill{height:100%;border-radius:4px;background:var(--g);transition:width .5s ease}
+.afford-bar-fill.warn{background:var(--o)}
+.afford-bar-fill.danger{background:#d93025}
+.afford-note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:.5rem}
+
+/* ── Valuation ── */
+.val-type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1rem}
+.val-type-btn{border:1.5px solid var(--border);border-radius:10px;padding:.75rem .5rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.val-type-btn.on{border-color:var(--g);background:var(--gl)}
+.val-type-ico{font-size:20px;margin-bottom:4px}
+.val-type-lbl{font-size:11px;color:#666}
+.val-type-btn.on .val-type-lbl{color:var(--g);font-weight:500}
+
+.val-result{background:linear-gradient(135deg,var(--g),var(--gd));border-radius:16px;padding:1.5rem;margin-bottom:1rem}
+.val-range{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;line-height:1.2;margin-bottom:.5rem}
+.val-mid{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:1rem}
+.val-factors{display:flex;flex-direction:column;gap:.5rem}
+.val-factor{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,.8)}
+.val-factor-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-pos{background:#7ec9a8}
+.dot-neg{background:#e07b3f}
+.dot-neu{background:rgba(255,255,255,.4)}
+
+.val-disclaimer{font-size:11px;color:var(--muted);line-height:1.65;padding:.75rem;background:#fafaf8;border-radius:10px;border:1px solid var(--border);margin-top:.75rem}
+
+/* ── First time buyer info ── */
+.info-box{background:var(--gl);border-radius:12px;padding:1rem 1.25rem;border:1px solid #c8dfd4;margin-bottom:1rem}
+.info-box-title{font-size:13px;font-weight:500;color:var(--g);margin-bottom:.5rem}
+.info-box p{font-size:13px;color:#444;line-height:1.7;font-weight:300}
+
+.scheme-grid{display:grid;grid-template-columns:1fr;gap:.75rem}
+.scheme-card{background:#fff;border-radius:12px;padding:1rem;border:1px solid var(--border)}
+.scheme-title{font-size:14px;font-weight:500;color:#111;margin-bottom:4px}
+.scheme-desc{font-size:12px;color:#666;line-height:1.6;font-weight:300}
+.scheme-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:20px;background:var(--gl);color:var(--g);margin-top:.4rem}
+
+/* ── Stamp duty ── */
+.stamp-result{background:var(--gl);border-radius:12px;padding:1.25rem;border:1px solid #c8dfd4;margin-top:.75rem}
+.stamp-amount{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--g)}
+.stamp-label{font-size:13px;color:#666;margin-top:2px}
+
+.calc-btn{width:100%;background:var(--g);color:#fff;border:none;padding:13px;border-radius:var(--rp);font-size:15px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:.5rem;transition:background .2s}
+.calc-btn:hover{background:var(--gd)}
+.calc-btn:active{transform:scale(.98)}
+
+.share-btn{width:100%;background:transparent;color:var(--g);border:1.5px solid var(--g);padding:11px;border-radius:var(--rp);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:.5rem}
+
+/* ── Amortisation table ── */
+.amort-toggle{font-size:13px;color:var(--g);font-weight:500;cursor:pointer;text-align:center;padding:.75rem;display:block}
+.amort-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:.5rem}
+.amort-table th{text-align:left;padding:6px 8px;background:var(--g);color:#fff;font-weight:500}
+.amort-table td{padding:6px 8px;border-bottom:1px solid #f0ede6}
+.amort-table tr:nth-child(even) td{background:#fafaf8}
+</style>
+</head>
+<body>
+<nav class="nav" id="main-nav"></nav>
+
+<div class="tools-hero">
+  <h1>Property Tools</h1>
+  <p>Calculate your mortgage, estimate your home's value, and plan your purchase</p>
+</div>
+
+<div class="tools-tabs">
+  <div class="tool-tab active" onclick="switchTab('mortgage',this)">🏦 Mortgage</div>
+  <div class="tool-tab" onclick="switchTab('valuation',this)">🏡 Valuation</div>
+  <div class="tool-tab" onclick="switchTab('stamp',this)">📋 Stamp Duty</div>
+  <div class="tool-tab" onclick="switchTab('ftb',this)">🔑 First-Time Buyer</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 1 — MORTGAGE CALCULATOR
+══════════════════════════════════════ -->
+<div id="tab-mortgage" class="tool-panel active">
+
+  <div class="calc-card">
+    <div class="calc-card-title">Mortgage calculator</div>
+    <div class="calc-card-sub">Calculate your monthly repayments and see what you can afford</div>
+
+    <div class="calc-group">
+      <label class="calc-label">Property price</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="m-price" value="350000" min="50000" max="2000000" step="5000" oninput="calcMortgage()"/>
+      </div>
+      <div class="slider-wrap">
+        <input class="calc-slider" type="range" id="m-price-sl" min="50000" max="1500000" step="5000" value="350000"
+               oninput="document.getElementById('m-price').value=this.value;calcMortgage()"/>
+        <div class="slider-labels"><span>€50k</span><span>€1.5m</span></div>
+      </div>
+    </div>
+
+    <div class="calc-group">
+      <label class="calc-label">Deposit</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="m-deposit" value="35000" min="0" oninput="calcMortgage()"/>
+      </div>
+      <div class="slider-wrap">
+        <input class="calc-slider" type="range" id="m-dep-sl" min="0" max="500000" step="5000" value="35000"
+               oninput="document.getElementById('m-deposit').value=this.value;calcMortgage()"/>
+        <div class="slider-labels"><span>€0</span><span>€500k</span></div>
+      </div>
+    </div>
+
+    <div class="calc-row">
+      <div class="calc-group" style="margin-bottom:0">
+        <label class="calc-label">Interest rate (%)</label>
+        <input class="calc-input" type="number" id="m-rate" value="4.2" min="0.1" max="15" step="0.1" oninput="calcMortgage()"/>
+      </div>
+      <div class="calc-group" style="margin-bottom:0">
+        <label class="calc-label">Mortgage term (years)</label>
+        <input class="calc-input" type="number" id="m-term" value="30" min="5" max="35" step="1" oninput="calcMortgage()"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="result-card" id="m-result-card">
+    <div class="result-label">Monthly repayment</div>
+    <div class="result-main" id="m-monthly">€0</div>
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-n" id="m-loan">€0</div>
+        <div class="result-item-l">Loan amount</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-n" id="m-total">€0</div>
+        <div class="result-item-l">Total repaid</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-n" id="m-interest">€0</div>
+        <div class="result-item-l">Total interest</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Breakdown -->
+  <div class="breakdown-card">
+    <div class="breakdown-row">
+      <span class="breakdown-label">Property price</span>
+      <span class="breakdown-value" id="b-price">€350,000</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">Deposit</span>
+      <span class="breakdown-value" id="b-deposit">€35,000</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">Loan-to-value (LTV)</span>
+      <span class="breakdown-value" id="b-ltv">90%</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">Interest rate</span>
+      <span class="breakdown-value" id="b-rate">4.2%</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">Term</span>
+      <span class="breakdown-value" id="b-term">30 years</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">Monthly repayment</span>
+      <span class="breakdown-value" id="b-monthly">€0</span>
+    </div>
+  </div>
+
+  <!-- Affordability check -->
+  <div class="calc-card">
+    <div class="calc-card-title">Affordability check</div>
+    <div class="calc-card-sub">Irish banks typically lend up to 3.5× your gross income</div>
+
+    <div class="calc-group">
+      <label class="calc-label">Your gross annual income</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="m-income" value="70000" min="0" oninput="calcAffordability()"/>
+      </div>
+    </div>
+
+    <div class="calc-group">
+      <label class="calc-label">Partner's gross annual income (optional)</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="m-income2" value="0" min="0" oninput="calcAffordability()"/>
+      </div>
+    </div>
+
+    <div class="afford-bar-wrap">
+      <div class="afford-bar-label">
+        <span>Affordability</span>
+        <span id="afford-pct">0%</span>
+      </div>
+      <div class="afford-bar-bg">
+        <div class="afford-bar-fill" id="afford-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="breakdown-card" style="margin-top:.75rem">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Combined income</span>
+        <span class="breakdown-value" id="a-income">€70,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max borrowing (3.5×)</span>
+        <span class="breakdown-value" id="a-max">€245,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">With your deposit</span>
+        <span class="breakdown-value" id="a-total">€280,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Property price entered</span>
+        <span class="breakdown-value" id="a-price">€350,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label" id="a-status-label">Shortfall</span>
+        <span class="breakdown-value" id="a-diff" style="color:#d93025">€0</span>
+      </div>
+    </div>
+
+    <p class="afford-note" id="afford-note">Enter your income to see affordability</p>
+  </div>
+
+  <!-- Amortisation -->
+  <span class="amort-toggle" onclick="toggleAmort()">📊 Show yearly repayment schedule ▾</span>
+  <div id="amort-wrap" style="display:none;overflow-x:auto;margin-bottom:1.5rem">
+    <table class="amort-table" id="amort-table">
+      <thead><tr><th>Year</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+      <tbody id="amort-body"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 2 — HOME VALUATION
+══════════════════════════════════════ -->
+<div id="tab-valuation" class="tool-panel">
+
+  <div class="calc-card">
+    <div class="calc-card-title">Home valuation estimator</div>
+    <div class="calc-card-sub">Get an instant estimate based on Irish market data</div>
+
+    <div class="calc-group">
+      <label class="calc-label">Property type</label>
+      <div class="val-type-grid">
+        <div class="val-type-btn on" onclick="selectValType(this,'house')">
+          <div class="val-type-ico">🏠</div>
+          <div class="val-type-lbl">House</div>
+        </div>
+        <div class="val-type-btn" onclick="selectValType(this,'apartment')">
+          <div class="val-type-ico">🏢</div>
+          <div class="val-type-lbl">Apartment</div>
+        </div>
+        <div class="val-type-btn" onclick="selectValType(this,'bungalow')">
+          <div class="val-type-ico">🏡</div>
+          <div class="val-type-lbl">Bungalow</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-group">
+      <label class="calc-label">County / Area</label>
+      <select class="calc-input" id="v-county" onchange="calcValuation()">
+        <option value="dublin1">Dublin 1–4 (City centre)</option>
+        <option value="dublin6">Dublin 6 / Rathmines / Ranelagh</option>
+        <option value="dublin4">Dublin 4 / Ballsbridge</option>
+        <option value="dublin-suburbs">Dublin suburbs (D5–D24)</option>
+        <option value="cork-city">Cork City</option>
+        <option value="cork-suburbs">Cork suburbs</option>
+        <option value="galway-city">Galway City</option>
+        <option value="galway-county">Galway County</option>
+        <option value="limerick">Limerick</option>
+        <option value="waterford">Waterford</option>
+        <option value="kildare">Kildare</option>
+        <option value="meath">Meath</option>
+        <option value="wicklow">Wicklow</option>
+        <option value="other-leinster">Other Leinster</option>
+        <option value="munster">Other Munster</option>
+        <option value="connacht">Connacht</option>
+        <option value="ulster">Ulster (ROI)</option>
+      </select>
+    </div>
+
+    <div class="calc-row">
+      <div class="calc-group" style="margin-bottom:0">
+        <label class="calc-label">Bedrooms</label>
+        <select class="calc-input" id="v-beds" onchange="calcValuation()">
+          <option value="1">1 bed</option>
+          <option value="2">2 beds</option>
+          <option value="3" selected>3 beds</option>
+          <option value="4">4 beds</option>
+          <option value="5">5+ beds</option>
+        </select>
+      </div>
+      <div class="calc-group" style="margin-bottom:0">
+        <label class="calc-label">Condition</label>
+        <select class="calc-input" id="v-condition" onchange="calcValuation()">
+          <option value="excellent">Excellent / New</option>
+          <option value="good" selected>Good</option>
+          <option value="average">Average</option>
+          <option value="poor">Needs work</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="calc-group" style="margin-top:1rem">
+      <label class="calc-label">Floor size (m²) — optional</label>
+      <input class="calc-input" type="number" id="v-size" placeholder="e.g. 120" oninput="calcValuation()"/>
+    </div>
+
+    <div class="calc-group">
+      <label class="calc-label">BER rating</label>
+      <select class="calc-input" id="v-ber" onchange="calcValuation()">
+        <option value="A">A1 / A2 / A3</option>
+        <option value="B" selected>B1 / B2 / B3</option>
+        <option value="C">C1 / C2 / C3</option>
+        <option value="D">D1 / D2</option>
+        <option value="E">E / F / G</option>
+      </select>
+    </div>
+
+    <button class="calc-btn" onclick="calcValuation()">Get valuation estimate</button>
+  </div>
+
+  <!-- Valuation result -->
+  <div id="v-result" style="display:none">
+    <div class="val-result">
+      <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.8px">Estimated value range</div>
+      <div class="val-range" id="v-range">€0 – €0</div>
+      <div class="val-mid" id="v-mid">Midpoint estimate: €0</div>
+      <div class="val-factors" id="v-factors"></div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Base price per m² (area)</span>
+        <span class="breakdown-value" id="v-psm">€0/m²</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Bedroom adjustment</span>
+        <span class="breakdown-value" id="v-bed-adj">+€0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Condition adjustment</span>
+        <span class="breakdown-value" id="v-cond-adj">+€0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">BER rating adjustment</span>
+        <span class="breakdown-value" id="v-ber-adj">+€0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Estimated value</span>
+        <span class="breakdown-value" id="v-est">€0</span>
+      </div>
+    </div>
+
+    <div class="val-disclaimer">
+      ⚠️ This is an automated estimate based on average Irish market data from the Property Price Register and CSO statistics. It is not a professional valuation. For an accurate valuation, contact a local estate agent or chartered surveyor. Actual values vary significantly based on specific location, presentation, and current demand.
+    </div>
+
+    <button class="share-btn" onclick="toast('Link copied! 📋','ok')">📤 Share this estimate</button>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 3 — STAMP DUTY
+══════════════════════════════════════ -->
+<div id="tab-stamp" class="tool-panel">
+
+  <div class="calc-card">
+    <div class="calc-card-title">Stamp duty calculator</div>
+    <div class="calc-card-sub">Calculate stamp duty on Irish residential property purchases</div>
+
+    <div class="calc-group">
+      <label class="calc-label">Property purchase price</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="sd-price" value="350000" min="0" oninput="calcStampDuty()"/>
+      </div>
+    </div>
+
+    <div class="calc-group">
+      <label class="calc-label">Buyer type</label>
+      <select class="calc-input" id="sd-type" onchange="calcStampDuty()">
+        <option value="residential">Residential (owner-occupier)</option>
+        <option value="investor">Investor / Buy-to-let</option>
+        <option value="ftb">First-time buyer</option>
+      </select>
+    </div>
+
+    <div id="sd-result" class="stamp-result">
+      <div class="stamp-amount" id="sd-amount">€0</div>
+      <div class="stamp-label" id="sd-label">Stamp duty</div>
+    </div>
+
+    <div class="breakdown-card" id="sd-breakdown">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Purchase price</span>
+        <span class="breakdown-value" id="sd-b-price">€350,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Rate applied</span>
+        <span class="breakdown-value" id="sd-b-rate">1%</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Stamp duty</span>
+        <span class="breakdown-value" id="sd-b-duty">€3,500</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-card-title">Total buying costs</div>
+    <div class="calc-card-sub">Estimate all costs involved in buying a home in Ireland</div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Stamp duty</span>
+        <span class="breakdown-value" id="tc-stamp">€3,500</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Solicitor fees (est.)</span>
+        <span class="breakdown-value">€2,000–€3,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Valuation report</span>
+        <span class="breakdown-value">€150–€300</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Structural survey</span>
+        <span class="breakdown-value">€400–€600</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Land registry fees</span>
+        <span class="breakdown-value" id="tc-reg">€400–€800</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Moving costs (est.)</span>
+        <span class="breakdown-value">€500–€2,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Estimated total extra costs</span>
+        <span class="breakdown-value" id="tc-total" style="color:var(--g)">€7,000–€10,200</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">💡 Good to know</div>
+      <p>Budget for approximately 2–3% of the purchase price on top of your deposit to cover all buying costs. On a €350,000 home that's roughly €7,000–€10,500 in additional costs.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4 — FIRST TIME BUYER
+══════════════════════════════════════ -->
+<div id="tab-ftb" class="tool-panel">
+
+  <div class="info-box">
+    <div class="info-box-title">🎉 First-time buyers in Ireland have major advantages</div>
+    <p>As a first-time buyer in Ireland you benefit from higher borrowing limits, government schemes, and tax rebates that can save you tens of thousands of euro.</p>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-card-title">Help-to-Buy scheme</div>
+    <div class="calc-card-sub">Claim back income tax and DIRT to fund your deposit</div>
+
+    <div class="calc-group">
+      <label class="calc-label">New home purchase price</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="htb-price" value="350000" min="0" max="500000" oninput="calcHTB()"/>
+      </div>
+    </div>
+
+    <div id="htb-result" class="stamp-result">
+      <div class="stamp-amount" id="htb-amount">€30,000</div>
+      <div class="stamp-label">Maximum Help-to-Buy refund</div>
+    </div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Maximum HTB relief</span>
+        <span class="breakdown-value">€30,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">10% of purchase price</span>
+        <span class="breakdown-value" id="htb-10pct">€35,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Your HTB refund</span>
+        <span class="breakdown-value" id="htb-refund" style="color:var(--g)">€30,000</span>
+      </div>
+    </div>
+
+    <div class="val-disclaimer">
+      HTB applies to new builds only. The refund is the lower of: €30,000, 10% of the purchase price, or the amount of income tax and DIRT paid in the previous 4 years. Property must be ≤ €500,000. Revenue.ie has full eligibility details.
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-card-title">First Home Scheme</div>
+    <div class="calc-card-sub">Government equity share — bridge the gap between your deposit and purchase price</div>
+
+    <div class="breakdown-card">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max price (Dublin)</span>
+        <span class="breakdown-value">€500,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max price (other areas)</span>
+        <span class="breakdown-value">€450,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max equity share</span>
+        <span class="breakdown-value">30%</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Applies to</span>
+        <span class="breakdown-value">New builds only</span>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">How it works</div>
+      <p>The government and participating banks take an equity share in your home to help you bridge the gap between what you can borrow/save and the purchase price. You buy them out over time.</p>
+    </div>
+  </div>
+
+  <div class="calc-card">
+    <div class="calc-card-title">First-time buyer borrowing limits</div>
+    <div class="calc-card-sub">Central Bank rules allow first-time buyers to borrow more</div>
+
+    <div class="scheme-grid">
+      <div class="scheme-card">
+        <div class="scheme-title">Loan-to-Income (LTI)</div>
+        <div class="scheme-desc">First-time buyers can borrow up to <strong>4× their gross income</strong> (vs 3.5× for second-time buyers). On a combined income of €100,000 that's €400,000 vs €350,000.</div>
+        <span class="scheme-tag">FTB advantage</span>
+      </div>
+      <div class="scheme-card">
+        <div class="scheme-title">Loan-to-Value (LTV)</div>
+        <div class="scheme-desc">First-time buyers need a minimum <strong>10% deposit</strong>. Second and subsequent buyers need 20%. On a €350,000 home that's €35,000 vs €70,000.</div>
+        <span class="scheme-tag">FTB advantage</span>
+      </div>
+      <div class="scheme-card">
+        <div class="scheme-title">Local Authority Home Loan</div>
+        <div class="scheme-desc">Government-backed mortgage at fixed rates of <strong>2.495%–2.745%</strong> for eligible first-time buyers who can't get a mortgage from banks. Available through your local council.</div>
+        <span class="scheme-tag">Government scheme</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FTB mortgage calculator -->
+  <div class="calc-card">
+    <div class="calc-card-title">Your FTB budget calculator</div>
+    <div class="calc-card-sub">See what you can afford as a first-time buyer</div>
+
+    <div class="calc-group">
+      <label class="calc-label">Your gross annual income</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="ftb-income" value="60000" oninput="calcFTB()"/>
+      </div>
+    </div>
+    <div class="calc-group">
+      <label class="calc-label">Partner income (optional)</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="ftb-income2" value="0" oninput="calcFTB()"/>
+      </div>
+    </div>
+    <div class="calc-group">
+      <label class="calc-label">Savings / deposit available</label>
+      <div class="input-prefix-wrap">
+        <span class="input-prefix">€</span>
+        <input class="calc-input" type="number" id="ftb-savings" value="40000" oninput="calcFTB()"/>
+      </div>
+    </div>
+
+    <div class="breakdown-card" id="ftb-result">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Combined income</span>
+        <span class="breakdown-value" id="ftb-combined">€60,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max borrowing (4×)</span>
+        <span class="breakdown-value" id="ftb-max-borrow">€240,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Your deposit</span>
+        <span class="breakdown-value" id="ftb-dep">€40,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">HTB refund (est.)</span>
+        <span class="breakdown-value" id="ftb-htb">€28,000</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Max property price</span>
+        <span class="breakdown-value" id="ftb-max-price" style="color:var(--g);font-size:16px">€308,000</span>
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="window.location.href='search.html?listing_type=sale'">
+      🔍 Search properties in your budget
+    </button>
+  </div>
+
+</div>
+
+<div style="height:2rem"></div>
+
+<script>
+  window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+</script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+renderNav()
+
+// ── Tab switching ────────────────────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.tool-tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('tab-' + id).classList.add('active')
+  el.classList.add('active')
+}
+
+// ── Format currency ───────────────────────────────────────────────────────────
+function fmt(n) { return '€' + Math.round(n).toLocaleString('en-IE') }
+function fmtK(n) {
+  if (n >= 1000000) return '€' + (n/1000000).toFixed(2) + 'm'
+  if (n >= 1000)    return '€' + Math.round(n/1000) + 'k'
+  return fmt(n)
+}
+
+// ══════════════════════════════════════
+// MORTGAGE CALCULATOR
+// ══════════════════════════════════════
+function calcMortgage() {
+  const price   = parseFloat(document.getElementById('m-price').value)   || 0
+  const deposit = parseFloat(document.getElementById('m-deposit').value) || 0
+  const rate    = parseFloat(document.getElementById('m-rate').value)    || 0
+  const term    = parseInt(document.getElementById('m-term').value)      || 0
+
+  const principal = Math.max(0, price - deposit)
+  const monthly   = rate === 0
+    ? principal / (term * 12)
+    : principal * (rate/100/12) / (1 - Math.pow(1 + rate/100/12, -(term * 12)))
+
+  const totalRepaid  = monthly * term * 12
+  const totalInterest = Math.max(0, totalRepaid - principal)
+  const ltv = principal > 0 ? Math.round((principal / price) * 100) : 0
+
+  document.getElementById('m-monthly').textContent  = fmt(monthly)
+  document.getElementById('m-loan').textContent     = fmtK(principal)
+  document.getElementById('m-total').textContent    = fmtK(totalRepaid)
+  document.getElementById('m-interest').textContent = fmtK(totalInterest)
+
+  document.getElementById('b-price').textContent   = fmt(price)
+  document.getElementById('b-deposit').textContent = fmt(deposit)
+  document.getElementById('b-ltv').textContent     = ltv + '%'
+  document.getElementById('b-rate').textContent    = rate + '%'
+  document.getElementById('b-term').textContent    = term + ' years'
+  document.getElementById('b-monthly').textContent = fmt(monthly)
+
+  // Sync sliders
+  document.getElementById('m-price-sl').value = price
+  document.getElementById('m-dep-sl').value   = deposit
+
+  // Amortisation
+  buildAmortTable(principal, rate, term)
+
+  // Re-run affordability
+  calcAffordability()
+}
+
+function buildAmortTable(principal, annualRate, termYears) {
+  const r = annualRate / 100 / 12
+  const n = termYears * 12
+  const pmt = r === 0 ? principal / n : principal * r / (1 - Math.pow(1 + r, -n))
+  let balance = principal
+  const tbody = document.getElementById('amort-body')
+  tbody.innerHTML = ''
+
+  for (let year = 1; year <= termYears; year++) {
+    let yearPrincipal = 0, yearInterest = 0
+    for (let m = 0; m < 12; m++) {
+      const interest  = balance * r
+      const principalPmt = pmt - interest
+      yearInterest  += interest
+      yearPrincipal += principalPmt
+      balance       -= principalPmt
+      if (balance < 0) balance = 0
+    }
+    const tr = document.createElement('tr')
+    tr.innerHTML = `<td>Year ${year}</td><td>${fmt(yearPrincipal)}</td><td>${fmt(yearInterest)}</td><td>${fmt(Math.max(0,balance))}</td>`
+    tbody.appendChild(tr)
+  }
+}
+
+function toggleAmort() {
+  const wrap = document.getElementById('amort-wrap')
+  const btn  = document.querySelector('.amort-toggle')
+  if (wrap.style.display === 'none') {
+    wrap.style.display = 'block'
+    btn.textContent = '📊 Hide repayment schedule ▴'
+  } else {
+    wrap.style.display = 'none'
+    btn.textContent = '📊 Show yearly repayment schedule ▾'
+  }
+}
+
+function calcAffordability() {
+  const price   = parseFloat(document.getElementById('m-price').value)   || 0
+  const deposit = parseFloat(document.getElementById('m-deposit').value) || 0
+  const income  = parseFloat(document.getElementById('m-income').value)  || 0
+  const income2 = parseFloat(document.getElementById('m-income2').value) || 0
+  const combined = income + income2
+  const maxBorrow = combined * 3.5
+  const maxPrice  = maxBorrow + deposit
+  const diff      = price - maxPrice
+  const pct       = Math.min(100, Math.round((maxPrice / price) * 100))
+
+  document.getElementById('a-income').textContent = fmt(combined)
+  document.getElementById('a-max').textContent    = fmt(maxBorrow)
+  document.getElementById('a-total').textContent  = fmt(maxPrice)
+  document.getElementById('a-price').textContent  = fmt(price)
+
+  const bar  = document.getElementById('afford-bar')
+  const note = document.getElementById('afford-note')
+  const pctEl = document.getElementById('afford-pct')
+
+  bar.style.width = pct + '%'
+  pctEl.textContent = pct + '%'
+
+  bar.className = 'afford-bar-fill'
+  if (pct < 70) bar.classList.add('danger')
+  else if (pct < 90) bar.classList.add('warn')
+
+  if (diff > 0) {
+    document.getElementById('a-status-label').textContent = 'Shortfall'
+    document.getElementById('a-diff').textContent = fmt(diff)
+    document.getElementById('a-diff').style.color = '#d93025'
+    note.textContent = `Based on 3.5× income, you can afford up to ${fmt(maxPrice)}. This property is ${fmt(diff)} above your limit. Consider increasing your deposit or income, or looking at a lower-priced property.`
+  } else {
+    document.getElementById('a-status-label').textContent = 'Surplus'
+    document.getElementById('a-diff').textContent = fmt(Math.abs(diff))
+    document.getElementById('a-diff').style.color = '#1a7a3a'
+    note.textContent = `✓ This property is within your borrowing limit. You have ${fmt(Math.abs(diff))} of capacity remaining.`
+  }
+}
+
+// ══════════════════════════════════════
+// HOME VALUATION
+// ══════════════════════════════════════
+
+// Price per m² by area (based on CSO/PPR data 2024-2025)
+const AREA_PSM = {
+  'dublin4':        9500,
+  'dublin1':        7500,
+  'dublin6':        8500,
+  'dublin-suburbs': 5500,
+  'cork-city':      4200,
+  'cork-suburbs':   3200,
+  'galway-city':    4500,
+  'galway-county':  2800,
+  'limerick':       3000,
+  'waterford':      2500,
+  'kildare':        3800,
+  'meath':          3200,
+  'wicklow':        4000,
+  'other-leinster': 2500,
+  'munster':        2000,
+  'connacht':       1800,
+  'ulster':         1500,
+}
+
+const BED_ADJ = { '1': 0.75, '2': 0.9, '3': 1.0, '4': 1.15, '5': 1.3 }
+
+const COND_ADJ = {
+  'excellent': 0.10,
+  'good':      0,
+  'average':  -0.10,
+  'poor':     -0.22
+}
+
+const BER_ADJ = { 'A': 0.08, 'B': 0, 'C': -0.05, 'D': -0.10, 'E': -0.18 }
+
+const TYPE_ADJ = { 'house': 1.0, 'apartment': 0.82, 'bungalow': 0.95 }
+
+let currentValType = 'house'
+
+function selectValType(el, type) {
+  document.querySelectorAll('.val-type-btn').forEach(b => b.classList.remove('on'))
+  el.classList.add('on')
+  currentValType = type
+  calcValuation()
+}
+
+function calcValuation() {
+  const county    = document.getElementById('v-county').value
+  const beds      = document.getElementById('v-beds').value
+  const condition = document.getElementById('v-condition').value
+  const ber       = document.getElementById('v-ber').value
+  const sizeInput = parseFloat(document.getElementById('v-size').value)
+
+  const psm     = AREA_PSM[county] || 3000
+  const typeM   = TYPE_ADJ[currentValType] || 1.0
+  const bedM    = BED_ADJ[beds] || 1.0
+  const condAdj = COND_ADJ[condition] || 0
+  const berAdj  = BER_ADJ[ber] || 0
+
+  // Default sizes per bed count
+  const defaultSizes = { '1': 55, '2': 75, '3': 110, '4': 145, '5': 185 }
+  const size = sizeInput || defaultSizes[beds] || 110
+
+  const base      = psm * size * typeM
+  const bedAdjAmt = base * (bedM - 1)
+  const condAmt   = base * condAdj
+  const berAmt    = base * berAdj
+  const estimate  = base + bedAdjAmt + condAmt + berAmt
+
+  const low  = Math.round(estimate * 0.92 / 1000) * 1000
+  const high = Math.round(estimate * 1.08 / 1000) * 1000
+  const mid  = Math.round(estimate / 1000) * 1000
+
+  document.getElementById('v-result').style.display = 'block'
+  document.getElementById('v-range').textContent = `${fmt(low)} – ${fmt(high)}`
+  document.getElementById('v-mid').textContent   = `Midpoint estimate: ${fmt(mid)}`
+
+  document.getElementById('v-psm').textContent     = `€${psm.toLocaleString()}/m²`
+  document.getElementById('v-bed-adj').textContent = (bedAdjAmt >= 0 ? '+' : '') + fmt(bedAdjAmt)
+  document.getElementById('v-cond-adj').textContent = (condAmt >= 0 ? '+' : '') + fmt(condAmt)
+  document.getElementById('v-ber-adj').textContent  = (berAmt >= 0 ? '+' : '') + fmt(berAmt)
+  document.getElementById('v-est').textContent      = fmt(mid)
+
+  // Factors
+  const factors = []
+  if (condAdj > 0)  factors.push({ text: 'Excellent condition adds value', type: 'pos' })
+  if (condAdj < -0.15) factors.push({ text: 'Needs work reduces value significantly', type: 'neg' })
+  if (berAdj > 0)   factors.push({ text: 'High BER rating is a positive factor', type: 'pos' })
+  if (berAdj < -0.1) factors.push({ text: 'Low BER rating reduces value', type: 'neg' })
+  if (beds >= 4)    factors.push({ text: 'Large family home commands a premium', type: 'pos' })
+  factors.push({ text: `Based on ${size}m² floor area`, type: 'neu' })
+
+  document.getElementById('v-factors').innerHTML = factors.map(f => `
+    <div class="val-factor">
+      <div class="val-factor-dot dot-${f.type}"></div>
+      ${f.text}
+    </div>
+  `).join('')
+}
+
+// ══════════════════════════════════════
+// STAMP DUTY
+// ══════════════════════════════════════
+function calcStampDuty() {
+  const price = parseFloat(document.getElementById('sd-price').value) || 0
+  const type  = document.getElementById('sd-type').value
+
+  let duty = 0, rate = 0, rateLabel = ''
+
+  if (type === 'ftb') {
+    // First-time buyers — same as residential
+    rate = price <= 1000000 ? 0.01 : 0.02
+    if (price <= 1000000) {
+      duty = price * 0.01
+      rateLabel = '1% on full price'
+    } else {
+      duty = 1000000 * 0.01 + (price - 1000000) * 0.02
+      rateLabel = '1% up to €1m, 2% above'
+    }
+  } else if (type === 'residential') {
+    if (price <= 1000000) {
+      duty = price * 0.01
+      rateLabel = '1% on full price'
+    } else {
+      duty = 1000000 * 0.01 + (price - 1000000) * 0.02
+      rateLabel = '1% up to €1m, 2% above'
+    }
+  } else {
+    // Investor — 10% for bulk, but standard for single
+    duty = price * 0.01
+    rateLabel = '1% (standard residential rate)'
+  }
+
+  document.getElementById('sd-amount').textContent  = fmt(duty)
+  document.getElementById('sd-b-price').textContent = fmt(price)
+  document.getElementById('sd-b-rate').textContent  = rateLabel
+  document.getElementById('sd-b-duty').textContent  = fmt(duty)
+  document.getElementById('tc-stamp').textContent   = fmt(duty)
+
+  const regFee = price <= 50000 ? 400 : price <= 200000 ? 600 : price <= 400000 ? 700 : 800
+  document.getElementById('tc-reg').textContent = `€${regFee.toLocaleString()}`
+
+  const totalLow  = duty + 2000 + 150 + 400 + regFee + 500
+  const totalHigh = duty + 3000 + 300 + 600 + regFee + 2000
+  document.getElementById('tc-total').textContent = `${fmt(totalLow)} – ${fmt(totalHigh)}`
+}
+
+// ══════════════════════════════════════
+// HELP TO BUY
+// ══════════════════════════════════════
+function calcHTB() {
+  const price = parseFloat(document.getElementById('htb-price').value) || 0
+  const tenPct = price * 0.10
+  const refund = Math.min(30000, tenPct)
+
+  document.getElementById('htb-amount').textContent = fmt(refund)
+  document.getElementById('htb-10pct').textContent  = fmt(tenPct)
+  document.getElementById('htb-refund').textContent = fmt(refund)
+}
+
+// ══════════════════════════════════════
+// FTB BUDGET
+// ══════════════════════════════════════
+function calcFTB() {
+  const income  = parseFloat(document.getElementById('ftb-income').value)  || 0
+  const income2 = parseFloat(document.getElementById('ftb-income2').value) || 0
+  const savings = parseFloat(document.getElementById('ftb-savings').value) || 0
+
+  const combined  = income + income2
+  const maxBorrow = combined * 4  // FTBs get 4× not 3.5×
+  const htb       = Math.min(30000, maxBorrow * 0.07)  // rough HTB estimate
+  const maxPrice  = maxBorrow + savings + htb
+
+  document.getElementById('ftb-combined').textContent  = fmt(combined)
+  document.getElementById('ftb-max-borrow').textContent = fmt(maxBorrow)
+  document.getElementById('ftb-dep').textContent       = fmt(savings)
+  document.getElementById('ftb-htb').textContent       = fmt(htb)
+  document.getElementById('ftb-max-price').textContent = fmt(maxPrice)
+}
+
+// ── Init all calculators ─────────────────────────────────────────────────────
+calcMortgage()
+calcStampDuty()
+calcHTB()
+calcFTB()
+calcAffordability()
+</script>
+</body>
+</html>
