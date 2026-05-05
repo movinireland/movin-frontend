@@ -1,267 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Movin.ie – Ireland's Smartest Property Platform</title>
-  <meta name="description" content="Search thousands of properties for sale and rent across Ireland. List your home free on Movin.ie." />
-  <link rel="stylesheet" href="css/main.css" />
-  <style>
-    .hero { display:grid; grid-template-columns:1fr 1fr; min-height:560px; }
-    .hero-left { background:#fff; padding:5rem 3.5rem 4rem; display:flex; flex-direction:column; justify-content:center; }
-    .hero-badge { display:inline-block; background:var(--green-light); color:var(--green); font-size:12px; font-weight:500; padding:5px 14px; border-radius:var(--radius-pill); margin-bottom:1.5rem; }
-    .hero-h1 { font-size:52px; font-weight:700; line-height:1.08; margin-bottom:1.25rem; }
-    .hero-h1 em { font-style:normal; color:var(--green); }
-    .hero-sub { font-size:16px; color:#666; line-height:1.7; margin-bottom:2rem; max-width:440px; font-weight:300; }
-    .hero-ctas { display:flex; gap:12px; flex-wrap:wrap; }
-    .hero-right { background:linear-gradient(135deg,var(--green),var(--green-dark)); display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; overflow:hidden; }
-    .hero-right::before { content:''; position:absolute; width:400px; height:400px; border-radius:50%; background:rgba(255,255,255,.04); top:-100px; right:-100px; }
-    .hero-card { background:#fff; border-radius:20px; overflow:hidden; width:290px; box-shadow:0 24px 64px rgba(0,0,0,.3); position:relative; z-index:2; }
-    .hero-card-img { height:170px; background:linear-gradient(180deg,#c8e0d4,#e9f4ef); display:flex; align-items:center; justify-content:center; font-size:64px; }
-    .hero-card-body { padding:1.1rem 1.3rem 1.4rem; }
-    .hero-card-tag { font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--green); font-weight:500; margin-bottom:4px; }
-    .hero-card-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#111; margin-bottom:8px; }
-    .hero-card-price { font-size:22px; font-weight:500; color:#111; margin-bottom:10px; }
-    .hero-card-meta { display:flex; gap:14px; font-size:12px; color:#777; padding-top:10px; border-top:1px solid #f0ede6; }
-    .search-wrap { background:#fff; padding:1.5rem 2rem; border-bottom:1px solid var(--border); }
-    .search-bar { display:flex; align-items:center; gap:8px; max-width:900px; margin:0 auto; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius-pill); padding:6px 8px 6px 20px; box-shadow:var(--shadow); }
-    .search-bar input { flex:1; border:none; outline:none; font-size:15px; background:transparent; color:#333; padding:6px 0; }
-    .search-bar select { border:none; border-left:1px solid var(--border); outline:none; padding:8px 14px; font-size:14px; color:#555; background:transparent; cursor:pointer; }
-    .stats-bar { display:flex; background:var(--green); }
-    .stat-item { flex:1; padding:1.75rem 2rem; text-align:center; border-right:1px solid rgba(255,255,255,.15); }
-    .stat-item:last-child { border-right:none; }
-    .stat-n { font-family:'Playfair Display',serif; font-size:34px; font-weight:700; color:#fff; }
-    .stat-l { font-size:12px; color:rgba(255,255,255,.6); margin-top:4px; font-weight:300; }
-    .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
-    .feature-card { border-radius:var(--radius); padding:2.25rem 2rem; border:1px solid var(--border); background:#fff; }
-    .feature-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:1.1rem; }
-    .icon-green { background:var(--green-light); }
-    .icon-orange { background:#fdf0e6; }
-    .icon-blue  { background:#e8f0fd; }
-    .feature-card h3 { font-family:'Playfair Display',serif; font-size:19px; margin-bottom:8px; }
-    .feature-card p { font-size:14px; color:#777; line-height:1.75; font-weight:300; }
-    .pricing-section { background:#fff; padding:5rem 2rem; }
-    .pricing-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; max-width:640px; margin:0 auto; }
-    .price-card { border-radius:20px; padding:2.25rem; border:1.5px solid var(--border); background:#fafaf8; }
-    .price-card.featured { background:var(--green); border-color:var(--green); }
-    .price-label { font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:500; color:#999; margin-bottom:.75rem; }
-    .price-card.featured .price-label { color:rgba(255,255,255,.55); }
-    .price-n { font-family:'Playfair Display',serif; font-size:52px; font-weight:700; color:#111; line-height:1; margin-bottom:4px; }
-    .price-card.featured .price-n { color:#fff; }
-    .price-per { font-size:13px; color:#bbb; margin-bottom:1.75rem; }
-    .price-card.featured .price-per { color:rgba(255,255,255,.5); }
-    .price-list { list-style:none; display:flex; flex-direction:column; gap:10px; margin-bottom:2rem; }
-    .price-list li { font-size:14px; color:#666; font-weight:300; display:flex; gap:8px; }
-    .price-list li::before { content:'✓'; color:var(--green); font-weight:500; }
-    .price-card.featured .price-list li { color:rgba(255,255,255,.75); }
-    .price-card.featured .price-list li::before { color:#7ec9a8; }
-    .price-btn { width:100%; padding:13px; border-radius:var(--radius-pill); font-size:15px; font-weight:500; cursor:pointer; font-family:'DM Sans',sans-serif; border:1.5px solid var(--green); background:transparent; color:var(--green); transition:all .2s; }
-    .price-btn:hover { background:var(--green); color:#fff; }
-    .price-card.featured .price-btn { background:#fff; color:var(--green); border-color:#fff; }
-    .test-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
-    .test-card { background:#fff; border-radius:var(--radius); padding:1.75rem; border:1px solid var(--border); }
-    .test-stars { color:var(--orange); font-size:16px; margin-bottom:.75rem; }
-    .test-text { font-size:14px; color:#555; line-height:1.75; font-weight:300; font-style:italic; margin-bottom:1.1rem; }
-    .test-author { font-size:13px; font-weight:500; color:#333; }
-    .test-role { font-size:12px; color:#aaa; }
-    .section { padding:4.5rem 2rem; }
-    .section-title { font-size:38px; text-align:center; margin-bottom:.75rem; }
-    .section-sub { text-align:center; color:#666; font-size:16px; font-weight:300; margin-bottom:3rem; }
-    @media(max-width:768px){ .hero{grid-template-columns:1fr;} .hero-right{display:none;} .hero-left{padding:3rem 1.5rem;} .hero-h1{font-size:36px;} .features-grid,.test-grid,.pricing-grid{grid-template-columns:1fr;} .stats-bar{flex-wrap:wrap;} }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Movin.ie – Ireland's Property Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/main.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#111;overflow-x:hidden}
+:root{
+  --g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;
+  --border:#e8e4dc;--white:#fff;--muted:#888;
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --nav-h:56px;
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+button,input,select{font-family:inherit}
+
+/* ══ NAV ════════════════════════════════════════════ */
+.nav{
+  position:sticky;top:0;z-index:100;
+  height:var(--nav-h);background:#fff;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 1rem;
+}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;width:100%;gap:12px}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--g);flex-shrink:0}
+.nav-logo span{color:var(--o)}
+.nav-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;border-radius:50px;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--g);color:#fff;padding:9px 18px;font-size:13px}
+.btn-ghost{background:transparent;color:var(--g);border:1.5px solid var(--g);padding:8px 16px;font-size:13px}
+.btn-sm{padding:7px 14px;font-size:12px}
+
+/* Desktop nav links */
+.nav-links{display:none;list-style:none;gap:1.5rem;align-items:center}
+.nav-links li{font-size:14px;color:#555;cursor:pointer;padding:.5rem 0}
+.nav-links li:hover{color:var(--g)}
+@media(min-width:768px){
+  .nav-links{display:flex}
+  .nav-hamburger{display:none!important}
+}
+
+/* Hamburger for mobile */
+.nav-hamburger{background:none;border:none;cursor:pointer;padding:4px;display:flex;flex-direction:column;gap:5px;-webkit-tap-highlight-color:transparent}
+.nav-hamburger span{width:22px;height:2px;background:#555;border-radius:2px;transition:all .2s;display:block}
+
+/* Mobile menu */
+.mobile-menu{
+  position:fixed;inset:0;background:#fff;z-index:999;
+  transform:translateX(100%);transition:transform .25s ease;
+  display:flex;flex-direction:column;
+}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu-header{display:flex;justify-content:space-between;align-items:center;padding:1rem;border-bottom:1px solid var(--border)}
+.mobile-menu-logo{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:var(--g)}
+.mobile-menu-logo span{color:var(--o)}
+.mobile-menu-close{background:none;border:none;font-size:24px;cursor:pointer;color:#555;padding:4px}
+.mobile-menu-body{flex:1;overflow-y:auto;padding:1rem}
+.mm-item{display:flex;align-items:center;gap:12px;padding:1rem;border-radius:12px;cursor:pointer;font-size:15px;font-weight:500;color:#333;-webkit-tap-highlight-color:transparent}
+.mm-item:hover{background:var(--gl)}
+.mm-item-icon{width:36px;height:36px;border-radius:8px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.mm-divider{height:1px;background:var(--border);margin:.5rem 0}
+.mobile-menu-footer{padding:1rem;padding-bottom:calc(1rem + var(--safe-b));display:flex;gap:8px}
+.mobile-menu-footer .btn{flex:1;justify-content:center;padding:13px}
+
+/* ══ HERO ═══════════════════════════════════════════ */
+.hero{
+  background:#1a5c45;
+  padding:2rem 1rem 0;
+  position:relative;overflow:hidden;
+}
+.hero-bg-circle{
+  position:absolute;width:500px;height:500px;border-radius:50%;
+  background:rgba(255,255,255,.05);top:-200px;right:-150px;pointer-events:none;
+}
+.hero-eyebrow{
+  font-size:11px;color:rgba(255,255,255,.55);
+  letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:.75rem;position:relative;z-index:2;
+}
+.hero-h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,7vw,42px);font-weight:900;
+  color:#fff;line-height:1.1;margin-bottom:.75rem;
+  position:relative;z-index:2;
+}
+.hero-h1 em{font-style:normal;color:#e07b3f}
+
+/* ── Search card ── */
+.search-card{
+  background:#fff;border-radius:16px 16px 0 0;
+  margin-top:1.5rem;padding:0;
+  position:relative;z-index:2;
+  box-shadow:0 -4px 24px rgba(0,0,0,.12);
+}
+
+/* Buy / Rent / Share tabs */
+.search-type-tabs{display:flex;border-bottom:1px solid var(--border)}
+.stt{
+  flex:1;padding:.85rem .5rem;font-size:14px;font-weight:500;
+  color:#888;cursor:pointer;text-align:center;
+  border-bottom:3px solid transparent;margin-bottom:-1px;
+  transition:all .15s;-webkit-tap-highlight-color:transparent;
+}
+.stt.active{color:var(--g);border-bottom-color:var(--g)}
+
+/* Search input */
+.search-body{padding:1rem 1rem .75rem}
+.search-label{font-size:12px;font-weight:500;color:#555;margin-bottom:.5rem;display:block}
+.search-input-wrap{display:flex;gap:0;position:relative}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#aaa;pointer-events:none;font-size:16px;z-index:1}
+.search-inp{
+  flex:1;border:1.5px solid var(--border);border-radius:12px 0 0 12px;
+  padding:13px 14px 13px 42px;font-size:15px;
+  background:#fafaf8;color:#333;outline:none;
+  transition:border .15s;-webkit-appearance:none;
+  min-width:0;
+}
+.search-inp:focus{border-color:var(--g);background:#fff}
+.search-go-btn{
+  background:var(--g);color:#fff;border:none;
+  border-radius:0 12px 12px 0;padding:13px 20px;
+  font-size:14px;font-weight:500;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  font-family:'DM Sans',sans-serif;
+  transition:background .2s;
+}
+.search-go-btn:hover{background:#0e3d2e}
+.search-go-btn:active{transform:scale(.97)}
+
+/* Suggestions dropdown */
+.suggestions-box{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;
+  background:#fff;border:1px solid var(--border);
+  border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.1);
+  z-index:50;overflow:hidden;display:none;
+}
+.suggestions-box.open{display:block}
+.sugg-item{
+  display:flex;align-items:center;gap:10px;
+  padding:.75rem 1rem;font-size:14px;cursor:pointer;
+  border-bottom:1px solid #f5f2ec;
+  -webkit-tap-highlight-color:transparent;
+}
+.sugg-item:last-child{border-bottom:none}
+.sugg-item:hover,.sugg-item:active{background:var(--gl)}
+.sugg-ico{font-size:16px;flex-shrink:0}
+.sugg-main{font-weight:500;color:#111;font-size:13px}
+.sugg-sub{font-size:11px;color:#aaa}
+.sugg-tag{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--gl);color:var(--g);font-weight:500;margin-left:auto;flex-shrink:0}
+
+/* ── Search chip ── */
+.search-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--gl);color:var(--g);
+  border-radius:20px;padding:4px 12px;
+  font-size:13px;font-weight:500;margin:0 1rem .75rem;
+}
+.search-chip-x{background:none;border:none;color:var(--g);cursor:pointer;font-size:14px;padding:0;line-height:1}
+
+/* ── Popular areas ── */
+.popular-areas{padding:.25rem 1rem 1rem}
+.popular-label{font-size:11px;color:#bbb;margin-bottom:.5rem;font-weight:500}
+.area-chips{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.area-chips::-webkit-scrollbar{display:none}
+.area-chip{
+  border:1px solid var(--border);border-radius:20px;
+  padding:5px 12px;font-size:12px;background:#fafaf8;
+  color:#555;white-space:nowrap;cursor:pointer;flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;transition:all .15s;
+}
+.area-chip:hover,.area-chip:active{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ══ STATS STRIP ═════════════════════════════════════ */
+.stats-strip{
+  display:flex;background:var(--gd);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.stats-strip::-webkit-scrollbar{display:none}
+.stat-cell{
+  flex:1;min-width:80px;padding:1rem .5rem;
+  text-align:center;border-right:1px solid rgba(255,255,255,.1);
+}
+.stat-cell:last-child{border-right:none}
+.stat-n{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff}
+.stat-l{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px}
+
+/* ══ SECTIONS ════════════════════════════════════════ */
+.section{padding:1.75rem 1rem}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:.3rem;color:#111}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:1.25rem;font-weight:300}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.section-header .section-title{margin-bottom:0}
+.see-all{font-size:13px;color:var(--g);font-weight:500;cursor:pointer}
+
+/* ══ PROPERTY CARD ═══════════════════════════════════ */
+.listings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+@media(max-width:400px){.listings-grid{grid-template-columns:1fr}}
+@media(min-width:640px){.listings-grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.listings-grid{grid-template-columns:repeat(4,1fr)}}
+
+.prop-card{
+  background:#fff;border-radius:14px;overflow:hidden;
+  border:1px solid var(--border);cursor:pointer;
+  transition:transform .15s,box-shadow .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.prop-card:active{transform:scale(.98)}
+.prop-card-img{
+  height:150px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+}
+.prop-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.prop-card-save{
+  position:absolute;top:8px;right:8px;
+  background:rgba(255,255,255,.92);border:none;border-radius:50%;
+  width:30px;height:30px;font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;
+}
+.prop-card-tags{position:absolute;top:8px;left:8px;display:flex;gap:4px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px}
+.badge-g{background:#1a5c45;color:#fff}
+.badge-o{background:#e07b3f;color:#fff}
+.badge-b{background:#3a8bd4;color:#fff}
+.prop-card-body{padding:.75rem .85rem .85rem}
+.prop-card-loc{font-size:10px;color:#bbb;margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px}
+.prop-card-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#111;margin-bottom:4px;line-height:1.3}
+.prop-card-price{font-size:16px;font-weight:500;color:#1a5c45;margin-bottom:6px}
+.prop-card-meta{display:flex;gap:8px;font-size:10px;color:#aaa;border-top:1px solid #f5f2ec;padding-top:6px;flex-wrap:wrap}
+
+/* ══ QUICK ACTIONS ═══════════════════════════════════ */
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.5rem}
+.qa-card{
+  background:#fff;border-radius:14px;padding:1.25rem 1rem;
+  border:1px solid var(--border);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:all .15s;
+}
+.qa-card:active{transform:scale(.98)}
+.qa-icon{font-size:24px;margin-bottom:.5rem}
+.qa-title{font-size:14px;font-weight:500;color:#111;margin-bottom:2px}
+.qa-sub{font-size:12px;color:#aaa;font-weight:300}
+
+/* ══ WHY MOVIN ═══════════════════════════════════════ */
+.why-section{background:#1a5c45;padding:2rem 1rem}
+.why-section .section-title{color:#fff}
+.why-section .section-sub{color:rgba(255,255,255,.6)}
+.why-grid{display:grid;grid-template-columns:1fr;gap:.75rem}
+@media(min-width:480px){.why-grid{grid-template-columns:repeat(3,1fr)}}
+.why-card{background:rgba(255,255,255,.1);border-radius:12px;padding:1.25rem;border:1px solid rgba(255,255,255,.1)}
+.why-icon{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.75rem}
+.why-card h3{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:.35rem}
+.why-card p{font-size:12px;color:rgba(255,255,255,.65);line-height:1.65;font-weight:300}
+
+/* ══ PRICING ═════════════════════════════════════════ */
+.pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.price-card{border-radius:14px;padding:1.5rem;border:1.5px solid var(--border);background:#fafaf8}
+.price-card.feat{background:var(--g);border-color:var(--g)}
+.price-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.8px;font-weight:500;color:#aaa;margin-bottom:.4rem}
+.price-card.feat .price-eyebrow{color:rgba(255,255,255,.5)}
+.price-num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:#111;line-height:1}
+.price-card.feat .price-num{color:#fff}
+.price-period{font-size:11px;color:#bbb;margin-bottom:1rem}
+.price-card.feat .price-period{color:rgba(255,255,255,.45)}
+.price-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;font-size:12px}
+.price-list li{display:flex;gap:6px;color:#666;font-weight:300}
+.price-list li::before{content:'✓';color:var(--g);font-weight:500}
+.price-card.feat .price-list li{color:rgba(255,255,255,.75)}
+.price-card.feat .price-list li::before{color:#7ec9a8}
+.price-cta{width:100%;padding:10px;border-radius:50px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;border:1.5px solid var(--g);background:transparent;color:var(--g);transition:all .2s;-webkit-tap-highlight-color:transparent}
+.price-card.feat .price-cta{background:#fff;color:var(--g);border-color:#fff}
+
+/* ══ TESTIMONIALS ════════════════════════════════════ */
+.test-scroll{display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;scroll-snap-type:x mandatory}
+.test-scroll::-webkit-scrollbar{display:none}
+.test-card{flex-shrink:0;width:85vw;max-width:300px;background:#fff;border-radius:14px;padding:1.25rem;border:1px solid var(--border);scroll-snap-align:start}
+.test-stars{color:#e07b3f;font-size:13px;margin-bottom:.5rem}
+.test-text{font-size:13px;color:#555;line-height:1.7;font-weight:300;font-style:italic;margin-bottom:.75rem}
+.test-author{font-size:13px;font-weight:500;color:#333}
+.test-role{font-size:11px;color:#aaa}
+
+/* ══ CTA BANNER ══════════════════════════════════════ */
+.cta-banner{background:linear-gradient(135deg,#e07b3f,#c45e20);padding:2rem 1rem;text-align:center;border-radius:0}
+.cta-banner h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:.5rem}
+.cta-banner p{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:1.25rem;font-weight:300}
+.cta-banner .btn{background:#fff;color:#e07b3f;padding:13px 28px;font-size:14px}
+
+/* ══ FOOTER ══════════════════════════════════════════ */
+.footer{background:#0e2d22;padding:1.5rem 1rem;padding-bottom:calc(1.5rem + var(--safe-b))}
+.footer-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:.5rem}
+.footer-logo span{color:#e07b3f}
+.footer-links{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;margin-bottom:1rem}
+.footer-links a{font-size:12px;color:rgba(255,255,255,.45)}
+.footer-copy{font-size:11px;color:rgba(255,255,255,.3)}
+
+/* ══ BOTTOM TAB BAR ══════════════════════════════════ */
+.tab-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  background:#fff;border-top:1px solid var(--border);
+  display:flex;align-items:stretch;
+  height:calc(56px + var(--safe-b));
+  padding-bottom:var(--safe-b);
+  z-index:100;
+}
+.tab-item{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;border:none;background:transparent;
+  color:var(--muted);font-size:10px;font-weight:500;
+  font-family:'DM Sans',sans-serif;
+  padding:6px 2px 0;-webkit-tap-highlight-color:transparent;
+}
+.tab-item.active{color:var(--g)}
+.tab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.tab-add-btn{
+  width:40px;height:40px;background:var(--g);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:-10px;border:3px solid #f5f5f5;
+}
+
+/* Hide tab bar on desktop */
+@media(min-width:768px){
+  .tab-bar{display:none}
+  .page-body{padding-bottom:0}
+}
+.page-body{padding-bottom:calc(64px + var(--safe-b))}
+
+/* ══ LOADING / EMPTY ═════════════════════════════════ */
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;padding:2rem;color:var(--muted);font-size:13px;grid-column:1/-1}
+.empty-state{text-align:center;padding:2.5rem 1rem;color:var(--muted);grid-column:1/-1}
+.empty-icon{font-size:36px;margin-bottom:.75rem}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:17px;color:#333;margin-bottom:.35rem}
+.empty-state p{font-size:13px;font-weight:300;max-width:260px;margin:0 auto .75rem}
+
+/* ══ TOAST ═══════════════════════════════════════════ */
+.toast-wrap{position:fixed;bottom:calc(64px + .75rem + var(--safe-b));left:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:#1a1a1a;color:#fff;padding:.75rem 1rem;border-radius:10px;font-size:14px;animation:slideUp .2s ease;pointer-events:all}
+.toast.ok{background:var(--g)}
+.toast.err{background:#b91c1c}
+.toast.info{background:#1d4ed8}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* ══ BACKGROUND GRADIENTS FOR PLACEHOLDER IMAGES ═════ */
+.img-a{background:linear-gradient(135deg,#c8dfd4,#e9f4ef)}
+.img-b{background:linear-gradient(135deg,#f5e6d0,#fdf4ea)}
+.img-c{background:linear-gradient(135deg,#d4e4f5,#e8f0fc)}
+.img-d{background:linear-gradient(135deg,#e8d4f5,#f4eafc)}
+.img-e{background:linear-gradient(135deg,#d4f5d4,#eafcea)}
+</style>
 </head>
 <body>
-  <nav class="nav" id="main-nav"></nav>
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="hero-left">
-      <span class="hero-badge">✦ Ireland's smartest property platform</span>
-      <h1 class="hero-h1">Find your place<br>to call <em>home</em></h1>
-      <p class="hero-sub">Search thousands of properties across Ireland — to buy or rent. List yours free, with no hidden surprises.</p>
-      <div class="hero-ctas">
-        <a href="pages/search.html" class="btn btn-primary btn-lg">Search properties</a>
-        <a href="pages/list.html" class="btn btn-ghost btn-lg">List your home</a>
+<!-- ══ NAV ══════════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">mov<span>in</span></a>
+    <ul class="nav-links" id="desktop-nav">
+      <li onclick="go('pages/search.html?listing_type=sale')">Buy</li>
+      <li onclick="go('pages/search.html?listing_type=rent')">Rent</li>
+      <li onclick="go('pages/list.html')">List your property</li>
+      <li onclick="go('pages/tools.html')">Tools</li>
+    </ul>
+    <div class="nav-right">
+      <div id="nav-auth-area">
+        <a href="pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="pages/register.html" class="btn btn-primary btn-sm">Register</a>
       </div>
-    </div>
-    <div class="hero-right">
-      <div class="hero-card">
-        <div class="hero-card-img">🏡</div>
-        <div class="hero-card-body">
-          <div class="hero-card-tag">For Sale · Dublin 6</div>
-          <div class="hero-card-title">Charming Victorian Semi-D</div>
-          <div class="hero-card-price">€595,000</div>
-          <div class="hero-card-meta"><span>4 beds</span><span>2 baths</span><span>142m²</span></div>
-        </div>
-      </div>
+      <button class="nav-hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
+</nav>
 
-  <!-- Search bar -->
-  <div class="search-wrap">
-    <form class="search-bar" onsubmit="doSearch(event)">
-      <input type="text" id="search-q" placeholder="Search by area, county or Eircode…" />
-      <select id="search-type">
-        <option value="">Buy or Rent</option>
-        <option value="sale">Buy</option>
-        <option value="rent">Rent</option>
-        <option value="share">Sharing</option>
-      </select>
-      <select id="search-county">
-        <option value="">Any county</option>
-        <option>Dublin</option><option>Cork</option><option>Galway</option>
-        <option>Limerick</option><option>Waterford</option><option>Kerry</option>
-        <option>Meath</option><option>Kildare</option><option>Wicklow</option>
-        <option>Wexford</option><option>Kilkenny</option><option>Clare</option>
-        <option>Tipperary</option><option>Donegal</option><option>Mayo</option>
-      </select>
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+<!-- ══ MOBILE MENU ═══════════════════════════════════════ -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <div class="mobile-menu-logo">mov<span>in</span></div>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
   </div>
-
-  <!-- Stats -->
-  <div class="stats-bar">
-    <div class="stat-item"><div class="stat-n" id="stat-listings">—</div><div class="stat-l">Active listings</div></div>
-    <div class="stat-item"><div class="stat-n">32</div><div class="stat-l">Counties covered</div></div>
-    <div class="stat-item"><div class="stat-n">Free</div><div class="stat-l">First listing, always</div></div>
-    <div class="stat-item"><div class="stat-n">€9</div><div class="stat-l">Listings after that</div></div>
+  <div class="mobile-menu-body">
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()">
+      <div class="mm-item-icon">🏠</div>Buy a property
+    </div>
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()">
+      <div class="mm-item-icon">🏢</div>Rent a property
+    </div>
+    <div class="mm-item" onclick="go('pages/search.html?new_dev=1');toggleMobileMenu()">
+      <div class="mm-item-icon">🏗</div>New homes
+    </div>
+    <div class="mm-divider"></div>
+    <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()">
+      <div class="mm-item-icon">🏦</div>Mortgage calculator
+    </div>
+    <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()">
+      <div class="mm-item-icon">🏡</div>Home valuation
+    </div>
+    <div class="mm-item" onclick="go('pages/tools.html#stamp');toggleMobileMenu()">
+      <div class="mm-item-icon">📋</div>Stamp duty calculator
+    </div>
+    <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()">
+      <div class="mm-item-icon">🔑</div>First-time buyer guide
+    </div>
+    <div class="mm-divider"></div>
+    <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()">
+      <div class="mm-item-icon" style="background:#fdf0e6">➕</div>List your property
+    </div>
   </div>
-
-  <!-- Features -->
-  <div class="section">
-    <h2 class="section-title">Why Movin?</h2>
-    <p class="section-sub">We built what Ireland's property market deserved — and didn't have.</p>
-    <div class="features-grid container">
-      <div class="feature-card">
-        <div class="feature-icon icon-green">🎯</div>
-        <h3>Free first listing</h3>
-        <p>List your property for the first time at no cost. See how it performs before you ever pay a cent.</p>
-
-        <div style="text-align:center;padding:1rem">
-  <a href="pages/tools.html" class="btn btn-ghost">
-    🏦 Mortgage calculator & home valuation →
-  </a>
+  <div class="mobile-menu-footer" id="mobile-menu-footer">
+    <a href="pages/login.html" class="btn btn-ghost">Sign in</a>
+    <a href="pages/register.html" class="btn btn-primary">Register free</a>
+  </div>
 </div>
+
+<!-- ══ TOAST CONTAINER ══════════════════════════════════ -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<div class="page-body">
+<div class="hero">
+  <div class="hero-bg-circle"></div>
+  <p class="hero-eyebrow">Ireland's smartest property platform</p>
+  <h1 class="hero-h1">Find your place<br>to call <em>home</em></h1>
+
+  <!-- Search card — Rightmove style -->
+  <div class="search-card">
+    <!-- Buy / Rent / Share tabs -->
+    <div class="search-type-tabs">
+      <div class="stt active" data-type="sale" onclick="selectSearchType(this)">Buy</div>
+      <div class="stt" data-type="rent" onclick="selectSearchType(this)">Rent</div>
+      <div class="stt" data-type="share" onclick="selectSearchType(this)">Sharing</div>
+    </div>
+
+    <div class="search-body">
+      <label class="search-label" id="search-label">Search properties to buy</label>
+      <div style="position:relative">
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input
+            class="search-inp"
+            type="text"
+            id="hero-search"
+            placeholder="Area, county, Eircode or D1, D2…"
+            autocomplete="off"
+            oninput="handleHeroInput(this.value)"
+            onkeydown="if(event.key==='Enter'){doHeroSearch()}"
+          />
+          <button class="search-go-btn" onclick="doHeroSearch()">Search</button>
+        </div>
+        <div class="suggestions-box" id="hero-suggestions"></div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-orange">💸</div>
-        <h3>Radically fair pricing</h3>
-        <p>Just €9 per listing after your first. That's over 90% less than the competition. No subscriptions, no surprises.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon icon-blue">✨</div>
-        <h3>Modern & fast</h3>
-        <p>A clean, intuitive experience built for how people actually search for homes — on mobile, on the go, right now.</p>
+
+      <!-- Active search chip -->
+      <div id="hero-chip-wrap" style="margin-top:.5rem"></div>
+    </div>
+
+    <!-- Popular areas -->
+    <div class="popular-areas">
+      <div class="popular-label">Popular areas</div>
+      <div class="area-chips">
+        <div class="area-chip" onclick="quickSearch('Dublin','D1–D24')">Dublin</div>
+        <div class="area-chip" onclick="quickSearch('Cork','Cork')">Cork</div>
+        <div class="area-chip" onclick="quickSearch('Galway','Galway')">Galway</div>
+        <div class="area-chip" onclick="quickSearch('Meath','Meath')">Meath</div>
+        <div class="area-chip" onclick="quickSearch('Kildare','Kildare')">Kildare</div>
+        <div class="area-chip" onclick="quickSearch('Wicklow','Wicklow')">Wicklow</div>
+        <div class="area-chip" onclick="quickSearch('Limerick','Limerick')">Limerick</div>
+        <div class="area-chip" onclick="quickSearch('Waterford','Waterford')">Waterford</div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Featured listings -->
-  <div class="section" style="background:#fff; padding:4rem 2rem;">
+<!-- ══ STATS ════════════════════════════════════════════ -->
+<div class="stats-strip">
+  <div class="stat-cell">
+    <div class="stat-n" id="stat-count">—</div>
+    <div class="stat-l">Live listings</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-n">32</div>
+    <div class="stat-l">Counties</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-n">Free</div>
+    <div class="stat-l">First listing</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-n">€24.99</div>
+    <div class="stat-l">After that</div>
+  </div>
+</div>
+
+<!-- ══ QUICK ACTIONS ════════════════════════════════════ -->
+<div class="section" style="background:#fff">
+  <div class="quick-actions">
+    <div class="qa-card" onclick="go('pages/list.html')">
+      <div class="qa-icon">🏠</div>
+      <div class="qa-title">List your home</div>
+      <div class="qa-sub">First listing free</div>
+    </div>
+    <div class="qa-card" onclick="go('pages/tools.html#valuation')">
+      <div class="qa-icon">💰</div>
+      <div class="qa-title">Value my home</div>
+      <div class="qa-sub">Instant estimate</div>
+    </div>
+    <div class="qa-card" onclick="go('pages/tools.html#mortgage')">
+      <div class="qa-icon">🏦</div>
+      <div class="qa-title">Mortgage calc</div>
+      <div class="qa-sub">What can I afford?</div>
+    </div>
+    <div class="qa-card" onclick="go('pages/tools.html#ftb')">
+      <div class="qa-icon">🔑</div>
+      <div class="qa-title">First-time buyer</div>
+      <div class="qa-sub">Schemes & guides</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FEATURED LISTINGS ═════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
     <h2 class="section-title">Latest listings</h2>
-    <p class="section-sub">Fresh properties added across Ireland today.</p>
-    <div id="featured-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;max-width:1200px;margin:0 auto 2rem;">
-      <div class="loading-wrap"><div class="spinner"></div></div>
+    <span class="see-all" onclick="go('pages/search.html')">See all →</span>
+  </div>
+  <div class="listings-grid" id="featured-grid">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- ══ WHY MOVIN ═════════════════════════════════════════ -->
+<div class="why-section">
+  <h2 class="section-title" style="margin-bottom:.3rem">Why Movin.ie?</h2>
+  <p class="section-sub">What Ireland's property market needed</p>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🎯</div>
+      <h3>Free first listing</h3>
+      <p>List at no cost. See how it performs before you pay a cent.</p>
     </div>
-    <div style="text-align:center">
-      <a href="pages/search.html" class="btn btn-ghost">View all listings →</a>
+    <div class="why-card">
+      <div class="why-icon">💸</div>
+      <h3>Radically fair pricing</h3>
+      <p>Just €24.99 per listing. Over 75% cheaper than competitors.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">✨</div>
+      <h3>Modern & fast</h3>
+      <p>Built for mobile. Clean, intuitive, works on any device.</p>
     </div>
   </div>
+</div>
 
-  <!-- Pricing -->
-  <div class="pricing-section">
-    <h2 class="section-title">Simple pricing</h2>
-    <p class="section-sub">No monthly fees. Pay only when you list.</p>
-    <div class="pricing-grid">
-      <div class="price-card">
-        <div class="price-label">First listing</div>
-        <div class="price-n">€0</div>
-        <div class="price-per">completely free</div>
-        <ul class="price-list">
-          <li>Full listing page</li><li>Photo gallery</li>
-          <li>Enquiry inbox</li><li>30-day visibility</li>
-        </ul>
-        <button class="price-btn" onclick="window.location.href='pages/list.html'">Get started free</button>
-      </div>
-      <div class="price-card featured">
-        <div class="price-label">Every listing after</div>
-        <div class="price-n">€9</div>
-        <div class="price-per">per listing</div>
-        <ul class="price-list">
-          <li>Everything in free</li><li>Boost visibility</li>
-          <li>Analytics dashboard</li><li>Priority support</li>
-        </ul>
-        <button class="price-btn" onclick="window.location.href='pages/list.html'">List now</button>
-      </div>
+<!-- ══ PRICING ═══════════════════════════════════════════ -->
+<div class="section" style="background:#fff">
+  <h2 class="section-title">Simple pricing</h2>
+  <p class="section-sub">No monthly fees. No hidden costs.</p>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-eyebrow">First listing</div>
+      <div class="price-num">€0</div>
+      <div class="price-period">completely free</div>
+      <ul class="price-list">
+        <li>Full listing page</li>
+        <li>Photo gallery</li>
+        <li>Enquiry inbox</li>
+        <li>30 days live</li>
+      </ul>
+      <button class="price-cta" onclick="go('pages/list.html')">Start free</button>
+    </div>
+    <div class="price-card feat">
+      <div class="price-eyebrow">After that</div>
+      <div class="price-num">€24.99</div>
+      <div class="price-period">per listing</div>
+      <ul class="price-list">
+        <li>Everything free</li>
+        <li>Boost visibility</li>
+        <li>Analytics</li>
+        <li>Support</li>
+      </ul>
+      <button class="price-cta" onclick="go('pages/list.html')">List now</button>
     </div>
   </div>
+</div>
 
-  <!-- Testimonials -->
-  <div class="section">
-    <h2 class="section-title">What people are saying</h2>
-    <p class="section-sub">Thousands of Irish homeowners and renters trust Movin.</p>
-    <div class="test-grid container">
-      <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. Got more enquiries here in a day than on the other site in a month."</p>
-        <div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div>
-      </div>
-      <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"€9 to list my rental instead of €99 on the other site. Identical results. Absolute no-brainer."</p>
-        <div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div>
-      </div>
-      <div class="test-card">
-        <div class="test-stars">★★★★★</div>
-        <p class="test-text">"Found our forever home through Movin. The search filters are so much better than anything else out there."</p>
-        <div class="test-author">Aoife & Tadhg R.</div><div class="test-role">First-time buyers, Galway</div>
-      </div>
+<!-- ══ TESTIMONIALS ══════════════════════════════════════ -->
+<div class="section">
+  <h2 class="section-title">What people say</h2>
+  <p class="section-sub">Thousands trust Movin across Ireland</p>
+  <div class="test-scroll">
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. More enquiries in a day than on Daft in a month."</p>
+      <div class="test-author">Siobhán M.</div>
+      <div class="test-role">Homeowner, Dublin 8</div>
+    </div>
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">"€24.99 to list my rental instead of €99. Identical results. Absolute no-brainer."</p>
+      <div class="test-author">Ciarán B.</div>
+      <div class="test-role">Landlord, Cork</div>
+    </div>
+    <div class="test-card">
+      <div class="test-stars">★★★★★</div>
+      <p class="test-text">"Found our forever home through Movin. The search is so much better than anything else."</p>
+      <div class="test-author">Aoife & Tadhg R.</div>
+      <div class="test-role">First-time buyers, Galway</div>
     </div>
   </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-inner">
-      <div><strong>movin.ie</strong> — Ireland's home for property · © 2025 Movin Technologies Ltd</div>
-      <div class="footer-links">
-        <span>About</span><span>Privacy</span><span>Terms</span><span>Contact</span>
+<!-- ══ CTA BANNER ════════════════════════════════════════ -->
+<div class="cta-banner">
+  <h2>List your property today</h2>
+  <p>Join thousands of Irish homeowners who've already made the switch. Your first listing is free.</p>
+  <button class="btn" onclick="go('pages/list.html')">List for free →</button>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-logo">mov<span>in</span></div>
+  <div class="footer-links">
+    <a href="pages/search.html">Search</a>
+    <a href="pages/list.html">List</a>
+    <a href="pages/tools.html">Tools</a>
+    <a href="pages/login.html">Sign in</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+  </div>
+  <p class="footer-copy">© 2026 Movin Technologies Ltd · movin.ie · Ireland's home for property</p>
+</footer>
+</div>
+
+<!-- ══ BOTTOM TAB BAR ════════════════════════════════════ -->
+<div class="tab-bar">
+  <button class="tab-item active" id="tab-home" onclick="go('index.html')">
+    <div class="tab-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 9.5L11 3l8 6.5V19a1 1 0 01-1 1H14v-5H8v5H4a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </div>
+    Home
+  </button>
+  <button class="tab-item" onclick="go('pages/search.html')">
+    <div class="tab-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M15 15l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    Search
+  </button>
+  <button class="tab-item" onclick="go('pages/list.html')">
+    <div class="tab-icon">
+      <div class="tab-add-btn">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
     </div>
-  </footer>
+    List
+  </button>
+  <button class="tab-item" onclick="go('pages/tools.html')">
+    <div class="tab-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+    </div>
+    Tools
+  </button>
+  <button class="tab-item" id="tab-account" onclick="go('pages/dashboard.html')">
+    <div class="tab-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-3.866 3.134-7 7-7h.5c3.866 0 7 3.134 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    Account
+  </button>
+</div>
 
-  <script src="js/app.js"></script>
-  <script src="js/api.js"></script>
-  <script>
-    renderNav()
+<script>
+  window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+</script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+// ── Navigation ───────────────────────────────────────────────────────────────
+function go(url) { window.location.href = url }
 
-    function doSearch(e) {
-      e.preventDefault()
-      const q      = document.getElementById('search-q').value
-      const type   = document.getElementById('search-type').value
-      const county = document.getElementById('search-county').value
-      const params = new URLSearchParams()
-      if (q)      params.set('q', q)
-      if (type)   params.set('listing_type', type)
-      if (county) params.set('county', county)
-      window.location.href = `pages/search.html?${params.toString()}`
+// ── Mobile menu ───────────────────────────────────────────────────────────────
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu')
+  menu.classList.toggle('open')
+  document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : ''
+}
+
+// ── Search type tabs ─────────────────────────────────────────────────────────
+let searchType = 'sale'
+const typeLabels = { sale: 'Search properties to buy', rent: 'Search properties to rent', share: 'Search sharing' }
+
+function selectSearchType(el) {
+  searchType = el.dataset.type
+  document.querySelectorAll('.stt').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  document.getElementById('search-label').textContent = typeLabels[searchType]
+}
+
+// ── Dublin districts data ────────────────────────────────────────────────────
+const DUBLIN_DISTRICTS = [
+  {code:'D1',name:'Dublin 1',area:'City Centre, Mountjoy, North Wall'},
+  {code:'D2',name:'Dublin 2',area:'City Centre South, Merrion, Pembroke'},
+  {code:'D3',name:'Dublin 3',area:'Clontarf, East Wall, Fairview'},
+  {code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook, Sandymount'},
+  {code:'D5',name:'Dublin 5',area:'Artane, Coolock, Raheny'},
+  {code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines, Rathgar'},
+  {code:'D6W',name:'Dublin 6W',area:'Templeogue, Terenure'},
+  {code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough, Stoneybatter'},
+  {code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham, Liberties'},
+  {code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin, Whitehall'},
+  {code:'D10',name:'Dublin 10',area:'Ballyfermot, Cherry Orchard'},
+  {code:'D11',name:'Dublin 11',area:'Finglas, Ballymun, Glasnevin North'},
+  {code:'D12',name:'Dublin 12',area:'Crumlin, Kimmage, Walkinstown'},
+  {code:'D13',name:'Dublin 13',area:'Baldoyle, Howth, Sutton'},
+  {code:'D14',name:'Dublin 14',area:'Churchtown, Dundrum, Rathfarnham'},
+  {code:'D15',name:'Dublin 15',area:'Blanchardstown, Castleknock, Clonsilla'},
+  {code:'D16',name:'Dublin 16',area:'Ballinteer, Knocklyon, Sandyford'},
+  {code:'D18',name:'Dublin 18',area:'Foxrock, Sandyford, Stillorgan'},
+  {code:'D20',name:'Dublin 20',area:'Chapelizod, Palmerstown'},
+  {code:'D22',name:'Dublin 22',area:'Clondalkin, Liffey Valley'},
+  {code:'D24',name:'Dublin 24',area:'Firhouse, Tallaght'},
+]
+const COUNTIES = ['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo']
+
+// ── Search autocomplete ───────────────────────────────────────────────────────
+let searchCounty = '', searchQuery = ''
+
+function handleHeroInput(val) {
+  const box = document.getElementById('hero-suggestions')
+  if (!val || val.length < 1) { box.classList.remove('open'); return }
+  const q = val.toUpperCase().trim()
+  const results = []
+
+  DUBLIN_DISTRICTS.forEach(d => {
+    if (d.code.startsWith(q) || d.name.toUpperCase().includes(q))
+      results.push({ type:'district', ...d })
+  })
+
+  if (/^[A-Z][0-9]{0,2}/.test(q) && !results.length)
+    results.push({ type:'eircode', code:val.toUpperCase(), name:'Eircode: '+val.toUpperCase(), area:'Search by Eircode' })
+
+  COUNTIES.forEach(c => {
+    if (c.toUpperCase().startsWith(q) || c.toUpperCase().includes(q))
+      results.push({ type:'county', code:c, name:c, area:'County' })
+  })
+
+  if (!results.length) { box.classList.remove('open'); return }
+
+  box.innerHTML = results.slice(0, 5).map(r => `
+    <div class="sugg-item" onclick="selectSuggestion(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+      <span class="sugg-ico">${r.type==='county'?'📍':r.type==='eircode'?'🔢':'🏘'}</span>
+      <div>
+        <div class="sugg-main">${r.name}</div>
+        <div class="sugg-sub">${r.area}</div>
+      </div>
+      <span class="sugg-tag">${r.type==='district'?'Dublin':r.type==='eircode'?'Eircode':'County'}</span>
+    </div>
+  `).join('')
+  box.classList.add('open')
+}
+
+function selectSuggestion(item) {
+  document.getElementById('hero-suggestions').classList.remove('open')
+  document.getElementById('hero-search').value = item.name
+  searchCounty = item.type === 'county' ? item.code : (item.type === 'district' ? 'Dublin' : '')
+  searchQuery = item.name
+  showHeroChip(item.name)
+}
+
+function showHeroChip(label) {
+  document.getElementById('hero-chip-wrap').innerHTML = `
+    <span class="search-chip">
+      📍 ${label}
+      <button class="search-chip-x" onclick="clearHeroSearch()">×</button>
+    </span>`
+}
+
+function clearHeroSearch() {
+  searchQuery = ''; searchCounty = ''
+  document.getElementById('hero-search').value = ''
+  document.getElementById('hero-chip-wrap').innerHTML = ''
+}
+
+function doHeroSearch() {
+  document.getElementById('hero-suggestions').classList.remove('open')
+  const q = document.getElementById('hero-search').value
+  const params = new URLSearchParams()
+  params.set('listing_type', searchType)
+  if (searchCounty) params.set('county', searchCounty)
+  else if (q) params.set('q', q)
+  window.location.href = 'pages/search.html?' + params.toString()
+}
+
+function quickSearch(county, label) {
+  searchCounty = county
+  document.getElementById('hero-search').value = label
+  showHeroChip(label)
+  doHeroSearch()
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-input-wrap') && !e.target.closest('.suggestions-box'))
+    document.getElementById('hero-suggestions')?.classList.remove('open')
+})
+
+// ── Load featured listings ────────────────────────────────────────────────────
+async function loadFeatured() {
+  const grid = document.getElementById('featured-grid')
+  try {
+    const res = await window.API.listings.search({ sort:'newest', limit:4 })
+    const count = res.total || 0
+    document.getElementById('stat-count').textContent = count > 0 ? count.toLocaleString() + '+' : '—'
+
+    if (!res.listings || !res.listings.length) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">🏡</div>
+          <h3>No listings yet</h3>
+          <p>Be the first to list a property on Movin.ie!</p>
+          <button class="btn btn-primary btn-sm" onclick="go('pages/list.html')">List for free</button>
+        </div>`
+      return
     }
+    grid.innerHTML = res.listings.map(l => buildPropertyCard(l)).join('')
+  } catch(e) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🏡</div>
+        <h3>Loading listings…</h3>
+        <p>Check back shortly.</p>
+      </div>`
+  }
+}
 
-    async function loadFeatured() {
-      try {
-        const res = await API.listings.search({ sort: 'newest', limit: 4 })
-        document.getElementById('stat-listings').textContent = res.total.toLocaleString() + '+'
-        const grid = document.getElementById('featured-grid')
-        if (!res.listings.length) {
-          grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏡</div><p>No listings yet — be the first to list!</p></div>'
-          return
-        }
-        grid.innerHTML = res.listings.map(l => buildPropertyCard(l)).join('')
-      } catch(e) {
-        document.getElementById('featured-grid').innerHTML = '<p style="color:#aaa;text-align:center;grid-column:1/-1">Could not load listings.</p>'
-      }
-    }
+// ── Update nav for logged-in user ─────────────────────────────────────────────
+function updateNavAuth() {
+  if (!window.API) return
+  const user = window.API.getUser()
+  const isLoggedIn = window.API.auth.isLoggedIn()
+  if (!isLoggedIn) return
 
-    loadFeatured()
-  </script>
+  document.getElementById('nav-auth-area').innerHTML = `
+    <a href="pages/dashboard.html" class="btn btn-primary btn-sm">
+      ${user?.name?.split(' ')[0] || 'Account'}
+    </a>`
+
+  // Update mobile menu footer
+  document.getElementById('mobile-menu-footer').innerHTML = `
+    <a href="pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center">
+      My dashboard →
+    </a>`
+
+  // Update account tab
+  document.getElementById('tab-account').classList.add('active')
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+loadFeatured()
+updateNavAuth()
+</script>
 </body>
 </html>
