@@ -248,7 +248,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
           title="${isSaved ? 'Unsave' : 'Save'}"
-          style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
+          style="background:rgba(255,255,255,.92);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:${isSaved ? '#e07b3f' : '#888'};position:absolute;top:7px;right:7px;z-index:2;padding:0">
           ${isSaved ? '♥' : '♡'}
         </button>
       </div>
