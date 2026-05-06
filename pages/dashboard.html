@@ -480,7 +480,11 @@
       btn.textContent = 'Save changes'
     }
 
-    init()
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init)
+    } else {
+      init()
+    }
   </script>
-</body>
+  </body>
 </html>
