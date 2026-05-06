@@ -500,8 +500,11 @@ function renderListingsTable(listings) {
       <td>
         <div style="display:flex;gap:4px">
           <button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>
-          <button class="btn btn-sm" style="background:${l.status==='active'?'#fef3c7':'#dcfce7'};color:${l.status==='active'?'#d97706':'#16a34a'}" onclick="toggleStatus('${l.id}','${l.status}')">${l.status==='active'?'Suspend':'Activate'}</button>
-          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>
+${l.status === 'pending_review'
+  ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')">✓ Approve</button>
+     <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')">✗ Reject</button>`
+  : `<button class="btn btn-sm" style="background:${l.status==='active'?'#fef3c7':'#dcfce7'};color:${l.status==='active'?'#d97706':'#16a34a'}" onclick="toggleStatus('${l.id}','${l.status}')">${l.status==='active'?'Suspend':'Activate'}</button>`
+}          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>
         </div>
       </td>
     </tr>`).join('')
@@ -655,6 +658,36 @@ updateTime()
 setInterval(updateTime, 60000)
 
 // ── Init ──────────────────────────────────────────────────
+async function approveListing(id) {
+  if (!confirm('Approve this listing? It will go live on movin.ie immediately.')) return
+  try {
+    const token = localStorage.getItem('movin_token')
+    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ status: 'active' })
+    })
+    alert('✅ Listing approved and now live on movin.ie!')
+    loadAllListings()
+    loadDashboard()
+  } catch(e) { alert('Error approving listing') }
+}
+
+async function rejectListing(id) {
+  const reason = prompt('Reason for rejection (this will be sent to the lister):')
+  if (reason === null) return
+  try {
+    const token = localStorage.getItem('movin_token')
+    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ status: 'rejected' })
+    })
+    alert('❌ Listing rejected.')
+    loadAllListings()
+  } catch(e) { alert('Error rejecting listing') }
+}
+
 checkAdminAuth()
 loadDashboard()
 </script>
