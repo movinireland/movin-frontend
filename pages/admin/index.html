@@ -310,6 +310,97 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
   </div>
 </div>
 
+<!-- EDIT LISTING MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-title">Edit listing</div>
+    <div id="edit-alert"></div>
+    <input type="hidden" id="edit-id"/>
+    <div class="form-grid">
+      <div class="form-group" style="grid-column:1/-1">
+        <label class="form-label">Title *</label>
+        <input class="form-input" type="text" id="edit-title" placeholder="Property title"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price (€) *</label>
+        <input class="form-input" type="number" id="edit-price" placeholder="e.g. 395000"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-input form-select" id="edit-status">
+          <option value="active">Active</option>
+          <option value="pending_review">Pending review</option>
+          <option value="pending_payment">Pending payment</option>
+          <option value="draft">Draft</option>
+          <option value="expired">Expired</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">County</label>
+        <select class="form-input form-select" id="edit-county">
+          <option>Dublin</option><option>Cork</option><option>Galway</option>
+          <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+          <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+          <option>Wexford</option><option>Clare</option><option>Tipperary</option>
+          <option>Donegal</option><option>Mayo</option><option>Sligo</option>
+          <option>Leitrim</option><option>Roscommon</option><option>Longford</option>
+          <option>Westmeath</option><option>Offaly</option><option>Laois</option>
+          <option>Carlow</option><option>Louth</option><option>Monaghan</option><option>Cavan</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Listing type</label>
+        <select class="form-input form-select" id="edit-type">
+          <option value="sale">For Sale</option>
+          <option value="rent">To Rent</option>
+          <option value="share">Sharing</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bedrooms</label>
+        <input class="form-input" type="number" id="edit-beds" placeholder="3"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bathrooms</label>
+        <input class="form-input" type="number" id="edit-baths" placeholder="2"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Floor size (m²)</label>
+        <input class="form-input" type="number" id="edit-size" placeholder="128"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">BER Rating</label>
+        <select class="form-input form-select" id="edit-ber">
+          <option value="">Unknown</option><option>A1</option><option>A2</option><option>A3</option>
+          <option>B1</option><option>B2</option><option>B3</option><option>C1</option>
+          <option>C2</option><option>C3</option><option>D1</option><option>D2</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Address</label>
+        <input class="form-input" type="text" id="edit-address" placeholder="e.g. 14 Leinster Road"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Area</label>
+        <input class="form-input" type="text" id="edit-area" placeholder="e.g. Rathmines"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Eircode</label>
+        <input class="form-input" type="text" id="edit-eircode" placeholder="e.g. D06 W9X4"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input form-textarea" id="edit-desc" placeholder="Property description…"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" id="edit-submit" onclick="saveEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- DELETE MODAL -->
 <div class="modal-bg" id="delete-modal">
   <div class="modal" style="max-width:400px">
@@ -471,6 +562,7 @@ function renderListingsTable(listings) {
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>
+          <button class="btn btn-sm" style="background:#eff6ff;color:#1d4ed8" onclick="openEditModal('${l.id}')">✏️ Edit</button>
           ${l.status === 'pending_review'
             ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>
                <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')">✗ Reject</button>`
@@ -643,6 +735,90 @@ function updateTime() {
 }
 updateTime()
 setInterval(updateTime, 60000)
+
+// ── Edit listing ───────────────────────────────────────────
+async function openEditModal(id) {
+  document.getElementById('edit-alert').innerHTML = ''
+  document.getElementById('edit-submit').textContent = 'Save changes'
+  document.getElementById('edit-submit').disabled = false
+
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    const l = await res.json()
+    if (!res.ok) throw new Error(l.error)
+
+    document.getElementById('edit-id').value        = l.id
+    document.getElementById('edit-title').value     = l.title || ''
+    document.getElementById('edit-price').value     = l.price || ''
+    document.getElementById('edit-status').value    = l.status || 'active'
+    document.getElementById('edit-county').value    = l.county || 'Dublin'
+    document.getElementById('edit-type').value      = l.listing_type || 'sale'
+    document.getElementById('edit-beds').value      = l.bedrooms || ''
+    document.getElementById('edit-baths').value     = l.bathrooms || ''
+    document.getElementById('edit-size').value      = l.floor_size_m2 || ''
+    document.getElementById('edit-ber').value       = l.ber_rating || ''
+    document.getElementById('edit-address').value   = l.address_line1 || ''
+    document.getElementById('edit-area').value      = l.address_area || ''
+    document.getElementById('edit-eircode').value   = l.eircode || ''
+    document.getElementById('edit-desc').value      = l.description || ''
+
+    document.getElementById('edit-modal').classList.add('open')
+  } catch(e) {
+    alert('Could not load listing: ' + e.message)
+  }
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open')
+}
+
+async function saveEdit() {
+  const id      = document.getElementById('edit-id').value
+  const btn     = document.getElementById('edit-submit')
+  const alertEl = document.getElementById('edit-alert')
+  btn.disabled  = true
+  btn.textContent = 'Saving…'
+  alertEl.innerHTML = ''
+
+  const body = {
+    title:         document.getElementById('edit-title').value.trim(),
+    price:         parseInt(document.getElementById('edit-price').value),
+    status:        document.getElementById('edit-status').value,
+    county:        document.getElementById('edit-county').value,
+    listing_type:  document.getElementById('edit-type').value,
+    bedrooms:      document.getElementById('edit-beds').value || null,
+    bathrooms:     document.getElementById('edit-baths').value || null,
+    floor_size_m2: document.getElementById('edit-size').value || null,
+    ber_rating:    document.getElementById('edit-ber').value || null,
+    address_line1: document.getElementById('edit-address').value.trim(),
+    address_area:  document.getElementById('edit-area').value.trim(),
+    eircode:       document.getElementById('edit-eircode').value.trim(),
+    description:   document.getElementById('edit-desc').value.trim(),
+  }
+
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error)
+
+    alertEl.innerHTML = '<div class="alert alert-ok">✓ Listing updated successfully!</div>'
+    btn.textContent = 'Save changes'
+    btn.disabled = false
+    setTimeout(() => { closeEditModal(); loadAllListings(); loadDashboard() }, 1000)
+  } catch(err) {
+    alertEl.innerHTML = '<div class="alert alert-err">' + err.message + '</div>'
+    btn.textContent = 'Save changes'
+    btn.disabled = false
+  }
+}
 
 // ── Init ──────────────────────────────────────────────────
 checkAdminAuth()
