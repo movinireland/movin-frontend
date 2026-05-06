@@ -374,94 +374,83 @@ window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 <script src="../../js/api.js"></script>
 <script src="../../js/app.js"></script>
 <script>
-// ── Auth check — admin only ───────────────────────────────
+
 function checkAdminAuth() {
   if (!window.API || !window.API.auth.isLoggedIn()) {
-    window.location.href = '../../pages/login.html?redirect=/pages/admin/index.html'
+    window.location.href = '../../pages/login.html'
     return false
   }
   const user = window.API.getUser()
   if (user?.role !== 'admin') {
-    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:DM Sans,sans-serif;flex-direction:column;gap:1rem"><div style="font-size:40px">🔒</div><h2 style="font-family:Playfair Display,serif">Admin access required</h2><p style="color:#888">You need admin privileges to view this page.</p><a href="../../pages/dashboard.html" style="color:#1a5c45;font-weight:500">← Go to dashboard</a></div>'
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:DM Sans,sans-serif;flex-direction:column;gap:1rem"><div style="font-size:40px">🔒</div><h2 style="font-family:Playfair Display,serif">Admin access required</h2><p style="color:#888">You need admin privileges.</p><a href="../../pages/dashboard.html" style="color:#1a5c45;font-weight:500">← Go to dashboard</a></div>'
     return false
   }
   return true
 }
 
-// ── Section switching ─────────────────────────────────────
 function switchSection(id, navEl) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
-  document.querySelectorAll('.mn-item').forEach(n => n.classList.remove('active'))
+  document.querySelectorAll('.nav-item,.mn-item').forEach(n => n.classList.remove('active'))
   document.getElementById('section-' + id).classList.add('active')
   if (navEl) navEl.classList.add('active')
   loadSection(id)
 }
 
-// ── Load section data ─────────────────────────────────────
 async function loadSection(id) {
   switch(id) {
     case 'dashboard': await loadDashboard(); break
     case 'listings':  await loadAllListings(); break
-    case 'users':     await loadUsers(); break
     case 'enquiries': await loadEnquiries(); break
-    case 'payments':  await loadPayments(); break
-    case 'alerts':    await loadAlerts(); break
   }
 }
 
-// ── Dashboard ─────────────────────────────────────────────
 async function loadDashboard() {
   try {
     const token = localStorage.getItem('movin_token')
     const headers = { 'Authorization': 'Bearer ' + token }
 
-    const [listRes, enqRes] = await Promise.all([
-      const res = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all'
-      fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers })
-    ])
+    const listRes = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all', { headers })
+    const enqRes  = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers })
 
     const listData = await listRes.json()
     const enqData  = await enqRes.json()
 
-    const listings   = listData.listings || []
-    const enquiries  = enqData.enquiries  || []
-    const active     = listings.filter(l => l.status === 'active').length
-    const paid       = listings.filter(l => !l.is_free).length
+    const listings  = listData.listings || []
+    const enquiries = enqData.enquiries || []
+    const active    = listings.filter(l => l.status === 'active').length
+    const pending   = listData.pending || 0
+    const paid      = listings.filter(l => !l.is_free && l.status === 'active').length
 
-    document.getElementById('stat-total').textContent   = listData.total || listings.length
+    document.getElementById('stat-total').textContent   = listData.total || 0
     document.getElementById('stat-active').textContent  = active + ' active'
-    document.getElementById('stat-users').textContent   = '—'
+    document.getElementById('stat-pending').textContent = pending
     document.getElementById('stat-enqs').textContent    = enquiries.length
     document.getElementById('stat-unread').textContent  = (enqData.unread || 0) + ' unread'
     document.getElementById('stat-revenue').textContent = '€' + (paid * 24.99).toFixed(0)
-    // Show pending review count as alert
-if (data.pending > 0) {
-  document.getElementById('dash-alert').innerHTML = `
-    <div class="alert alert-info" style="display:flex;justify-content:space-between;align-items:center">
-      <span>⚠️ <strong>${data.pending}</strong> listing${data.pending > 1 ? 's' : ''} waiting for your review</span>
-      <button class="btn btn-primary btn-sm" onclick="switchSection('listings',null)">Review now →</button>
-    </div>`
-}
 
-    // Recent listings table
-    const tb = document.getElementById('recent-listings-body')
-    tb.innerHTML = listings.slice(0,8).map(l => `
-      <tr>
+    if (pending > 0) {
+      document.getElementById('dash-alert').innerHTML = `
+        <div class="alert alert-info" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
+          <span>⚠️ <strong>${pending}</strong> listing${pending > 1 ? 's' : ''} waiting for your review</span>
+          <button class="btn btn-primary btn-sm" onclick="switchSection('listings',null)">Review now →</button>
+        </div>`
+    } else {
+      document.getElementById('dash-alert').innerHTML = ''
+    }
+
+    document.getElementById('recent-listings-body').innerHTML = listings.slice(0,8).map(l => `
+      <tr style="${l.status === 'pending_review' ? 'background:#fffbeb' : ''}">
         <td><div style="font-weight:500;font-size:13px">${l.title}</div><div style="font-size:11px;color:#aaa">${l.county}</div></td>
         <td>€${parseInt(l.price).toLocaleString()}</td>
-        <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+        <td><span class="status-badge status-${l.status}">${l.status.replace(/_/g,' ')}</span></td>
         <td>${l.views || 0}</td>
-        <td>${l.enquiry_count || 0}</td>
-        <td>
-          <button class="btn btn-ghost btn-sm" onclick="editListing('${l.id}')">Edit</button>
-          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>
-        </td>
-      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#aaa">No listings yet</td></tr>'
+        <td>${l.status === 'pending_review'
+          ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>`
+          : `<button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>`
+        }</td>
+      </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#aaa">No listings yet</td></tr>'
 
-    // Recent enquiries
-    const eb = document.getElementById('recent-enqs-body')
-    eb.innerHTML = enquiries.slice(0,6).map(e => `
+    document.getElementById('recent-enqs-body').innerHTML = enquiries.slice(0,6).map(e => `
       <tr>
         <td><div style="font-weight:500;font-size:13px">${e.sender_name}</div><div style="font-size:11px;color:#aaa">${e.sender_email}</div></td>
         <td style="font-size:13px">${e.listing_title || '—'}</td>
@@ -470,25 +459,29 @@ if (data.pending > 0) {
       </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;padding:1.5rem;color:#aaa">No enquiries yet</td></tr>'
 
   } catch(e) {
-    document.getElementById('dash-alert').innerHTML = '<div class="alert alert-err">Could not load dashboard data. Make sure you are logged in as admin.</div>'
+    console.error('Dashboard error:', e)
+    document.getElementById('dash-alert').innerHTML = '<div class="alert alert-err">Could not load dashboard. Make sure your account role is set to admin in Supabase.</div>'
   }
 }
 
-// ── All listings ───────────────────────────────────────────
 let allListings = []
+
 async function loadAllListings() {
   try {
     const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all', { headers: { 'Authorization': 'Bearer ' + token } })    const data = await res.json()
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    const data = await res.json()
     allListings = data.listings || []
-    document.getElementById('listing-count').textContent = allListings.length + ' listings'
+    const pendingCount = data.pending || 0
+    document.getElementById('listing-count').textContent =
+      `${data.total || 0} listings${pendingCount > 0 ? ' — ⚠️ ' + pendingCount + ' pending review' : ''}`
     renderListingsTable(allListings)
   } catch(e) {
-    document.getElementById('all-listings-body').innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#aaa">Could not load listings</td></tr>'
+    document.getElementById('all-listings-body').innerHTML =
+      '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#aaa">Could not load listings</td></tr>'
   }
-  if (data.pending) {
-  document.getElementById('listing-count').textContent = `${data.total} listings (${data.pending} pending review)`
-}
 }
 
 function renderListingsTable(listings) {
@@ -498,23 +491,24 @@ function renderListingsTable(listings) {
     return
   }
   tb.innerHTML = listings.map(l => `
-    <tr>
-      <td><div class="table-thumb img-a">🏠</div></td>
-      <td><div style="font-weight:500;font-size:13px;max-width:200px">${l.title}</div></td>
+    <tr style="${l.status === 'pending_review' ? 'background:#fffbeb' : ''}">
+      <td><div class="table-thumb">🏠</div></td>
+      <td><div style="font-weight:500;font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.title}</div></td>
       <td style="font-size:13px;color:#888">${l.county}</td>
       <td style="font-size:13px;font-weight:500;color:#1a5c45">€${parseInt(l.price).toLocaleString()}</td>
       <td style="font-size:12px">${l.listing_type}</td>
-      <td><span class="status-badge status-${l.status}">${l.status}</span></td>
+      <td><span class="status-badge status-${l.status}">${l.status.replace(/_/g,' ')}</span></td>
       <td style="font-size:13px">${l.views || 0}</td>
       <td style="font-size:12px;color:#aaa">${new Date(l.created_at).toLocaleDateString('en-IE')}</td>
       <td>
-        <div style="display:flex;gap:4px">
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>
-${l.status === 'pending_review'
-  ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')">✓ Approve</button>
-     <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')">✗ Reject</button>`
-  : `<button class="btn btn-sm" style="background:${l.status==='active'?'#fef3c7':'#dcfce7'};color:${l.status==='active'?'#d97706':'#16a34a'}" onclick="toggleStatus('${l.id}','${l.status}')">${l.status==='active'?'Suspend':'Activate'}</button>`
-}          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>
+          ${l.status === 'pending_review'
+            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>
+               <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')">✗ Reject</button>`
+            : `<button class="btn btn-sm" style="background:${l.status==='active'?'#fef3c7':'#dcfce7'};color:${l.status==='active'?'#d97706':'#16a34a'}" onclick="toggleStatus('${l.id}','${l.status}')">${l.status==='active'?'Suspend':'Activate'}</button>`
+          }
+          <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>
         </div>
       </td>
     </tr>`).join('')
@@ -531,96 +525,37 @@ function filterListingsTable(val) {
   renderListingsTable(filtered)
 }
 
-// ── Users ──────────────────────────────────────────────────
-async function loadUsers() {
-  // Users endpoint would be admin-only in production
-  document.getElementById('users-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">User management requires admin API endpoint. Check Railway logs for user data.</td></tr>'
-}
-
-// ── Enquiries ──────────────────────────────────────────────
-async function loadEnquiries() {
+async function approveListing(id) {
+  if (!confirm('Approve this listing? It will go live immediately.')) return
   try {
     const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers: { 'Authorization': 'Bearer ' + token } })
-    const data = await res.json()
-    const enqs = data.enquiries || []
-    const tb = document.getElementById('enqs-body')
-    tb.innerHTML = enqs.map(e => `
-      <tr>
-        <td><div style="font-weight:500;font-size:13px">${e.sender_name}</div></td>
-        <td style="font-size:13px;color:#888">${e.sender_email}</td>
-        <td style="font-size:13px">${e.listing_title || '—'}</td>
-        <td style="font-size:13px;color:#666;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.message}</td>
-        <td style="font-size:12px;color:#aaa">${new Date(e.created_at).toLocaleDateString('en-IE')}</td>
-        <td><span class="status-badge ${e.is_read?'status-active':'status-pending'}">${e.is_read?'Read':'New'}</span></td>
-      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">No enquiries</td></tr>'
-  } catch(e) {
-    document.getElementById('enqs-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">Could not load enquiries</td></tr>'
-  }
-}
-
-// ── Payments ───────────────────────────────────────────────
-async function loadPayments() {
-  document.getElementById('payments-body').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa">Payment history available in your Stripe dashboard at dashboard.stripe.com</td></tr>'
-}
-
-// ── Alerts ─────────────────────────────────────────────────
-async function loadAlerts() {
-  document.getElementById('alerts-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">Search alerts will appear here once users save searches</td></tr>'
-}
-
-// ── Add listing modal ─────────────────────────────────────
-function openAddListingModal() {
-  document.getElementById('add-listing-modal').classList.add('open')
-}
-function closeAddListingModal() {
-  document.getElementById('add-listing-modal').classList.remove('open')
-}
-
-async function submitListing() {
-  const btn = document.getElementById('al-submit')
-  const alertEl = document.getElementById('add-listing-alert')
-  btn.disabled = true
-  btn.textContent = 'Creating…'
-  alertEl.innerHTML = ''
-
-  const body = {
-    title:         document.getElementById('al-title').value,
-    price:         document.getElementById('al-price').value,
-    listing_type:  document.getElementById('al-type').value,
-    property_type: document.getElementById('al-ptype').value,
-    county:        document.getElementById('al-county').value,
-    eircode:       document.getElementById('al-eircode').value,
-    address_line1: document.getElementById('al-address').value,
-    address_area:  document.getElementById('al-area').value,
-    bedrooms:      document.getElementById('al-beds').value,
-    bathrooms:     document.getElementById('al-baths').value,
-    floor_size_m2: document.getElementById('al-size').value,
-    ber_rating:    document.getElementById('al-ber').value,
-    description:   document.getElementById('al-desc').value,
-  }
-
-  try {
-    const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/listings', {
-      method: 'POST',
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ status: 'active' })
     })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error)
-    alertEl.innerHTML = '<div class="alert alert-ok">✓ Listing created successfully!</div>'
-    btn.textContent = 'Create listing'
-    btn.disabled = false
-    setTimeout(() => { closeAddListingModal(); loadAllListings() }, 1500)
-  } catch(err) {
-    alertEl.innerHTML = `<div class="alert alert-err">${err.message}</div>`
-    btn.textContent = 'Create listing'
-    btn.disabled = false
-  }
+    if (!res.ok) throw new Error('Failed')
+    alert('✅ Listing approved and now live!')
+    loadAllListings()
+    loadDashboard()
+  } catch(e) { alert('Error approving listing.') }
 }
 
-// ── Toggle status ─────────────────────────────────────────
+async function rejectListing(id) {
+  const reason = prompt('Reason for rejection (optional):')
+  if (reason === null) return
+  try {
+    const token = localStorage.getItem('movin_token')
+    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ status: 'rejected' })
+    })
+    alert('❌ Listing rejected.')
+    loadAllListings()
+  } catch(e) { alert('Error rejecting listing.') }
+}
+
 async function toggleStatus(id, currentStatus) {
   const newStatus = currentStatus === 'active' ? 'draft' : 'active'
   try {
@@ -634,7 +569,6 @@ async function toggleStatus(id, currentStatus) {
   } catch(e) { console.error(e) }
 }
 
-// ── Delete ─────────────────────────────────────────────────
 let deleteId = null
 function confirmDelete(id) {
   deleteId = id
@@ -656,10 +590,72 @@ function closeDeleteModal() {
   deleteId = null
 }
 
-function saveSettings() { alert('Settings saved (connect to backend API to persist)') }
-function saveAdmin() { alert('Admin updated (connect to backend API to persist)') }
+function openAddListingModal() { document.getElementById('add-listing-modal').classList.add('open') }
+function closeAddListingModal() { document.getElementById('add-listing-modal').classList.remove('open') }
 
-// ── Time ──────────────────────────────────────────────────
+async function submitListing() {
+  const btn = document.getElementById('al-submit')
+  const alertEl = document.getElementById('add-listing-alert')
+  btn.disabled = true
+  btn.textContent = 'Creating…'
+  alertEl.innerHTML = ''
+  const body = {
+    title: document.getElementById('al-title').value,
+    price: document.getElementById('al-price').value,
+    listing_type: document.getElementById('al-type').value,
+    property_type: document.getElementById('al-ptype').value,
+    county: document.getElementById('al-county').value,
+    eircode: document.getElementById('al-eircode').value,
+    address_line1: document.getElementById('al-address').value,
+    address_area: document.getElementById('al-area').value,
+    bedrooms: document.getElementById('al-beds').value,
+    bathrooms: document.getElementById('al-baths').value,
+    floor_size_m2: document.getElementById('al-size').value,
+    ber_rating: document.getElementById('al-ber').value,
+    description: document.getElementById('al-desc').value,
+  }
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error)
+    alertEl.innerHTML = '<div class="alert alert-ok">✓ Listing created!</div>'
+    btn.textContent = 'Create listing'
+    btn.disabled = false
+    setTimeout(() => { closeAddListingModal(); loadAllListings() }, 1500)
+  } catch(err) {
+    alertEl.innerHTML = `<div class="alert alert-err">${err.message}</div>`
+    btn.textContent = 'Create listing'
+    btn.disabled = false
+  }
+}
+
+async function loadEnquiries() {
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    const data = await res.json()
+    const enqs = data.enquiries || []
+    document.getElementById('enqs-body').innerHTML = enqs.map(e => `
+      <tr>
+        <td><div style="font-weight:500;font-size:13px">${e.sender_name}</div></td>
+        <td style="font-size:13px;color:#888">${e.sender_email}</td>
+        <td style="font-size:13px">${e.listing_title || '—'}</td>
+        <td style="font-size:13px;color:#666;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.message}</td>
+        <td style="font-size:12px;color:#aaa">${new Date(e.created_at).toLocaleDateString('en-IE')}</td>
+        <td><span class="status-badge ${e.is_read ? 'status-active' : 'status-pending'}">${e.is_read ? 'Read' : 'New'}</span></td>
+      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">No enquiries</td></tr>'
+  } catch(e) {
+    document.getElementById('enqs-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">Could not load enquiries</td></tr>'
+  }
+}
+
 function updateTime() {
   const el = document.getElementById('admin-time')
   if (el) el.textContent = new Date().toLocaleString('en-IE')
@@ -667,39 +663,5 @@ function updateTime() {
 updateTime()
 setInterval(updateTime, 60000)
 
-// ── Init ──────────────────────────────────────────────────
-async function approveListing(id) {
-  if (!confirm('Approve this listing? It will go live on movin.ie immediately.')) return
-  try {
-    const token = localStorage.getItem('movin_token')
-    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ status: 'active' })
-    })
-    alert('✅ Listing approved and now live on movin.ie!')
-    loadAllListings()
-    loadDashboard()
-  } catch(e) { alert('Error approving listing') }
-}
-
-async function rejectListing(id) {
-  const reason = prompt('Reason for rejection (this will be sent to the lister):')
-  if (reason === null) return
-  try {
-    const token = localStorage.getItem('movin_token')
-    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ status: 'rejected' })
-    })
-    alert('❌ Listing rejected.')
-    loadAllListings()
-  } catch(e) { alert('Error rejecting listing') }
-}
-
 checkAdminAuth()
 loadDashboard()
-</script>
-</body>
-</html>
