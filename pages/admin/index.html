@@ -10,8 +10,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:100vh}
 :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc;--white:#fff}
-
-/* ── SIDEBAR + LAYOUT ── */
 .layout{display:flex;min-height:100vh}
 .sidebar{width:220px;background:var(--gd);flex-shrink:0;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:50;overflow-y:auto}
 .sidebar-logo{padding:1.5rem 1.25rem 1rem;font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
@@ -24,19 +22,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 .nav-item.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--o)}
 .nav-item-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
 .main{margin-left:220px;flex:1;padding:1.5rem;min-height:100vh}
-
-/* ── TOP BAR ── */
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem}
 .topbar-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#111}
 .topbar-right{display:flex;gap:8px;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;border-radius:8px;transition:all .2s;white-space:nowrap;padding:8px 16px;font-size:13px;-webkit-tap-highlight-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;border-radius:8px;transition:all .2s;white-space:nowrap;padding:8px 16px;font-size:13px}
 .btn-primary{background:var(--g);color:#fff}
 .btn-ghost{background:#fff;color:var(--g);border:1.5px solid var(--border)}
 .btn-danger{background:#b91c1c;color:#fff}
 .btn-sm{padding:6px 12px;font-size:12px}
 .btn:active{transform:scale(.97)}
-
-/* ── STATS CARDS ── */
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
 @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:500px){.stats-grid{grid-template-columns:1fr}}
@@ -45,34 +39,24 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 .stat-card-l{font-size:12px;color:#888}
 .stat-card-change{font-size:11px;margin-top:.4rem}
 .change-up{color:#16a34a}
-.change-dn{color:#dc2626}
-
-/* ── CONTENT CARD ── */
 .content-card{background:#fff;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:1.25rem}
 .card-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .card-title{font-size:15px;font-weight:500;color:#111}
 .card-body{padding:1.25rem}
-
-/* ── TABLE ── */
 .table{width:100%;border-collapse:collapse;font-size:13px}
 .table th{text-align:left;padding:.6rem 1rem;font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:#fafaf8}
 .table td{padding:.75rem 1rem;border-bottom:1px solid #f5f2ec;vertical-align:middle}
 .table tr:last-child td{border-bottom:none}
 .table tr:hover td{background:#fafaf8}
-.table-thumb{width:44px;height:34px;border-radius:6px;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--gl)}
+.table-thumb{width:44px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;background:var(--gl)}
 .status-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
 .status-active{background:#dcfce7;color:#16a34a}
+.status-pending_review{background:#fef3c7;color:#d97706}
 .status-pending{background:#fef3c7;color:#d97706}
+.status-pending_payment{background:#fef3c7;color:#d97706}
 .status-draft{background:#f3f4f6;color:#6b7280}
 .status-expired{background:#fee2e2;color:#dc2626}
-
-/* ── TABS ── */
-.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.5rem;overflow-x:auto}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:.7rem 1.1rem;font-size:14px;font-weight:500;color:#888;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
-.tab.active{color:var(--g);border-bottom-color:var(--g)}
-
-/* ── FORM ── */
+.status-rejected{background:#fee2e2;color:#dc2626}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
 .form-group{margin-bottom:.75rem}
@@ -81,44 +65,29 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 .form-input:focus{border-color:var(--g);background:#fff}
 .form-textarea{min-height:100px;resize:vertical;line-height:1.6}
 .form-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23aaa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;cursor:pointer;padding-right:28px}
-
-/* ── MODAL ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-bg.open{opacity:1;pointer-events:all}
 .modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.95);transition:transform .2s}
 .modal-bg.open .modal{transform:scale(1)}
 .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1.25rem}
 .modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
-
-/* ── ALERT / TOAST ── */
 .alert{padding:.75rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1rem}
 .alert-ok{background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0}
 .alert-err{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
 .alert-info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
 .spinner{width:20px;height:20px;border-radius:50%;border:2px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── MOBILE ── */
-@media(max-width:768px){
-  .sidebar{display:none}
-  .main{margin-left:0}
-  .mobile-nav{display:flex!important}
-}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.mobile-nav{display:flex!important}}
 .mobile-nav{display:none;background:var(--gd);padding:.75rem 1rem;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .mobile-nav::-webkit-scrollbar{display:none}
-.mn-item{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.mn-item{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .mn-item.active{background:rgba(255,255,255,.2);color:#fff}
-
-/* ── SECTIONS ── */
 .section{display:none}
 .section.active{display:block}
 </style>
 </head>
 <body>
-
 <div class="layout">
-
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-logo">mov<span>in</span><small>Admin Panel</small></div>
     <nav>
@@ -146,7 +115,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
     </nav>
   </div>
 
-  <!-- MOBILE NAV -->
   <div class="mobile-nav">
     <div class="mn-item active" onclick="switchSection('dashboard',this)">📊 Dashboard</div>
     <div class="mn-item" onclick="switchSection('listings',this)">🏠 Listings</div>
@@ -160,35 +128,31 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 
   <main class="main">
 
-    <!-- ── DASHBOARD ── -->
+    <!-- DASHBOARD -->
     <div id="section-dashboard" class="section active">
       <div class="topbar">
         <div class="topbar-title">Dashboard</div>
         <div class="topbar-right">
           <span style="font-size:12px;color:#888" id="admin-time"></span>
-          <button class="btn btn-primary btn-sm" onclick="switchSection('listings',document.querySelector('.nav-item:nth-child(2))'))">+ New listing</button>
+          <button class="btn btn-primary btn-sm" onclick="switchSection('listings',null)">+ Add listing</button>
         </div>
       </div>
-
       <div id="dash-alert"></div>
-
-      <div class="stats-grid" id="stats-grid">
+      <div class="stats-grid">
         <div class="stat-card"><div class="stat-card-n" id="stat-total">—</div><div class="stat-card-l">Total listings</div><div class="stat-card-change change-up" id="stat-active">— active</div></div>
-        <div class="stat-card"><div class="stat-card-n" id="stat-users">—</div><div class="stat-card-l">Registered users</div><div class="stat-card-change change-up">All time</div></div>
+        <div class="stat-card"><div class="stat-card-n" id="stat-pending">—</div><div class="stat-card-l">Pending review</div><div class="stat-card-change" style="color:#d97706">Needs approval</div></div>
         <div class="stat-card"><div class="stat-card-n" id="stat-enqs">—</div><div class="stat-card-l">Total enquiries</div><div class="stat-card-change" id="stat-unread">— unread</div></div>
         <div class="stat-card"><div class="stat-card-n" id="stat-revenue">—</div><div class="stat-card-l">Revenue (paid listings)</div><div class="stat-card-change change-up">From payments</div></div>
       </div>
-
       <div class="content-card">
         <div class="card-header"><div class="card-title">Recent listings</div><button class="btn btn-ghost btn-sm" onclick="switchSection('listings',null)">View all</button></div>
         <div style="overflow-x:auto">
-          <table class="table" id="recent-listings-table">
-            <thead><tr><th>Property</th><th>Price</th><th>Status</th><th>Views</th><th>Enquiries</th><th>Actions</th></tr></thead>
-            <tbody id="recent-listings-body"><tr><td colspan="6" style="text-align:center;padding:1.5rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
+          <table class="table">
+            <thead><tr><th>Property</th><th>Price</th><th>Status</th><th>Views</th><th>Actions</th></tr></thead>
+            <tbody id="recent-listings-body"><tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
           </table>
         </div>
       </div>
-
       <div class="content-card">
         <div class="card-header"><div class="card-title">Recent enquiries</div><button class="btn btn-ghost btn-sm" onclick="switchSection('enquiries',null)">View all</button></div>
         <div style="overflow-x:auto">
@@ -200,7 +164,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
       </div>
     </div>
 
-    <!-- ── ALL LISTINGS ── -->
+    <!-- ALL LISTINGS -->
     <div id="section-listings" class="section">
       <div class="topbar">
         <div class="topbar-title">All listings</div>
@@ -208,23 +172,23 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
           <button class="btn btn-primary" onclick="openAddListingModal()">+ Add listing</button>
         </div>
       </div>
-
       <div class="content-card">
         <div class="card-header">
           <div style="display:flex;gap:8px;flex-wrap:wrap">
             <input id="listing-search" class="form-input" style="width:200px;padding:7px 10px;font-size:13px" type="text" placeholder="Search listings…" oninput="filterListingsTable(this.value)"/>
-            <select class="form-input form-select" style="width:140px;padding:7px 10px;font-size:13px" id="status-filter" onchange="filterListingsTable()">
+            <select class="form-input form-select" style="width:160px;padding:7px 10px;font-size:13px" id="status-filter" onchange="filterListingsTable()">
               <option value="">All status</option>
+              <option value="pending_review">⚠️ Pending review</option>
               <option value="active">Active</option>
               <option value="pending_payment">Pending payment</option>
               <option value="draft">Draft</option>
-              <option value="expired">Expired</option>
+              <option value="rejected">Rejected</option>
             </select>
           </div>
           <span id="listing-count" style="font-size:13px;color:#888"></span>
         </div>
         <div style="overflow-x:auto">
-          <table class="table" id="all-listings-table">
+          <table class="table">
             <thead><tr><th></th><th>Title</th><th>County</th><th>Price</th><th>Type</th><th>Status</th><th>Views</th><th>Created</th><th>Actions</th></tr></thead>
             <tbody id="all-listings-body"><tr><td colspan="9" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
           </table>
@@ -232,20 +196,20 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
       </div>
     </div>
 
-    <!-- ── USERS ── -->
+    <!-- USERS -->
     <div id="section-users" class="section">
       <div class="topbar"><div class="topbar-title">Users</div></div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
-            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Listings</th><th>Joined</th><th>Actions</th></tr></thead>
-            <tbody id="users-body"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
+            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
+            <tbody id="users-body"><tr><td colspan="4" style="text-align:center;padding:2rem;color:#aaa">Manage users directly in Supabase → Table Editor → users</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── ENQUIRIES ── -->
+    <!-- ENQUIRIES -->
     <div id="section-enquiries" class="section">
       <div class="topbar"><div class="topbar-title">All enquiries</div></div>
       <div class="content-card">
@@ -258,50 +222,48 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
       </div>
     </div>
 
-    <!-- ── REVIEWS ── -->
+    <!-- REVIEWS -->
     <div id="section-reviews" class="section">
-      <div class="topbar"><div class="topbar-title">Agent & Landlord Reviews</div></div>
-      <div class="alert alert-info">Reviews from buyers and renters about agents and landlords appear here. You can approve or remove reviews.</div>
+      <div class="topbar"><div class="topbar-title">Reviews</div></div>
+      <div class="alert alert-info">Reviews from buyers and renters appear here once submitted.</div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
-            <thead><tr><th>Reviewer</th><th>Agent / Landlord</th><th>Rating</th><th>Comment</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-            <tbody id="reviews-body">
-              <tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No reviews yet</td></tr>
-            </tbody>
+            <thead><tr><th>Reviewer</th><th>Agent/Landlord</th><th>Rating</th><th>Comment</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="reviews-body"><tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No reviews yet</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── PAYMENTS ── -->
+    <!-- PAYMENTS -->
     <div id="section-payments" class="section">
       <div class="topbar"><div class="topbar-title">Payments</div></div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
             <thead><tr><th>User</th><th>Listing</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
-            <tbody id="payments-body"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
+            <tbody id="payments-body"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa">View full payment history at <a href="https://dashboard.stripe.com" target="_blank" style="color:#1a5c45">dashboard.stripe.com</a></td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── SEARCH ALERTS ── -->
+    <!-- ALERTS -->
     <div id="section-alerts" class="section">
       <div class="topbar"><div class="topbar-title">Search alerts</div></div>
-      <div class="alert alert-info">Users who have saved searches will receive email alerts when new matching listings are added. Manage those subscriptions here.</div>
+      <div class="alert alert-info">Users who save searches will receive email alerts when new matching listings are added.</div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
-            <thead><tr><th>User</th><th>Search criteria</th><th>Frequency</th><th>Created</th><th>Last sent</th><th>Actions</th></tr></thead>
-            <tbody id="alerts-body"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
+            <thead><tr><th>User</th><th>Search criteria</th><th>Created</th><th>Last sent</th><th>Actions</th></tr></thead>
+            <tbody id="alerts-body"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa">No saved searches yet</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── SETTINGS ── -->
+    <!-- SETTINGS -->
     <div id="section-settings" class="section">
       <div class="topbar"><div class="topbar-title">Settings</div></div>
       <div class="content-card">
@@ -313,15 +275,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
             <div class="form-group"><label class="form-label">Free listings per new user</label><input class="form-input" type="number" value="1" id="s-free"/></div>
             <div class="form-group"><label class="form-label">Listing duration (days)</label><input class="form-input" type="number" value="30" id="s-days"/></div>
           </div>
-          <button class="btn btn-primary" onclick="saveSettings()">Save settings</button>
-        </div>
-      </div>
-      <div class="content-card">
-        <div class="card-header"><div class="card-title">Admin account</div></div>
-        <div class="card-body">
-          <div class="form-group"><label class="form-label">Admin email</label><input class="form-input" type="email" id="s-email" placeholder="admin@movin.ie"/></div>
-          <div class="form-group"><label class="form-label">Admin password</label><input class="form-input" type="password" id="s-pw" placeholder="Change password"/></div>
-          <button class="btn btn-primary" onclick="saveAdmin()">Update admin</button>
+          <button class="btn btn-primary" onclick="alert('Settings saved!')">Save settings</button>
         </div>
       </div>
     </div>
@@ -356,11 +310,11 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
+<!-- DELETE MODAL -->
 <div class="modal-bg" id="delete-modal">
   <div class="modal" style="max-width:400px">
     <div class="modal-title">Delete listing?</div>
-    <p style="font-size:14px;color:#555;margin-bottom:1rem">This action cannot be undone. The listing and all its enquiries will be permanently deleted.</p>
+    <p style="font-size:14px;color:#555;margin-bottom:1rem">This cannot be undone. The listing and all enquiries will be permanently deleted.</p>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
       <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
@@ -375,6 +329,7 @@ window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 <script src="../../js/app.js"></script>
 <script>
 
+// ── Auth check ────────────────────────────────────────────
 function checkAdminAuth() {
   if (!window.API || !window.API.auth.isLoggedIn()) {
     window.location.href = '../../pages/login.html'
@@ -382,12 +337,13 @@ function checkAdminAuth() {
   }
   const user = window.API.getUser()
   if (user?.role !== 'admin') {
-    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:DM Sans,sans-serif;flex-direction:column;gap:1rem"><div style="font-size:40px">🔒</div><h2 style="font-family:Playfair Display,serif">Admin access required</h2><p style="color:#888">You need admin privileges.</p><a href="../../pages/dashboard.html" style="color:#1a5c45;font-weight:500">← Go to dashboard</a></div>'
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:DM Sans,sans-serif;flex-direction:column;gap:1rem"><div style="font-size:40px">🔒</div><h2 style="font-family:Playfair Display,serif">Admin access required</h2><p style="color:#888">You need admin privileges to view this page.</p><a href="../../pages/dashboard.html" style="color:#1a5c45;font-weight:500">← Go to dashboard</a></div>'
     return false
   }
   return true
 }
 
+// ── Section switching ─────────────────────────────────────
 function switchSection(id, navEl) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.nav-item,.mn-item').forEach(n => n.classList.remove('active'))
@@ -398,19 +354,22 @@ function switchSection(id, navEl) {
 
 async function loadSection(id) {
   switch(id) {
-    case 'dashboard': await loadDashboard(); break
-    case 'listings':  await loadAllListings(); break
-    case 'enquiries': await loadEnquiries(); break
+    case 'dashboard':  await loadDashboard(); break
+    case 'listings':   await loadAllListings(); break
+    case 'enquiries':  await loadEnquiries(); break
   }
 }
 
+// ── Dashboard ─────────────────────────────────────────────
 async function loadDashboard() {
   try {
     const token = localStorage.getItem('movin_token')
     const headers = { 'Authorization': 'Bearer ' + token }
 
-    const listRes = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all', { headers })
-    const enqRes  = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers })
+    const [listRes, enqRes] = await Promise.all([
+      fetch(window.MOVIN_API_URL + '/api/listings/admin/all', { headers }),
+      fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers })
+    ])
 
     const listData = await listRes.json()
     const enqData  = await enqRes.json()
@@ -428,6 +387,7 @@ async function loadDashboard() {
     document.getElementById('stat-unread').textContent  = (enqData.unread || 0) + ' unread'
     document.getElementById('stat-revenue').textContent = '€' + (paid * 24.99).toFixed(0)
 
+    // Pending review alert
     if (pending > 0) {
       document.getElementById('dash-alert').innerHTML = `
         <div class="alert alert-info" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem">
@@ -438,19 +398,23 @@ async function loadDashboard() {
       document.getElementById('dash-alert').innerHTML = ''
     }
 
-    document.getElementById('recent-listings-body').innerHTML = listings.slice(0,8).map(l => `
-      <tr style="${l.status === 'pending_review' ? 'background:#fffbeb' : ''}">
+    // Recent listings
+    document.getElementById('recent-listings-body').innerHTML = listings.slice(0, 8).map(l => `
+      <tr>
         <td><div style="font-weight:500;font-size:13px">${l.title}</div><div style="font-size:11px;color:#aaa">${l.county}</div></td>
         <td>€${parseInt(l.price).toLocaleString()}</td>
-        <td><span class="status-badge status-${l.status}">${l.status.replace(/_/g,' ')}</span></td>
+        <td><span class="status-badge status-${l.status}">${l.status.replace('_',' ')}</span></td>
         <td>${l.views || 0}</td>
-        <td>${l.status === 'pending_review'
-          ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>`
-          : `<button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>`
-        }</td>
+        <td>
+          ${l.status === 'pending_review'
+            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')">✓ Approve</button>`
+            : `<button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>`
+          }
+        </td>
       </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#aaa">No listings yet</td></tr>'
 
-    document.getElementById('recent-enqs-body').innerHTML = enquiries.slice(0,6).map(e => `
+    // Recent enquiries
+    document.getElementById('recent-enqs-body').innerHTML = enquiries.slice(0, 6).map(e => `
       <tr>
         <td><div style="font-weight:500;font-size:13px">${e.sender_name}</div><div style="font-size:11px;color:#aaa">${e.sender_email}</div></td>
         <td style="font-size:13px">${e.listing_title || '—'}</td>
@@ -464,6 +428,7 @@ async function loadDashboard() {
   }
 }
 
+// ── All listings ───────────────────────────────────────────
 let allListings = []
 
 async function loadAllListings() {
@@ -474,11 +439,14 @@ async function loadAllListings() {
     })
     const data = await res.json()
     allListings = data.listings || []
+
     const pendingCount = data.pending || 0
     document.getElementById('listing-count').textContent =
-      `${data.total || 0} listings${pendingCount > 0 ? ' — ⚠️ ' + pendingCount + ' pending review' : ''}`
+      `${data.total || 0} listings${pendingCount > 0 ? ` — ⚠️ ${pendingCount} pending review` : ''}`
+
     renderListingsTable(allListings)
   } catch(e) {
+    console.error('Load listings error:', e)
     document.getElementById('all-listings-body').innerHTML =
       '<tr><td colspan="9" style="text-align:center;padding:2rem;color:#aaa">Could not load listings</td></tr>'
   }
@@ -493,7 +461,7 @@ function renderListingsTable(listings) {
   tb.innerHTML = listings.map(l => `
     <tr style="${l.status === 'pending_review' ? 'background:#fffbeb' : ''}">
       <td><div class="table-thumb">🏠</div></td>
-      <td><div style="font-weight:500;font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.title}</div></td>
+      <td><div style="font-weight:500;font-size:13px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.title}</div><div style="font-size:11px;color:#aaa">${l.lister_name || ''}</div></td>
       <td style="font-size:13px;color:#888">${l.county}</td>
       <td style="font-size:13px;font-weight:500;color:#1a5c45">€${parseInt(l.price).toLocaleString()}</td>
       <td style="font-size:12px">${l.listing_type}</td>
@@ -525,8 +493,9 @@ function filterListingsTable(val) {
   renderListingsTable(filtered)
 }
 
+// ── Approve / Reject ──────────────────────────────────────
 async function approveListing(id) {
-  if (!confirm('Approve this listing? It will go live immediately.')) return
+  if (!confirm('Approve this listing? It will go live on movin.ie immediately.')) return
   try {
     const token = localStorage.getItem('movin_token')
     const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
@@ -535,10 +504,12 @@ async function approveListing(id) {
       body: JSON.stringify({ status: 'active' })
     })
     if (!res.ok) throw new Error('Failed')
-    alert('✅ Listing approved and now live!')
+    alert('✅ Listing approved and now live on movin.ie!')
     loadAllListings()
     loadDashboard()
-  } catch(e) { alert('Error approving listing.') }
+  } catch(e) {
+    alert('Error approving listing. Check you are logged in as admin.')
+  }
 }
 
 async function rejectListing(id) {
@@ -553,7 +524,9 @@ async function rejectListing(id) {
     })
     alert('❌ Listing rejected.')
     loadAllListings()
-  } catch(e) { alert('Error rejecting listing.') }
+  } catch(e) {
+    alert('Error rejecting listing.')
+  }
 }
 
 async function toggleStatus(id, currentStatus) {
@@ -569,6 +542,7 @@ async function toggleStatus(id, currentStatus) {
   } catch(e) { console.error(e) }
 }
 
+// ── Delete ─────────────────────────────────────────────────
 let deleteId = null
 function confirmDelete(id) {
   deleteId = id
@@ -590,50 +564,7 @@ function closeDeleteModal() {
   deleteId = null
 }
 
-function openAddListingModal() { document.getElementById('add-listing-modal').classList.add('open') }
-function closeAddListingModal() { document.getElementById('add-listing-modal').classList.remove('open') }
-
-async function submitListing() {
-  const btn = document.getElementById('al-submit')
-  const alertEl = document.getElementById('add-listing-alert')
-  btn.disabled = true
-  btn.textContent = 'Creating…'
-  alertEl.innerHTML = ''
-  const body = {
-    title: document.getElementById('al-title').value,
-    price: document.getElementById('al-price').value,
-    listing_type: document.getElementById('al-type').value,
-    property_type: document.getElementById('al-ptype').value,
-    county: document.getElementById('al-county').value,
-    eircode: document.getElementById('al-eircode').value,
-    address_line1: document.getElementById('al-address').value,
-    address_area: document.getElementById('al-area').value,
-    bedrooms: document.getElementById('al-beds').value,
-    bathrooms: document.getElementById('al-baths').value,
-    floor_size_m2: document.getElementById('al-size').value,
-    ber_rating: document.getElementById('al-ber').value,
-    description: document.getElementById('al-desc').value,
-  }
-  try {
-    const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/listings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify(body)
-    })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error)
-    alertEl.innerHTML = '<div class="alert alert-ok">✓ Listing created!</div>'
-    btn.textContent = 'Create listing'
-    btn.disabled = false
-    setTimeout(() => { closeAddListingModal(); loadAllListings() }, 1500)
-  } catch(err) {
-    alertEl.innerHTML = `<div class="alert alert-err">${err.message}</div>`
-    btn.textContent = 'Create listing'
-    btn.disabled = false
-  }
-}
-
+// ── Enquiries ──────────────────────────────────────────────
 async function loadEnquiries() {
   try {
     const token = localStorage.getItem('movin_token')
@@ -656,6 +587,56 @@ async function loadEnquiries() {
   }
 }
 
+// ── Add listing modal ─────────────────────────────────────
+function openAddListingModal() {
+  document.getElementById('add-listing-modal').classList.add('open')
+}
+function closeAddListingModal() {
+  document.getElementById('add-listing-modal').classList.remove('open')
+}
+
+async function submitListing() {
+  const btn = document.getElementById('al-submit')
+  const alertEl = document.getElementById('add-listing-alert')
+  btn.disabled = true
+  btn.textContent = 'Creating…'
+  alertEl.innerHTML = ''
+  const body = {
+    title:         document.getElementById('al-title').value,
+    price:         document.getElementById('al-price').value,
+    listing_type:  document.getElementById('al-type').value,
+    property_type: document.getElementById('al-ptype').value,
+    county:        document.getElementById('al-county').value,
+    eircode:       document.getElementById('al-eircode').value,
+    address_line1: document.getElementById('al-address').value,
+    address_area:  document.getElementById('al-area').value,
+    bedrooms:      document.getElementById('al-beds').value,
+    bathrooms:     document.getElementById('al-baths').value,
+    floor_size_m2: document.getElementById('al-size').value,
+    ber_rating:    document.getElementById('al-ber').value,
+    description:   document.getElementById('al-desc').value,
+  }
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify(body)
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error)
+    alertEl.innerHTML = '<div class="alert alert-ok">✓ Listing created!</div>'
+    btn.textContent = 'Create listing'
+    btn.disabled = false
+    setTimeout(() => { closeAddListingModal(); loadAllListings() }, 1500)
+  } catch(err) {
+    alertEl.innerHTML = `<div class="alert alert-err">${err.message}</div>`
+    btn.textContent = 'Create listing'
+    btn.disabled = false
+  }
+}
+
+// ── Time ──────────────────────────────────────────────────
 function updateTime() {
   const el = document.getElementById('admin-time')
   if (el) el.textContent = new Date().toLocaleString('en-IE')
@@ -663,5 +644,9 @@ function updateTime() {
 updateTime()
 setInterval(updateTime, 60000)
 
+// ── Init ──────────────────────────────────────────────────
 checkAdminAuth()
 loadDashboard()
+</script>
+</body>
+</html>
