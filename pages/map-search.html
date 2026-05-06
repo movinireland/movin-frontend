@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Map Search – Movin.ie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+<meta name="theme-color" content="#1a5c45"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#111}
+:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc;--safe-b:env(safe-area-inset-bottom,0px)}
+.btn{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;border-radius:50px;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn-primary{background:var(--g);color:#fff;padding:9px 18px;font-size:13px}
+.btn-ghost{background:#fff;color:var(--g);border:1.5px solid var(--g);padding:8px 16px;font-size:13px}
+.btn-sm{padding:7px 14px;font-size:12px}
+
+/* ── TOP BAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:8px;height:56px}
+.back-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;-webkit-tap-highlight-color:transparent}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--g);flex-shrink:0}
+.topbar-logo span{color:var(--o)}
+.topbar-search{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:14px;background:#fafaf8;color:#333;outline:none;-webkit-appearance:none}
+.topbar-search:focus{border-color:var(--g)}
+.filter-pill{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;background:#fafaf8;cursor:pointer;color:#555;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.filter-pill.on{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ── MAP ── */
+#map{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1}
+
+/* ── RESULTS COUNT CHIP ── */
+.results-chip{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:100;background:#fff;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:500;color:#333;box-shadow:0 4px 16px rgba(0,0,0,.12);white-space:nowrap;border:1px solid var(--border)}
+
+/* ── TYPE TABS ── */
+.type-tabs{position:fixed;top:68px;left:1rem;z-index:100;display:flex;gap:6px}
+.type-tab{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#666;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.type-tab.active{background:var(--g);color:#fff;border-color:var(--g)}
+
+/* ── MAP MARKER (price pin) ── */
+.map-price-pin{background:var(--g);color:#fff;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .15s;border:2px solid #fff}
+.map-price-pin::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--g)}
+.map-price-pin:hover,.map-price-pin.active{background:var(--o);transform:scale(1.1)}
+
+/* ── PROPERTY CARD PANEL (slides up when pin clicked) ── */
+.card-panel{
+  position:fixed;bottom:0;left:0;right:0;z-index:300;
+  background:#fff;border-radius:20px 20px 0 0;
+  box-shadow:0 -8px 32px rgba(0,0,0,.15);
+  transform:translateY(100%);
+  transition:transform .3s ease;
+  padding-bottom:var(--safe-b);
+  max-height:65vh;overflow-y:auto;
+}
+.card-panel.open{transform:translateY(0)}
+.panel-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:.75rem auto .5rem}
+.panel-close{position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;-webkit-tap-highlight-color:transparent}
+
+/* Property card in panel */
+.panel-card{display:flex;gap:.85rem;padding:1rem;border-bottom:1px solid #f5f2ec;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.panel-card:last-child{border-bottom:none}
+.panel-card:active{background:#fafaf8}
+.panel-img{width:90px;height:68px;border-radius:10px;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px}
+.panel-img img{width:100%;height:100%;object-fit:cover}
+.panel-info{flex:1;min-width:0}
+.panel-price{font-size:16px;font-weight:500;color:var(--g);margin-bottom:2px}
+.panel-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:#111;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel-meta{font-size:11px;color:#aaa;display:flex;gap:8px;flex-wrap:wrap}
+.panel-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;background:var(--g);color:#fff;margin-bottom:4px}
+.panel-count{font-size:12px;color:var(--g);font-weight:500;text-align:center;padding:.75rem}
+
+/* ── FILTER SHEET ── */
+.filter-sheet{position:fixed;bottom:0;left:0;right:0;z-index:400;background:#fff;border-radius:20px 20px 0 0;padding:1.25rem;transform:translateY(100%);transition:transform .25s ease;max-height:80vh;overflow-y:auto;padding-bottom:calc(1.25rem + var(--safe-b))}
+.filter-sheet.open{transform:translateY(0)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:350;display:none}
+.overlay.open{display:block}
+.fs-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1rem}
+.fs-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.fs-field label{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px}
+.fs-sel{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 28px 9px 10px;font-size:13px;background:#fafaf8;color:#555;outline:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23aaa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.fs-sel:focus{border-color:var(--g)}
+.fs-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.fsc{border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:500;color:#666;cursor:pointer;background:#fafaf8;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.fsc.on{border-color:var(--g);color:var(--g);background:var(--gl)}
+.fs-apply{width:100%;background:var(--g);color:#fff;border:none;padding:13px;border-radius:50px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;-webkit-tap-highlight-color:transparent}
+.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.map-loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 8px 24px rgba(0,0,0,.12);text-align:center}
+.toast-wrap{position:fixed;bottom:calc(1rem + var(--safe-b));left:1rem;right:1rem;z-index:999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:#1a1a1a;color:#fff;padding:.75rem 1rem;border-radius:10px;font-size:14px;animation:slideUp .2s ease;pointer-events:all}
+.toast.ok{background:var(--g)}.toast.info{background:#1d4ed8}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <button class="back-btn" onclick="window.location.href='../index.html'">←</button>
+  <span class="topbar-logo">mov<span>in</span></span>
+  <input class="topbar-search" type="text" placeholder="Area or county…" id="map-search-inp" onkeydown="if(event.key==='Enter')applySearch()"/>
+  <button class="filter-pill" id="filter-pill-btn" onclick="openFilters()">⚙ Filters</button>
+</div>
+
+<!-- Type tabs -->
+<div class="type-tabs">
+  <div class="type-tab active" data-type="sale" onclick="selectMapType(this)">Buy</div>
+  <div class="type-tab" data-type="rent" onclick="selectMapType(this)">Rent</div>
+  <div class="type-tab" data-type="share" onclick="selectMapType(this)">Sharing</div>
+</div>
+
+<!-- Results count -->
+<div class="results-chip" id="results-chip" style="display:none"></div>
+
+<!-- Map loading -->
+<div class="map-loading" id="map-loading">
+  <div class="spinner" style="margin-bottom:.75rem"></div>
+  <div style="font-size:13px;color:#888">Loading map…</div>
+</div>
+
+<!-- Google Map -->
+<div id="map"></div>
+
+<!-- Property card panel (shows when pin clicked) -->
+<div class="card-panel" id="card-panel">
+  <div class="panel-handle"></div>
+  <button class="panel-close" onclick="closePanel()">×</button>
+  <div id="panel-content"></div>
+</div>
+
+<!-- Filter overlay -->
+<div class="overlay" id="overlay" onclick="closeFilters()"></div>
+
+<!-- Filter sheet -->
+<div class="filter-sheet" id="filter-sheet">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+    <div class="fs-title">Map filters</div>
+    <button onclick="closeFilters()" style="background:none;border:none;font-size:20px;color:#aaa;cursor:pointer">×</button>
+  </div>
+  <div class="fs-row">
+    <div class="fs-field"><label>Min price</label>
+      <select class="fs-sel" id="fs-min">
+        <option value="">No min</option><option value="50000">€50k</option><option value="100000">€100k</option>
+        <option value="150000">€150k</option><option value="200000">€200k</option><option value="300000">€300k</option>
+        <option value="400000">€400k</option><option value="500000">€500k</option>
+      </select>
+    </div>
+    <div class="fs-field"><label>Max price</label>
+      <select class="fs-sel" id="fs-max">
+        <option value="">No max</option><option value="150000">€150k</option><option value="200000">€200k</option>
+        <option value="300000">€300k</option><option value="400000">€400k</option><option value="500000">€500k</option>
+        <option value="750000">€750k</option><option value="1000000">€1m+</option>
+      </select>
+    </div>
+    <div class="fs-field"><label>Bedrooms</label>
+      <select class="fs-sel" id="fs-beds">
+        <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
+        <option value="3">3+</option><option value="4">4+</option>
+      </select>
+    </div>
+    <div class="fs-field"><label>Property type</label>
+      <select class="fs-sel" id="fs-ptype">
+        <option value="">Any type</option><option value="house">House</option>
+        <option value="apartment">Apartment</option><option value="bungalow">Bungalow</option>
+      </select>
+    </div>
+  </div>
+  <div style="font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px">Features</div>
+  <div class="fs-chips">
+    <div class="fsc" data-key="parking" onclick="this.classList.toggle('on')">🅿 Parking</div>
+    <div class="fsc" data-key="garden" onclick="this.classList.toggle('on')">🌿 Garden</div>
+    <div class="fsc" data-key="furnished" onclick="this.classList.toggle('on')">🛋 Furnished</div>
+    <div class="fsc" data-key="pets" onclick="this.classList.toggle('on')">🐾 Pets</div>
+  </div>
+  <button class="fs-apply" onclick="applyFilters()">Apply filters</button>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+</script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+// ── State ─────────────────────────────────────────────────
+let map, markers = [], infoWindows = [], currentListings = []
+let mapType = 'sale', mapCounty = '', currentMarkers = []
+
+// ── Geocode fallback coords by county ─────────────────────
+const COUNTY_COORDS = {
+  Dublin:    {lat:53.3498,lng:-6.2603},
+  Cork:      {lat:51.8985,lng:-8.4756},
+  Galway:    {lat:53.2707,lng:-9.0568},
+  Limerick:  {lat:52.6638,lng:-8.6267},
+  Waterford: {lat:52.2593,lng:-7.1101},
+  Kerry:     {lat:52.1545,lng:-9.5669},
+  Meath:     {lat:53.6055,lng:-6.6564},
+  Kildare:   {lat:53.1609,lng:-6.9097},
+  Wicklow:   {lat:52.9808,lng:-6.0444},
+  default:   {lat:53.3498,lng:-7.5}
+}
+
+// ── Init Google Maps ───────────────────────────────────────
+function initMap() {
+  map = new google.maps.Map(document.getElementById('map'), {
+    center: COUNTY_COORDS.default,
+    zoom: 7,
+    mapTypeControl: false,
+    streetViewControl: false,
+    fullscreenControl: false,
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_BOTTOM },
+    styles: [
+      { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
+      { featureType: 'transit', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+    ]
+  })
+
+  document.getElementById('map-loading').style.display = 'none'
+  loadListingsOnMap()
+}
+
+// ── Load listings and place pins ───────────────────────────
+async function loadListingsOnMap() {
+  try {
+    const params = buildParams()
+    params.limit = 100
+    const res = await window.API.listings.search(params)
+    currentListings = res.listings || []
+
+    const chip = document.getElementById('results-chip')
+    chip.style.display = 'block'
+    chip.textContent = `${currentListings.length} properties`
+
+    clearMarkers()
+
+    if (!currentListings.length) {
+      chip.textContent = 'No properties found'
+      return
+    }
+
+    // Geocode each listing and place a pin
+    const geocoder = new google.maps.Geocoder()
+    const bounds = new google.maps.LatLngBounds()
+
+    for (const listing of currentListings) {
+      await geocodeListing(listing, geocoder, bounds)
+    }
+
+    if (currentListings.length > 0) {
+      map.fitBounds(bounds)
+      if (map.getZoom() > 14) map.setZoom(14)
+    }
+
+  } catch(e) {
+    console.error('Map load error:', e)
+    showFallbackPins()
+  }
+}
+
+async function geocodeListing(listing, geocoder, bounds) {
+  return new Promise(resolve => {
+    const address = `${listing.address_line1 || ''} ${listing.address_area || ''} ${listing.county} Ireland`
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === 'OK' && results[0]) {
+        const pos = results[0].geometry.location
+        placePinForListing(listing, pos, bounds)
+      } else {
+        // Fallback to county centre
+        const coords = COUNTY_COORDS[listing.county] || COUNTY_COORDS.default
+        const pos = new google.maps.LatLng(
+          coords.lat + (Math.random() - .5) * 0.05,
+          coords.lng + (Math.random() - .5) * 0.05
+        )
+        placePinForListing(listing, pos, bounds)
+      }
+      setTimeout(resolve, 50) // small delay to avoid geocoding rate limit
+    })
+  })
+}
+
+function placePinForListing(listing, pos, bounds) {
+  bounds.extend(pos)
+  const priceLabel = formatPrice(listing.price, listing.listing_type)
+
+  // Custom price pin
+  const pinDiv = document.createElement('div')
+  pinDiv.className = 'map-price-pin'
+  pinDiv.style.cssText = 'position:relative;background:#1a5c45;color:#fff;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);border:2px solid #fff'
+  pinDiv.textContent = priceLabel
+
+  const marker = new google.maps.marker.AdvancedMarkerElement({
+    map,
+    position: pos,
+    content: pinDiv,
+    title: listing.title
+  })
+
+  marker.addListener('click', () => {
+    // Deactivate all pins
+    currentMarkers.forEach(m => {
+      if (m.content) m.content.classList.remove('active')
+    })
+    pinDiv.classList.add('active')
+    showListingPanel([listing])
+    map.panTo(pos)
+  })
+
+  currentMarkers.push(marker)
+}
+
+function showFallbackPins() {
+  // Show demo pins if API fails
+  const demoPins = [
+    {lat:53.3264,lng:-6.2191,price:'€595k',title:'Victorian Semi-D, Rathmines'},
+    {lat:53.3381,lng:-6.2592,price:'€480k',title:'Terraced 3-bed, D8'},
+    {lat:53.3498,lng:-6.2603,price:'€745k',title:'Detached 4-bed, D4'},
+    {lat:53.2941,lng:-6.1350,price:'€2,400/mo',title:'2-Bed Apartment, Sandyford'},
+  ]
+  demoPins.forEach(pin => {
+    const div = document.createElement('div')
+    div.style.cssText = 'position:relative;background:#1a5c45;color:#fff;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);border:2px solid #fff'
+    div.textContent = pin.price
+    const marker = new google.maps.marker.AdvancedMarkerElement({
+      map, position: {lat:pin.lat,lng:pin.lng}, content: div, title: pin.title
+    })
+    currentMarkers.push(marker)
+  })
+}
+
+function clearMarkers() {
+  currentMarkers.forEach(m => m.map = null)
+  currentMarkers = []
+}
+
+function formatPrice(price, type) {
+  const n = parseInt(price)
+  if (n >= 1000000) return '€' + (n/1000000).toFixed(1) + 'm'
+  if (n >= 1000) return '€' + Math.round(n/1000) + 'k'
+  return '€' + n.toLocaleString() + (type === 'rent' ? '/mo' : '')
+}
+
+// ── Property panel ─────────────────────────────────────────
+function showListingPanel(listings) {
+  const panel = document.getElementById('card-panel')
+  const content = document.getElementById('panel-content')
+
+  const bgClasses = ['img-a','img-b','img-c','img-d','img-e']
+  const emojis = ['🏠','🏡','🏢','🏘','🏗']
+
+  content.innerHTML = listings.map((l, i) => `
+    <div class="panel-card" onclick="window.location.href='listing.html?id=${l.id}'">
+      <div class="panel-img ${bgClasses[i%5]}">${emojis[i%5]}</div>
+      <div class="panel-info">
+        <div class="panel-badge">${l.listing_type === 'rent' ? 'To Rent' : 'For Sale'}</div>
+        <div class="panel-price">${formatPrice(l.price, l.listing_type)}</div>
+        <div class="panel-title">${l.title}</div>
+        <div class="panel-meta">
+          ${l.bedrooms ? `<span>🛏 ${l.bedrooms}</span>` : ''}
+          ${l.bathrooms ? `<span>🚿 ${l.bathrooms}</span>` : ''}
+          ${l.floor_size_m2 ? `<span>📐 ${l.floor_size_m2}m²</span>` : ''}
+          <span>📍 ${l.address_area || l.county}</span>
+        </div>
+      </div>
+    </div>
+  `).join('')
+
+  panel.classList.add('open')
+}
+
+function closePanel() {
+  document.getElementById('card-panel').classList.remove('open')
+  currentMarkers.forEach(m => { if (m.content) m.content.classList.remove('active') })
+}
+
+// Close panel when clicking map
+document.addEventListener('click', e => {
+  if (e.target.id === 'map') closePanel()
+})
+
+// ── Filters ────────────────────────────────────────────────
+function openFilters() {
+  document.getElementById('filter-sheet').classList.add('open')
+  document.getElementById('overlay').classList.add('open')
+}
+function closeFilters() {
+  document.getElementById('filter-sheet').classList.remove('open')
+  document.getElementById('overlay').classList.remove('open')
+}
+
+function applyFilters() {
+  closeFilters()
+  document.getElementById('map-loading').style.display = 'flex'
+  document.getElementById('map-loading').style.flexDirection = 'column'
+  document.getElementById('map-loading').style.alignItems = 'center'
+  document.getElementById('map-loading').style.justifyContent = 'center'
+  loadListingsOnMap().finally(() => {
+    document.getElementById('map-loading').style.display = 'none'
+  })
+}
+
+function buildParams() {
+  const p = { listing_type: mapType }
+  if (mapCounty) p.county = mapCounty
+  const min = document.getElementById('fs-min').value
+  const max = document.getElementById('fs-max').value
+  const beds = document.getElementById('fs-beds').value
+  const ptype = document.getElementById('fs-ptype').value
+  if (min) p.min_price = min
+  if (max) p.max_price = max
+  if (beds) p.bedrooms = beds
+  if (ptype) p.property_type = ptype
+  document.querySelectorAll('.fsc.on').forEach(c => { p[c.dataset.key] = '1' })
+  return p
+}
+
+function selectMapType(el) {
+  mapType = el.dataset.type
+  document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  loadListingsOnMap()
+}
+
+function applySearch() {
+  const val = document.getElementById('map-search-inp').value.trim()
+  if (!val) return
+  const COUNTIES = ['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow']
+  const match = COUNTIES.find(c => c.toLowerCase().includes(val.toLowerCase()))
+  if (match) {
+    mapCounty = match
+    const coords = COUNTY_COORDS[match] || COUNTY_COORDS.default
+    map.setCenter(coords)
+    map.setZoom(11)
+  }
+  loadListingsOnMap()
+}
+
+// ── Load Google Maps ───────────────────────────────────────
+window.initMap = initMap
+const gmScript = document.createElement('script')
+gmScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&libraries=marker`
+gmScript.async = true
+document.head.appendChild(gmScript)
+</script>
+</body>
+</html>

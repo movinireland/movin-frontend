@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In – Movin.ie</title>
   <link rel="stylesheet" href="../css/main.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-
-    .auth-divider {
-  display: flex; align-items: center; gap: 10px;
-  margin: 1.25rem 0; font-size: 13px; color: #aaa;
-}
-.auth-divider::before, .auth-divider::after {
-  content: ''; flex: 1; border-top: 1px solid var(--border);
-}
     .auth-wrap { min-height:calc(100vh - 64px); display:flex; align-items:center; justify-content:center; padding:2rem; }
     .auth-card { background:#fff; border-radius:20px; padding:2.5rem; width:100%; max-width:420px; border:1px solid var(--border); box-shadow:var(--shadow-lg); }
     .auth-logo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--green); text-align:center; margin-bottom:.5rem; cursor:pointer; }
@@ -22,9 +14,9 @@
     .auth-sub { font-size:14px; color:#999; text-align:center; margin-bottom:2rem; font-weight:300; }
     .auth-switch { text-align:center; margin-top:1.5rem; font-size:14px; color:#888; }
     .auth-switch a { color:var(--green); font-weight:500; cursor:pointer; }
-    .divider-text { display:flex; align-items:center; gap:10px; margin:1.25rem 0; }
-    .divider-text span { font-size:12px; color:#ccc; white-space:nowrap; }
-    .divider-text::before,.divider-text::after { content:''; flex:1; border-top:1px solid var(--border); }
+    .auth-divider { display:flex; align-items:center; gap:10px; margin:1.25rem 0; font-size:13px; color:#aaa; }
+    .auth-divider::before, .auth-divider::after { content:''; flex:1; border-top:1px solid var(--border); }
+    .google-btn-wrap { display:flex; justify-content:center; margin-bottom:.5rem; }
   </style>
 </head>
 <body>
@@ -34,23 +26,28 @@
       <div class="auth-logo" onclick="window.location.href='../index.html'">mov<span>in</span></div>
       <h1 class="auth-title">Welcome back</h1>
       <p class="auth-sub">Sign in to manage your listings and enquiries</p>
+
+      <!-- Google Sign-In -->
       <div id="g_id_onload"
-     data-client_id="785116519260-atuctihtm6m3v34m8eeq1k1mme8ko3o5.apps.googleusercontent.com"
-     data-callback="handleGoogleSignIn"
-     data-auto_prompt="false">
-</div>
-<div class="g_id_signin"
-     data-type="standard"
-     data-size="large"
-     data-theme="outline"
-     data-text="continue_with"
-     data-shape="pill"
-     data-width="360">
-</div>
-<div class="auth-divider">
-  <span>or continue with email</span>
-</div>
+           data-client_id="976314429321-0tnnpq92n6sldt6vv1q80tlabaelcfc4.apps.googleusercontent.com"
+           data-callback="handleGoogleSignIn"
+           data-auto_prompt="false">
+      </div>
+      <div class="google-btn-wrap">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="continue_with"
+             data-shape="pill"
+             data-width="360">
+        </div>
+      </div>
+
+      <div class="auth-divider"><span>or continue with email</span></div>
+
       <div id="auth-alert"></div>
+
       <form onsubmit="doLogin(event)">
         <div class="form-group">
           <label class="form-label">Email address</label>
@@ -62,20 +59,42 @@
         </div>
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-btn" style="margin-top:.5rem">Sign in</button>
       </form>
+
       <p class="auth-switch">Don't have an account? <a href="register.html">Create one free →</a></p>
     </div>
   </div>
 
   <script>
-  window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
-</script>
-  <script src="../js/app.js"></script>
+    window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+  </script>
   <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
   <script>
-    // Already logged in? redirect to dashboard
     if (API.auth.isLoggedIn()) window.location.href = 'dashboard.html'
     renderNav()
 
+    // ── Google Sign-In handler ─────────────────────────────────────────────
+    async function handleGoogleSignIn(response) {
+      const alert = document.getElementById('auth-alert')
+      alert.innerHTML = ''
+      try {
+        const res = await fetch(window.MOVIN_API_URL + '/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error)
+        localStorage.setItem('movin_token', data.token)
+        localStorage.setItem('movin_user', JSON.stringify(data.user))
+        toast('Welcome back! 🎉')
+        window.location.href = 'dashboard.html'
+      } catch(err) {
+        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
+      }
+    }
+
+    // ── Email login handler ────────────────────────────────────────────────
     async function doLogin(e) {
       e.preventDefault()
       const btn = document.getElementById('login-btn')
@@ -83,7 +102,10 @@
       btn.classList.add('btn-loading'); btn.disabled = true
       alert.innerHTML = ''
       try {
-        await API.auth.login(document.getElementById('email').value, document.getElementById('password').value)
+        await API.auth.login(
+          document.getElementById('email').value,
+          document.getElementById('password').value
+        )
         const redirect = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html'
         window.location.href = redirect
       } catch(err) {
@@ -91,25 +113,6 @@
         btn.classList.remove('btn-loading'); btn.disabled = false
       }
     }
-
-    async function handleGoogleSignIn(response) {
-  const alert = document.getElementById('auth-alert')
-  try {
-    const res = await fetch(window.MOVIN_API_URL + '/api/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential: response.credential })
-    })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error)
-    localStorage.setItem('movin_token', data.token)
-    localStorage.setItem('movin_user', JSON.stringify(data.user))
-    toast('Welcome! 🎉')
-    window.location.href = 'dashboard.html'
-  } catch(err) {
-    alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
-  }
-}
   </script>
 </body>
 </html>
