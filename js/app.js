@@ -196,7 +196,7 @@ function buildPropertyCard(listing, savedIds = []) {
   const isSaved = savedIds.includes(listing.id)
   const photo = listing.primary_photo || listing.photos?.[0]?.url || null
   const imgContent = photo
-    ? `<img src="${window.MOVIN_API_URL}${photo}" alt="${listing.title}" loading="lazy" />`
+    ? `<img src="${photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo}" alt="${listing.title}" loading="lazy" />`
     : `<span style="font-size:52px">🏡</span>`
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
