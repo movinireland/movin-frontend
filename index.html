@@ -230,17 +230,17 @@ button,input,select{font-family:inherit}
     <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
   </div>
   <div class="mobile-menu-body">
-    <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()"><div class="mm-icon">🏠</div>Buy a property</div>
-    <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon">🏢</div>Rent a property</div>
-    <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon">🗺</div>Map search</div>
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-house"/></svg></div>Buy a property</div>
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
+    <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
     <div class="mm-divider"></div>
-    <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon">🏦</div>Mortgage calculator</div>
-    <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon">🏡</div>Home valuation</div>
-    <div class="mm-item" onclick="go('pages/tools.html#stamp');toggleMobileMenu()"><div class="mm-icon">📋</div>Stamp duty</div>
-    <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()"><div class="mm-icon">🔑</div>First-time buyer</div>
+    <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
+    <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
+    <div class="mm-item" onclick="go('pages/tools.html#stamp');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-document"/></svg></div>Stamp duty</div>
+    <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-key"/></svg></div>First-time buyer</div>
     <div class="mm-divider"></div>
-    <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6">➕</div>List your property</div>
-    <div class="mm-item" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec">⚙️</div>Admin panel</div>
+    <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>List your property</div>
+    <div class="mm-item" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
   </div>
   <div class="mobile-menu-footer" id="mobile-menu-footer">
     <a href="pages/login.html" class="btn btn-ghost">Sign in</a>
@@ -266,13 +266,13 @@ button,input,select{font-family:inherit}
     </div>
 
     <div class="search-main" style="position:relative">
-      <span class="search-ico-abs">🔍</span>
+      <span class="search-ico-abs"><svg width="16" height="16" style="color:#aaa;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></span>
       <input class="search-inp" type="text" id="hero-loc"
         placeholder="Area, county, Eircode or D1, D2…"
         autocomplete="off"
         oninput="handleLoc(this.value)"
         onkeydown="if(event.key==='Enter')doSearch()"/>
-      <button class="search-go" onclick="doSearch()">Search</button>
+      <button class="search-go" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search</button>
       <div class="sugg-box" id="loc-sugg"></div>
     </div>
 
@@ -328,15 +328,15 @@ button,input,select{font-family:inherit}
       </div>
       <div class="features-label">Features</div>
       <div class="feat-chips">
-        <div class="fc" data-key="parking" onclick="this.classList.toggle('on')">🅿 Parking</div>
-        <div class="fc" data-key="garden" onclick="this.classList.toggle('on')">🌿 Garden</div>
-        <div class="fc" data-key="garage" onclick="this.classList.toggle('on')">🚗 Garage</div>
-        <div class="fc" data-key="furnished" onclick="this.classList.toggle('on')">🛋 Furnished</div>
-        <div class="fc" data-key="pets" onclick="this.classList.toggle('on')">🐾 Pet-friendly</div>
-        <div class="fc" data-key="alarm" onclick="this.classList.toggle('on')">🔒 Alarm</div>
-        <div class="fc" data-key="wheelchair" onclick="this.classList.toggle('on')">♿ Accessible</div>
+        <div class="fc" data-key="parking" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-parking"/></svg> Parking</div>
+        <div class="fc" data-key="garden" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garden"/></svg> Garden</div>
+        <div class="fc" data-key="garage" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg> Garage</div>
+        <div class="fc" data-key="furnished" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-sofa"/></svg> Furnished</div>
+        <div class="fc" data-key="pets" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-pets"/></svg> Pet-friendly</div>
+        <div class="fc" data-key="alarm" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Alarm</div>
+        <div class="fc" data-key="wheelchair" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-wheelchair"/></svg> Accessible</div>
       </div>
-      <button class="search-full-btn" onclick="doSearch()">🔍 Search properties</button>
+      <button class="search-full-btn" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search properties</button>
     </div>
 
     <div class="popular-row">
@@ -365,10 +365,10 @@ button,input,select{font-family:inherit}
 
 <div class="section" style="background:#fff">
   <div class="qa-grid">
-    <div class="qa-card" onclick="go('pages/list.html')"><div class="qa-icon">🏠</div><div class="qa-title">List your home</div><div class="qa-sub">First listing free</div></div>
-    <div class="qa-card" onclick="go('pages/map-search.html')"><div class="qa-icon">🗺</div><div class="qa-title">Map search</div><div class="qa-sub">Browse by location</div></div>
-    <div class="qa-card" onclick="go('pages/tools.html#valuation')"><div class="qa-icon">💰</div><div class="qa-title">Value my home</div><div class="qa-sub">Instant estimate</div></div>
-    <div class="qa-card" onclick="go('pages/tools.html#mortgage')"><div class="qa-icon">🏦</div><div class="qa-title">Mortgage calc</div><div class="qa-sub">What can I afford?</div></div>
+    <div class="qa-card" onclick="go('pages/list.html')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="qa-title">List your home</div><div class="qa-sub">First listing free</div></div>
+    <div class="qa-card" onclick="go('pages/map-search.html')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div><div class="qa-title">Map search</div><div class="qa-sub">Browse by location</div></div>
+    <div class="qa-card" onclick="go('pages/tools.html#valuation')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg></div><div class="qa-title">Value my home</div><div class="qa-sub">Instant estimate</div></div>
+    <div class="qa-card" onclick="go('pages/tools.html#mortgage')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div><div class="qa-title">Mortgage calc</div><div class="qa-sub">What can I afford?</div></div>
   </div>
 </div>
 
@@ -386,9 +386,9 @@ button,input,select{font-family:inherit}
   <h2 class="section-title">Why Movin.ie?</h2>
   <p class="section-sub">What Ireland's property market needed</p>
   <div class="why-grid">
-    <div class="why-card"><div class="why-icon">🎯</div><h3>Free first listing</h3><p>List at no cost. See how it performs before you pay a cent.</p></div>
-    <div class="why-card"><div class="why-icon">💸</div><h3>Radically fair pricing</h3><p>Just €24.99 per listing. Over 75% cheaper than competitors.</p></div>
-    <div class="why-card"><div class="why-icon">✨</div><h3>Modern & fast</h3><p>Built for mobile. Clean, intuitive, works on any device.</p></div>
+    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-star"/></svg></div><h3>Free first listing</h3><p>List at no cost. See how it performs before you pay a cent.</p></div>
+    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg></div><h3>Radically fair pricing</h3><p>Just €24.99 per listing. Over 75% cheaper than competitors.</p></div>
+    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg></div><h3>Modern & fast</h3><p>Built for mobile. Clean, intuitive, works on any device.</p></div>
   </div>
 </div>
 
@@ -442,26 +442,27 @@ button,input,select{font-family:inherit}
 
 <div class="tab-bar">
   <button class="tab-item active" onclick="go('index.html')">
-    <div class="tab-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10.5z"/></svg></div>Home
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-home"/></svg></div>Home
   </button>
   <button class="tab-item" onclick="go('pages/search.html')">
-    <div class="tab-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></div>Search
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></div>Search
   </button>
   <button class="tab-list-item" onclick="go('pages/list.html')">
-    <div class="tab-list-circle"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+    <div class="tab-list-circle"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>
     <span class="tab-list-label">List</span>
   </button>
   <button class="tab-item" onclick="go('pages/map-search.html')">
-    <div class="tab-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5-2V4l5 2M9 20l6-2M9 20V6M15 18l5 2V6l-5-2M15 18V4"/></svg></div>Map
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map
   </button>
   <button class="tab-item" id="tab-account" onclick="go('pages/dashboard.html')">
-    <div class="tab-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.582-7 8-7s8 3 8 7"/></svg></div>Account
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></div>Account
   </button>
 </div>
 
 <script>
 window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'
 </script>
+<script src="js/icons.js"></script>
 <script src="js/api.js"></script>
 <script src="js/app.js"></script>
 <script>
@@ -480,7 +481,7 @@ function handleLoc(val){
   if(/^[A-Z][0-9]{0,2}/.test(q)&&!results.length)results.push({type:'eircode',code:val.toUpperCase(),name:'Eircode: '+val.toUpperCase(),area:'Search by Eircode'})
   COUNTIES.forEach(c=>{if(c.toUpperCase().startsWith(q)||c.toUpperCase().includes(q))results.push({type:'county',code:c,name:c,area:'County'})})
   if(!results.length){box.classList.remove('open');return}
-  box.innerHTML=results.slice(0,5).map(r=>`<div class="sugg-item" onclick="selectLoc(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span>${r.type==='county'?'📍':r.type==='eircode'?'🔢':'🏘'}</span><div><div class="sugg-main">${r.name}</div><div class="sugg-sub">${r.area}</div></div><span class="sugg-tag">${r.type==='district'?'Dublin':r.type==='eircode'?'Eircode':'County'}</span></div>`).join('')
+  box.innerHTML=results.slice(0,5).map(r=>`<div class="sugg-item" onclick="selectLoc(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span>${r.type==='county'?'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>':r.type==='eircode'?'<svg width="14" height="14" style="color:#888;vertical-align:middle"><use href="/icons.svg#icon-search"/></svg>':'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>'}</span><div><div class="sugg-main">${r.name}</div><div class="sugg-sub">${r.area}</div></div><span class="sugg-tag">${r.type==='district'?'Dublin':r.type==='eircode'?'Eircode':'County'}</span></div>`).join('')
   box.classList.add('open')
 }
 function selectLoc(item){

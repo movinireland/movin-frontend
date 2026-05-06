@@ -1,7 +1,42 @@
 // js/app.js — Shared utilities, nav, toast notifications
 
 // ── Config ────────────────────────────────────────────────────────────────────
-window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app' // Change to your Railway URL for production
+window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+
+// ── Icon system ───────────────────────────────────────────────────────────────
+var MOVIN_ICON_IDS = {
+  'home':'icon-home','search':'icon-search','location':'icon-location','map':'icon-map',
+  'back':'icon-back','filter':'icon-filter','menu':'icon-menu','close':'icon-close',
+  'chevron-down':'icon-chevron-down','chevron-right':'icon-chevron-right',
+  'house':'icon-house','apartment':'icon-apartment','bungalow':'icon-bungalow','site':'icon-site',
+  'bed':'icon-bed','bath':'icon-bath','size':'icon-size','ber':'icon-ber',
+  'heart':'icon-heart','heart-filled':'icon-heart-filled','share':'icon-share',
+  'message':'icon-message','phone':'icon-phone','plus':'icon-plus','trash':'icon-trash','edit':'icon-edit',
+  'user':'icon-user','inbox':'icon-inbox','chart':'icon-chart','eye':'icon-eye',
+  'settings':'icon-settings','signout':'icon-signout','bell':'icon-bell',
+  'garden':'icon-garden','garage':'icon-garage','alarm':'icon-alarm',
+  'wheelchair':'icon-wheelchair','pets':'icon-pets','sofa':'icon-sofa',
+  'euro':'icon-euro','card':'icon-card','calculator':'icon-calculator',
+  'document':'icon-document','key':'icon-key','camera':'icon-camera','upload':'icon-upload',
+  'approve':'icon-approve','reject':'icon-reject','star':'icon-star',
+  'parking':'icon-parking','new-dev':'icon-new-dev',
+  'valuation':'icon-house','new-listing':'icon-plus'
+}
+
+function icon(name, size, color) {
+  size  = size  || 24
+  color = color || 'currentColor'
+  var id = MOVIN_ICON_IDS[name]
+  if (!id) return ''
+  return '<svg width="' + size + '" height="' + size + '" style="color:' + color + ';flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#' + id + '"/></svg>'
+}
+
+function iconLabel(name, label, size, color) {
+  return '<span style="display:inline-flex;align-items:center;gap:5px">' + icon(name, size || 16, color || 'currentColor') + '<span>' + label + '</span></span>'
+}
+
+window.icon = icon
+window.iconLabel = iconLabel
 
 // ── Toast notifications ───────────────────────────────────────────────────────
 function toast(message, type = 'success', duration = 3500) {
@@ -94,28 +129,28 @@ function renderNav(activePage = '') {
           Tools ▾
           <div class="nav-tools-dropdown" id="tools-dropdown">
             <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#mortgage'">
-              <span class="ntd-icon">🏦</span>
+              <span class="ntd-icon">${icon('calculator', 20, '#1a5c45')}</span>
               <div>
                 <div class="ntd-title">Mortgage calculator</div>
                 <div class="ntd-sub">Monthly repayments & affordability</div>
               </div>
             </div>
             <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#valuation'">
-              <span class="ntd-icon">🏡</span>
+              <span class="ntd-icon">${icon('valuation', 20, '#1a5c45')}</span>
               <div>
                 <div class="ntd-title">Home valuation</div>
                 <div class="ntd-sub">Instant estimate based on Irish data</div>
               </div>
             </div>
             <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#stamp'">
-              <span class="ntd-icon">📋</span>
+              <span class="ntd-icon">${icon('document', 20, '#1a5c45')}</span>
               <div>
                 <div class="ntd-title">Stamp duty calculator</div>
                 <div class="ntd-sub">Calculate your stamp duty costs</div>
               </div>
             </div>
             <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/tools.html#ftb'">
-              <span class="ntd-icon">🔑</span>
+              <span class="ntd-icon">${icon('key', 20, '#1a5c45')}</span>
               <div>
                 <div class="ntd-title">First-time buyer guide</div>
                 <div class="ntd-sub">HTB, First Home Scheme & more</div>
@@ -134,17 +169,17 @@ function renderNav(activePage = '') {
           </div>
           <div class="nav-dropdown" id="nav-dropdown">
             <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/dashboard.html'">
-              <span>🏠</span> My listings
+              ${icon('house', 16)} My listings
             </div>
             <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/dashboard.html?tab=enquiries'">
-              <span>📨</span> Enquiries
+              ${icon('inbox', 16)} Enquiries
             </div>
             <div class="nav-dropdown-item" onclick="window.location.href='${root}pages/dashboard.html?tab=profile'">
-              <span>👤</span> Profile
+              ${icon('user', 16)} Profile
             </div>
             <div class="nav-dropdown-divider"></div>
             <div class="nav-dropdown-item danger" onclick="window.API.auth.logout()">
-              <span>↩</span> Sign out
+              ${icon('signout', 16)} Sign out
             </div>
           </div>
         ` : `
@@ -213,7 +248,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
           title="${isSaved ? 'Unsave' : 'Save'}">
-          ${isSaved ? '♥' : '♡'}
+          ${isSaved ? icon('heart-filled', 16, '#e07b3f') : icon('heart', 16, '#fff')}
         </button>
       </div>
       <div class="prop-card-body">
@@ -221,10 +256,10 @@ function buildPropertyCard(listing, savedIds = []) {
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
-          ${listing.bedrooms ? `<span>🛏 ${listing.bedrooms} bed${listing.bedrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.bathrooms ? `<span>🚿 ${listing.bathrooms} bath${listing.bathrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.floor_size_m2 ? `<span>📐 ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.ber_rating ? `<span>🔋 ${listing.ber_rating}</span>` : ''}
+          ${listing.bedrooms ? `<span>${icon('bed', 13, '#aaa')} ${listing.bedrooms} bed${listing.bedrooms > 1 ? 's' : ''}</span>` : ''}
+          ${listing.bathrooms ? `<span>${icon('bath', 13, '#aaa')} ${listing.bathrooms} bath${listing.bathrooms > 1 ? 's' : ''}</span>` : ''}
+          ${listing.floor_size_m2 ? `<span>${icon('size', 13, '#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
+          ${listing.ber_rating ? `<span>${icon('ber', 13, '#aaa')} ${listing.ber_rating}</span>` : ''}
         </div>
       </div>
     </div>
@@ -242,13 +277,13 @@ async function toggleSave(listingId, btn) {
     if (isSaved) {
       await window.API.saved.unsave(listingId)
       btn.classList.remove('saved')
-      btn.textContent = '♡'
+      btn.innerHTML = icon('heart', 16, '#fff')
       toast('Removed from saved')
     } else {
       await window.API.saved.save(listingId)
       btn.classList.add('saved')
-      btn.textContent = '♥'
-      toast('Saved to your list ♥')
+      btn.innerHTML = icon('heart-filled', 16, '#e07b3f')
+      toast('Saved to your list')
     }
   } catch (e) {
     toast(e.message, 'error')
@@ -262,3 +297,25 @@ window.requireLogin = requireLogin
 window.renderNav = renderNav
 window.buildPropertyCard = buildPropertyCard
 window.toggleSave = toggleSave
+
+// ── Load icon sprite ──────────────────────────────────────────────────────────
+function loadIconSprite() {
+  if (document.getElementById('movin-icon-sprite')) return
+  var xhr = new XMLHttpRequest()
+  xhr.open('GET', '/icons.svg', true)
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var div = document.createElement('div')
+      div.id = 'movin-icon-sprite'
+      div.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden;top:0;left:0'
+      div.innerHTML = xhr.responseText
+      document.body.insertBefore(div, document.body.firstChild)
+    }
+  }
+  xhr.send()
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadIconSprite)
+} else {
+  loadIconSprite()
+}

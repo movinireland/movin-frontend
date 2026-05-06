@@ -190,6 +190,7 @@
   <script>
     window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
   </script>
+  <script src="../js/icons.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/app.js"></script>
   <script>
@@ -334,7 +335,7 @@
     function showSearchChip(label) {
       document.getElementById('search-chip-wrap').innerHTML = `
         <div class="search-chip">
-          📍 ${label}
+          <svg width="13" height="13" style="color:#aaa;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-location"/></svg> ${label}
           <button onclick="clearSearch()" title="Clear">×</button>
         </div>
       `
@@ -433,7 +434,7 @@
 
         if (!res.listings.length) {
           grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-            <div class="empty-icon">🔍</div>
+            <div class="empty-icon"><svg width="16" height="16" style="color:#aaa;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></div>
             <h3>No properties found</h3>
             <p>Try a different area or adjust your filters.</p>
             <button class="btn btn-ghost btn-sm" onclick="clearSearch()">Clear search</button>
