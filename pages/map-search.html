@@ -165,6 +165,10 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: COUNTY_COORDS.default,
     zoom: 7,
+    mapId: '60bb035d4c2260961e68601f',
+    mapTypeControl: false,
+    center: COUNTY_COORDS.default,
+    zoom: 7,
     mapTypeControl: false,
     streetViewControl: false,
     fullscreenControl: false,
@@ -255,7 +259,7 @@ function placePinForListing(listing, geocoder, bounds) {
       })
 
       ;(function(l, pin) {
-        marker.addListener('click', function() {
+        marker.addListener('gmp-click', function() {
           currentMarkers.forEach(function(m) {
             if (m.content) m.content.style.background = '#1a5c45'
           })
@@ -367,7 +371,7 @@ function applySearch() {
 </script>
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&libraries=marker,places,geometry"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&libraries=marker,places,geometry&loading=async"
   async defer>
 </script>
 
