@@ -247,8 +247,9 @@ function buildPropertyCard(listing, savedIds = []) {
         </div>
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
-          title="${isSaved ? 'Unsave' : 'Save'}">
-          ${isSaved ? icon('heart-filled', 16, '#e07b3f') : icon('heart', 16, '#fff')}
+          title="${isSaved ? 'Unsave' : 'Save'}"
+          style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
+          ${isSaved ? '♥' : '♡'}
         </button>
       </div>
       <div class="prop-card-body">
@@ -277,13 +278,15 @@ async function toggleSave(listingId, btn) {
     if (isSaved) {
       await window.API.saved.unsave(listingId)
       btn.classList.remove('saved')
-      btn.innerHTML = icon('heart', 16, '#fff')
+      btn.textContent = '♡'
+      btn.style.color = '#fff'
       toast('Removed from saved')
     } else {
       await window.API.saved.save(listingId)
       btn.classList.add('saved')
-      btn.innerHTML = icon('heart-filled', 16, '#e07b3f')
-      toast('Saved to your list')
+      btn.textContent = '♥'
+      btn.style.color = '#e07b3f'
+      toast('Saved to your list ♥')
     }
   } catch (e) {
     toast(e.message, 'error')
