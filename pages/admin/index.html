@@ -417,7 +417,7 @@ async function loadDashboard() {
     const headers = { 'Authorization': 'Bearer ' + token }
 
     const [listRes, enqRes] = await Promise.all([
-      fetch(window.MOVIN_API_URL + '/api/listings?limit=100', { headers }),
+      const res = await fetch(window.MOVIN_API_URL + '/api/listings/admin/all'
       fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', { headers })
     ])
 
