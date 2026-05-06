@@ -9,8 +9,10 @@
     .breadcrumb span{color:var(--g);cursor:pointer}
     .gallery-scroll{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:1rem 1rem .5rem;scroll-snap-type:x mandatory}
     .gallery-scroll::-webkit-scrollbar{display:none}
-    .gallery-main{width:80vw;max-width:360px;flex-shrink:0;border-radius:var(--r);overflow:hidden;height:220px;display:flex;align-items:center;justify-content:center;font-size:50px;scroll-snap-align:start;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)}
+    .gallery-main{width:80vw;max-width:400px;flex-shrink:0;border-radius:var(--r);overflow:hidden;height:240px;display:flex;align-items:center;justify-content:center;font-size:50px;scroll-snap-align:start;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)}
+    .gallery-main img{width:100%;height:100%;object-fit:cover}
     .gallery-thumb{width:100px;flex-shrink:0;border-radius:10px;overflow:hidden;height:80px;display:flex;align-items:center;justify-content:center;font-size:24px;scroll-snap-align:start;background:linear-gradient(135deg,#f5e6d0,#fdf4ea)}
+    .gallery-thumb img{width:100%;height:100%;object-fit:cover}
     .detail-header{padding:1rem 1rem .5rem}
     .d-tag-row{display:flex;gap:6px;align-items:center;margin-bottom:.6rem;flex-wrap:wrap}
     .d-age{font-size:12px;color:#bbb}
@@ -27,11 +29,7 @@
     .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem}
     .feat-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#555}
     .feat-ico{width:30px;height:30px;border-radius:7px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-
-    /* ── Google Map ── */
     #property-map{height:260px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin-bottom:.75rem}
-
-    /* ── Nearby amenities tabs ── */
     .nearby-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
     .nearby-tabs::-webkit-scrollbar{display:none}
     .nearby-tab{padding:.6rem 1rem;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;-webkit-tap-highlight-color:transparent;flex-shrink:0}
@@ -39,16 +37,11 @@
     .nearby-list{display:flex;flex-direction:column;gap:.5rem}
     .nearby-item{display:flex;align-items:center;gap:10px;padding:.75rem;background:#fafaf8;border-radius:10px;border:1px solid var(--border)}
     .nearby-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-    .ni-bus{background:#e8f0fd}
-    .ni-school{background:var(--gl)}
-    .ni-hospital{background:#fdf0e6}
-    .ni-shop{background:#f4eafc}
+    .ni-bus{background:#e8f0fd}.ni-school{background:var(--gl)}.ni-hospital{background:#fdf0e6}.ni-shop{background:#f4eafc}
     .nearby-info{flex:1}
     .nearby-name{font-size:13px;font-weight:500;color:#111}
     .nearby-dist{font-size:11px;color:#aaa;margin-top:2px}
-    .nearby-loading{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
-    .nearby-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
-
+    .nearby-loading,.nearby-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
     .enq-card{padding:1rem;background:var(--white)}
     .enq-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:.2rem}
     .enq-by{font-size:12px;color:#aaa;margin-bottom:1rem}
@@ -59,6 +52,7 @@
     .call-btn{width:100%;background:transparent;border:1.5px solid var(--g);color:var(--g);padding:12px;border-radius:var(--rp);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
     .agent-row{display:flex;gap:10px;align-items:center;padding-top:1rem;margin-top:1rem;border-top:1px solid #f0ede6}
     .agent-av{width:40px;height:40px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:var(--g);flex-shrink:0}
+    .no-photo-placeholder{background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:50px;width:100%;height:100%}
   </style>
 </head>
 <body>
@@ -71,7 +65,6 @@
     <div class="loading-wrap"><div class="spinner"></div><span>Loading property…</span></div>
   </div>
 
-  <!-- Google Maps API -->
   <script>
     window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
     window.GOOGLE_MAPS_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'
@@ -82,18 +75,16 @@
     renderNav()
     const listingId = new URLSearchParams(window.location.search).get('id')
 
-    // ── Load Google Maps ────────────────────────────────────────────────────
     function loadGoogleMaps() {
       return new Promise(resolve => {
         if (window.google) { resolve(); return }
         const s = document.createElement('script')
-        s.src = `https://maps.googleapis.com/maps/api/js?key=${window.GOOGLE_MAPS_KEY}&libraries=places`
+        s.src = 'https://maps.googleapis.com/maps/api/js?key=' + window.GOOGLE_MAPS_KEY + '&libraries=places'
         s.onload = resolve
         document.head.appendChild(s)
       })
     }
 
-    // ── Geocode address to lat/lng ──────────────────────────────────────────
     async function geocodeAddress(address) {
       return new Promise((resolve, reject) => {
         const geocoder = new google.maps.Geocoder()
@@ -104,78 +95,51 @@
       })
     }
 
-    // ── Render Google Map ───────────────────────────────────────────────────
     async function renderMap(listing) {
       try {
         await loadGoogleMaps()
-        const address = `${listing.address_line1} ${listing.address_area || ''} ${listing.county} ${listing.eircode || ''}`
+        const address = listing.address_line1 + ' ' + (listing.address_area || '') + ' ' + listing.county + ' ' + (listing.eircode || '')
         const location = await geocodeAddress(address)
-
         const map = new google.maps.Map(document.getElementById('property-map'), {
-          center: location,
-          zoom: 15,
-          mapTypeControl: false,
-          streetViewControl: true,
-          fullscreenControl: true,
-          styles: [
-            { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
-          ]
+          center: location, zoom: 15,
+          mapTypeControl: false, streetViewControl: true, fullscreenControl: true,
+          styles: [{ featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }]
         })
-
-        // Property marker
         new google.maps.Marker({
-          position: location,
-          map: map,
-          title: listing.title,
-          icon: {
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 10,
-            fillColor: '#1a5c45',
-            fillOpacity: 1,
-            strokeColor: '#fff',
-            strokeWeight: 2
-          }
+          position: location, map: map, title: listing.title,
+          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 10, fillColor: '#1a5c45', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 }
         })
-
         return { map, location }
       } catch(e) {
-        document.getElementById('property-map').innerHTML =
-          '<div style="height:260px;display:flex;align-items:center;justify-content:center;background:#f7f5f0;border-radius:14px;color:#aaa;font-size:14px">📍 Map unavailable</div>'
+        const el = document.getElementById('property-map')
+        if (el) el.innerHTML = '<div style="height:260px;display:flex;align-items:center;justify-content:center;background:#f7f5f0;border-radius:14px;color:#aaa;font-size:14px">📍 Map unavailable</div>'
         return null
       }
     }
 
-    // ── Load nearby places ──────────────────────────────────────────────────
     const nearbyTypes = {
-      bus:      { type: 'bus_station',     label: 'Bus stops',  icon: '🚌', cls: 'ni-bus' },
-      school:   { type: 'school',          label: 'Schools',    icon: '🏫', cls: 'ni-school' },
-      hospital: { type: 'hospital',        label: 'Hospitals',  icon: '🏥', cls: 'ni-hospital' },
-      shop:     { type: 'supermarket',     label: 'Shops',      icon: '🛒', cls: 'ni-shop' },
+      bus:      { type: 'bus_station', icon: '🚌', cls: 'ni-bus' },
+      school:   { type: 'school',      icon: '🏫', cls: 'ni-school' },
+      hospital: { type: 'hospital',    icon: '🏥', cls: 'ni-hospital' },
+      shop:     { type: 'supermarket', icon: '🛒', cls: 'ni-shop' },
     }
 
     let mapInstance = null
     let locationInstance = null
     let nearbyCache = {}
-    let activeTab = 'bus'
 
     async function loadNearby(type) {
       const listEl = document.getElementById('nearby-list')
+      if (!listEl) return
       if (!mapInstance || !locationInstance) {
         listEl.innerHTML = '<div class="nearby-empty">Map not loaded yet</div>'
         return
       }
       if (nearbyCache[type]) { renderNearby(type, nearbyCache[type]); return }
-
       listEl.innerHTML = '<div class="nearby-loading">🔍 Finding nearby places…</div>'
-
       const service = new google.maps.places.PlacesService(mapInstance)
       const config = nearbyTypes[type]
-
-      service.nearbySearch({
-        location: locationInstance,
-        radius: 1000,
-        type: config.type
-      }, (results, status) => {
+      service.nearbySearch({ location: locationInstance, radius: 1000, type: config.type }, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           nearbyCache[type] = results.slice(0, 6)
           renderNearby(type, nearbyCache[type])
@@ -188,188 +152,145 @@
     function renderNearby(type, places) {
       const listEl = document.getElementById('nearby-list')
       const config = nearbyTypes[type]
-      if (!places.length) {
-        listEl.innerHTML = '<div class="nearby-empty">None found nearby</div>'
-        return
-      }
-      listEl.innerHTML = places.map(p => {
-        const dist = google.maps.geometry
-          ? Math.round(google.maps.geometry.spherical.computeDistanceBetween(locationInstance, p.geometry.location)) + 'm'
-          : ''
-        return `
-          <div class="nearby-item">
-            <div class="nearby-icon ${config.cls}">${config.icon}</div>
-            <div class="nearby-info">
-              <div class="nearby-name">${p.name}</div>
-              <div class="nearby-dist">${p.vicinity}${dist ? ' · ' + dist : ''}</div>
-            </div>
-          </div>
-        `
+      if (!places.length) { listEl.innerHTML = '<div class="nearby-empty">None found nearby</div>'; return }
+      listEl.innerHTML = places.map(function(p) {
+        var dist = ''
+        if (google.maps.geometry) {
+          dist = ' · ' + Math.round(google.maps.geometry.spherical.computeDistanceBetween(locationInstance, p.geometry.location)) + 'm'
+        }
+        return '<div class="nearby-item"><div class="nearby-icon ' + config.cls + '">' + config.icon + '</div><div class="nearby-info"><div class="nearby-name">' + p.name + '</div><div class="nearby-dist">' + p.vicinity + dist + '</div></div></div>'
       }).join('')
     }
 
     function switchNearbyTab(type, el) {
-      activeTab = type
-      document.querySelectorAll('.nearby-tab').forEach(t => t.classList.remove('active'))
+      document.querySelectorAll('.nearby-tab').forEach(function(t) { t.classList.remove('active') })
       el.classList.add('active')
       loadNearby(type)
     }
 
-    // ── Format price ────────────────────────────────────────────────────────
     function fmtPrice(price, type) {
       return '€' + Number(price).toLocaleString('en-IE') + (type === 'rent' ? '/mo' : '')
     }
 
-    // ── Load listing ────────────────────────────────────────────────────────
+    function buildGallery(listing) {
+      var photos = listing.photos || []
+      if (photos.length === 0) {
+        return '<div class="gallery-main"><div class="no-photo-placeholder">🏠</div></div>' +
+               '<div class="gallery-thumb" style="background:linear-gradient(135deg,#dce8f5,#eaf2fb)">🛋</div>' +
+               '<div class="gallery-thumb" style="background:linear-gradient(135deg,#f5e6d0,#fdf4ea)">🍳</div>'
+      }
+      var html = '<div class="gallery-main"><img src="' + photos[0].url + '" alt="' + listing.title + '" loading="eager"/></div>'
+      for (var i = 1; i < photos.length; i++) {
+        html += '<div class="gallery-thumb"><img src="' + photos[i].url + '" alt="' + listing.title + '" loading="lazy"/></div>'
+      }
+      return html
+    }
+
     async function load() {
       if (!listingId) { window.location.href = 'search.html'; return }
       try {
-        // Use demo data if no backend connection
-        const listing = {
-          id: listingId || '1',
-          title: 'Victorian Semi-Detached',
-          address_line1: '14 Leinster Road',
-          address_area: 'Rathmines',
-          county: 'Dublin',
-          eircode: 'D06 W9X4',
-          listing_type: 'sale',
-          property_type: 'house',
-          price: 595000,
-          bedrooms: 3,
-          bathrooms: 2,
-          floor_size_m2: 128,
-          ber_rating: 'B2',
-          description: 'A beautifully presented Victorian semi-detached family home located on one of Rathmines\' most sought-after residential roads. This elegant property retains many original period features while offering modern comforts throughout.\n\nThe accommodation comprises an entrance hallway, a bright dual-aspect living room with original fireplace, a fully fitted kitchen/dining room with direct access to the rear garden, and a guest WC on the ground floor.',
-          parking: 1, garden: 1, garage: 0, alarm: 1,
-          lister_name: 'Aoife Murphy',
-          lister_phone: '01 496 3300',
-          views: 247,
-          created_at: new Date(Date.now() - 3 * 86400000).toISOString(),
-          photos: []
+        var L = await API.listings.get(listingId)
+        API.listings.trackView(listingId).catch(function(){})
+
+        document.title = L.title + ' – Movin.ie'
+        document.getElementById('bc-loc').textContent = (L.address_area || L.county) + ' · ' + L.title
+
+        var typeLabel = L.listing_type === 'rent' ? 'To Rent' : L.listing_type === 'share' ? 'Sharing' : 'For Sale'
+        var badgeClass = L.listing_type === 'rent' ? 'badge-o' : 'badge-g'
+
+        var galleryHTML = buildGallery(L)
+
+        var featuresHTML = ''
+        if (L.parking || L.garden || L.garage || L.alarm) {
+          featuresHTML = '<div class="detail-section"><h2>Features</h2><div class="feat-grid">'
+          if (L.parking)    featuresHTML += '<div class="feat-item"><div class="feat-ico">🅿</div>Parking</div>'
+          if (L.garden)     featuresHTML += '<div class="feat-item"><div class="feat-ico">🌿</div>Garden</div>'
+          if (L.garage)     featuresHTML += '<div class="feat-item"><div class="feat-ico">🚗</div>Garage</div>'
+          if (L.alarm)      featuresHTML += '<div class="feat-item"><div class="feat-ico">🔒</div>Alarm</div>'
+          if (L.furnished)  featuresHTML += '<div class="feat-item"><div class="feat-ico">🛋</div>Furnished</div>'
+          if (L.pets)       featuresHTML += '<div class="feat-item"><div class="feat-ico">🐾</div>Pet-friendly</div>'
+          featuresHTML += '</div></div>'
         }
 
-        // Try to load from API
-        let realListing = listing
-        try {
-          realListing = await API.listings.get(listingId)
-          API.listings.trackView(listingId)
-        } catch(e) {}
+        var callBtn = L.lister_phone
+          ? '<div class="divider-text"><span>or</span></div><button class="call-btn" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 ' + L.lister_phone + '</button>'
+          : ''
 
-        const L = realListing
-        document.title = `${L.title} – Movin.ie`
-        document.getElementById('bc-loc').textContent = `${L.address_area || L.county} · ${L.title}`
+        var phoneBtn = L.lister_phone
+          ? '<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 Call</button>'
+          : ''
 
-        const typeLabel = L.listing_type === 'rent' ? 'To Rent' : L.listing_type === 'share' ? 'Sharing' : 'For Sale'
-        const badgeClass = L.listing_type === 'rent' ? 'badge-o' : 'badge-g'
+        var mapsQuery = encodeURIComponent(L.address_line1 + ' ' + (L.address_area || '') + ' ' + L.county + ' Ireland')
 
-        document.getElementById('page-content').innerHTML = `
-          <!-- Photos -->
-          <div class="gallery-scroll">
-            <div class="gallery-main">🏠</div>
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#dce8f5,#eaf2fb)">🛋</div>
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#f5e6d0,#fdf4ea)">🍳</div>
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#e8d4f5,#f4eafc)">🛁</div>
-            <div class="gallery-thumb" style="background:linear-gradient(135deg,#d4f5d4,#eafcea)">🌿</div>
-          </div>
+        document.getElementById('page-content').innerHTML =
+          '<div class="gallery-scroll">' + galleryHTML + '</div>' +
 
-          <!-- Header -->
-          <div class="detail-header">
-            <div class="d-tag-row">
-              <span class="badge ${badgeClass}">${typeLabel}</span>
-              ${L.ber_rating ? `<span class="badge badge-g" style="background:#2aaa50">BER: ${L.ber_rating}</span>` : ''}
-              <span class="d-age">Listed ${timeAgo(L.created_at)}</span>
-            </div>
-            <h1 class="d-title serif">${L.title}</h1>
-            <div class="d-loc">📍 ${L.address_line1}${L.address_area ? ', ' + L.address_area : ''}, ${L.county}${L.eircode ? ' · <strong>' + L.eircode + '</strong>' : ''}</div>
-            <div class="d-price">${fmtPrice(L.price, L.listing_type)}</div>
-            <div class="d-stats">
-              ${L.bedrooms ? `<span class="d-stat">🛏 ${L.bedrooms} beds</span>` : ''}
-              ${L.bathrooms ? `<span class="d-stat">🚿 ${L.bathrooms} baths</span>` : ''}
-              ${L.floor_size_m2 ? `<span class="d-stat">📐 ${L.floor_size_m2}m²</span>` : ''}
-              ${L.ber_rating ? `<span class="d-stat">🔋 ${L.ber_rating}</span>` : ''}
-              <span class="d-stat">👁 ${L.views} views</span>
-            </div>
-          </div>
+          '<div class="detail-header">' +
+            '<div class="d-tag-row">' +
+              '<span class="badge ' + badgeClass + '">' + typeLabel + '</span>' +
+              (L.ber_rating ? '<span class="badge badge-g" style="background:#2aaa50">BER: ' + L.ber_rating + '</span>' : '') +
+              '<span class="d-age">Listed ' + timeAgo(L.created_at) + '</span>' +
+            '</div>' +
+            '<h1 class="d-title">' + L.title + '</h1>' +
+            '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + (L.eircode ? ' · <strong>' + L.eircode + '</strong>' : '') + '</div>' +
+            '<div class="d-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
+            '<div class="d-stats">' +
+              (L.bedrooms ? '<span class="d-stat">🛏 ' + L.bedrooms + ' beds</span>' : '') +
+              (L.bathrooms ? '<span class="d-stat">🚿 ' + L.bathrooms + ' baths</span>' : '') +
+              (L.floor_size_m2 ? '<span class="d-stat">📐 ' + L.floor_size_m2 + 'm²</span>' : '') +
+              (L.ber_rating ? '<span class="d-stat">🔋 ' + L.ber_rating + '</span>' : '') +
+              '<span class="d-stat">👁 ' + (L.views || 0) + ' views</span>' +
+            '</div>' +
+          '</div>' +
 
-          <!-- Action strip -->
-          <div class="action-strip">
-            <button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById('enq-section').scrollIntoView({behavior:'smooth'})">📨 Enquire</button>
-            ${L.lister_phone ? `<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href='tel:${L.lister_phone}'">📞 Call</button>` : ''}
-            <button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()">♡ Save</button>
-          </div>
+          '<div class="action-strip">' +
+            '<button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">📨 Enquire</button>' +
+            phoneBtn +
+            '<button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()">♡ Save</button>' +
+          '</div>' +
 
-          <!-- Description -->
-          <div class="detail-section">
-            <h2>About this property</h2>
-            <p class="desc-text">${L.description.replace(/\n/g, '<br>')}</p>
-          </div>
+          '<div class="detail-section"><h2>About this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
 
-          <!-- Features -->
-          ${(L.parking || L.garden || L.garage || L.alarm) ? `
-          <div class="detail-section">
-            <h2>Features</h2>
-            <div class="feat-grid">
-              ${L.parking ? '<div class="feat-item"><div class="feat-ico">🅿</div>Parking</div>' : ''}
-              ${L.garden  ? '<div class="feat-item"><div class="feat-ico">🌿</div>Garden</div>' : ''}
-              ${L.garage  ? '<div class="feat-item"><div class="feat-ico">🚗</div>Garage</div>' : ''}
-              ${L.alarm   ? '<div class="feat-item"><div class="feat-ico">🔒</div>Alarm</div>' : ''}
-            </div>
-          </div>` : ''}
+          featuresHTML +
 
-          <!-- Map & Nearby -->
-          <div class="detail-section">
-            <h2>Location & nearby</h2>
+          '<div class="detail-section">' +
+            '<h2>Location &amp; nearby</h2>' +
+            '<div id="property-map"></div>' +
+            '<p style="font-size:12px;color:#aaa;margin-bottom:1rem">📍 ' + L.address_line1 + ', ' + (L.address_area || '') + ', ' + L.county +
+              (L.eircode ? ' &nbsp;·&nbsp; <strong style="color:#555">' + L.eircode + '</strong>' : '') +
+              ' &nbsp;·&nbsp; <a href="https://www.google.com/maps/search/?api=1&query=' + mapsQuery + '" target="_blank" style="color:var(--g)">Open in Google Maps ↗</a>' +
+            '</p>' +
+            '<div class="nearby-tabs">' +
+              '<div class="nearby-tab active" onclick="switchNearbyTab(\'bus\', this)">🚌 Bus stops</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'school\', this)">🏫 Schools</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'hospital\', this)">🏥 Hospitals</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'shop\', this)">🛒 Shops</div>' +
+            '</div>' +
+            '<div id="nearby-list" class="nearby-list"><div class="nearby-loading">Loading map…</div></div>' +
+          '</div>' +
 
-            <!-- Google Map -->
-            <div id="property-map"></div>
+          '<div class="enq-card" id="enq-section">' +
+            '<div class="enq-title">Send an enquiry</div>' +
+            '<div class="enq-by">Listed by <strong>' + (L.lister_name || 'Owner') + '</strong></div>' +
+            '<div id="enq-alert"></div>' +
+            '<form class="enq-form" onsubmit="submitEnquiry(event, \'' + L.id + '\')">' +
+              '<input class="form-input" type="text" name="sender_name" placeholder="Your name" required/>' +
+              '<input class="form-input" type="email" name="sender_email" placeholder="Email address" required/>' +
+              '<input class="form-input" type="tel" name="sender_phone" placeholder="Phone (optional)"/>' +
+              '<textarea class="form-input form-textarea" name="message" placeholder="Hi, I\'d like to arrange a viewing…" required></textarea>' +
+              '<button type="submit" class="btn btn-primary btn-block" id="enq-btn">Send enquiry</button>' +
+            '</form>' +
+            callBtn +
+            '<div class="agent-row">' +
+              '<div class="agent-av">' + (L.lister_name || 'O').charAt(0).toUpperCase() + '</div>' +
+              '<div>' +
+                '<div style="font-size:13px;font-weight:500">' + (L.lister_name || 'Property owner') + '</div>' +
+                '<div style="font-size:11px;color:#bbb">Listed on movin.ie</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>'
 
-            <p style="font-size:12px;color:#aaa;margin-bottom:1rem">
-              📍 ${L.address_line1}, ${L.address_area || ''}, ${L.county}
-              ${L.eircode ? `&nbsp;·&nbsp;<strong style="color:#555">${L.eircode}</strong>` : ''}
-              &nbsp;·&nbsp;
-              <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(L.address_line1 + ' ' + (L.address_area||'') + ' ' + L.county + ' Ireland')}"
-                 target="_blank" style="color:var(--g)">Open in Google Maps ↗</a>
-            </p>
-
-            <!-- Nearby tabs -->
-            <div class="nearby-tabs">
-              <div class="nearby-tab active" onclick="switchNearbyTab('bus', this)">🚌 Bus stops</div>
-              <div class="nearby-tab" onclick="switchNearbyTab('school', this)">🏫 Schools</div>
-              <div class="nearby-tab" onclick="switchNearbyTab('hospital', this)">🏥 Hospitals</div>
-              <div class="nearby-tab" onclick="switchNearbyTab('shop', this)">🛒 Shops</div>
-            </div>
-            <div id="nearby-list" class="nearby-list">
-              <div class="nearby-loading">Loading map first…</div>
-            </div>
-          </div>
-
-          <!-- Enquiry form -->
-          <div class="enq-card" id="enq-section">
-            <div class="enq-title">Send an enquiry</div>
-            <div class="enq-by">Listed by <strong>${L.lister_name || 'Owner'}</strong></div>
-            <div id="enq-alert"></div>
-            <form class="enq-form" onsubmit="submitEnquiry(event, '${L.id}')">
-              <input class="form-input" type="text" name="sender_name" placeholder="Your name" required/>
-              <input class="form-input" type="email" name="sender_email" placeholder="Email address" required/>
-              <input class="form-input" type="tel" name="sender_phone" placeholder="Phone (optional)"/>
-              <textarea class="form-input form-textarea" name="message" placeholder="Hi, I'd like to arrange a viewing…" required></textarea>
-              <button type="submit" class="btn btn-primary btn-block" id="enq-btn">Send enquiry</button>
-            </form>
-            ${L.lister_phone ? `
-            <div class="divider-text"><span>or</span></div>
-            <button class="call-btn" onclick="window.location.href='tel:${L.lister_phone}'">📞 ${L.lister_phone}</button>` : ''}
-            <div class="agent-row">
-              <div class="agent-av">${(L.lister_name || 'O').charAt(0).toUpperCase()}</div>
-              <div>
-                <div style="font-size:13px;font-weight:500">${L.lister_name || 'Property owner'}</div>
-                <div style="font-size:11px;color:#bbb">Listed on movin.ie</div>
-              </div>
-            </div>
-          </div>
-        `
-
-        // Render map after content is in DOM
-        const mapResult = await renderMap(L)
+        var mapResult = await renderMap(L)
         if (mapResult) {
           mapInstance = mapResult.map
           locationInstance = mapResult.location
@@ -377,23 +298,24 @@
         }
 
       } catch(e) {
-        document.getElementById('page-content').innerHTML = `
-          <div class="empty" style="padding:3rem 1rem">
-            <div class="empty-icon">😕</div>
-            <h3>Property not found</h3>
-            <p>${e.message}</p>
-            <button class="btn btn-primary" onclick="window.location.href='search.html'">Back to search</button>
-          </div>`
+        document.getElementById('page-content').innerHTML =
+          '<div style="padding:3rem 1rem;text-align:center">' +
+            '<div style="font-size:40px;margin-bottom:1rem">😕</div>' +
+            '<h3 style="font-family:Playfair Display,serif;margin-bottom:.5rem">Property not found</h3>' +
+            '<p style="color:#aaa;margin-bottom:1rem">' + e.message + '</p>' +
+            '<button class="btn btn-primary" onclick="window.location.href=\'search.html\'">Back to search</button>' +
+          '</div>'
       }
     }
 
-    async function submitEnquiry(e, listingId) {
+    async function submitEnquiry(e, lid) {
       e.preventDefault()
-      const btn = document.getElementById('enq-btn')
-      const alertEl = document.getElementById('enq-alert')
-      btn.classList.add('btn-loading'); btn.disabled = true
+      var btn = document.getElementById('enq-btn')
+      var alertEl = document.getElementById('enq-alert')
+      btn.disabled = true
+      btn.textContent = 'Sending…'
       try {
-        await API.enquiries.send(listingId, {
+        await API.enquiries.send(lid, {
           sender_name:  e.target.sender_name.value,
           sender_email: e.target.sender_email.value,
           sender_phone: e.target.sender_phone.value,
@@ -402,19 +324,26 @@
         alertEl.innerHTML = '<div class="alert alert-ok">✓ Enquiry sent! The owner will be in touch soon.</div>'
         e.target.reset()
       } catch(err) {
-        alertEl.innerHTML = `<div class="alert alert-err">${err.message}</div>`
-      } finally {
-        btn.classList.remove('btn-loading'); btn.disabled = false
+        alertEl.innerHTML = '<div class="alert alert-err">' + err.message + '</div>'
       }
+      btn.disabled = false
+      btn.textContent = 'Send enquiry'
     }
 
     async function handleSave() {
       if (!API.auth.isLoggedIn()) { toast('Sign in to save listings', 'info'); return }
-      const btn = document.getElementById('save-btn')
-      const saved = btn.textContent.includes('♥')
+      var btn = document.getElementById('save-btn')
+      var saved = btn.textContent.includes('♥')
       try {
-        if (saved) { await API.saved.unsave(listingId); btn.textContent = '♡ Save'; toast('Removed from saved') }
-        else       { await API.saved.save(listingId);   btn.textContent = '♥ Saved'; toast('Saved! ♥') }
+        if (saved) {
+          await API.saved.unsave(listingId)
+          btn.textContent = '♡ Save'
+          toast('Removed from saved')
+        } else {
+          await API.saved.save(listingId)
+          btn.textContent = '♥ Saved'
+          toast('Saved! ♥')
+        }
       } catch(e) { toast(e.message, 'error') }
     }
 
