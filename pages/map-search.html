@@ -7,11 +7,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111}
+body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111;margin:0;padding:0}
 :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
 
-.topbar{position:fixed;top:0;left:0;right:0;z-index:200;background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:8px;height:56px}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:8px;height:56px}
 .back-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px}
 .topbar-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--g);flex-shrink:0}
 .topbar-logo span{color:var(--o)}
@@ -19,15 +18,15 @@ body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111}
 .topbar-search:focus{border-color:var(--g)}
 .filter-pill{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;background:#fafaf8;cursor:pointer;color:#555;white-space:nowrap;flex-shrink:0}
 
-#map{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1}
+#map{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1;width:100%}
 
-.type-tabs{position:fixed;top:68px;left:1rem;z-index:100;display:flex;gap:6px}
+.type-tabs{position:fixed;top:68px;left:1rem;z-index:500;display:flex;gap:6px}
 .type-tab{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#666;cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 .type-tab.active{background:var(--g);color:#fff;border-color:var(--g)}
 
-.results-chip{position:fixed;top:68px;right:1rem;z-index:100;background:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#333;box-shadow:0 2px 12px rgba(0,0,0,.12);border:1px solid var(--border)}
+.results-chip{position:fixed;top:68px;right:1rem;z-index:500;background:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#333;box-shadow:0 2px 12px rgba(0,0,0,.12);border:1px solid var(--border);display:none}
 
-.card-panel{position:fixed;bottom:0;left:0;right:0;z-index:300;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .3s ease;max-height:60vh;overflow-y:auto}
+.card-panel{position:fixed;bottom:0;left:0;right:0;z-index:800;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .3s ease;max-height:60vh;overflow-y:auto}
 .card-panel.open{transform:translateY(0)}
 .panel-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:.75rem auto .5rem}
 .panel-close{position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:#aaa}
@@ -42,18 +41,18 @@ body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111}
 .panel-meta{font-size:11px;color:#aaa;display:flex;gap:8px;flex-wrap:wrap}
 .panel-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;background:var(--g);color:#fff;margin-bottom:4px}
 
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:350;display:none}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none}
 .overlay.open{display:block}
-.filter-sheet{position:fixed;bottom:0;left:0;right:0;z-index:400;background:#fff;border-radius:20px 20px 0 0;padding:1.25rem;transform:translateY(100%);transition:transform .25s ease;max-height:80vh;overflow-y:auto}
+.filter-sheet{position:fixed;bottom:0;left:0;right:0;z-index:700;background:#fff;border-radius:20px 20px 0 0;padding:1.25rem;transform:translateY(100%);transition:transform .25s ease;max-height:80vh;overflow-y:auto}
 .filter-sheet.open{transform:translateY(0)}
 .fs-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1rem}
 .fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
 .fs-label{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px}
 .fs-sel{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 10px;font-size:13px;background:#fafaf8;color:#555;outline:none;-webkit-appearance:none}
 .fs-sel:focus{border-color:var(--g)}
-.fs-apply{width:100%;background:var(--g);color:#fff;border:none;padding:13px;border-radius:50px;font-size:14px;font-weight:500;cursor:pointer;margin-top:.75rem}
+.fs-apply{width:100%;background:var(--g);color:#fff;border:none;padding:13px;border-radius:50px;font-size:14px;font-weight:500;cursor:pointer;margin-top:.75rem;font-family:'DM Sans',sans-serif}
 
-.map-status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;background:#fff;border-radius:16px;padding:1.5rem 2rem;box-shadow:0 8px 24px rgba(0,0,0,.15);text-align:center}
+.map-status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;background:#fff;border-radius:16px;padding:1.5rem 2rem;box-shadow:0 8px 24px rgba(0,0,0,.15);text-align:center;min-width:160px}
 .spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:0 auto .75rem}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
@@ -73,7 +72,7 @@ body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111}
   <div class="type-tab" data-type="share" onclick="setType(this)">Sharing</div>
 </div>
 
-<div class="results-chip" id="chip" style="display:none">Loading…</div>
+<div class="results-chip" id="chip">Loading…</div>
 
 <div class="map-status" id="map-status">
   <div class="spinner"></div>
@@ -127,10 +126,7 @@ body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111}
 
 <script>
 var API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
-var MAP_KEY = 'AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk'
-var MAP_ID  = '60bb035d4c2260961e68601f'
-
-var gmap, geocoder, markers = [], listings = [], listingType = 'sale', filterCounty = ''
+var gmap, geocoder, overlays = [], listingType = 'sale', filterCounty = ''
 
 var CENTRES = {
   Dublin:{lat:53.3498,lng:-6.2603}, Cork:{lat:51.8985,lng:-8.4756},
@@ -140,24 +136,36 @@ var CENTRES = {
   Wicklow:{lat:52.9808,lng:-6.0444}, default:{lat:53.35,lng:-7.5}
 }
 
-// ── Init map ──────────────────────────────────────────────
 function initMap() {
-  gmap = new google.maps.Map(document.getElementById('map'), {
+  var mapEl = document.getElementById('map')
+  mapEl.style.height = (window.innerHeight - 56) + 'px'
+  mapEl.style.width = '100%'
+
+  gmap = new google.maps.Map(mapEl, {
     center: CENTRES.default,
     zoom: 7,
-    mapId: MAP_ID,
     mapTypeControl: false,
     streetViewControl: false,
     fullscreenControl: false,
-    zoomControl: true,
     zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER }
   })
+
   geocoder = new google.maps.Geocoder()
+
+  google.maps.event.trigger(gmap, 'resize')
+  gmap.addListener('click', function() { closePanel() })
+
   document.getElementById('map-status').style.display = 'none'
   fetchAndPin()
 }
 
-// ── Fetch listings and drop pins ──────────────────────────
+window.addEventListener('resize', function() {
+  if (!gmap) return
+  var mapEl = document.getElementById('map')
+  mapEl.style.height = (window.innerHeight - 56) + 'px'
+  google.maps.event.trigger(gmap, 'resize')
+})
+
 async function fetchAndPin() {
   showStatus('Finding properties…')
   try {
@@ -174,7 +182,7 @@ async function fetchAndPin() {
 
     var r = await fetch(API_URL + '/api/listings?' + q)
     var data = await r.json()
-    listings = data.listings || []
+    var listings = data.listings || []
 
     hideStatus()
     var chip = document.getElementById('chip')
@@ -189,6 +197,7 @@ async function fetchAndPin() {
       await dropPin(listings[i], bounds)
     }
     gmap.fitBounds(bounds)
+    google.maps.event.trigger(gmap, 'resize')
     if (gmap.getZoom() > 14) gmap.setZoom(14)
 
   } catch(e) {
@@ -201,97 +210,69 @@ function dropPin(listing, bounds) {
   return new Promise(function(resolve) {
     var addr = (listing.address_line1 || '') + ' ' + (listing.county || '') + ' Ireland'
     geocoder.geocode({ address: addr }, function(results, status) {
-      var pos
+      var lat, lng
       if (status === 'OK' && results[0]) {
-        pos = results[0].geometry.location
+        lat = results[0].geometry.location.lat()
+        lng = results[0].geometry.location.lng()
       } else {
         var c = CENTRES[listing.county] || CENTRES.default
-        pos = { lat: c.lat + (Math.random()-.5)*.06, lng: c.lng + (Math.random()-.5)*.06 }
+        lat = c.lat + (Math.random() - .5) * .06
+        lng = c.lng + (Math.random() - .5) * .06
       }
-      bounds.extend(pos)
 
-      // Use standard Marker (no Advanced Marker issues)
+      bounds.extend(new google.maps.LatLng(lat, lng))
+
       var label = fmtPrice(listing.price, listing.listing_type)
       var marker = new google.maps.Marker({
         map: gmap,
-        position: pos,
+        position: { lat: lat, lng: lng },
         title: listing.title,
-        label: {
-          text: label,
-          color: '#ffffff',
-          fontSize: '11px',
-          fontWeight: 'bold',
-          fontFamily: 'DM Sans, sans-serif'
-        },
         icon: {
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 0,
-          fillOpacity: 0
-        },
-        shape: { type: 'rect', coords: [0, 0, 1, 1] }
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="28">' +
+            '<rect x="0" y="0" width="80" height="28" rx="6" fill="#1a5c45" stroke="#fff" stroke-width="2"/>' +
+            '<text x="40" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">' + label + '</text>' +
+            '</svg>'
+          ),
+          scaledSize: new google.maps.Size(80, 28),
+          anchor: new google.maps.Point(40, 28)
+        }
       })
 
-      // Use a custom overlay instead
-      var pin = new PricePin(pos, label, listing)
-      pin.setMap(gmap)
-      markers.push(pin)
+      marker._listing = listing
+      marker._origIcon = marker.getIcon()
 
-      setTimeout(resolve, 60)
+      marker.addListener('click', function() {
+        overlays.forEach(function(m) {
+          var ic = m.getIcon()
+          if (ic && ic.url) {
+            var url = ic.url.replace('e07b3f', '1a5c45')
+            m.setIcon(Object.assign({}, m.getIcon(), { url: url }))
+          }
+        })
+        var ic = marker.getIcon()
+        if (ic && ic.url) {
+          marker.setIcon(Object.assign({}, ic, { url: ic.url.replace('1a5c45', 'e07b3f') }))
+        }
+        showPanel(listing)
+        gmap.panTo(marker.getPosition())
+      })
+
+      overlays.push(marker)
+      setTimeout(resolve, 80)
     })
   })
 }
 
-// ── Custom Price Pin overlay ──────────────────────────────
-function PricePin(pos, label, listing) {
-  this.pos = pos
-  this.label = label
-  this.listing = listing
-  this.div = null
-}
-PricePin.prototype = new google.maps.OverlayView()
-
-PricePin.prototype.onAdd = function() {
-  var div = document.createElement('div')
-  div.style.cssText = 'position:absolute;background:#1a5c45;color:#fff;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);border:2px solid #fff;font-family:DM Sans,sans-serif;transform:translate(-50%,-100%);user-select:none;-webkit-user-select:none'
-  div.textContent = this.label
-  this.div = div
-
-  var self = this
-  div.addEventListener('click', function(e) {
-    e.stopPropagation()
-    // Reset all pins
-    markers.forEach(function(m) { if (m.div) m.div.style.background = '#1a5c45' })
-    div.style.background = '#e07b3f'
-    showPanel(self.listing)
-    gmap.panTo(self.pos)
-  })
-
-  var panes = this.getPanes()
-  panes.overlayMouseTarget.appendChild(div)
-}
-
-PricePin.prototype.draw = function() {
-  var proj = this.getProjection()
-  var pt = proj.fromLatLngToDivPixel(new google.maps.LatLng(this.pos.lat || this.pos.lat(), this.pos.lng || this.pos.lng()))
-  if (pt && this.div) {
-    this.div.style.left = pt.x + 'px'
-    this.div.style.top  = pt.y + 'px'
-  }
-}
-
-PricePin.prototype.onRemove = function() {
-  if (this.div && this.div.parentNode) this.div.parentNode.removeChild(this.div)
-  this.div = null
-}
-
 function clearPins() {
-  markers.forEach(function(m) { m.setMap(null) })
-  markers = []
+  overlays.forEach(function(m) { m.setMap(null) })
+  overlays = []
 }
 
-// ── Panel ─────────────────────────────────────────────────
 function showPanel(l) {
-  var photo = l.primary_photo ? '<img src="' + l.primary_photo + '" alt="' + l.title + '"/>' : '🏠'
+  var photo = l.primary_photo
+    ? '<img src="' + l.primary_photo + '" alt="' + l.title + '"/>'
+    : '🏠'
   document.getElementById('panel-body').innerHTML =
     '<div class="panel-card" onclick="location.href=\'listing.html?id=' + l.id + '\'">' +
       '<div class="panel-img">' + photo + '</div>' +
@@ -300,8 +281,8 @@ function showPanel(l) {
         '<div class="panel-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
         '<div class="panel-title">' + l.title + '</div>' +
         '<div class="panel-meta">' +
-          (l.bedrooms ? '🛏 ' + l.bedrooms + ' &nbsp;' : '') +
-          (l.bathrooms ? '🚿 ' + l.bathrooms + ' &nbsp;' : '') +
+          (l.bedrooms ? '🛏 ' + l.bedrooms + '&nbsp;&nbsp;' : '') +
+          (l.bathrooms ? '🚿 ' + l.bathrooms + '&nbsp;&nbsp;' : '') +
           '📍 ' + (l.address_area || l.county) +
         '</div>' +
       '</div>' +
@@ -311,14 +292,12 @@ function showPanel(l) {
 
 function closePanel() {
   document.getElementById('panel').classList.remove('open')
-  markers.forEach(function(m) { if (m.div) m.div.style.background = '#1a5c45' })
 }
 
-// ── Helpers ───────────────────────────────────────────────
 function fmtPrice(price, type) {
   var n = parseInt(price)
-  if (n >= 1000000) return '€' + (n/1000000).toFixed(1) + 'm'
-  if (n >= 1000) return '€' + Math.round(n/1000) + 'k'
+  if (n >= 1000000) return '€' + (n / 1000000).toFixed(1) + 'm'
+  if (n >= 1000) return '€' + Math.round(n / 1000) + 'k'
   return '€' + n.toLocaleString() + (type === 'rent' ? '/mo' : '')
 }
 
@@ -364,12 +343,8 @@ function showStatus(msg) {
 function hideStatus() {
   document.getElementById('map-status').style.display = 'none'
 }
-
-// Close panel when clicking map
-document.getElementById('map').addEventListener('click', function() { closePanel() })
 </script>
 
-<!-- Load Google Maps -->
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&v=weekly"
   async defer>
