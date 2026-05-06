@@ -300,16 +300,76 @@
       return window.MOVIN_API_URL + photo
     }
 
-    async function loadListings() {
-      var el = document.getElementById('listings-content')
-      try {
-        var listings = await API.listings.mine()
+    aasync function loadListings() {
+  var el = document.getElementById('listings-content')
+  el.innerHTML = '<div class="spinner"></div>'
+  try {
+    const token = localStorage.getItem('movin_token')
+    if (!token) {
+      el.innerHTML = '<div class="alert-error">Please <a href="login.html" style="color:#1a5c45">sign in</a> to see your listings.</div>'
+      return
+    }
 
-        if (!listings.length) {
-          document.getElementById('stats-row').style.display = 'none'
-          el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏡</div><h3>No listings yet</h3><p>List your first property — it\'s free!</p><a href="list.html" class="btn btn-primary">Create listing</a></div>'
-          return
-        }
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/mine', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    const listings = await res.json()
+
+    if (!Array.isArray(listings)) {
+      el.innerHTML = '<div class="alert-error">Could not load listings. Please refresh.</div>'
+      return
+    }
+
+    if (!listings.length) {
+      document.getElementById('stats-row').style.display = 'none'
+      el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏡</div><h3>No listings yet</h3><p>List your first property — it\'s free!</p><a href="list.html" class="btn btn-primary">Create listing</a></div>'
+      return
+    }
+
+    var totalViews = listings.reduce(function(s, l) { return s + (l.views || 0) }, 0)
+    var totalEnqs  = listings.reduce(function(s, l) { return s + (parseInt(l.enquiry_count) || 0) }, 0)
+    document.getElementById('s-total').textContent = listings.length
+    document.getElementById('s-views').textContent = totalViews
+    document.getElementById('s-enqs').textContent  = totalEnqs
+    document.getElementById('stats-row').style.display = 'grid'
+
+    el.innerHTML = listings.map(function(l) {
+      var photoUrl = l.primary_photo
+        ? (l.primary_photo.startsWith('http') ? l.primary_photo : window.MOVIN_API_URL + l.primary_photo)
+        : null
+      var thumbHtml = photoUrl
+        ? '<img src="' + photoUrl + '" alt="' + l.title + '" loading="lazy"/>'
+        : '🏡'
+      var statusLabel = (l.status || 'draft').replace(/_/g, ' ')
+      var statusClass = 'dot-' + (l.status || 'draft')
+      var payBtn = l.status === 'pending_payment'
+        ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\')">Pay €24.99</button>'
+        : ''
+      return '<div class="listing-row">' +
+        '<div class="listing-thumb">' + thumbHtml + '</div>' +
+        '<div class="listing-info">' +
+          '<div class="listing-title">' + l.title + '</div>' +
+          '<div class="listing-meta">' +
+            '<span class="status-dot ' + statusClass + '"></span>' +
+            '<span>' + statusLabel + '</span>' +
+            ' · <span>' + l.county + '</span>' +
+            ' · <span>' + (l.enquiry_count || 0) + ' enquiries</span>' +
+            ' · <span>' + (l.views || 0) + ' views</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="listing-price">' + formatPrice(l.price, l.listing_type) + '</div>' +
+        '<div class="listing-actions">' +
+          '<a href="listing.html?id=' + l.id + '" class="btn btn-ghost btn-sm">View</a>' +
+          payBtn +
+          '<button class="btn btn-sm" style="background:#fdf2f2;color:#b91c1c;border:1px solid #fecaca" onclick="deleteListing(\'' + l.id + '\', this)">Delete</button>' +
+        '</div>' +
+      '</div>'
+    }).join('')
+  } catch(e) {
+    console.error('loadListings error:', e)
+    el.innerHTML = '<div class="alert-error">Could not load listings: ' + e.message + '. <button onclick="loadListings()" class="btn btn-ghost btn-sm" style="margin-top:.5rem">Retry</button></div>'
+  }
+}
 
         // Show stats
         var totalViews = listings.reduce(function(s, l) { return s + (l.views || 0) }, 0)
