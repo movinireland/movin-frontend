@@ -1,36 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>List Your Property – Movin.ie</title>
-  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/main.css"/>
   <style>
-    .list-hero { background:linear-gradient(135deg,var(--green),var(--green-dark)); padding:3rem 2rem; text-align:center; }
-    .list-hero-badge { display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem; }
-    .list-hero h1 { font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:.5rem; }
-    .list-hero p { font-size:15px;color:rgba(255,255,255,.65);font-weight:300; }
-    .form-wrap { max-width:700px; margin:0 auto; padding:2rem 1.5rem 4rem; }
-    .type-grid { display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.1rem; }
-    .type-btn { border:1.5px solid var(--border);border-radius:13px;padding:.85rem .5rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .15s; }
-    .type-btn:hover { border-color:var(--green); }
-    .type-btn.on { border-color:var(--green);background:var(--green-light); }
-    .type-ico { font-size:24px;margin-bottom:5px; }
-    .type-lbl { font-size:11px;color:#666; }
-    .type-btn.on .type-lbl { color:var(--green);font-weight:500; }
-    .plan-grid { display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem; }
-    .plan-opt { border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s; }
-    .plan-opt:hover,.plan-opt.on { border-color:var(--green);background:var(--green-light); }
-    .plan-badge { font-size:10px;font-weight:500;padding:2px 9px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;display:inline-block;margin-bottom:.6rem; }
-    .plan-price { font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#111;margin-bottom:2px; }
-    .plan-opt.on .plan-price { color:var(--green); }
-    .plan-desc { font-size:12px;color:#bbb;margin-bottom:.85rem; }
-    .plan-list { list-style:none;display:flex;flex-direction:column;gap:5px; }
-    .plan-list li { font-size:12px;color:#666;display:flex;gap:6px; }
-    .plan-list li::before { content:'✓';color:var(--green);font-weight:500; }
-    .photo-preview { display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:1rem; }
-    .photo-item { position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg); }
-    .photo-item img { width:100%;height:100%;object-fit:cover; }
-    .photo-del { position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+    .list-hero{background:linear-gradient(135deg,var(--green),var(--green-dark));padding:3rem 2rem;text-align:center}
+    .list-hero-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem}
+    .list-hero h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:.5rem}
+    .list-hero p{font-size:15px;color:rgba(255,255,255,.65);font-weight:300}
+    .form-wrap{max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem}
+    .type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.1rem}
+    .type-btn{border:1.5px solid var(--border);border-radius:13px;padding:.85rem .5rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .15s}
+    .type-btn:hover{border-color:var(--green)}
+    .type-btn.on{border-color:var(--green);background:var(--green-light)}
+    .type-ico{font-size:24px;margin-bottom:5px}
+    .type-lbl{font-size:11px;color:#666}
+    .type-btn.on .type-lbl{color:var(--green);font-weight:500}
+    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+    .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
+    .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
+    .plan-badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;display:inline-block;margin-bottom:.6rem}
+    .plan-price{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#111;margin-bottom:2px}
+    .plan-opt.on .plan-price{color:var(--green)}
+    .plan-desc{font-size:12px;color:#bbb;margin-bottom:.85rem}
+    .plan-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+    .plan-list li{font-size:12px;color:#666;display:flex;gap:6px}
+    .plan-list li::before{content:'✓';color:var(--green);font-weight:500}
+
+    /* ── PHOTO UPLOAD ── */
+    .upload-zone{border:2px dashed #d0e8dc;border-radius:14px;padding:2rem 1rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .2s;margin-bottom:1rem}
+    .upload-zone:hover,.upload-zone.drag-over{border-color:var(--green);background:var(--green-light)}
+    .upload-zone-icon{font-size:36px;margin-bottom:.5rem}
+    .upload-zone-text{font-size:15px;font-weight:500;color:#333;margin-bottom:.25rem}
+    .upload-zone-hint{font-size:12px;color:#aaa}
+
+    .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:1rem}
+    @media(min-width:480px){.photo-grid{grid-template-columns:repeat(4,1fr)}}
+
+    .photo-item{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#f0ede6;border:2px solid transparent;cursor:pointer;transition:all .15s}
+    .photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+    .photo-item.is-primary{border-color:#1a5c45;box-shadow:0 0 0 3px rgba(26,92,69,.15)}
+
+    .photo-badge{position:absolute;bottom:5px;left:5px;background:#1a5c45;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;letter-spacing:.3px;text-transform:uppercase}
+    .photo-del{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;z-index:2}
+    .photo-del:hover{background:rgba(185,28,28,.9)}
+
+    .photo-set-main{position:absolute;bottom:5px;right:5px;background:rgba(255,255,255,.9);color:#1a5c45;border:none;border-radius:20px;font-size:9px;font-weight:700;padding:2px 6px;cursor:pointer;display:none;letter-spacing:.3px;text-transform:uppercase}
+    .photo-item:hover .photo-set-main{display:block}
+    .photo-item.is-primary .photo-set-main{display:none}
+
+    .photo-tip{font-size:12px;color:#888;margin-top:.5rem;text-align:center}
+    .photo-count{font-size:13px;color:#1a5c45;font-weight:500;margin-top:.5rem}
+
+    .uploading-overlay{position:absolute;inset:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
+    .upload-spinner{width:20px;height:20px;border-radius:50%;border:2px solid #e9f4ef;border-top-color:#1a5c45;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
@@ -57,7 +82,7 @@
   <div class="form-wrap">
     <div id="form-alert"></div>
 
-    <!-- Step 1: Type & basics -->
+    <!-- Step 1 -->
     <div id="step-1">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">What type of property is it?</div>
@@ -91,7 +116,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Listing title <span class="req">*</span></label>
-          <input class="form-input" type="text" id="title" placeholder="e.g. Bright 3-bed semi-detached, Rathmines" maxlength="100" />
+          <input class="form-input" type="text" id="title" placeholder="e.g. Bright 3-bed semi-detached, Rathmines" maxlength="100"/>
           <div class="form-hint">Be descriptive — good titles get more clicks</div>
         </div>
         <div class="form-group">
@@ -100,7 +125,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Asking price (€) <span class="req">*</span></label>
-          <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0" />
+          <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0"/>
           <div class="form-hint" id="price-hint">Enter monthly rent in € for rentals</div>
         </div>
         <div style="display:flex;justify-content:flex-end">
@@ -109,19 +134,19 @@
       </div>
     </div>
 
-    <!-- Step 2: Location -->
+    <!-- Step 2 -->
     <div id="step-2" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Address & location</div>
         <div class="card-sub">Enter the full address of the property</div>
         <div class="form-group">
           <label class="form-label">Address line 1 <span class="req">*</span></label>
-          <input class="form-input" type="text" id="address_line1" placeholder="e.g. 14 Leinster Road" />
+          <input class="form-input" type="text" id="address_line1" placeholder="e.g. 14 Leinster Road"/>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Town / Area</label>
-            <input class="form-input" type="text" id="address_area" placeholder="e.g. Rathmines" />
+            <input class="form-input" type="text" id="address_area" placeholder="e.g. Rathmines"/>
           </div>
           <div class="form-group">
             <label class="form-label">County <span class="req">*</span></label>
@@ -141,7 +166,7 @@
         </div>
         <div class="form-group">
           <label class="form-label">Eircode</label>
-          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" style="max-width:180px" />
+          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" style="max-width:180px"/>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
           <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
@@ -150,7 +175,7 @@
       </div>
     </div>
 
-    <!-- Step 3: Specs -->
+    <!-- Step 3 -->
     <div id="step-3" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Property specs</div>
@@ -172,7 +197,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Floor size (m²)</label>
-            <input class="form-input" type="number" id="floor_size_m2" placeholder="e.g. 128" />
+            <input class="form-input" type="number" id="floor_size_m2" placeholder="e.g. 128"/>
           </div>
         </div>
         <div class="form-row">
@@ -191,11 +216,11 @@
         <div class="form-group">
           <label class="form-label">Facilities</label>
           <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.25rem">
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-parking" style="accent-color:var(--green)" /> Parking</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garden"  style="accent-color:var(--green)" /> Garden</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garage"  style="accent-color:var(--green)" /> Garage</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-alarm"   style="accent-color:var(--green)" /> Alarm</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-wheelchair" style="accent-color:var(--green)" /> Wheelchair access</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-parking" style="accent-color:var(--green)"/> Parking</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garden" style="accent-color:var(--green)"/> Garden</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garage" style="accent-color:var(--green)"/> Garage</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-alarm" style="accent-color:var(--green)"/> Alarm</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-wheelchair" style="accent-color:var(--green)"/> Wheelchair access</label>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
@@ -205,26 +230,33 @@
       </div>
     </div>
 
-    <!-- Step 4: Photos -->
+    <!-- Step 4: Photos with primary photo selection -->
     <div id="step-4" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Add photos</div>
-        <div class="card-sub">Listings with photos get 5× more enquiries</div>
+        <div class="card-sub">Listings with photos get 5× more enquiries. The first photo will be your main cover photo.</div>
+
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
           <div class="upload-zone-icon">📷</div>
-          <div class="upload-zone-text">Click to add photos, or drag & drop here</div>
-          <div class="upload-zone-hint">JPG or PNG · Max 10MB each · Up to 20 photos</div>
+          <div class="upload-zone-text">Tap to add photos</div>
+          <div class="upload-zone-hint">JPG, PNG or WEBP · Max 10MB each · Up to 20 photos</div>
         </div>
-        <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handlePhotos(this.files)" />
-        <div id="photo-preview" class="photo-preview"></div>
-        <div style="display:flex;justify-content:space-between;margin-top:1rem">
+        <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handlePhotos(this.files)"/>
+
+        <div id="photo-count" class="photo-count" style="display:none"></div>
+        <div id="photo-tip" class="photo-tip" style="display:none">
+          ✨ <strong>Tap any photo</strong> to set it as the main cover photo · <strong>×</strong> to remove
+        </div>
+        <div id="photo-grid" class="photo-grid"></div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:1.25rem">
           <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
           <button class="btn btn-primary" onclick="goStep(5)">Next: Publish →</button>
         </div>
       </div>
     </div>
 
-    <!-- Step 5: Plan & publish -->
+    <!-- Step 5 -->
     <div id="step-5" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Choose your plan</div>
@@ -238,7 +270,7 @@
           </div>
           <div class="plan-opt" data-plan="paid">
             <div class="plan-badge" style="background:var(--green)">Standard listing</div>
-            <div class="plan-price">€9</div>
+            <div class="plan-price">€24.99</div>
             <div class="plan-desc">Per listing after first</div>
             <ul class="plan-list"><li>Everything in free</li><li>Boost visibility</li><li>Analytics</li><li>Priority support</li></ul>
           </div>
@@ -253,29 +285,30 @@
   </div>
 
   <script>
-  window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
-</script>
+    window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
+  </script>
   <script src="../js/app.js"></script>
   <script src="../js/api.js"></script>
   <script>
     if (!requireLogin()) {}
     renderNav('list')
 
-    let selectedPhotos = []
-    let createdListingId = null
+    var selectedPhotos = []   // array of File objects (null if removed)
+    var primaryIndex = 0      // which index is the main photo
+    var createdListingId = null
 
     // Type selector
-    document.querySelectorAll('#type-grid .type-btn').forEach(b => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('#type-grid .type-btn').forEach(x => x.classList.remove('on'))
+    document.querySelectorAll('#type-grid .type-btn').forEach(function(b) {
+      b.addEventListener('click', function() {
+        document.querySelectorAll('#type-grid .type-btn').forEach(function(x) { x.classList.remove('on') })
         b.classList.add('on')
       })
     })
 
     // Plan selector
-    document.querySelectorAll('.plan-opt').forEach(b => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('.plan-opt').forEach(x => x.classList.remove('on'))
+    document.querySelectorAll('.plan-opt').forEach(function(b) {
+      b.addEventListener('click', function() {
+        document.querySelectorAll('.plan-opt').forEach(function(x) { x.classList.remove('on') })
         b.classList.add('on')
       })
     })
@@ -287,37 +320,110 @@
     })
 
     // Drag and drop
-    const zone = document.getElementById('upload-zone')
-    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over') })
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'))
-    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('drag-over'); handlePhotos(e.dataTransfer.files) })
+    var zone = document.getElementById('upload-zone')
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over') })
+    zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over') })
+    zone.addEventListener('drop', function(e) {
+      e.preventDefault()
+      zone.classList.remove('drag-over')
+      handlePhotos(e.dataTransfer.files)
+    })
 
     function handlePhotos(files) {
-      const preview = document.getElementById('photo-preview')
-      Array.from(files).forEach(file => {
-        if (selectedPhotos.length >= 20) { toast('Max 20 photos', 'error'); return }
-        if (file.size > 10 * 1024 * 1024) { toast(`${file.name} is too large (max 10MB)`, 'error'); return }
+      Array.from(files).forEach(function(file) {
+        if (selectedPhotos.filter(Boolean).length >= 20) {
+          toast('Max 20 photos allowed', 'error')
+          return
+        }
+        if (file.size > 10 * 1024 * 1024) {
+          toast(file.name + ' is too large (max 10MB)', 'error')
+          return
+        }
+        var idx = selectedPhotos.length
         selectedPhotos.push(file)
-        const reader = new FileReader()
-        const idx = selectedPhotos.length - 1
-        reader.onload = e => {
-          const div = document.createElement('div')
-          div.className = 'photo-item' + (idx === 0 ? ' primary' : '')
-          div.dataset.idx = idx
-          div.innerHTML = `<img src="${e.target.result}" /><button class="photo-del" onclick="removePhoto(${idx}, this.parentElement)">×</button>`
-          preview.appendChild(div)
+
+        var reader = new FileReader()
+        reader.onload = function(e) {
+          addPhotoThumb(e.target.result, idx)
+          updatePhotoUI()
         }
         reader.readAsDataURL(file)
       })
     }
 
-    function removePhoto(idx, el) {
+    function addPhotoThumb(src, idx) {
+      var grid = document.getElementById('photo-grid')
+      var div = document.createElement('div')
+      div.className = 'photo-item' + (idx === primaryIndex ? ' is-primary' : '')
+      div.id = 'photo-' + idx
+      div.innerHTML =
+        '<img src="' + src + '" alt="Photo ' + (idx + 1) + '"/>' +
+        (idx === primaryIndex ? '<div class="photo-badge">Main photo</div>' : '') +
+        '<button class="photo-del" onclick="removePhoto(' + idx + ')">×</button>' +
+        '<button class="photo-set-main" onclick="setMainPhoto(' + idx + ')">Set as main</button>'
+      grid.appendChild(div)
+    }
+
+    function removePhoto(idx) {
       selectedPhotos[idx] = null
-      el.remove()
+      var el = document.getElementById('photo-' + idx)
+      if (el) el.remove()
+
+      // If removing primary photo, set next available as primary
+      if (idx === primaryIndex) {
+        var nextIdx = selectedPhotos.findIndex(function(p, i) { return p !== null && i !== idx })
+        if (nextIdx !== -1) {
+          setMainPhoto(nextIdx)
+        } else {
+          primaryIndex = 0
+        }
+      }
+      updatePhotoUI()
+    }
+
+    function setMainPhoto(idx) {
+      if (!selectedPhotos[idx]) return
+      primaryIndex = idx
+
+      // Update all photo items
+      document.querySelectorAll('.photo-item').forEach(function(el) {
+        el.classList.remove('is-primary')
+        var badge = el.querySelector('.photo-badge')
+        if (badge) badge.remove()
+      })
+
+      var el = document.getElementById('photo-' + idx)
+      if (el) {
+        el.classList.add('is-primary')
+        var img = el.querySelector('img')
+        if (img && !el.querySelector('.photo-badge')) {
+          var badge = document.createElement('div')
+          badge.className = 'photo-badge'
+          badge.textContent = 'Main photo'
+          el.insertBefore(badge, img.nextSibling)
+        }
+      }
+
+      toast('✓ Main photo updated', 'ok')
+    }
+
+    function updatePhotoUI() {
+      var count = selectedPhotos.filter(Boolean).length
+      var countEl = document.getElementById('photo-count')
+      var tipEl = document.getElementById('photo-tip')
+
+      if (count > 0) {
+        countEl.style.display = 'block'
+        countEl.textContent = count + ' photo' + (count === 1 ? '' : 's') + ' added'
+        tipEl.style.display = 'block'
+      } else {
+        countEl.style.display = 'none'
+        tipEl.style.display = 'none'
+        primaryIndex = 0
+      }
     }
 
     function goStep(n) {
-      // Validate current step
       if (n === 2) {
         if (!document.getElementById('title').value.trim()) { toast('Please enter a listing title', 'error'); return }
         if (!document.getElementById('description').value.trim()) { toast('Please add a description', 'error'); return }
@@ -328,34 +434,34 @@
         if (!document.getElementById('county').value) { toast('Please select a county', 'error'); return }
       }
 
-      for (let i = 1; i <= 5; i++) {
-        const el = document.getElementById(`step-${i}`)
+      for (var i = 1; i <= 5; i++) {
+        var el = document.getElementById('step-' + i)
         if (el) el.style.display = i === n ? 'block' : 'none'
       }
 
-      document.querySelectorAll('.step-item').forEach(s => {
-        const sn = parseInt(s.dataset.step)
+      document.querySelectorAll('.step-item').forEach(function(s) {
+        var sn = parseInt(s.dataset.step)
         s.classList.remove('active', 'done')
         if (sn === n) s.classList.add('active')
         if (sn < n)  s.classList.add('done')
-        if (sn < n)  s.querySelector('.step-num').textContent = '✓'
-        else s.querySelector('.step-num').textContent = sn
+        s.querySelector('.step-num').textContent = sn < n ? '✓' : sn
       })
 
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     async function publishListing() {
-      const btn = document.getElementById('publish-btn')
-      const alert = document.getElementById('form-alert')
-      btn.classList.add('btn-loading'); btn.disabled = true
+      var btn = document.getElementById('publish-btn')
+      var alertEl = document.getElementById('form-alert')
+      btn.classList.add('btn-loading')
+      btn.disabled = true
 
       try {
-        const payload = {
+        var payload = {
           title:          document.getElementById('title').value.trim(),
           description:    document.getElementById('description').value.trim(),
           listing_type:   document.getElementById('listing_type').value,
-          property_type:  document.querySelector('#type-grid .type-btn.on')?.dataset.val || 'house',
+          property_type:  document.querySelector('#type-grid .type-btn.on').dataset.val || 'house',
           property_style: document.getElementById('property_style').value,
           address_line1:  document.getElementById('address_line1').value.trim(),
           address_area:   document.getElementById('address_area').value.trim(),
@@ -373,12 +479,20 @@
           wheelchair:     document.getElementById('f-wheelchair').checked,
         }
 
-        const res = await API.listings.create(payload)
+        var res = await API.listings.create(payload)
         createdListingId = res.listing.id
 
-        // Upload photos if any
-        const filesToUpload = selectedPhotos.filter(Boolean)
+        // Upload photos — primary photo first
+        var filesToUpload = []
+        if (selectedPhotos[primaryIndex]) {
+          filesToUpload.push(selectedPhotos[primaryIndex])
+        }
+        selectedPhotos.forEach(function(f, i) {
+          if (f && i !== primaryIndex) filesToUpload.push(f)
+        })
+
         if (filesToUpload.length > 0) {
+          btn.textContent = 'Uploading photos…'
           try {
             await API.photos.upload(createdListingId, filesToUpload)
           } catch(e) {
@@ -386,20 +500,21 @@
           }
         }
 
-        // Needs payment?
         if (res.requires_payment) {
           toast('Redirecting to payment…', 'info')
-          const payment = await API.payments.startCheckout(createdListingId)
+          var payment = await API.payments.startCheckout(createdListingId)
           window.location.href = payment.checkout_url
         } else {
-          toast('🎉 Your listing is live!')
-          window.location.href = `listing.html?id=${createdListingId}`
+          toast('🎉 Listing submitted for review!')
+          window.location.href = 'listing.html?id=' + createdListingId
         }
 
       } catch(err) {
-        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
+        alertEl.innerHTML = '<div class="alert alert-error">' + err.message + '</div>'
         window.scrollTo({ top: 0, behavior: 'smooth' })
-        btn.classList.remove('btn-loading'); btn.disabled = false
+        btn.classList.remove('btn-loading')
+        btn.disabled = false
+        btn.textContent = '🚀 Publish listing'
       }
     }
   </script>
