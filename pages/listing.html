@@ -69,6 +69,7 @@
     window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
     window.GOOGLE_MAPS_KEY = 'AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk'
   </script>
+  <script src="../js/icons.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/app.js"></script>
   <script>
@@ -217,7 +218,7 @@
           : ''
 
         var phoneBtn = L.lister_phone
-          ? '<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 Call</button>'
+          ? '<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href=\'tel:' + L.lister_phone + '\'"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-phone"/></svg> Call</button>'
           : ''
 
         var mapsQuery = encodeURIComponent(L.address_line1 + ' ' + (L.address_area || '') + ' ' + L.county + ' Ireland')
@@ -244,9 +245,9 @@
           '</div>' +
 
           '<div class="action-strip">' +
-            '<button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">📨 Enquire</button>' +
+            '<button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg> Enquire</button>' +
             phoneBtn +
-            '<button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()">♡ Save</button>' +
+            '<button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg> Save</button>' +
           '</div>' +
 
           '<div class="detail-section"><h2>About this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
@@ -261,10 +262,10 @@
               ' &nbsp;·&nbsp; <a href="https://www.google.com/maps/search/?api=1&query=' + mapsQuery + '" target="_blank" style="color:var(--g)">Open in Google Maps ↗</a>' +
             '</p>' +
             '<div class="nearby-tabs">' +
-              '<div class="nearby-tab active" onclick="switchNearbyTab(\'bus\', this)">🚌 Bus stops</div>' +
-              '<div class="nearby-tab" onclick="switchNearbyTab(\'school\', this)">🏫 Schools</div>' +
-              '<div class="nearby-tab" onclick="switchNearbyTab(\'hospital\', this)">🏥 Hospitals</div>' +
-              '<div class="nearby-tab" onclick="switchNearbyTab(\'shop\', this)">🛒 Shops</div>' +
+              '<div class="nearby-tab active" onclick="switchNearbyTab(\'bus\', this)"><svg width="14" height="14" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-location"/></svg> Bus stops</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'school\', this)"><svg width="14" height="14" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-document"/></svg> Schools</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'hospital\', this)"><svg width="14" height="14" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Hospitals</div>' +
+              '<div class="nearby-tab" onclick="switchNearbyTab(\'shop\', this)"><svg width="14" height="14" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg> Shops</div>' +
             '</div>' +
             '<div id="nearby-list" class="nearby-list"><div class="nearby-loading">Loading map…</div></div>' +
           '</div>' +
@@ -278,7 +279,7 @@
               '<input class="form-input" type="email" name="sender_email" placeholder="Email address" required/>' +
               '<input class="form-input" type="tel" name="sender_phone" placeholder="Phone (optional)"/>' +
               '<textarea class="form-input form-textarea" name="message" placeholder="Hi, I\'d like to arrange a viewing…" required></textarea>' +
-              '<button type="submit" class="btn btn-primary btn-block" id="enq-btn">Send enquiry</button>' +
+              '<button type="submit" class="btn btn-primary btn-block" id="enq-btn"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg> Send enquiry</button>' +
             '</form>' +
             callBtn +
             '<div class="agent-row">' +

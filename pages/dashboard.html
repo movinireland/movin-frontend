@@ -123,12 +123,12 @@
         </div>
       </div>
       <nav class="db-nav">
-        <div class="db-nav-item active" data-tab="listings" onclick="switchTab('listings')">🏠 My listings</div>
-        <div class="db-nav-item" data-tab="enquiries" onclick="switchTab('enquiries')">📨 Enquiries <span class="nbadge" id="unread-badge" style="display:none">0</span></div>
-        <div class="db-nav-item" data-tab="saved" onclick="switchTab('saved')">♡ Saved</div>
-        <div class="db-nav-item" data-tab="profile" onclick="switchTab('profile')">👤 Profile</div>
+        <div class="db-nav-item active" data-tab="listings" onclick="switchTab('listings')"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg> My listings</div>
+        <div class="db-nav-item" data-tab="enquiries" onclick="switchTab('enquiries')"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-inbox"/></svg> Enquiries <span class="nbadge" id="unread-badge" style="display:none">0</span></div>
+        <div class="db-nav-item" data-tab="saved" onclick="switchTab('saved')"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg> Saved</div>
+        <div class="db-nav-item" data-tab="profile" onclick="switchTab('profile')"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg> Profile</div>
         <div style="padding-top:2rem;margin-top:2rem;border-top:1px solid var(--border)">
-          <div class="db-nav-item" id="signout-btn" style="color:#d93025">↩ Sign out</div>
+          <div class="db-nav-item" id="signout-btn" style="color:#d93025"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-signout"/></svg> Sign out</div>
         </div>
       </nav>
     </aside>
@@ -191,16 +191,17 @@
 
   <div class="mobile-tabs">
     <div class="mobile-tabs-inner">
-      <button class="mt-item active" id="mt-listings" onclick="switchTab('listings')"><span class="mt-icon">🏠</span>Listings</button>
-      <button class="mt-item" id="mt-enquiries" onclick="switchTab('enquiries')"><span class="mt-icon">📨</span>Enquiries<span class="mt-badge" id="mobile-badge" style="display:none">0</span></button>
-      <button class="mt-item" id="mt-saved" onclick="switchTab('saved')"><span class="mt-icon">♡</span>Saved</button>
-      <button class="mt-item" id="mt-profile" onclick="switchTab('profile')"><span class="mt-icon">👤</span>Profile</button>
+      <button class="mt-item active" id="mt-listings" onclick="switchTab('listings')"><span class="mt-icon"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></span>Listings</button>
+      <button class="mt-item" id="mt-enquiries" onclick="switchTab('enquiries')"><span class="mt-icon"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-inbox"/></svg></span>Enquiries<span class="mt-badge" id="mobile-badge" style="display:none">0</span></button>
+      <button class="mt-item" id="mt-saved" onclick="switchTab('saved')"><span class="mt-icon"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg></span>Saved</button>
+      <button class="mt-item" id="mt-profile" onclick="switchTab('profile')"><span class="mt-icon"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></span>Profile</button>
     </div>
   </div>
 
   <script>
     window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
   </script>
+  <script src="../js/icons.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/app.js"></script>
   <script>
@@ -250,7 +251,7 @@
 
       if (!listings.length) {
         document.getElementById('stats-row').style.display = 'none'
-        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🏡</div><h3>No listings yet</h3><p>List your first property — it\'s free!</p><a href="list.html" class="btn btn-primary" style="margin-top:.5rem">Create listing</a></div>'
+        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg width="48" height="48" style="color:#c8dfd4;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><h3>No listings yet</h3><p>List your first property — it\'s free!</p><a href="list.html" class="btn btn-primary" style="margin-top:.5rem">Create listing</a></div>'
         return
       }
 
@@ -317,7 +318,7 @@
       }
 
       if (!enquiries.length) {
-        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📨</div><h3>No enquiries yet</h3><p>When someone contacts you about a listing, it\'ll appear here.</p></div>'
+        el.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><svg width="48" height="48" style="color:#c8dfd4;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-inbox"/></svg></div><h3>No enquiries yet</h3><p>When someone contacts you about a listing, it\'ll appear here.</p></div>'
         return
       }
 
@@ -352,7 +353,7 @@
       })
       var items = await res.json()
       if (!Array.isArray(items) || !items.length) {
-        el.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">♡</div><h3>No saved properties</h3><p>Heart any property while browsing to save it here.</p><a href="search.html" class="btn btn-ghost">Browse listings</a></div>'
+        el.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon"><svg width="48" height="48" style="color:#c8dfd4;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg></div><h3>No saved properties</h3><p>Heart any property while browsing to save it here.</p><a href="search.html" class="btn btn-ghost">Browse listings</a></div>'
         return
       }
       el.innerHTML = items.map(function(l) {
