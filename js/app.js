@@ -200,6 +200,7 @@ function renderNav(activePage = '') {
       if (el && typeof switchTab === 'function') switchTab(tabId, el)
     }, 100)
   }
+setTimeout(function() { if (typeof renderFooter === 'function') renderFooter() }, 0)
 }
  
 function toggleToolsDropdown(e) {
@@ -248,7 +249,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
           title="${isSaved ? 'Unsave' : 'Save'}"
-          style="background:rgba(255,255,255,.92);border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:${isSaved ? '#e07b3f' : '#888'};position:absolute;top:7px;right:7px;z-index:2;padding:0">
+          style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
           ${isSaved ? '♥' : '♡'}
         </button>
       </div>
@@ -300,6 +301,63 @@ window.requireLogin = requireLogin
 window.renderNav = renderNav
 window.buildPropertyCard = buildPropertyCard
 window.toggleSave = toggleSave
+
+// ── Render footer ─────────────────────────────────────────────────────────────
+function renderFooter() {
+  var root = window.location.pathname.includes('/pages/') ? '../' : './'
+  var footer = document.getElementById('site-footer')
+  if (!footer) return
+  footer.innerHTML =
+    '<div class="footer-inner">' +
+      '<div class="footer-top">' +
+        '<div>' +
+          '<div class="footer-brand-logo">mov<span>in</span></div>' +
+          '<div class="footer-brand-tag">Ireland\'s home for<br>finding your home.</div>' +
+          '<div style="display:flex;gap:10px;margin-top:.5rem">' +
+            '<a href="https://www.facebook.com/movin.ie" target="_blank" style="color:rgba(255,255,255,.5);font-size:13px;text-decoration:none">Facebook</a>' +
+            '<a href="https://www.instagram.com/movin.ie" target="_blank" style="color:rgba(255,255,255,.5);font-size:13px;text-decoration:none">Instagram</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Search</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/search.html?listing_type=sale">Properties for sale</a>' +
+            '<a href="' + root + 'pages/search.html?listing_type=rent">Properties to rent</a>' +
+            '<a href="' + root + 'pages/search.html?listing_type=share">Sharing</a>' +
+            '<a href="' + root + 'pages/map-search.html">Map search</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Tools</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
+            '<a href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
+            '<a href="' + root + 'pages/tools.html#stamp">Stamp duty</a>' +
+            '<a href="' + root + 'pages/tools.html#ftb">First-time buyer</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Company</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/about.html">About us</a>' +
+            '<a href="' + root + 'pages/list.html">List your property</a>' +
+            '<a href="mailto:hello@movin.ie">Contact</a>' +
+            '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
+            '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="footer-bottom">' +
+        '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Ltd · Republic of Ireland</div>' +
+        '<div class="footer-legal">' +
+          '<a href="' + root + 'pages/privacy-policy.html">Privacy</a>' +
+          '<a href="' + root + 'pages/terms-of-service.html">Terms</a>' +
+          '<a href="mailto:hello@movin.ie">hello@movin.ie</a>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+}
+window.renderFooter = renderFooter
 
 // ── Load icon sprite ──────────────────────────────────────────────────────────
 function loadIconSprite() {

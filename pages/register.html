@@ -72,7 +72,7 @@
           <input class="form-input" type="password" id="confirm" placeholder="Repeat your password" required />
         </div>
         <div style="font-size:12px;color:#aaa;margin-bottom:1rem;line-height:1.6">
-          By creating an account you agree to our <a href="#" style="color:var(--green)">Terms of Service</a> and <a href="#" style="color:var(--green)">Privacy Policy</a>.
+          By creating an account you agree to our <a href="terms-of-service.html" style="color:var(--green)">Terms of Service</a> and <a href="privacy-policy.html" style="color:var(--green)">Privacy Policy</a>.
         </div>
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="reg-btn">Create account</button>
       </form>
@@ -132,13 +132,21 @@
           pw,
           document.getElementById('phone').value
         )
-        toast('Account created! Welcome to Movin.ie 🎉')
-        window.location.href = 'dashboard.html'
+        // Show verification message instead of redirecting
+        document.querySelector('.auth-card').innerHTML =
+          '<div style="text-align:center;padding:1rem 0">' +
+          '<div style="font-size:48px;margin-bottom:1rem">📧</div>' +
+          '<div style="font-family:Playfair Display,serif;font-size:22px;font-weight:700;color:#111;margin-bottom:.75rem">Check your email</div>' +
+          '<p style="font-size:14px;color:#888;line-height:1.7;margin-bottom:1.5rem">We\'ve sent a verification link to <strong style="color:#333">' + document.getElementById('email').value + '</strong>.<br>Click the link to activate your account.</p>' +
+          '<div style="background:#e9f4ef;border-radius:12px;padding:1rem;font-size:13px;color:#1a5c45;margin-bottom:1.5rem">Didn\'t get it? Check your spam folder or <button onclick="resendVerification()" style="background:none;border:none;color:#1a5c45;font-weight:500;cursor:pointer;padding:0;font-size:13px;text-decoration:underline">resend the email</button>.</div>' +
+          '<a href="login.html" style="color:#1a5c45;font-size:14px;font-weight:500">Already verified? Sign in →</a>' +
+          '</div>'
       } catch(err) {
         alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
         btn.classList.remove('btn-loading'); btn.disabled = false
       }
     }
   </script>
+  <footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>

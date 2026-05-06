@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About – Movin.ie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    .about-hero{background:linear-gradient(135deg,var(--green),var(--green-dark));padding:4rem 2rem;text-align:center}
+    .about-hero h1{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:#fff;margin-bottom:.75rem}
+    .about-hero h1 span{color:#e07b3f}
+    .about-hero p{font-size:16px;color:rgba(255,255,255,.7);font-weight:300;max-width:520px;margin:0 auto}
+    .about-wrap{max-width:860px;margin:0 auto;padding:3rem 1.5rem 5rem}
+    .mission-section{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;margin-bottom:4rem}
+    @media(max-width:640px){.mission-section{grid-template-columns:1fr}}
+    .mission-section h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#111;margin-bottom:1rem}
+    .mission-section p{font-size:15px;color:#666;line-height:1.85;font-weight:300;margin-bottom:.85rem}
+    .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-bottom:4rem}
+    @media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+    .stat-box{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.75rem;text-align:center}
+    .stat-box-n{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--green);margin-bottom:.25rem}
+    .stat-box-l{font-size:13px;color:#aaa;font-weight:300}
+    .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:4rem}
+    @media(max-width:640px){.values-grid{grid-template-columns:1fr}}
+    .value-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem}
+    .value-icon{width:44px;height:44px;background:var(--green-light);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+    .value-card h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.5rem}
+    .value-card p{font-size:13px;color:#888;line-height:1.7;font-weight:300;margin:0}
+    .team-section{margin-bottom:4rem}
+    .team-section h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#111;margin-bottom.5rem;text-align:center}
+    .team-sub{font-size:14px;color:#aaa;text-align:center;margin-bottom:2rem;font-weight:300}
+    .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+    .team-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center}
+    .team-av{width:64px;height:64px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 1rem}
+    .team-name{font-size:15px;font-weight:500;color:#111;margin-bottom:.25rem}
+    .team-role{font-size:12px;color:#aaa}
+    .contact-section{background:var(--green);border-radius:20px;padding:3rem 2rem;text-align:center;color:#fff}
+    .contact-section h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;margin-bottom:.75rem}
+    .contact-section p{font-size:15px;color:rgba(255,255,255,.75);font-weight:300;margin-bottom:2rem}
+    .contact-links{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap}
+    .contact-link{background:rgba(255,255,255,.15);color:#fff;padding:10px 20px;border-radius:50px;font-size:14px;font-weight:500;text-decoration:none;border:1.5px solid rgba(255,255,255,.3);transition:all .15s}
+    .contact-link:hover{background:rgba(255,255,255,.25)}
+    .contact-link.primary{background:#fff;color:var(--green);border-color:#fff}
+    .pricing-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:4rem}
+    .pricing-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center}
+    .pricing-card.featured{border-color:var(--green);background:var(--green-light)}
+    .pricing-price{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--green);margin-bottom:.25rem}
+    .pricing-label{font-size:12px;color:#aaa;margin-bottom:.75rem}
+    .pricing-desc{font-size:13px;color:#666;line-height:1.6;font-weight:300}
+    .section-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#111;margin-bottom:.5rem;text-align:center}
+    .section-sub{font-size:14px;color:#aaa;text-align:center;margin-bottom:2rem;font-weight:300}
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+
+  <div class="about-hero">
+    <h1>Ireland's home for<br>finding your <span>home</span></h1>
+    <p>Movin.ie is a modern property marketplace built to make buying, renting, and selling in Ireland simpler and more affordable.</p>
+  </div>
+
+  <div class="about-wrap">
+
+    <!-- Mission -->
+    <div class="mission-section">
+      <div>
+        <h2>Why we built Movin.ie</h2>
+        <p>Ireland's property market needed something better. Listing fees were too high, platforms were too slow, and the experience hadn't changed in years.</p>
+        <p>We built Movin.ie to fix that — a fast, mobile-first marketplace where your first listing is always free, standard listings cost a fraction of the competition, and everything works the way it should.</p>
+        <p>We're Irish, we're independent, and we're on your side.</p>
+      </div>
+      <div style="background:var(--green);border-radius:20px;padding:2.5rem;color:#fff;text-align:center">
+        <div style="font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:#e07b3f;margin-bottom:.5rem">75%</div>
+        <div style="font-size:15px;color:rgba(255,255,255,.85);line-height:1.6">cheaper than the leading Irish property portals for a standard listing</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-box-n">€0</div>
+        <div class="stat-box-l">First listing, always free</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-n">€24.99</div>
+        <div class="stat-box-l">Standard listing — 30 days live</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-n">🇮🇪</div>
+        <div class="stat-box-l">Built and run from Ireland</div>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="section-title">What we stand for</div>
+    <div class="section-sub" style="margin-bottom:1.5rem">Our principles guide everything we build</div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-euro"/></svg>
+        </div>
+        <h3>Fair pricing</h3>
+        <p>One free listing, then a flat fee. No subscriptions required for occasional listers. No surprise charges.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-approve"/></svg>
+        </div>
+        <h3>Quality listings</h3>
+        <p>Every listing is reviewed before going live. No scraped data, no duplicates, no misleading photos.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-user"/></svg>
+        </div>
+        <h3>Direct contact</h3>
+        <p>Buyers and renters contact owners directly. No middlemen, no gatekeeping, no lead fees.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-search"/></svg>
+        </div>
+        <h3>Built for mobile</h3>
+        <p>Designed from the ground up for how Irish people actually browse property — on their phones.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-bell"/></svg>
+        </div>
+        <h3>No ads, ever</h3>
+        <p>Movin.ie will never show third-party ads. Your experience isn't for sale.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg width="22" height="22" style="color:#1a5c45"><use href="/icons.svg#icon-map"/></svg>
+        </div>
+        <h3>Local first</h3>
+        <p>We focus exclusively on the Irish market. No generic international platform stretched to fit Ireland.</p>
+      </div>
+    </div>
+
+    <!-- Pricing -->
+    <div class="section-title">Transparent pricing</div>
+    <div class="section-sub" style="margin-bottom:1.5rem">No hidden fees. No locked contracts.</div>
+    <div class="pricing-cards">
+      <div class="pricing-card featured">
+        <div class="pricing-price">Free</div>
+        <div class="pricing-label">First listing</div>
+        <div class="pricing-desc">Every new user gets one completely free listing. No card required.</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-price">€24.99</div>
+        <div class="pricing-label">Standard listing</div>
+        <div class="pricing-desc">30 days live. Full photo gallery, enquiry inbox, analytics.</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-price">€44.99</div>
+        <div class="pricing-label">Featured listing</div>
+        <div class="pricing-desc">Priority placement in search results. More visibility, more enquiries.</div>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-price">€79<span style="font-size:16px">/mo</span></div>
+        <div class="pricing-label">Agent subscription</div>
+        <div class="pricing-desc">Unlimited listings. Ideal for agents and landlords with multiple properties.</div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="contact-section">
+      <h2>Get in touch</h2>
+      <p>Questions about listing your property, a technical issue, or just want to say hello? We're a small team and we read every email.</p>
+      <div class="contact-links">
+        <a href="mailto:hello@movin.ie" class="contact-link primary">✉ hello@movin.ie</a>
+        <a href="list.html" class="contact-link">List your property →</a>
+        <a href="search.html" class="contact-link">Browse listings →</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>renderNav()</script>
+</body>
+</html>
