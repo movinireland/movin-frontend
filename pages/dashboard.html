@@ -704,8 +704,8 @@
               (a.last_sent ? '<div style="font-size:11px;color:#aaa;margin-top:4px">Last sent: ' + new Date(a.last_sent).toLocaleDateString('en-IE') + '</div>' : '') +
             '</div>' +
             '<div style="display:flex;gap:6px;flex-shrink:0">' +
-              '<button onclick="toggleAlert('' + a.id + '',this)" style="background:' + (a.is_active ? '#e9f4ef' : '#f5f2ec') + ';color:' + (a.is_active ? '#1a5c45' : '#aaa') + ';border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">' + (a.is_active ? '● On' : '○ Off') + '</button>' +
-              '<button onclick="deleteAlert('' + a.id + '',this)" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">Delete</button>' +
+              '<button onclick="toggleAlert(\'' + a.id + '\',this)" style="background:' + (a.is_active ? '#e9f4ef' : '#f5f2ec') + ';color:' + (a.is_active ? '#1a5c45' : '#aaa') + ';border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">' + (a.is_active ? '● On' : '○ Off') + '</button>' +
+              '<button onclick="deleteAlert(\'' + a.id + '\',this)" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">Delete</button>' +
             '</div>' +
           '</div>'
         }).join('')
