@@ -330,7 +330,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗</div>
+        <div class="prop-card-loc">${listing.address_area || listing.county}</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
@@ -387,23 +387,9 @@ function renderFooter() {
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/about.html">About us</a>' +
             '<a href="' + root + 'pages/list.html">List your property</a>' +
-            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
             '<a href="mailto:hello@movin.ie">Contact</a>' +
             '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
             '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Neighbourhood guides</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin">Dublin 4</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%206&county=Dublin">Dublin 6</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Rathmines&county=Dublin">Rathmines</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin">Blackrock</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Malahide&county=Dublin">Malahide</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Swords&county=Dublin">Swords</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Galway%20City%20Centre&county=Galway">Galway City</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Cork%20City%20Centre&county=Cork">Cork City</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
@@ -500,4 +486,73 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', loadIconSprite)
 } else {
   loadIconSprite()
+}
+
+// ── Cookie Consent Banner ────────────────────────────────────────────────────
+function initCookieConsent() {
+  if (localStorage.getItem('movin_cookie_consent')) return
+
+  var style = document.createElement('style')
+  style.textContent = [
+    '#cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#fff;border-top:1px solid #e8e4dc;box-shadow:0 -4px 24px rgba(0,0,0,.1);padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;font-family:"DM Sans",sans-serif;animation:cbUp .3s ease}',
+    '@keyframes cbUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}',
+    '@media(max-width:600px){#cookie-banner{flex-direction:column;align-items:flex-start;gap:.85rem;padding:1rem}#cb-btns{width:100%;display:flex;gap:.65rem}#cb-btns button{flex:1}}',
+    '#cookie-banner p{margin:0;font-size:13px;color:#555;line-height:1.6;flex:1}',
+    '#cookie-banner p a{color:#1a5c45;text-decoration:underline}',
+    '#cb-accept{background:#1a5c45;color:#fff;border:none;border-radius:50px;padding:10px 22px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s}',
+    '#cb-accept:hover{background:#0e3d2e}',
+    '#cb-decline{background:transparent;color:#888;border:1.5px solid #e8e4dc;border-radius:50px;padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s}',
+    '#cb-decline:hover{border-color:#aaa;color:#555}',
+    '[data-theme="dark"] #cookie-banner{background:#1a1a1a;border-top-color:#2a2a2a}',
+    '[data-theme="dark"] #cookie-banner p{color:#aaa}',
+    '[data-theme="dark"] #cb-decline{border-color:#333;color:#666}'
+  ].join('')
+  document.head.appendChild(style)
+
+  var banner = document.createElement('div')
+  banner.id = 'cookie-banner'
+
+  var p = document.createElement('p')
+  p.innerHTML = '&#x1F36A; We use cookies to improve your experience on Movin.ie. By continuing you agree to our <a href="/pages/privacy-policy.html">Privacy Policy</a>.'
+
+  var btns = document.createElement('div')
+  btns.id = 'cb-btns'
+
+  var decline = document.createElement('button')
+  decline.id = 'cb-decline'
+  decline.textContent = 'Decline'
+  decline.onclick = function() { dismissCookies('declined') }
+
+  var accept = document.createElement('button')
+  accept.id = 'cb-accept'
+  accept.textContent = 'Accept all'
+  accept.onclick = function() { dismissCookies('accepted') }
+
+  btns.appendChild(decline)
+  btns.appendChild(accept)
+  banner.appendChild(p)
+  banner.appendChild(btns)
+
+  document.body.style.paddingBottom = '100px'
+  document.body.appendChild(banner)
+}
+
+function dismissCookies(choice) {
+  localStorage.setItem('movin_cookie_consent', choice)
+  var banner = document.getElementById('cookie-banner')
+  if (banner) {
+    banner.style.transition = 'transform .25s ease, opacity .25s ease'
+    banner.style.transform = 'translateY(100%)'
+    banner.style.opacity = '0'
+    setTimeout(function() {
+      banner.remove()
+      document.body.style.paddingBottom = ''
+    }, 280)
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCookieConsent)
+} else {
+  setTimeout(initCookieConsent, 500)
 }
