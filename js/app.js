@@ -312,7 +312,7 @@ function buildPropertyCard(listing, savedIds = []) {
   }
 
   return `
-    <div class="pc" onclick="window.location.href='${root}listing.html?id=${listing.id}'" style="background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid #f0ede6;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,.07)'">
+    <div class="pc" onclick="window.location.href='${root}listing.html?id=${listing.id}'" class="pc-card">
 
       <div style="position:relative;height:180px;overflow:hidden;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">
         ${imgSrc
@@ -331,15 +331,15 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px">${timeStr}</div>
       </div>
 
-      <div style="padding:.85rem .9rem .9rem">
-        <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;font-weight:500;margin-bottom:3px">${listing.address_area || listing.county}</div>
-        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#111;margin-bottom:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${listing.title}</div>
-        <div style="font-size:20px;font-weight:600;color:#1a5c45;margin-bottom:8px;font-family:'Playfair Display',serif">${formatPrice(listing.price, listing.listing_type)}</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #f5f2ec;padding-top:8px">
-          ${listing.bedrooms ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('bed',13,'#aaa')} ${listing.bedrooms} bed</span>` : ''}
-          ${listing.bathrooms ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('bath',13,'#aaa')} ${listing.bathrooms} bath</span>` : ''}
-          ${listing.floor_size_m2 ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('size',13,'#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.ber_rating ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('ber',13,'#aaa')} ${listing.ber_rating}</span>` : ''}
+      <div class="prop-card-body">
+        <div class="prop-card-loc">${listing.address_area || listing.county}</div>
+        <div class="prop-card-title">${listing.title}</div>
+        <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
+        <div class="prop-card-meta">
+          ${listing.bedrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bed',13,'#aaa')} ${listing.bedrooms} bed</span>` : ''}
+          ${listing.bathrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bath',13,'#aaa')} ${listing.bathrooms} bath</span>` : ''}
+          ${listing.floor_size_m2 ? `<span style="display:flex;align-items:center;gap:3px">${icon('size',13,'#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
+          ${listing.ber_rating ? `<span style="display:flex;align-items:center;gap:3px">${icon('ber',13,'#aaa')} ${listing.ber_rating}</span>` : ''}
         </div>
       </div>
     </div>
