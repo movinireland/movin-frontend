@@ -242,7 +242,7 @@
     }
 
     const nearbyTypes = {
-      bus:      { type: 'transit_station', icon: '🚌', cls: 'ni-bus' },
+      bus:      { keyword: 'bus stop',     icon: '🚌', cls: 'ni-bus' },
       school:   { type: 'school',          icon: '🏫', cls: 'ni-school' },
       hospital: { type: 'hospital',        icon: '🏥', cls: 'ni-hospital' },
       shop:     { type: 'supermarket',     icon: '🛒', cls: 'ni-shop' },
@@ -263,7 +263,10 @@
       listEl.innerHTML = '<div class="nearby-loading">🔍 Finding nearby places…</div>'
       const service = new google.maps.places.PlacesService(mapInstance)
       const config = nearbyTypes[type]
-      service.nearbySearch({ location: locationInstance, radius: 2000, type: config.type }, (results, status) => {
+      var searchParams = { location: locationInstance, radius: 2000 }
+      if (config.type)    searchParams.type    = config.type
+      if (config.keyword) searchParams.keyword = config.keyword
+      service.nearbySearch(searchParams, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
           nearbyCache[type] = results.slice(0, 6)
           renderNearby(type, nearbyCache[type])
