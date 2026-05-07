@@ -59,8 +59,41 @@
     .d-price{font-size:28px;font-weight:500;color:var(--g);margin-bottom:.75rem}
     .d-stats{display:flex;gap:.5rem;flex-wrap:wrap}
     .d-stat{background:var(--gl);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:500;color:var(--g)}
-    .action-strip{display:flex;gap:8px;padding:.75rem 1rem;background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-    .action-strip .btn{flex:1;font-size:13px;padding:10px 8px}
+    /* ── Action strip ── */
+    .action-strip{display:flex;gap:10px;padding:.85rem 1rem;background:var(--white,#fff);border-top:1px solid var(--border);border-bottom:1px solid var(--border);align-items:center}
+    .btn-enquire{flex:1;background:#e07b3f;color:#fff;border:none;border-radius:50px;padding:14px 0;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background .15s}
+    .btn-enquire:active{background:#c9642a}
+    .btn-phone{flex:1;background:#fff;color:#1a5c45;border:2px solid #1a5c45;border-radius:50px;padding:12px 14px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:all .15s}
+    .btn-phone:active{background:#e9f4ef}
+    .btn-more{background:#f5f2ec;border:none;border-radius:50%;width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s}
+    .btn-more:active{background:#e8e4dc}
+    .btn-more svg{width:20px;height:20px;color:#555}
+    /* Save button on photo */
+    .gallery-save-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.95);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;z-index:3;box-shadow:0 2px 12px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent;transition:transform .15s}
+    .gallery-save-btn:active{transform:scale(.92)}
+    /* Share drawer */
+    .share-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;display:none;backdrop-filter:blur(2px)}
+    .share-drawer-bg.open{display:block}
+    .share-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--white,#fff);border-radius:24px 24px 0 0;padding:1rem 1.5rem 2.5rem;z-index:801;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-width:520px;margin:0 auto}
+    .share-drawer.open{transform:translateY(0)}
+    .share-handle{width:40px;height:4px;background:#e0ddd8;border-radius:2px;margin:0 auto .85rem}
+    .share-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--text,#111);margin-bottom:1.25rem;text-align:center}
+    .share-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .share-opt{display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .share-opt:active .share-icon{transform:scale(.92)}
+    .share-icon{width:56px;height:56px;border-radius:18px;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+    .share-label{font-size:11px;color:#777;font-weight:500;text-align:center}
+    .si-whatsapp{background:#e8faf1}
+    .si-facebook{background:#e8f0fd}
+    .si-copy{background:#f5f2ec}
+    .si-print{background:#fdf4e6}
+    [data-theme="dark"] .share-drawer{background:#1a1a1a}
+    [data-theme="dark"] .share-title{color:#e8e8e8}
+    [data-theme="dark"] .share-label{color:#888}
+    [data-theme="dark"] .si-copy{background:#252525}
+    [data-theme="dark"] .si-print{background:#252525}
+    [data-theme="dark"] .btn-more{background:#252525}
+    [data-theme="dark"] .btn-phone{background:#1a1a1a;border-color:#2ecc8a;color:#2ecc8a}
     .detail-section{padding:1rem;border-bottom:1px solid var(--border)}
     .detail-section h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:.75rem}
     .desc-text{font-size:14px;color:#666;line-height:1.8;font-weight:300}
@@ -243,6 +276,7 @@
               '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
               '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
             '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
+            '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()">♡</button>' +
           '</div>'
 
       if (galleryPhotos.length > 1) {
@@ -392,7 +426,7 @@
           : ''
 
         var phoneBtn = L.lister_phone
-          ? '<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href=\'tel:' + L.lister_phone + '\'"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-phone"/></svg> Call</button>'
+          ? '<a href="tel:' + L.lister_phone + '" class="btn-phone"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.63 19.79 19.79 0 01.03 1 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>' + L.lister_phone + '</a>'
           : ''
 
         var mapsQuery = encodeURIComponent(L.address_line1 + ' ' + (L.address_area || '') + ' ' + L.county + ' Ireland')
@@ -421,12 +455,38 @@
           '</div>' +
 
           '<div class="action-strip">' +
-            '<button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg> Enquire</button>' +
+            '<button class="btn-enquire" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
+              ' Enquire now' +
+            '</button>' +
             phoneBtn +
-            '<button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg> Save</button>' +
-            '<button class="btn btn-ghost" style="font-size:13px;padding:10px 8px" onclick="copyLink()" id="copy-btn"><svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-document"/></svg> Copy</button>' +
-            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href) + '" target="_blank" class="btn btn-ghost" style="font-size:13px;padding:10px 8px;color:#1877f2;border-color:#1877f2"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877f2" style="vertical-align:middle"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Share</a>' +
-            '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' - ' + fmtPrice(L.price, L.listing_type) + ' - ' + window.location.href) + '" target="_blank" class="btn btn-ghost" style="font-size:13px;color:#25d366;border-color:#25d366"><svg width="16" height="16" viewBox="0 0 24 24" fill="#25d366" style="vertical-align:middle"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Share</a>' +
+            '<button class="btn-more" onclick="openShareDrawer()" title="More options">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>' +
+            '</button>' +
+          '</div>' +
+
+          '<div class="share-drawer-bg" id="share-bg" onclick="closeShareDrawer()"></div>' +
+          '<div class="share-drawer" id="share-drawer">' +
+            '<div class="share-handle"></div>' +
+            '<div class="share-title">Share this property</div>' +
+            '<div class="share-grid">' +
+              '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' — ' + fmtPrice(L.price, L.listing_type) + '\n' + window.location.href) + '" target="_blank" class="share-opt">' +
+                '<div class="share-icon si-whatsapp"><svg width="28" height="28" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>' +
+                '<span class="share-label">WhatsApp</span>' +
+              '</a>' +
+              '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href) + '" target="_blank" class="share-opt">' +
+                '<div class="share-icon si-facebook"><svg width="28" height="28" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>' +
+                '<span class="share-label">Facebook</span>' +
+              '</a>' +
+              '<div class="share-opt" onclick="copyLink();closeShareDrawer()">' +
+                '<div class="share-icon si-copy"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>' +
+                '<span class="share-label">Copy link</span>' +
+              '</div>' +
+              '<div class="share-opt" onclick="window.print();closeShareDrawer()">' +
+                '<div class="share-icon si-print"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>' +
+                '<span class="share-label">Print</span>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
 
           '<div class="detail-section"><h2>About this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
@@ -605,6 +665,18 @@
       var total = monthly * n
       document.getElementById('mc-monthly').textContent = '€' + Math.round(monthly).toLocaleString('en-IE') + '/mo'
       document.getElementById('mc-meta').textContent = 'Total repayment: €' + Math.round(total).toLocaleString('en-IE') + ' · Loan: €' + Math.round(principal).toLocaleString('en-IE')
+    }
+
+    // Share drawer
+    function openShareDrawer() {
+      document.getElementById('share-bg').classList.add('open')
+      document.getElementById('share-drawer').classList.add('open')
+      document.body.style.overflow = 'hidden'
+    }
+    function closeShareDrawer() {
+      document.getElementById('share-bg').classList.remove('open')
+      document.getElementById('share-drawer').classList.remove('open')
+      document.body.style.overflow = ''
     }
 
     // Copy link
