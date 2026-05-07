@@ -25,9 +25,15 @@
     /* ── Zoopla-style gallery ── */
     .gallery-wrap{position:relative;background:#111;user-select:none}
     .gallery-hero{width:100%;height:280px;position:relative;overflow:hidden;cursor:pointer}
-    @media(min-width:600px){.gallery-hero{height:400px}}
     .gallery-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
     .gallery-hero:hover img{transform:scale(1.02)}
+    /* Desktop — constrain width so image doesn't stretch */
+    @media(min-width:600px){.gallery-hero{height:460px}}
+    @media(min-width:900px){
+      .gallery-wrap{max-width:860px;margin:0 auto;border-radius:16px;overflow:hidden}
+      .gallery-hero{height:520px}
+      .gallery-hero img{object-fit:contain;background:#111}
+    }
     .gallery-hero-placeholder{width:100%;height:280px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:64px}
     .gallery-counter{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
     .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent}
@@ -69,9 +75,10 @@
     .btn-more:active{background:#e8e4dc}
     .btn-more svg{width:20px;height:20px;color:#555}
     /* Save button on photo */
-    .gallery-save-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.95);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;z-index:3;box-shadow:0 2px 12px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent;transition:transform .15s}
-    .gallery-save-btn:active{transform:scale(.92)}
-    [data-theme="dark"] .gallery-save-btn{background:rgba(30,30,30,.95)}
+    .gallery-save-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.95);border:none;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;box-shadow:0 2px 16px rgba(0,0,0,.18);-webkit-tap-highlight-color:transparent;transition:transform .15s,background .15s}
+    .gallery-save-btn:hover{background:#fff;box-shadow:0 4px 20px rgba(0,0,0,.22)}
+    .gallery-save-btn:active{transform:scale(.9)}
+    [data-theme="dark"] .gallery-save-btn{background:rgba(20,20,20,.95)}
     /* Share drawer */
     .share-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;display:none;backdrop-filter:blur(2px)}
     .share-drawer-bg.open{display:block}
@@ -279,7 +286,7 @@
               '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
             '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
             '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()" aria-label="Save listing">' +
-            '<svg id="save-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+            '<svg id="save-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
           '</button>' +
           '</div>'
 
