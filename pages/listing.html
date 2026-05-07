@@ -618,15 +618,7 @@
 
     // Report listing
     function reportListing(id) {
-      var reason = prompt('Why are you reporting this listing?
-
-1. Fake or fraudulent
-2. Wrong location
-3. Already sold/rented
-4. Misleading photos
-5. Other
-
-Type your reason:')
+      var reason = prompt('Why are you reporting this listing?\n\n1. Fake or fraudulent\n2. Wrong location\n3. Already sold/rented\n4. Misleading photos\n5. Other\n\nType your reason:')
       if (!reason) return
       fetch(window.MOVIN_API_URL + '/api/listings/' + id + '/report', {
         method: 'POST',
