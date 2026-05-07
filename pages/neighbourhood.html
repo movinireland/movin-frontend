@@ -310,4 +310,392 @@ async function loadListings() {
 }
 </script>
 </body>
+</html>  // ── Neighbourhood data ─────────────────────────────────────────────────────
+  var NEIGHBOURHOOD_DATA = {
+  // ── Dublin City ──────────────────────────────────────────────────────────
+  'Dublin 1': { desc: 'Dublin 1 is the northside city centre, home to the iconic O\'Connell Street, the GPO, IFSC financial district and vibrant Parnell Square. A mix of history, culture and modern urban living.', vibe: 'City centre · Historic · IFSC · Cultural', pros: ['Heart of the city','Excellent public transport','Cultural institutions','Close to Luas and DART','IFSC employment hub'], cons: ['Urban noise','Limited green space','Parking expensive','Some areas still developing'] },
+  'Dublin 2': { desc: 'Dublin 2 covers Grafton Street, St Stephen\'s Green, Merrion Square and the Georgian heartland. The most central and prestigious city postcode, home to government buildings, galleries and top restaurants.', vibe: 'City centre · Georgian · Upmarket · Cultural hub', pros: ['Everything on your doorstep','World-class dining','Cultural institutions','Excellent transport','Georgian architecture'], cons: ['Most expensive city postcode','Noise and traffic','Limited green space','Very competitive market'] },
+  'Dublin 3': { desc: 'Dublin 3 — Clontarf, Marino and East Wall — offers coastal walks along Bull Island, Victorian and Edwardian houses and a strong community feel just minutes from the city centre.', vibe: 'Coastal · Victorian · Family friendly · Community', pros: ['Coastal walks and beach','Good DART access','Strong community','Period houses','Close to city'], cons: ['Traffic on Clontarf Road','Flooding risk near coast','Premium coastal prices','Limited nightlife'] },
+  'Dublin 4': { desc: 'Dublin 4 is Ireland\'s most prestigious postcode — Ballsbridge, Donnybrook, Sandymount and Pembroke. Embassy belt, Georgian townhouses and Ireland\'s finest restaurants.', vibe: 'Upmarket · Embassy belt · Leafy · Prestigious', pros: ['Prestigious address','Excellent restaurants','Walking distance to city','Beautiful Georgian architecture','Top schools'], cons: ['Most expensive Dublin postcode','Very competitive market','Parking difficult','Heavy traffic on main routes'] },
+  'Dublin 5': { desc: 'Dublin 5 covers Artane, Clontarf (part), Harmonstown and Raheny — offering good value northside living with excellent transport links and a strong family community.', vibe: 'Residential · Family friendly · Good value · Northside', pros: ['Good value vs south Dublin','DART access from Raheny','Strong family community','Good schools','Clontarf beach nearby'], cons: ['Less trendy than southside','Longer commute to some areas','Less café culture'] },
+  'Dublin 6': { desc: 'Dublin 6 — Ranelagh, Rathmines and Rathgar — is beloved by young professionals and families. Excellent cafes, restaurants and vibrant village atmosphere make it one of the most desirable postcodes.', vibe: 'Vibrant · Café culture · Young professionals · Village feel', pros: ['Excellent café scene','Great transport links','Strong community','Period properties','Close to Luas'], cons: ['Premium prices','Very competitive market','Parking limited in villages','Busy at weekends'] },
+  'Dublin 6W': { desc: 'Dublin 6W covers Terenure, Kimmage and Harold\'s Cross — offering more affordable alternatives to Dublin 6 with a similar residential feel and good transport links.', vibe: 'Residential · Good value · Community · Family', pros: ['More affordable than D6','Good bus routes','Strong community','Green spaces','Good schools'], cons: ['Less vibrant than Ranelagh','Further from DART','Less café culture','Some heavy traffic routes'] },
+  'Dublin 7': { desc: 'Dublin 7 — Phibsborough, Stoneybatter, Cabra and Glasnevin — has transformed into one of Dublin\'s hippest areas. Excellent pubs, independent cafes and a strong local identity.', vibe: 'Hipster · Up and coming · Independent · Community', pros: ['Trendy café and bar scene','Good value vs southside','Strong community','Close to city','Glasnevin Cemetery and Botanic Gardens'], cons: ['Some areas still gentrifying','Traffic on North Circular Road','Parking competitive','Noise near pubs'] },
+  'Dublin 8': { desc: 'Dublin 8 — The Liberties, Portobello, Kilmainham and Inchicore — is one of Dublin\'s oldest and most characterful areas, undergoing rapid gentrification with excellent food and cultural scenes.', vibe: 'Gentrifying · Historic · Creative · Foodie', pros: ['Strong independent food scene','Guinness Storehouse area','Good value for location','Luas access','Strong creative community'], cons: ['Some areas still developing','Traffic through Kilmainham','Noise near venues','Mixed quality of housing'] },
+  'Dublin 9': { desc: 'Dublin 9 covers Drumcondra, Glasnevin, Whitehall and Beaumont — a classic northside family area with good schools, parks and DART access from Drumcondra.', vibe: 'Family · Northside · Good value · Community', pros: ['Good schools','Drumcondra Village atmosphere','Reasonable prices','Good bus links','Albert College Park'], cons: ['Less trendy than southside','Traffic on main roads','Limited DART access for some parts'] },
+  'Dublin 10': { desc: 'Dublin 10 — Ballyfermot and Cherry Orchard — is a working-class westside community offering excellent value for money with improving amenities and strong local identity.', vibe: 'Working class · Good value · Community · Westside', pros: ['Excellent value','Strong community','Improving amenities','Good bus links','Large housing stock'], cons: ['Further from city centre','Less restaurants and cafes','Some parts still developing'] },
+  'Dublin 11': { desc: 'Dublin 11 covers Finglas, Glasnevin North and Whitehall — a northside suburban area offering good value family homes with strong local communities and improving infrastructure.', vibe: 'Suburban · Family · Good value · Northside', pros: ['Good value family homes','Strong community','Good schools','Improving transport'], cons: ['Longer commute to city','Less amenities than city areas','Some traffic congestion'] },
+  'Dublin 12': { desc: 'Dublin 12 — Crumlin, Kimmage, Walkinstown and Terenure (part) — is a classic southside suburb offering solid value, good schools and a traditional Dublin community feel.', vibe: 'Traditional · Family · Southside suburb · Good value', pros: ['Good value southside','Strong family community','Good schools','Good bus routes','Solid housing stock'], cons: ['Less trendy areas','Traffic on Crumlin Road','Less café culture than D6'] },
+  'Dublin 13': { desc: 'Dublin 13 covers Bayside, Sutton, Howth and Baldoyle — offering premium coastal living at the northern tip of Dublin Bay with stunning views and excellent DART access.', vibe: 'Coastal · Premium · DART village · Scenic', pros: ['Stunning coastal scenery','Excellent DART access','Howth village and harbour','Great walks and amenities','Prestigious coastal address'], cons: ['Premium prices','Can feel remote','Limited nightlife','Traffic at Sutton Cross'] },
+  'Dublin 14': { desc: 'Dublin 14 — Dundrum, Rathfarnham, Churchtown and Windy Arbour — is a sought-after southside suburb with excellent schools, the Dundrum Town Centre and good Luas access.', vibe: 'Southside · Affluent · Shopping · Family', pros: ['Dundrum Town Centre','Excellent Luas access','Top schools','Green spaces','Strong residential feel'], cons: ['Premium prices','Traffic congestion','Dundrum can be crowded','Competitive property market'] },
+  'Dublin 15': { desc: 'Dublin 15 — Blanchardstown, Castleknock, Clonsilla and Mulhuddart — is Dublin\'s fastest growing area, offering new developments, excellent retail and good motorway access.', vibe: 'Growing · Suburban · New developments · Families', pros: ['Blanchardstown Shopping Centre','Good motorway access','New modern homes','Good schools','Large green areas'], cons: ['Heavy traffic at peak times','Limited rail to city centre','Some areas less developed','Car dependent in parts'] },
+  'Dublin 16': { desc: 'Dublin 16 covers Ballinteer, Dundrum (part), Knocklyon and Firhouse — a premium southside suburb with excellent schools, the Luas and beautiful walks in the Dublin Mountains.', vibe: 'Southside premium · Mountains · Quiet · Family', pros: ['Dublin Mountains access','Excellent schools','Good Luas access','Quiet residential feel','Strong community'], cons: ['Premium prices','Traffic on Edmondstown Road','Limited nightlife','Quieter for young people'] },
+  'Dublin 17': { desc: 'Dublin 17 — Darndale, Belcamp and Priorswood — is a northside community with a strong local identity, offering excellent value for money within the Dublin city boundary.', vibe: 'Northside · Community · Good value', pros: ['Excellent value','Strong community spirit','Improving amenities','Close to airport'], cons: ['Stigma unfair but exists','Limited amenities compared to south','Further from city centre'] },
+  'Dublin 18': { desc: 'Dublin 18 covers Sandyford, Foxrock, Cabinteely, Carrickmines and Leopardstown — one of Dublin\'s most affluent areas, home to the Luas terminus, tech companies and premium housing.', vibe: 'Tech hub · Premium · Luas · Affluent', pros: ['Tech company hub','Excellent Luas access','Premium housing','Good schools','Leopardstown Racecourse'], cons: ['Very expensive','Car needed for many areas','Traffic on N11','Less village character'] },
+  'Dublin 20': { desc: 'Dublin 20 covers Palmerstown and Chapelizod — westside communities on the banks of the Liffey offering excellent value and easy access to the M50 and city centre.', vibe: 'Westside · Riverside · Good value · Accessible', pros: ['Good value','M50 access','Liffey walks','Strong community','Good bus routes'], cons: ['Less amenities than city','Traffic on N4','Some areas need development'] },
+  'Dublin 22': { desc: 'Dublin 22 — Clondalkin and Rowlagh — is a westside suburb offering excellent value for families, with Corkagh Park, the Red Cow Luas and easy motorway access.', vibe: 'Westside · Family · Good value · Luas access', pros: ['Excellent value','Corkagh Regional Park','Red Cow Luas','M50 access','Strong community'], cons: ['Car dependent in parts','Less trendy','Traffic at Red Cow','Some areas industrial'] },
+  'Dublin 24': { desc: 'Dublin 24 — Tallaght, Firhouse and Templeogue — is home to The Square shopping centre, IT Tallaght and the Luas red line, offering excellent value and strong transport links.', vibe: 'Westside · Luas · Good value · Community', pros: ['Luas red line','The Square Shopping Centre','IT Tallaght','Good value','Strong community'], cons: ['Distance from city centre','Traffic at Tallaght bypass','Less trendy than east Dublin'] },
+
+  // ── North County Dublin ───────────────────────────────────────────────────
+  'Swords': { desc: 'Swords is North County Dublin\'s largest town, offering excellent value, strong transport links including the M1 and proximity to Dublin Airport. A rapidly growing commuter town with excellent retail.', vibe: 'Suburban · Good value · Airport proximity · Growing', pros: ['Good value for money','Close to Dublin Airport','Pavilions Shopping Centre','M1 motorway access','Strong community'], cons: ['Further from city centre','Heavy traffic at peak times','Limited direct rail to city','Less character than villages'] },
+  'Malahide': { desc: 'Malahide is a picturesque coastal village famous for its castle, marina, beach and excellent restaurants. One of North County Dublin\'s most desirable addresses with great DART access.', vibe: 'Coastal village · Prestigious · DART · Upmarket', pros: ['Stunning coastal setting','Malahide Castle and grounds','Excellent DART access','Great restaurants and cafes','Strong community'], cons: ['Premium prices','Very competitive market','Limited availability','Traffic at peak times'] },
+  'Portmarnock': { desc: 'Portmarnock is a quiet coastal village known for its beautiful beach, the famous golf links and strong community. Excellent DART access makes it popular with city commuters.', vibe: 'Coastal · Golf · Quiet · Community', pros: ['Portmarnock Beach','DART access','Golf links','Strong community','Quieter than Malahide'], cons: ['Limited shops and restaurants','Can feel isolated','Premium coastal prices','Very competitive market'] },
+  'Rush': { desc: 'Rush is a traditional seaside village on the north Dublin coast, offering excellent value compared to south Dublin with beautiful beaches and a strong fishing heritage.', vibe: 'Traditional · Coastal · Good value · Fishing village', pros: ['Beautiful beaches','Good value','Strong community','Traditional character','Quiet residential feel'], cons: ['Limited amenities','Longer commute','No DART access','Car dependent'] },
+  'Lusk': { desc: 'Lusk is a small north Dublin town offering excellent value family homes with good road connections and a traditional community feel.', vibe: 'Traditional · Good value · Rural feel · Family', pros: ['Excellent value','Good road access','Strong community','Rural feel','Good schools'], cons: ['Limited amenities','No rail access','Car dependent','Longer commute'] },
+  'Skerries': { desc: 'Skerries is a charming seaside town on the north Dublin coast with a working harbour, excellent restaurants, DART access and one of the best quality of life offers in the greater Dublin area.', vibe: 'Seaside · Foodie · Community · DART village', pros: ['Beautiful harbour and beaches','Excellent restaurant scene','DART access','Strong community','Great quality of life'], cons: ['Premium prices for north Dublin','Long DART journey to city','Limited big retail','Traffic in summer'] },
+  'Balbriggan': { desc: 'Balbriggan is a rapidly growing town on the north Dublin coast offering the best value in County Dublin, with a beautiful beach, DART access and significant new development.', vibe: 'Growing · Best value · Coastal · New development', pros: ['Best value in County Dublin','Beautiful beach','DART access','New modern developments','Growing amenities'], cons: ['Longest commute in Dublin','Still developing','Can feel unfinished','Limited nightlife'] },
+  'Donabate': { desc: 'Donabate is a beautiful coastal village with a famous Blue Flag beach, a heritage park, and growing residential development making it increasingly popular with families.', vibe: 'Coastal · Beach · Growing · Family', pros: ['Donabate Beach (Blue Flag)','Newbridge House and Farm','DART access','Growing community','Good value'], cons: ['Limited amenities','Long commute','Car needed for many activities','Developing area'] },
+  'Kinsealy': { desc: 'Kinsealy is an exclusive residential area between Malahide and the airport, known for premium detached homes, privacy and easy access to the M1 and Dublin Airport.', vibe: 'Exclusive · Private · Premium · Airport access', pros: ['Premium residential area','Privacy and space','M1 motorway access','Close to Malahide village','Good schools nearby'], cons: ['No public transport','Car essential','Very expensive','Limited local amenities'] },
+  'Baldoyle': { desc: 'Baldoyle is a northside coastal village with a DART station, traditional character and excellent value compared to neighbouring Sutton and Malahide.', vibe: 'Traditional · DART access · Good value · Coastal', pros: ['DART access','Reasonable prices','Coastal location','Traditional character','Close to Portmarnock Beach'], cons: ['Limited amenities','Less prestigious than Malahide','Some dated housing','Limited restaurants'] },
+
+  // ── South County Dublin ───────────────────────────────────────────────────
+  'Dún Laoghaire': { desc: 'Dún Laoghaire is a vibrant coastal town with a famous Victorian pier, excellent restaurants, DART access and one of the most active sailing and maritime communities in Ireland.', vibe: 'Coastal · Vibrant · Maritime · DART town', pros: ['Famous pier and harbour','Excellent restaurant scene','DART access to city','Strong arts and culture','Sailing and water sports'], cons: ['Premium prices','Competition for housing','Traffic on main road','Limited parking'] },
+  'Blackrock': { desc: 'Blackrock is a thriving coastal village with an excellent DART connection, Blackrock Market, top restaurants and a strong community identity. One of South County Dublin\'s most desirable addresses.', vibe: 'Coastal village · DART · Upmarket · Community', pros: ['Excellent DART connection','Blackrock Market','Top restaurants','Great schools','Strong community'], cons: ['Premium prices','Very competitive market','Traffic on N11','Limited parking'] },
+  'Stillorgan': { desc: 'Stillorgan is a prosperous south Dublin suburb offering excellent schools, the Stillorgan retail park, strong Luas access and beautiful wooded areas.', vibe: 'Suburban · Affluent · Family · Luas access', pros: ['Excellent schools','Stillorgan Retail Park','Luas access','Beautiful surroundings','Strong residential feel'], cons: ['Expensive','Traffic on N11','Less village character','Car often needed'] },
+  'Foxrock': { desc: 'Foxrock is one of Dublin\'s most exclusive residential addresses — quiet, green and prestigious, with large period homes, excellent schools and proximity to the M50.', vibe: 'Exclusive · Prestigious · Quiet · Green', pros: ['Most prestigious southside address','Beautiful period homes','Excellent schools','Quiet and green','Strong community'], cons: ['Very expensive','Limited public transport','Car essential','Very competitive market'] },
+  'Cabinteely': { desc: 'Cabinteely is a pleasant south Dublin village with a beautiful park, reasonable prices compared to neighbouring Foxrock and good access to the Luas and M50.', vibe: 'Village · Family · Good value locally · Park', pros: ['Cabinteely Park','Good M50 access','Reasonable prices','Family community','Luas nearby'], cons: ['Car often needed','Traffic on N11','Limited village amenities','Quiet in evenings'] },
+  'Dalkey': { desc: 'Dalkey is a glamorous coastal village known as the home of Bono and other celebrities. Stunning coastal walks, excellent restaurants, a castle and a DART station make it one of Ireland\'s most desirable addresses.', vibe: 'Celebrity village · Coastal · Prestigious · Scenic', pros: ['Stunning coastal location','Excellent restaurants','DART access','Dalkey Castle','Killiney Hill walks'], cons: ['Very expensive','Limited availability','Celebrity prices','Traffic in summer'] },
+  'Killiney': { desc: 'Killiney is famous for its stunning bay — often compared to the Bay of Naples — offering the most scenic residential location in Ireland with a DART station and exclusive homes.', vibe: 'Scenic · Exclusive · Coastal · Prestigious', pros: ['Killiney Bay views','Exclusive residential','DART access','Killiney Hill Park','Prestigious address'], cons: ['Very expensive','Very limited availability','Requires significant budget','Traffic on coastal road'] },
+  'Shankill': { desc: 'Shankill is a pleasant southside coastal village with a DART station, good value compared to Killiney and Dalkey, and a strong local community.', vibe: 'Coastal · Good value locally · DART · Community', pros: ['DART access','More affordable than Dalkey','Coastal location','Strong community','Good schools'], cons: ['Limited restaurant scene','Quieter than Dún Laoghaire','Some dated developments','Less prestigious'] },
+  'Sandyford': { desc: 'Sandyford is a major tech and business hub in south Dublin, with the Luas terminus, a large concentration of tech companies and modern apartment developments.', vibe: 'Tech hub · Luas terminus · Modern · Business', pros: ['Luas terminus','Major employment hub','Modern developments','Good motorway access','Growing amenities'], cons: ['Less residential character','Traffic at peak times','Expensive','Dominated by offices and apartments'] },
+  'Dundrum': { desc: 'Dundrum is dominated by its famous Town Centre — one of Ireland\'s largest shopping malls — with excellent Luas access, good schools and strong residential demand.', vibe: 'Shopping · Luas · Family · Convenience', pros: ['Dundrum Town Centre','Excellent Luas access','Good schools','Milltown golf nearby','Strong demand'], cons: ['Very expensive','Traffic around shopping centre','Dundrum can feel commercialised','Very competitive market'] },
+  'Rathfarnham': { desc: 'Rathfarnham is a traditional south Dublin village offering good value, excellent schools, access to the Dublin Mountains and a strong community feel.', vibe: 'Traditional village · Mountains access · Family · Good value', pros: ['Access to Dublin Mountains','Good value for southside','Excellent schools','Traditional village character','Strong community'], cons: ['Traffic on Rathfarnham Road','Limited Luas access','Car often needed','Less trendy'] },
+  'Tallaght': { desc: 'Tallaght is Dublin\'s largest suburb — home to The Square, IT Tallaght, the National Stadium and the Luas red line. Excellent value with rapidly improving amenities.', vibe: 'Large suburb · Luas · Good value · Growing', pros: ['Luas red line','The Square Shopping Centre','Excellent value','IT Tallaght','National Indoor Arena'], cons: ['Distance from city centre','Traffic on main routes','Less prestigious','Some areas need investment'] },
+  'Clondalkin': { desc: 'Clondalkin is a westside suburb with a historic round tower, the Corkagh Regional Park, Red Cow Luas and excellent value compared to east Dublin.', vibe: 'Westside · Historic · Good value · Luas', pros: ['Red Cow Luas','Corkagh Park','Historic round tower','Good value','M50 access'], cons: ['Car dependent in parts','Traffic at Red Cow','Less café culture','Some areas industrial'] },
+  'Lucan': { desc: 'Lucan is a large and growing west Dublin suburb on the Liffey, offering excellent value, new developments, good schools and M4/M50 motorway access.', vibe: 'Growing · Good value · Family · Westside', pros: ['Excellent value','Lucan Village character','Liffey walks','M4/M50 access','Good schools'], cons: ['Limited direct rail to city','Traffic at peak times','Car dependent','Sprawling in places'] },
+  'Palmerstown': { desc: 'Palmerstown is a west Dublin suburb offering excellent value, good motorway access and a traditional residential community feel on the banks of the Liffey.', vibe: 'Westside · Riverside · Good value · Traditional', pros: ['Good value','M50 access','Liffey walks','Traditional character','Good bus routes'], cons: ['No rail access','Traffic on N4','Less amenities','Car dependent'] },
+  'Blanchardstown': { desc: 'Blanchardstown is a major west Dublin suburban centre with Ireland\'s largest shopping centre, excellent road and growing transport links, and significant new residential development.', vibe: 'Major suburb · Shopping · Growing · Family', pros: ['Blanchardstown Shopping Centre','Good motorway access','Large range of housing','Good schools','Growing amenities'], cons: ['Heavy traffic at peak times','Car dependent in parts','Less character','Far from city centre'] },
+  'Castleknock': { desc: 'Castleknock is a prestigious west Dublin suburb known for its exclusivity, Phoenix Park proximity, excellent schools and strong demand from families.', vibe: 'Prestigious westside · Phoenix Park · Exclusive · Family', pros: ['Phoenix Park proximity','Exclusive residential area','Excellent schools','Strong demand','Good M50 access'], cons: ['Very expensive','Limited public transport','Car essential','Very competitive market'] },
+  'Clonsilla': { desc: 'Clonsilla is a west Dublin suburb with a rail station, good value family homes and easy access to Blanchardstown and the M50.', vibe: 'Suburban · Rail access · Good value · Family', pros: ['Dublin to Maynooth rail line','Good value','Close to Blanchardstown','Family community','M50 access'], cons: ['Less amenities','Car often needed','Less developed village feel','Quiet evenings'] },
+  'Mulhuddart': { desc: 'Mulhuddart is a rapidly developing part of northwest Dublin offering new housing estates, excellent value and easy access to the M50 and Blanchardstown.', vibe: 'New development · Good value · Westside · Growing', pros: ['New modern homes','Excellent value','M50 access','Growing community','Close to Blanchardstown'], cons: ['Still developing','Car essential','Limited amenities','Far from city centre'] },
+  'Leixlip': { desc: 'Leixlip sits on the Kildare/Dublin border and is home to Intel\'s European headquarters, offering excellent employment, train access and good value semi-detached housing.', vibe: 'Tech employment · Rail access · Good value · Border town', pros: ['Intel campus employment','Dublin to Maynooth rail','Good value','Strong community','M4 access'], cons: ['Technically in Kildare','Traffic on M4','Some areas lack character','Car often needed'] },
+  'Celbridge': { desc: 'Celbridge is a Kildare commuter town on the Liffey famous for Castletown House, one of Ireland\'s finest Palladian mansions, offering good value and improving transport links.', vibe: 'Heritage · Good value · Commuter · Kildare', pros: ['Castletown House','Good value','Kildare living','Growing amenities','M4 motorway'], cons: ['No direct rail to Dublin city','Car essential for most journeys','Traffic on N4','Less urban amenities'] },
+
+  // ── Cork ─────────────────────────────────────────────────────────────────
+  'Cork City Centre': { desc: 'Cork City Centre is the vibrant heart of Ireland\'s second city — the English Market, Patrick Street, the River Lee and a world-class food and arts scene make it one of Ireland\'s most liveable cities.', vibe: 'City centre · Foodie · Vibrant · River city', pros: ['English Market','Excellent food scene','River Lee walks','Arts and culture','Compact walkable city'], cons: ['City centre noise','Parking expensive','Flooding risk near Lee','Competitive market'] },
+  'Bishopstown': { desc: 'Bishopstown is a popular south Cork suburb offering good value, excellent schools and easy access to UCC and Cork University Hospital, making it a favourite with academics and healthcare workers.', vibe: 'Suburban · UCC proximity · Family · Good value', pros: ['Close to UCC','CUH nearby','Good schools','Suburban green feel','Good value'], cons: ['Traffic on Western Road','Less city centre character','Car often needed','Some dated housing'] },
+  'Ballincollig': { desc: 'Ballincollig is a large west Cork suburb offering excellent value, a regional park with Ireland\'s longest urban walkway, strong schools and good motorway access.', vibe: 'Suburban · Regional park · Good value · Family', pros: ['Ballincollig Regional Park','Excellent value','Good schools','M8 access','Growing amenities'], cons: ['Car dependent','Traffic at peak times','Distance from city centre','Less urban feel'] },
+  'Douglas': { desc: 'Douglas is a premium south Cork suburb with excellent retail, strong schools and one of Cork\'s most sought-after residential addresses, known for its village atmosphere and quality of life.', vibe: 'Premium · Village · Shopping · Family', pros: ['Douglas Village Shopping Centre','Excellent schools','Premium address','Strong community','Good road access'], cons: ['Expensive for Cork','Traffic on South Ring','Limited direct bus to city','Very competitive market'] },
+  'Blackpool': { desc: 'Blackpool is a northside Cork suburb offering the best value in Cork city, with Blackpool Retail Park, improving transport and a strong working-class community identity.', vibe: 'Good value · Northside · Community · Retail', pros: ['Best value in Cork city','Blackpool Retail Park','Strong community','Improving amenities','Good bus routes'], cons: ['Less prestigious','Some areas need investment','Limited restaurant scene','Further from UCC'] },
+  'Glanmire': { desc: 'Glanmire is an east Cork suburb set in a wooded river valley, offering good value, a village feel and easy N8 access to Cork city and beyond.', vibe: 'Valley village · Good value · Nature · Commuter', pros: ['Scenic wooded setting','Good value','N8 motorway access','Strong community','Rural feel near city'], cons: ['Car essential','Limited public transport','Traffic on N8','Less urban amenities'] },
+  'Mahon': { desc: 'Mahon is a modern south Cork suburb with Mahon Point Shopping Centre, excellent road links and a mix of new apartment developments and family housing.', vibe: 'Modern · Shopping · Good links · Growing', pros: ['Mahon Point Shopping Centre','Good road access','Modern housing','Reasonable prices','Growing amenities'], cons: ['Car dependent','Less character','Traffic on Mahon roundabout','Less village feel'] },
+  'Togher': { desc: 'Togher is a southside Cork suburb offering excellent value, a traditional community feel and easy access to Cork Airport and the South Ring Road.', vibe: 'Southside · Good value · Traditional · Airport access', pros: ['Cork Airport proximity','Good value','Strong community','South Ring access','Traditional character'], cons: ['Less prestigious','Limited cafes and restaurants','Car often needed','Some areas need renewal'] },
+  'Mallow': { desc: 'Mallow is North Cork\'s main town, a major rail junction offering excellent value, a racecourse, thermal springs and a central location for exploring Cork and Kerry.', vibe: 'Market town · Rail junction · Good value · Heritage', pros: ['Direct train to Cork city','Excellent value','Racecourse','Good schools','Central for touring region'], cons: ['Longer commute to Cork city','Limited nightlife','Some areas dated','Less amenities than city'] },
+  'Fermoy': { desc: 'Fermoy is a market town on the River Blackwater in North Cork, famous for salmon fishing, offering excellent value and a traditional Irish town atmosphere.', vibe: 'Market town · River · Fishing · Traditional', pros: ['Excellent value','Blackwater River fishing','Traditional character','Good road access','Strong community'], cons: ['Limited amenities','Longer commute to Cork','Limited employment locally','Car essential'] },
+  'Midleton': { desc: 'Midleton in East Cork is famous for the Old Midleton Distillery and Jameson Whiskey. A charming market town with excellent rail and road links to Cork city.', vibe: 'Heritage · Whiskey · Market town · Rail access', pros: ['Jameson Distillery','Rail to Cork city','Excellent food scene','Strong community','Beautiful market town'], cons: ['Premium east Cork prices','Limited nightlife','Can feel quiet in winter','Traffic on N25'] },
+  'Youghal': { desc: 'Youghal is a historic medieval walled town on the Cork/Waterford border with a beautiful beach, famous clock gate and growing tourism making it increasingly attractive.', vibe: 'Historic · Coastal · Medieval · Growing', pros: ['Medieval town walls','Youghal Beach','Growing restaurant scene','Good value','Tourism bringing investment'], cons: ['Far from Cork city','Limited employment','Can be very quiet in winter','Limited amenities'] },
+  'Cobh': { desc: 'Cobh (pronounced Cove) is a beautiful Victorian harbour town and the last port of call of the Titanic, offering stunning views, a rich maritime heritage and commuter rail to Cork.', vibe: 'Historic · Maritime · Victorian · Scenic', pros: ['Stunning harbour views','Titanic experience tourism','Commuter rail to Cork','Strong heritage','Beautiful architecture'], cons: ['Can be touristy','Traffic on island bridge','Limited employment locally','Some dated areas'] },
+  'Kinsale': { desc: 'Kinsale is one of Ireland\'s most beautiful towns — a historic harbour town with a world-class food reputation, yacht clubs and picturesque streets. Increasingly popular with remote workers.', vibe: 'Upmarket · Foodie · Sailing · Scenic', pros: ['World-class food scene','Stunning harbour','Sailing and water sports','Beautiful historic town','Growing remote worker community'], cons: ['Premium prices for Cork','Limited affordable housing','Seasonal town','Car essential','Limited amenities for families'] },
+  'Bandon': { desc: 'Bandon is a market town in West Cork offering excellent value, a strong local economy and easy access to Kinsale, Clonakilty and Cork city via the N71.', vibe: 'Market town · Good value · West Cork · Community', pros: ['Excellent value','Strong local economy','Access to West Cork','Good schools','Traditional market town'], cons: ['Car essential','Limited nightlife','Longer commute to Cork city','Limited amenities'] },
+  'Clonakilty': { desc: 'Clonakilty is a vibrant West Cork town known for its arts scene, Black Pudding, excellent beaches nearby and as a hub for the growing West Cork remote worker community.', vibe: 'Artsy · Foodie · Remote worker hub · West Cork', pros: ['Vibrant arts scene','World-famous black pudding','Beautiful beaches nearby','Strong community','Remote worker friendly'], cons: ['Far from Cork city','Limited employment unless remote','Seasonal tourism','Car essential'] },
+  'Skibbereen': { desc: 'Skibbereen is the capital of West Cork — a market town with a vibrant arts scene, excellent food markets, and a dark but important Famine history that attracts cultural tourism.', vibe: 'Arts · Market town · West Cork hub · Culture', pros: ['Vibrant arts and food scene','West Cork hub','Strong community','Beautiful surrounding countryside','Good value'], cons: ['Very far from Cork city','Car essential','Limited employment','Seasonal economy'] },
+  'Bantry': { desc: 'Bantry is a beautiful bay town in West Cork offering stunning scenery, Bantry House and Gardens, a thriving Friday market and increasingly popular with those seeking the West Cork lifestyle.', vibe: 'Scenic bay · Heritage · Market town · Lifestyle', pros: ['Bantry Bay views','Bantry House and Gardens','Friday market','Strong community','Excellent value'], cons: ['Very remote','Car essential','Limited employment','Far from Cork city','Seasonal economy'] },
+
+  // ── Galway ───────────────────────────────────────────────────────────────
+  'Galway City Centre': { desc: 'Galway City Centre is one of Ireland\'s most beloved cities — the Latin Quarter, Shop Street, the Quays and the famous Galway races make it a cultural powerhouse with a unique bohemian energy.', vibe: 'Bohemian · Cultural · Student city · Vibrant', pros: ['Latin Quarter atmosphere','Excellent arts and culture','Student energy','Great pubs and restaurants','Compact walkable city'], cons: ['Very competitive rental market','City centre noise','Flooding risk near Corrib','Expensive for outside Dublin'] },
+  'Salthill': { desc: 'Salthill is Galway\'s famous seaside suburb with the iconic Salthill Promenade, Leisureland, excellent restaurants and a lively summer atmosphere just minutes from the city centre.', vibe: 'Seaside · Promenade · Lively · Family', pros: ['Famous promenade walk','Leisureland complex','Great restaurants','Close to city','Beach access'], cons: ['Very popular so expensive','Traffic in summer','Busy at weekends','Parking difficult'] },
+  'Knocknacarra': { desc: 'Knocknacarra is a growing west Galway suburb offering newer housing, good value compared to Salthill and Galway city, and easy access to the N6 motorway.', vibe: 'Growing · Good value · Suburban · Family', pros: ['Newer developments','Good value','Family friendly','N6 access','Growing amenities'], cons: ['Car dependent','Further from city centre','Less character','Still developing'] },
+  'Renmore': { desc: 'Renmore is a prestigious east Galway suburb near the Galway Racecourse, offering quality family housing, good schools and easy access to the city centre and N6.', vibe: 'Prestigious · Racecourse · Family · East Galway', pros: ['Galway Racecourse nearby','Good schools','Quality housing','East access to N6','Prestigious address'], cons: ['Premium prices for Galway','Car often needed','Traffic at racecourse events','Less village character'] },
+  'Tuam': { desc: 'Tuam is North Galway\'s main town, offering excellent value, a strong local economy centred on sugar and food industries, and good road connections to Galway city.', vibe: 'Market town · Good value · North Galway · Traditional', pros: ['Excellent value','Strong local economy','Good road connections','Traditional market town','Good schools'], cons: ['Longer commute to Galway city','Limited nightlife','Car essential','Less amenities than city'] },
+  'Ballinasloe': { desc: 'Ballinasloe is a major east Galway town famous for its International Horse Fair, excellent value and strategic location on the M6 motorway between Galway and Dublin.', vibe: 'Horse Fair · Market town · M6 location · Good value', pros: ['International Horse Fair','Excellent value','M6 motorway access','Halfway between Dublin and Galway','Strong community'], cons: ['Limited nightlife','Car essential','Far from coast','Less amenities than Galway city'] },
+  'Loughrea': { desc: 'Loughrea is a charming south Galway town on the shores of Lough Rea, offering excellent value, medieval heritage and easy M6 access to Galway city and Athlone.', vibe: 'Lake town · Heritage · Good value · South Galway', pros: ['Lough Rea waterfront','Medieval heritage','Good value','M6 access','Strong community'], cons: ['Limited amenities','Car essential','Longer commute to Galway city','Quiet evenings'] },
+  'Athenry': { desc: 'Athenry is a beautiful medieval walled town immortalised in the famous song, offering excellent value, a growing DART/rail link to Galway and significant new development.', vibe: 'Medieval · Rail access · Growing · Good value', pros: ['Rail link to Galway city','Medieval town walls','Excellent value','Growing town','Strong heritage'], cons: ['Rail is limited frequency','Car often needed','Developing infrastructure','Limited amenities'] },
+  'Oranmore': { desc: 'Oranmore is one of Galway\'s fastest growing villages, offering excellent motorway access, a new rail station, and strong demand from tech workers and families.', vibe: 'Growing · Tech workers · Rail access · M6', pros: ['New rail station','M6 motorway access','IDA tech park nearby','Growing amenities','Good schools'], cons: ['Very competitive market','Traffic at peak times','Becoming expensive for Galway','Rapid growth can feel chaotic'] },
+  'Clifden': { desc: 'Clifden is the capital of Connemara — a scenic mountain and coastal town offering an extraordinary quality of life, arts festivals, world-class landscapes and growing remote worker appeal.', vibe: 'Connemara · Arts · Remote worker · Scenic', pros: ['Stunning Connemara scenery','Arts Week festival','Remote worker community','Great walks and cycling','Strong local character'], cons: ['Very remote from cities','Car essential','Limited employment','Seasonal economy','Basic amenities'] },
+
+  // ── Limerick ──────────────────────────────────────────────────────────────
+  'Limerick City Centre': { desc: 'Limerick City Centre has undergone significant regeneration, with Limerick 2030 transforming the city. The Hunt Museum, King John\'s Castle and Treaty City identity make it Ireland\'s fastest improving city.', vibe: 'Regenerating · Student city · Treaty City · Growing', pros: ['City regeneration investment','University of Limerick proximity','Hunt Museum','King John\'s Castle','Growing restaurant scene'], cons: ['Regeneration still ongoing','Some areas still developing','Less vibrant than Dublin/Galway city centres','Traffic issues'] },
+  'Castletroy': { desc: 'Castletroy is a major Limerick suburb dominated by the University of Limerick and the National Technology Park, making it Ireland\'s premier tech and education hub outside Dublin.', vibe: 'University · Tech park · Student · Growing', pros: ['University of Limerick campus','National Technology Park','Good value','Strong student and tech community','Castletroy Park Hotel'], cons: ['Very student-dominated','Traffic on Dublin Road','Can feel transient','Flooding risk in parts'] },
+  'Dooradoyle': { desc: 'Dooradoyle is south Limerick\'s main suburban hub, home to the Crescent Shopping Centre, UHL hospital and strong family residential communities.', vibe: 'Suburban · Shopping · Family · South Limerick', pros: ['Crescent Shopping Centre','UHL hospital employment','Good schools','Family community','Good road access'], cons: ['Car dependent','Traffic on South Circular','Less character','Suburban feel'] },
+  'Raheen': { desc: 'Raheen is a premium south Limerick suburb with Raheen Business Park, good road links and quality housing making it popular with professionals.', vibe: 'Professional · Business park · Premium · Family', pros: ['Raheen Business Park employment','Good road access','Quality housing','Good schools','Professional community'], cons: ['Car essential','Traffic at peak times','Less village character','Some dated housing'] },
+  'Newcastle West': { desc: 'Newcastle West is West Limerick\'s main town, offering excellent value, strong local economy, traditional market town character and easy N21 road access.', vibe: 'Market town · West Limerick · Good value · Traditional', pros: ['Excellent value','Good road access','Traditional market town','Strong community','Good schools'], cons: ['Car essential','Longer commute to Limerick city','Limited nightlife','Limited amenities'] },
+
+  // ── Waterford ─────────────────────────────────────────────────────────────
+  'Waterford City Centre': { desc: 'Waterford is Ireland\'s oldest city, the Crystal capital of the world, with a magnificent Viking Triangle, the world\'s oldest St Patrick\'s Day parade and a growing arts scene.', vibe: 'Historic · Viking · Crystal · Compact city', pros: ['Oldest city in Ireland','Viking Triangle heritage','Waterford Crystal visitor experience','Compact walkable city','Growing food scene'], cons: ['Smaller city less amenities','Employment concentration','Some areas need investment','Flooding risk near Suir'] },
+  'Tramore': { desc: 'Tramore is Waterford\'s favourite seaside resort, with a long sandy beach, amusement complex, strong community and excellent value compared to other Irish coastal resorts.', vibe: 'Seaside resort · Family · Good value · Beach', pros: ['Beautiful sandy beach','Good value','Family friendly','Strong community','Amusement park for families'], cons: ['Very seasonal','Traffic in summer','Limited year-round amenities','Longer commute to Waterford city'] },
+  'Dungarvan': { desc: 'Dungarvan is the capital of west Waterford — a beautiful bay town with excellent restaurants, a vibrant market, growing arts scene and excellent value making it popular with remote workers.', vibe: 'Bay town · Foodie · Growing · Remote worker', pros: ['Beautiful Dungarvan Bay','Excellent food scene','Good value','Growing remote worker community','Strong community'], cons: ['Car essential','Limited employment','Longer commute to Waterford city','Seasonal economy'] },
+
+  // ── Kerry ─────────────────────────────────────────────────────────────────
+  'Tralee': { desc: 'Tralee is Kerry\'s county town, home to the famous Rose of Tralee festival, IT Tralee and a growing urban centre offering the best value in the county with improving amenities.', vibe: 'County town · Rose festival · Good value · Growing', pros: ['Rose of Tralee festival','IT Tralee employment','Good value','Growing amenities','Kerry capital'], cons: ['Less scenic than Killarney area','Limited nightlife','Car essential','Some areas need investment'] },
+  'Killarney': { desc: 'Killarney is one of Ireland\'s most beautiful tourist towns, surrounded by stunning national park, famous lakes and mountains. Increasingly popular with remote workers seeking extraordinary quality of life.', vibe: 'Tourist town · Scenic · National Park · Remote worker', pros: ['Killarney National Park','Stunning lakes and mountains','World-class tourism infrastructure','Remote worker community','Excellent restaurants'], cons: ['Tourist prices','Very seasonal economy','Traffic in summer','Housing stock limited','Car essential'] },
+  'Listowel': { desc: 'Listowel is North Kerry\'s market town, famous for the Writers\' Week literary festival and the Listowel Races, offering excellent value and a strong traditional Irish character.', vibe: 'Literary · Races · Traditional · Good value', pros: ['Writers\' Week festival','Listowel Races','Excellent value','Traditional character','Strong community'], cons: ['Limited employment','Car essential','Limited amenities','Far from coast'] },
+  'Kenmare': { desc: 'Kenmare is a beautiful ring town at the head of Kenmare Bay, famous for fine lace, excellent restaurants and as a gateway to the Ring of Kerry. Premium prices for Kerry.', vibe: 'Heritage lace · Foodie · Ring of Kerry · Premium', pros: ['Stunning bay setting','World-class restaurants','Ring of Kerry access','Beautiful town','Remote worker friendly'], cons: ['Very expensive for Kerry','Limited housing stock','Car essential','Seasonal economy'] },
+  'Dingle': { desc: 'Dingle (An Daingean) is an iconic Gaeltacht town on one of Europe\'s most beautiful peninsulas, with Fungie the dolphin (memorial), excellent seafood and a vibrant arts scene.', vibe: 'Gaeltacht · Iconic · Seafood · Arts', pros: ['Dingle Peninsula scenery','World-class seafood','Irish language culture','Arts and culture','Increasingly remote worker friendly'], cons: ['Very expensive for size','Very seasonal','Car essential','Limited amenities','Very competitive market'] },
+
+  // ── Meath ─────────────────────────────────────────────────────────────────
+  'Navan': { desc: 'Navan is Meath\'s county town — Ireland\'s largest town without a rail line — offering excellent value, strong employment in retail and services and growing commuter community to Dublin.', vibe: 'County town · Commuter · Good value · Growing', pros: ['Excellent value','Strong retail employment','Good road access to Dublin','Growing town','New Link Road to M3'], cons: ['No rail to Dublin','Heavy traffic at peak times','Long commute by road','Infrastructure lagging growth'] },
+  'Ashbourne': { desc: 'Ashbourne is a popular north County Meath commuter town with excellent road and bus links to Dublin, good schools, a growing town centre and excellent value family housing.', vibe: 'Commuter · Good value · Growing · Family', pros: ['Good Dublin bus service','Excellent value','Good schools','Growing town centre','M2/M1 access'], cons: ['Car and bus dependent','No rail to Dublin','Traffic at peak times','Growing pains with infrastructure'] },
+  'Dunboyne': { desc: 'Dunboyne has a new railway station connecting it to Dublin city on the Maynooth line, making it one of Meath\'s most attractive commuter villages with excellent value and growing amenities.', vibe: 'Rail connected · Commuter · Growing · Village', pros: ['Dublin rail connection','Good value','Growing village amenities','M3 motorway access','Good schools'], cons: ['Rapid growth changing character','Traffic at peak times','Still developing infrastructure','Competitive market increasing'] },
+  'Trim': { desc: 'Trim is a historic town dominated by Ireland\'s largest Anglo-Norman castle, made famous by Braveheart. Excellent value, traditional character and growing popularity with heritage tourists.', vibe: 'Historic · Castle · Heritage · Good value', pros: ['Trim Castle (Braveheart filming)','Excellent value','Strong heritage','River Boyne walks','Growing tourism'], cons: ['Car essential','Longer commute to Dublin','Limited rail options','Quieter nightlife'] },
+  'Ratoath': { desc: 'Ratoath is a popular Meath commuter village offering excellent value, good bus links to Dublin, strong schools and a traditional village atmosphere that has survived rapid growth.', vibe: 'Commuter village · Good value · Family · Traditional', pros: ['Good bus to Dublin','Excellent value','Village character','Good schools','Strong community'], cons: ['No rail to Dublin','Car often needed','Traffic at peak times','Rapid growth affecting character'] },
+
+  // ── Kildare ───────────────────────────────────────────────────────────────
+  'Naas': { desc: 'Naas is Kildare\'s county town and the capital of Irish horse racing country, with Punchestown and the Curragh nearby. Excellent value, strong employment and good rail/road links to Dublin.', vibe: 'County town · Horse racing · Good value · Connected', pros: ['Close to horse racing venues','Good rail to Dublin','Excellent value','Strong employment','Punchestown events'], cons: ['Traffic on N7','Growing pains','Some areas suburban','Less city amenities'] },
+  'Newbridge': { desc: 'Newbridge is a thriving Kildare town known for the famous Newbridge Silverware, Curragh racecourse proximity and excellent value family housing with good rail links to Dublin.', vibe: 'Silverware · Curragh · Rail connected · Family', pros: ['Newbridge Silverware factory','Good rail to Dublin','Excellent value','Curragh racecourse nearby','Growing amenities'], cons: ['Traffic at peak times','Car often needed for some areas','Less character than Naas','Rapid growth'] },
+  'Maynooth': { desc: 'Maynooth is a vibrant university town, home to Maynooth University and a historic seminary. Excellent rail access to Dublin, a lively student population and good value make it hugely popular.', vibe: 'University · Student · Rail access · Growing', pros: ['Maynooth University employment','Excellent rail to Dublin','Student energy','Good value','Growing amenities'], cons: ['Traffic on M4','Car needed for some areas','Student accommodation pressure on rentals','Some parts commercial'] },
+  'Athy': { desc: 'Athy is a historic town on the River Barrow in south Kildare, offering excellent value, a canal network, heritage town character and improving rail connections.', vibe: 'Historic · Canal · Good value · South Kildare', pros: ['Excellent value','Barrow river and canal','Historic town','Rail to Dublin','Strong community'], cons: ['Longer commute to Dublin','Limited employment locally','Car often needed','Less amenities than north Kildare'] },
+
+  // ── Wicklow ───────────────────────────────────────────────────────────────
+  'Bray': { desc: 'Bray is Wicklow\'s largest town — a coastal resort with a famous seafront, DART access to Dublin city, Bray Head walks and a vibrant town centre making it the most popular commuter town in Wicklow.', vibe: 'DART town · Coastal · Commuter · Lively', pros: ['Excellent DART to Dublin city','Bray Seafront','Bray Head walks','Vibrant town centre','Good value vs Dublin'], cons: ['Very competitive market','Traffic on N11','Can be noisy on seafront','Flooding risk in parts'] },
+  'Greystones': { desc: 'Greystones is a premium Wicklow coastal town with a marina, DART access, excellent restaurants and a strong middle-class community that has made it one of Ireland\'s most desirable commuter locations.', vibe: 'Premium coastal · DART · Marina · Foodie', pros: ['DART to Dublin city','Greystones Marina','Excellent restaurants','Strong community','Beautiful coastal setting'], cons: ['Very expensive for Wicklow','Very competitive market','DART at capacity at peak times','Limited parking'] },
+  'Arklow': { desc: 'Arklow is a historic port town in south Wicklow offering excellent value, a beautiful beach, traditional market town character and a strong fishing and maritime heritage.', vibe: 'Port town · Good value · Coastal · Traditional', pros: ['Excellent value','Beautiful beach','Traditional character','Strong community','Maritime heritage'], cons: ['Far from Dublin','Car essential','Limited employment','Less amenities than north Wicklow'] },
+
+  // ── Additional counties (key towns) ──────────────────────────────────────
+  'Wexford Town': { desc: 'Wexford Town is a historic Viking settlement with a famous opera festival, beautiful quayfront, excellent seafood and some of the best value property in Leinster.', vibe: 'Viking heritage · Opera · Coastal · Good value', pros: ['Wexford Opera Festival','Beautiful quayfront','Excellent value','Strong heritage','Good seafood scene'], cons: ['Limited employment beyond tourism','Car essential in county','Distance from Dublin','Some areas need investment'] },
+  'Gorey': { desc: 'Gorey is north Wexford\'s main town and increasingly popular as a commuter hub to Dublin given its rail link, excellent value and quality of life for families.', vibe: 'Commuter · Rail access · Good value · Family', pros: ['Rail to Dublin','Excellent value','Good schools','Growing town','Beach access at Courtown'], cons: ['Long rail journey to Dublin','Car needed for most activities','Limited nightlife','Still developing'] },
+  'Kilkenny City': { desc: 'Kilkenny is the medieval capital of Ireland — a stunning walled city with a magnificent castle, thriving craft beer scene, the best arts festival in Ireland (Kilkenny Arts Festival) and some of the best preserved medieval architecture in Europe.', vibe: 'Medieval · Craft beer · Arts · Heritage', pros: ['Kilkenny Castle','Kilkenny Arts Festival','World-class craft beer scene','Medieval architecture','Growing tourism economy'], cons: ['Limited employment beyond tourism','Car essential in county','Limited industrial employment','Housing demand exceeds supply'] },
+  'Ennis': { desc: 'Ennis is the Clare county town — a traditional market town with a rich traditional music heritage, excellent value and central location for exploring the Burren, Cliffs of Moher and Loop Head.', vibe: 'Traditional music · Market town · Heritage · Gateway', pros: ['Traditional music scene','Excellent value','Central Clare location','Ennis Friary','Good road links'], cons: ['Car essential','Limited direct employment','Quieter nightlife','Distance from cities'] },
+  'Shannon': { desc: 'Shannon is a planned town built around Shannon Airport — Ireland\'s most affordable town offering excellent value, the Shannon Free Zone employment hub and proximity to Clare\'s finest attractions.', vibe: 'Planned town · Airport · Good value · Employment', pros: ['Best value in Clare','Shannon Airport proximity','Shannon Free Zone employment','Modern infrastructure','Growing amenities'], cons: ['Planned town lacks character','Car essential','Distance from coast','Less traditional Irish charm'] },
+  'Clonmel': { desc: 'Clonmel is Tipperary\'s county town on the River Suir, a market and manufacturing centre with excellent value, traditional Irish character and growing popularity with remote workers.', vibe: 'County town · River · Manufacturing · Good value', pros: ['Excellent value','River Suir walks','Strong manufacturing employment','Traditional character','Good road access'], cons: ['Car essential','Limited nightlife','Distance from major cities','Less amenities than cities'] },
+  'Letterkenny': { desc: 'Letterkenny is Donegal\'s county town and major retail hub, offering excellent value, the Donegal Airport nearby, LYIT university and access to some of Ireland\'s most spectacular scenery.', vibe: 'County town · University · Gateway · Good value', pros: ['Best value in Donegal','LYIT employment','Gateway to northwest','Donegal Airport nearby','Growing shopping'], cons: ['Very far from Dublin','Car essential','Limited employment diversification','Harsh winters in parts'] },
+  'Castlebar': { desc: 'Castlebar is Mayo\'s county town, a growing centre with the West of Ireland\'s main hospital, GMIT campus and excellent value making it Mayo\'s most liveable town.', vibe: 'County town · Hospital · University · Growing', pros: ['Mayo University Hospital employment','GMIT campus','Excellent value','Growing amenities','Central Mayo location'], cons: ['Far from Dublin','Car essential','Limited nightlife','Distance from Atlantic coast'] },
+  'Sligo Town': { desc: 'Sligo Town is Yeats Country — a vibrant arts town with excellent restaurants, a thriving music scene, IT Sligo university and stunning Atlantic Ocean proximity.', vibe: 'Yeats country · Arts · University · Atlantic', pros: ['IT Sligo employment','Strong arts and music scene','Atlantic coast access','Excellent value','Growing food scene'], cons: ['Far from Dublin','Car essential for county','Limited employment diversification','Weather can be harsh'] },
+  'Carrick-on-Shannon': { desc: 'Carrick-on-Shannon is Ireland\'s narrowboat capital on the River Shannon, a growing tourism and hen party destination with excellent value and river-based quality of life.', vibe: 'Narrowboats · River · Tourism · Growing', pros: ['River Shannon activities','Excellent value','Growing tourism economy','Good road access','Strong community'], cons: ['Small town limited amenities','Car essential','Tourism dependent economy','Limited employment'] },
+  'Roscommon Town': { desc: 'Roscommon Town is the county capital, a traditional market town offering some of Ireland\'s lowest property prices, strong agricultural identity and easy N61 access to Athlone and Galway.', vibe: 'Traditional · Market town · Excellent value · Agricultural', pros: ['Ireland\'s lowest property prices','Traditional character','Good road access','Strong community','Agricultural heritage'], cons: ['Very limited amenities','Car essential','Limited employment','Distance from cities','Quiet evenings'] },
+  'Longford Town': { desc: 'Longford Town is the midlands county capital offering excellent value, improving infrastructure as part of Ireland 2040 and a strategic N4/M4 location between Dublin and the West.', vibe: 'Midlands · Good value · Growing · Strategic', pros: ['Excellent value','N4 motorway access','Improving infrastructure','Rail to Dublin','Central location'], cons: ['Very limited amenities','Less scenic than western counties','Limited employment','Some areas need investment'] },
+  'Mullingar': { desc: 'Mullingar is the Westmeath county town — the Cathedral city of the Midlands — offering excellent value, good rail access to Dublin, Lough Ennell and strong agricultural community.', vibe: 'Cathedral city · Rail access · Midlands · Good value', pros: ['Good rail to Dublin','Excellent value','Lough Ennell activities','Cathedral city heritage','Strong community'], cons: ['Limited nightlife','Car needed for many activities','Less scenic than west','Limited employment'] },
+  'Athlone': { desc: 'Athlone is the Heart of Ireland — a strategic Shannon crossing point with IT Athlone university, a vibrant food scene, excellent value and central location equidistant from Dublin and Galway.', vibe: 'Heart of Ireland · University · Foodie · Central', pros: ['IT Athlone employment','Excellent food scene','Central Ireland location','Lough Ree','Excellent value'], cons: ['Flooding risk near Shannon','Car essential for county','Midlands weather','Traffic on N6'] },
+  'Tullamore': { desc: 'Tullamore is Offaly\'s county town, famous for Tullamore D.E.W. whiskey, the Grand Canal and excellent value making it increasingly popular with Dubliners seeking more space.', vibe: 'Whiskey · Grand Canal · Good value · Midlands', pros: ['Tullamore D.E.W. Distillery','Grand Canal amenity','Excellent value','Good road access','Growing Dublin commuter demand'], cons: ['Car essential','Limited nightlife','Less scenic than west','Limited employment'] },
+  'Portlaoise': { desc: 'Portlaoise is Laois county town and Ireland\'s main rail junction, offering excellent value, strong distribution employment and good M7 motorway access equidistant from Dublin and Limerick.', vibe: 'Rail junction · Good value · Distribution hub · Commuter', pros: ['Ireland\'s main rail junction','Excellent value','M7 motorway access','Strong distribution employment','Dublin commuter option'], cons: ['Prison associations unfair but exist','Limited nightlife','Less attractive than other county towns','Traffic on N80'] },
+  'Carlow Town': { desc: 'Carlow Town is a thriving market town just 80km from Dublin, with IT Carlow university, excellent value, the Barrow riverside amenity and Ireland\'s Sunny Southeast reputation.', vibe: 'University · Good value · Sunny Southeast · Barrow', pros: ['IT Carlow employment','Good road to Dublin','Excellent value','Barrow river walks','Growing food scene'], cons: ['No direct rail to Dublin','Car essential','Smaller city amenities','Less trendy than larger cities'] },
+  'Drogheda': { desc: 'Drogheda is Louth\'s largest town — a historic medieval town with excellent rail access to Dublin, significantly growing as a commuter hub with excellent value and the famous Battle of the Boyne site nearby.', vibe: 'Historic · Rail to Dublin · Growing commuter · Good value', pros: ['Rail to Dublin city','Excellent value','Historic town','Boyne Valley sites nearby','Growing rapidly'], cons: ['Heavy traffic on N1','Rapid growth challenges infrastructure','Some areas still developing','Competition for housing increasing'] },
+  'Dundalk': { desc: 'Dundalk is Ireland\'s border city — Louth\'s county town with DkIT university, strong manufacturing employment including Xerox and close proximity to Northern Ireland and Belfast.', vibe: 'Border city · University · Manufacturing · Strategic', pros: ['DkIT employment','Strong manufacturing base','Close to Belfast','Rail to Dublin','Good value'], cons: ['Border proximity can be complex','Some areas need investment','Traffic on N1','Less trendy'] },
+  'Monaghan Town': { desc: 'Monaghan Town is the drumlin county capital, a traditional Ulster market town offering excellent value and a strategic location close to Northern Ireland and the M1 motorway.', vibe: 'Ulster · Market town · Good value · Border', pros: ['Excellent value','Close to Northern Ireland','Traditional character','Good road access','Strong community'], cons: ['Far from Dublin','Car essential','Limited amenities','Border economy complexities'] },
+  'Cavan Town': { desc: 'Cavan Town is the lakeland county capital, offering excellent value, beautiful lake scenery, strong cross-border economy and a strategic location between Dublin and the northwest.', vibe: 'Lakeland · Good value · Cross-border · Traditional', pros: ['Excellent value','Beautiful lake scenery','Cross-border economy','Good road access','Strong community'], cons: ['Car essential','Limited amenities','Distance from Dublin','Quiet evenings'] }
+}
+
+  var NEARBY_MAP = {
+  'Dublin 1': ['Dublin 7','Dublin 3','Dublin 2','Dublin 9'],
+  'Dublin 2': ['Dublin 4','Dublin 8','Dublin 1','Dublin 6'],
+  'Dublin 3': ['Dublin 5','Dublin 13','Dublin 1','Dublin 9'],
+  'Dublin 4': ['Dublin 6','Dublin 2','Blackrock','Sandymount'],
+  'Dublin 5': ['Dublin 13','Dublin 3','Dublin 9','Dublin 17'],
+  'Dublin 6': ['Rathmines','Dublin 4','Dublin 8','Dublin 14'],
+  'Dublin 6W': ['Dublin 6','Dublin 12','Dublin 8','Terenure'],
+  'Dublin 7': ['Dublin 1','Dublin 9','Dublin 15','Dublin 11'],
+  'Dublin 8': ['Dublin 2','Dublin 6W','Dublin 12','Dublin 24'],
+  'Dublin 9': ['Dublin 3','Dublin 11','Dublin 7','Dublin 5'],
+  'Dublin 10': ['Dublin 20','Dublin 22','Dublin 12','Dublin 8'],
+  'Dublin 11': ['Dublin 9','Dublin 7','Dublin 15','Dublin 17'],
+  'Dublin 12': ['Dublin 6W','Dublin 10','Dublin 8','Dublin 24'],
+  'Dublin 13': ['Dublin 5','Dublin 3','Malahide','Baldoyle'],
+  'Dublin 14': ['Dublin 6','Dublin 16','Dundrum','Rathfarnham'],
+  'Dublin 15': ['Blanchardstown','Castleknock','Clonsilla','Dublin 7'],
+  'Dublin 16': ['Dublin 14','Dundrum','Rathfarnham','Dublin 6'],
+  'Dublin 17': ['Dublin 5','Dublin 11','Dublin 9','Baldoyle'],
+  'Dublin 18': ['Sandyford','Foxrock','Dublin 14','Stillorgan'],
+  'Dublin 20': ['Palmerstown','Lucan','Dublin 10','Dublin 22'],
+  'Dublin 22': ['Clondalkin','Dublin 24','Dublin 10','Dublin 20'],
+  'Dublin 24': ['Tallaght','Dublin 12','Dublin 22','Dublin 16'],
+  'Swords': ['Malahide','Donabate','Balbriggan','Kinsealy'],
+  'Malahide': ['Swords','Portmarnock','Kinsealy','Dublin 13'],
+  'Portmarnock': ['Malahide','Dublin 13','Baldoyle','Donabate'],
+  'Rush': ['Lusk','Skerries','Balbriggan','Donabate'],
+  'Lusk': ['Rush','Balbriggan','Skerries','Swords'],
+  'Skerries': ['Rush','Balbriggan','Lusk','Donabate'],
+  'Balbriggan': ['Skerries','Lusk','Donabate','Rush'],
+  'Donabate': ['Swords','Portmarnock','Rush','Balbriggan'],
+  'Kinsealy': ['Malahide','Swords','Dublin 13','Portmarnock'],
+  'Baldoyle': ['Dublin 13','Portmarnock','Dublin 5','Dublin 17'],
+  'Dún Laoghaire': ['Blackrock','Sandyford','Dalkey','Monkstown'],
+  'Blackrock': ['Dún Laoghaire','Stillorgan','Dublin 4','Monkstown'],
+  'Stillorgan': ['Blackrock','Dublin 18','Dundrum','Dublin 14'],
+  'Foxrock': ['Dublin 18','Cabinteely','Stillorgan','Leopardstown'],
+  'Cabinteely': ['Foxrock','Dublin 18','Shankill','Dún Laoghaire'],
+  'Dalkey': ['Killiney','Dún Laoghaire','Shankill','Sandycove'],
+  'Killiney': ['Dalkey','Shankill','Dún Laoghaire','Bray'],
+  'Shankill': ['Bray','Killiney','Cabinteely','Dalkey'],
+  'Sandyford': ['Dublin 18','Stillorgan','Dundrum','Leopardstown'],
+  'Dundrum': ['Dublin 14','Dublin 16','Stillorgan','Sandyford'],
+  'Rathfarnham': ['Dublin 14','Dublin 16','Dublin 6','Terenure'],
+  'Tallaght': ['Dublin 24','Clondalkin','Dublin 22','Rathfarnham'],
+  'Clondalkin': ['Dublin 22','Tallaght','Lucan','Palmerstown'],
+  'Lucan': ['Clondalkin','Palmerstown','Leixlip','Celbridge'],
+  'Palmerstown': ['Dublin 20','Lucan','Clondalkin','Blanchardstown'],
+  'Blanchardstown': ['Castleknock','Clonsilla','Dublin 15','Mulhuddart'],
+  'Castleknock': ['Blanchardstown','Dublin 15','Clonsilla','Mulhuddart'],
+  'Clonsilla': ['Castleknock','Blanchardstown','Leixlip','Dublin 15'],
+  'Mulhuddart': ['Blanchardstown','Castleknock','Dublin 15','Dublin 11'],
+  'Leixlip': ['Celbridge','Maynooth','Lucan','Clonsilla'],
+  'Celbridge': ['Leixlip','Maynooth','Lucan','Naas'],
+  'Cork City Centre': ['Bishopstown','Douglas','Blackpool','Togher'],
+  'Bishopstown': ['Cork City Centre','Douglas','Ballincollig','Togher'],
+  'Ballincollig': ['Bishopstown','Cork City Centre','Douglas','Ovens'],
+  'Douglas': ['Cork City Centre','Bishopstown','Blackrock','Glanmire'],
+  'Blackpool': ['Cork City Centre','Glanmire','Mallow','Blarney'],
+  'Glanmire': ['Douglas','Cork City Centre','Midleton','Cobh'],
+  'Mahon': ['Douglas','Cork City Centre','Ringaskiddy','Carrigaline'],
+  'Togher': ['Cork City Centre','Bishopstown','Douglas','Ballincollig'],
+  'Mallow': ['Fermoy','Cork City Centre','Charleville','Buttevant'],
+  'Fermoy': ['Mallow','Midleton','Cork City Centre','Mitchelstown'],
+  'Midleton': ['Cobh','Youghal','Cork City Centre','Glanmire'],
+  'Youghal': ['Midleton','Dungarvan','Cork City Centre','Cobh'],
+  'Cobh': ['Midleton','Glanmire','Cork City Centre','Crosshaven'],
+  'Kinsale': ['Bandon','Cork City Centre','Carrigaline','Clonakilty'],
+  'Bandon': ['Kinsale','Clonakilty','Cork City Centre','Dunmanway'],
+  'Clonakilty': ['Bandon','Skibbereen','Dunmanway','Kinsale'],
+  'Skibbereen': ['Bantry','Clonakilty','Dunmanway','Schull'],
+  'Bantry': ['Skibbereen','Dunmanway','Castletownbere','Glengarriff'],
+  'Galway City Centre': ['Salthill','Renmore','Knocknacarra','Oranmore'],
+  'Salthill': ['Galway City Centre','Knocknacarra','Barna','Spiddal'],
+  'Knocknacarra': ['Salthill','Galway City Centre','Barna','Newcastle'],
+  'Renmore': ['Galway City Centre','Oranmore','Athenry','Loughrea'],
+  'Tuam': ['Galway City Centre','Headford','Athenry','Ballinrobe'],
+  'Ballinasloe': ['Loughrea','Athenry','Athlone','Galway City Centre'],
+  'Loughrea': ['Ballinasloe','Athenry','Gort','Portumna'],
+  'Athenry': ['Oranmore','Loughrea','Tuam','Galway City Centre'],
+  'Oranmore': ['Galway City Centre','Athenry','Claregalway','Renmore'],
+  'Clifden': ['Oughterard','Clifden','Letterfrack','Roundstone'],
+  'Limerick City Centre': ['Castletroy','Dooradoyle','Raheen','Annacotty'],
+  'Castletroy': ['Limerick City Centre','Annacotty','Monaleen','Newport'],
+  'Dooradoyle': ['Limerick City Centre','Raheen','Patrickswell','Mungret'],
+  'Raheen': ['Dooradoyle','Limerick City Centre','Mungret','Ballinacurra'],
+  'Newcastle West': ['Rathkeale','Adare','Limerick City Centre','Abbeyfeale'],
+  'Waterford City Centre': ['Tramore','Dunmore East','Bilberry','Kilkenny City'],
+  'Tramore': ['Waterford City Centre','Dunmore East','Dungarvan','Fenor'],
+  'Dungarvan': ['Tramore','Waterford City Centre','Lismore','Clonmel'],
+  'Tralee': ['Killarney','Listowel','Castleisland','Ballybunion'],
+  'Killarney': ['Tralee','Kenmare','Killorglin','Rathmore'],
+  'Listowel': ['Tralee','Ballybunion','Newcastle West','Tarbert'],
+  'Kenmare': ['Killarney','Sneem','Bantry','Glengarriff'],
+  'Navan': ['Ashbourne','Kells','Trim','Dunshaughlin'],
+  'Ashbourne': ['Swords','Navan','Ratoath','Dunboyne'],
+  'Dunboyne': ['Ashbourne','Ratoath','Maynooth','Dunshaughlin'],
+  'Ratoath': ['Ashbourne','Dunboyne','Navan','Dunshaughlin'],
+  'Naas': ['Newbridge','Kildare Town','Kill','Sallins'],
+  'Newbridge': ['Naas','Kildare Town','Athy','Curragh'],
+  'Maynooth': ['Leixlip','Celbridge','Kilcock','Dunboyne'],
+  'Athy': ['Newbridge','Carlow Town','Kilcullen','Monasterevin'],
+  'Bray': ['Shankill','Greystones','Kilcoole','Enniskerry'],
+  'Greystones': ['Bray','Kilcoole','Newcastle','Wicklow Town'],
+  'Arklow': ['Wicklow Town','Gorey','Rathdrum','Brittas Bay'],
+  'Wexford Town': ['New Ross','Enniscorthy','Rosslare','Kilmore Quay'],
+  'Gorey': ['Arklow','Enniscorthy','New Ross','Courtown'],
+  'Kilkenny City': ['Thomastown','Callan','Carlow Town','Waterford City Centre'],
+  'Ennis': ['Shannon','Killaloe','Ennistymon','Scariff'],
+  'Shannon': ['Ennis','Limerick City Centre','Killaloe','Sixmilebridge'],
+  'Clonmel': ['Carrick-on-Suir','Cashel','Dungarvan','Nenagh'],
+  'Letterkenny': ['Buncrana','Donegal Town','Dungloe','Raphoe'],
+  'Castlebar': ['Westport','Ballinrobe','Claremorris','Ballina'],
+  'Sligo Town': ['Strandhill','Rosses Point','Ballymote','Enniscrone'],
+  'Carrick-on-Shannon': ['Boyle','Drumshanbo','Roscommon Town','Mohill'],
+  'Roscommon Town': ['Boyle','Castlerea','Athlone','Ballaghaderreen'],
+  'Longford Town': ['Granard','Edgeworthstown','Mullingar','Carrick-on-Shannon'],
+  'Mullingar': ['Athlone','Kinnegad','Moate','Longford Town'],
+  'Athlone': ['Mullingar','Roscommon Town','Ballinasloe','Moate'],
+  'Tullamore': ['Edenderry','Birr','Clara','Portlaoise'],
+  'Portlaoise': ['Tullamore','Carlow Town','Kilkenny City','Athy'],
+  'Carlow Town': ['Muinebheag','Athy','Kilkenny City','Portlaoise'],
+  'Drogheda': ['Dundalk','Navan','Laytown','Balbriggan'],
+  'Dundalk': ['Drogheda','Carlingford','Monaghan Town','Newry'],
+  'Monaghan Town': ['Carrickmacross','Clones','Dundalk','Castleblayney'],
+  'Cavan Town': ['Bailieborough','Cootehill','Virginia','Monaghan Town']
+}
+
+
+
+// ── Init ───────────────────────────────────────────────────────────────────
+;(function init() {
+  var title = area ? area + ', ' + county : county
+  document.title = title + ' Area Guide – Movin.ie'
+  document.getElementById('ng-title').textContent = area || county
+  document.getElementById('ng-subtitle').textContent = county + (area ? ' · ' + county : '') + ' · Neighbourhood guide'
+  document.getElementById('bc-area').textContent = area || county
+  document.getElementById('bc-county-link').href = 'area.html?county=' + encodeURIComponent(county)
+  document.getElementById('bc-county-link').textContent = county
+
+  document.getElementById('meta-desc').content = 'Discover ' + (area||county) + ' — property prices, what it\'s like to live there, pros & cons, and latest listings on Movin.ie.'
+  document.getElementById('og-title').content = (area||county) + ' Area Guide – Movin.ie'
+  document.getElementById('view-all-link').href = 'search.html?county=' + encodeURIComponent(county) + (area ? '&q=' + encodeURIComponent(area) : '')
+  document.getElementById('listings-heading').textContent = 'Properties in ' + (area || county)
+
+  var data = NEIGHBOURHOOD_DATA[area] || NEIGHBOURHOOD_DATA[county] || DEFAULT_DATA
+
+  // About section
+  document.getElementById('about-section').innerHTML =
+    '<h2>About ' + (area || county) + '</h2>' +
+    '<p>' + data.desc + '</p>' +
+    '<p style="font-size:13px;font-weight:500;color:var(--g,#1a5c45);background:var(--gl,#e9f4ef);border-radius:10px;padding:.65rem 1rem;display:inline-block">' + data.vibe + '</p>'
+
+  // Pros & cons
+  document.getElementById('pros-cons-section').innerHTML =
+    '<h2>Living in ' + (area || county) + '</h2>' +
+    '<div class="pros-cons">' +
+      '<div class="pros-card"><div class="pc-title">✓ Pros</div>' +
+        data.pros.map(function(p) { return '<div class="pc-item"><div class="pc-dot"></div>' + p + '</div>' }).join('') +
+      '</div>' +
+      '<div class="cons-card"><div class="pc-title">✗ Cons</div>' +
+        data.cons.map(function(c) { return '<div class="pc-item"><div class="pc-dot"></div>' + c + '</div>' }).join('') +
+      '</div>' +
+    '</div>'
+
+  // Nearby areas
+  var nearby = NEARBY_MAP[area] || NEARBY_MAP[county] || []
+  if (nearby.length) {
+    document.getElementById('nearby-areas').innerHTML = nearby.map(function(n) {
+      return '<a href="neighbourhood.html?area=' + encodeURIComponent(n) + '&county=' + encodeURIComponent(county) + '" class="nearby-area-chip">' + n + '</a>'
+    }).join('')
+  } else {
+    document.getElementById('nearby-section').style.display = 'none'
+  }
+
+  loadListings()
+  if (typeof renderFooter === 'function') renderFooter()
+})()
+
+async function loadListings() {
+  var grid = document.getElementById('ng-listings-grid')
+  try {
+    var searchParams = new URLSearchParams({ county: county, limit: 6 })
+    if (area && !area.startsWith('Dublin')) searchParams.append('q', area)
+
+    var [saleRes, rentRes] = await Promise.all([
+      fetch(window.MOVIN_API_URL + '/api/listings?county=' + encodeURIComponent(county) + '&listing_type=sale&limit=50').then(function(r){return r.json()}),
+      fetch(window.MOVIN_API_URL + '/api/listings?county=' + encodeURIComponent(county) + '&listing_type=rent&limit=50').then(function(r){return r.json()})
+    ])
+
+    // Stats
+    var salePrices = (saleRes.listings||[]).map(function(l){return parseInt(l.price)}).filter(Boolean)
+    var rentPrices = (rentRes.listings||[]).map(function(l){return parseInt(l.price)}).filter(Boolean)
+
+    document.getElementById('stat-listings').textContent = (saleRes.total||0).toLocaleString('en-IE')
+    if (salePrices.length) {
+      var avg = Math.round(salePrices.reduce(function(a,b){return a+b},0)/salePrices.length)
+      document.getElementById('stat-avg').textContent = avg >= 1000000 ? '€'+(avg/1000000).toFixed(1)+'m' : '€'+Math.round(avg/1000)+'k'
+    }
+    if (rentPrices.length) {
+      var avgR = Math.round(rentPrices.reduce(function(a,b){return a+b},0)/rentPrices.length)
+      document.getElementById('stat-rent').textContent = '€'+avgR.toLocaleString('en-IE')
+    }
+
+    // Quick facts
+    var allListings = (saleRes.listings||[]).concat(rentRes.listings||[])
+    if (allListings.length) {
+      var types = {}
+      allListings.forEach(function(l){ if(l.property_type) types[l.property_type]=(types[l.property_type]||0)+1 })
+      var topType = Object.keys(types).sort(function(a,b){return types[b]-types[a]})[0]
+      var avgBeds = Math.round(allListings.filter(function(l){return l.bedrooms}).reduce(function(s,l){return s+l.bedrooms},0)/allListings.filter(function(l){return l.bedrooms}).length)
+      var avgSize = Math.round(allListings.filter(function(l){return l.floor_size_m2}).reduce(function(s,l){return s+parseInt(l.floor_size_m2)},0)/allListings.filter(function(l){return l.floor_size_m2}).length)
+      var thisMonth = allListings.filter(function(l){ return l.created_at && (Date.now()-new Date(l.created_at).getTime())<30*86400000 }).length
+
+      if (topType) document.getElementById('qf-type').textContent = topType.charAt(0).toUpperCase()+topType.slice(1)
+      if (avgSize) document.getElementById('qf-size').textContent = avgSize + 'm²'
+      if (avgBeds) document.getElementById('qf-beds').textContent = avgBeds + ' beds'
+      document.getElementById('qf-new').textContent = thisMonth
+    }
+
+    // Show listings grid
+    var savedIds = API.auth.isLoggedIn() ? (await API.saved.all().catch(function(){return[]})).map(function(s){return s.id}) : []
+    var show = (saleRes.listings||[]).slice(0,6)
+    if (!show.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa">No listings found yet in this area.</div>'
+      return
+    }
+    grid.innerHTML = show.map(function(l) { return buildPropertyCard(l, savedIds) }).join('')
+  } catch(e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa">' + e.message + '</div>'
+  }
+}
+</script>
+</body>
 </html>

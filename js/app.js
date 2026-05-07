@@ -330,7 +330,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc">${listing.address_area || listing.county}</div>
+        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
@@ -402,6 +402,8 @@ function renderFooter() {
             '<a href="' + root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin">Blackrock</a>' +
             '<a href="' + root + 'pages/neighbourhood.html?area=Malahide&county=Dublin">Malahide</a>' +
             '<a href="' + root + 'pages/neighbourhood.html?area=Swords&county=Dublin">Swords</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Galway%20City%20Centre&county=Galway">Galway City</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Cork%20City%20Centre&county=Cork">Cork City</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
