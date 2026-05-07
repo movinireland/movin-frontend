@@ -236,6 +236,7 @@ function buildPropertyCard(listing, savedIds = []) {
     : `<span style="font-size:52px">🏡</span>`
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
+  const isNew = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
   const badgeClass = listing.listing_type === 'rent' ? 'badge-orange' : listing.listing_type === 'share' ? 'badge-blue' : 'badge-green'
 
   return `
@@ -244,7 +245,8 @@ function buildPropertyCard(listing, savedIds = []) {
         ${imgContent}
         <div class="prop-card-tags">
           <span class="badge ${badgeClass}">${typeLabel}</span>
-          ${listing.is_new_dev ? '<span class="badge badge-blue">New</span>' : ''}
+          ${listing.is_new_dev ? '<span class="badge badge-blue">New dev</span>' : ''}
+          ${isNew && !listing.is_new_dev ? '<span class="badge" style="background:#e07b3f;color:#fff">New</span>' : ''}
         </div>
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
@@ -358,6 +360,30 @@ function renderFooter() {
     '</div>'
 }
 window.renderFooter = renderFooter
+
+// ── Recently viewed ───────────────────────────────────────────────────────────
+function renderRecentlyViewed(containerId, excludeId) {
+  var el = document.getElementById(containerId)
+  if (!el) return
+  try {
+    var rv = JSON.parse(localStorage.getItem('movin_rv') || '[]')
+    rv = rv.filter(function(x) { return x.id !== excludeId }).slice(0, 4)
+    if (!rv.length) { el.style.display = 'none'; return }
+    el.innerHTML = rv.map(function(x) {
+      var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
+      var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
+      var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+      return '<div onclick="window.location.href='' + root + 'listing.html?id=' + x.id + ''" style="flex:0 0 140px;background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
+        '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
+        '<div style="padding:.6rem">' +
+          '<div style="font-size:11px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.title + '</div>' +
+          '<div style="font-size:12px;color:#1a5c45;font-weight:500;margin-top:2px">€' + Number(x.price).toLocaleString('en-IE') + (x.type === 'rent' ? '/mo' : '') + '</div>' +
+        '</div>' +
+      '</div>'
+    }).join('')
+  } catch(e) { el.style.display = 'none' }
+}
+window.renderRecentlyViewed = renderRecentlyViewed
 
 // ── Load icon sprite ──────────────────────────────────────────────────────────
 function loadIconSprite() {

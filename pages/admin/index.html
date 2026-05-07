@@ -6,6 +6,10 @@
 <title>Admin Panel – Movin.ie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#1a5c45"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Movin"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:100vh}
@@ -93,37 +97,37 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
     <nav>
       <div class="nav-section">
         <div class="nav-section-label">Overview</div>
-        <div class="nav-item active" onclick="switchSection('dashboard',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-chart"/></svg></span>Dashboard</div>
+        <div class="nav-item active" onclick="switchSection('dashboard',this)"><span class="nav-item-icon">📊</span>Dashboard</div>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Content</div>
-        <div class="nav-item" onclick="switchSection('listings',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></span>All listings</div>
-        <div class="nav-item" onclick="switchSection('users',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></span>Users</div>
-        <div class="nav-item" onclick="switchSection('enquiries',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-inbox"/></svg></span>Enquiries</div>
-        <div class="nav-item" onclick="switchSection('reviews',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-star"/></svg></span>Reviews</div>
+        <div class="nav-item" onclick="switchSection('listings',this)"><span class="nav-item-icon">🏠</span>All listings</div>
+        <div class="nav-item" onclick="switchSection('users',this)"><span class="nav-item-icon">👥</span>Users</div>
+        <div class="nav-item" onclick="switchSection('enquiries',this)"><span class="nav-item-icon">📨</span>Enquiries</div>
+        <div class="nav-item" onclick="switchSection('reviews',this)"><span class="nav-item-icon">⭐</span>Reviews</div>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Finance</div>
-        <div class="nav-item" onclick="switchSection('payments',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-card"/></svg></span>Payments</div>
-        <div class="nav-item" onclick="switchSection('alerts',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bell"/></svg></span>Search alerts</div>
+        <div class="nav-item" onclick="switchSection('payments',this)"><span class="nav-item-icon">💳</span>Payments</div>
+        <div class="nav-item" onclick="switchSection('alerts',this)"><span class="nav-item-icon">🔔</span>Search alerts</div>
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Settings</div>
-        <div class="nav-item" onclick="switchSection('settings',this)"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></span>Settings</div>
-        <div class="nav-item" onclick="window.location.href='../../index.html'"><span class="nav-item-icon"><svg width="16" height="16" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-back"/></svg></span>Back to site</div>
+        <div class="nav-item" onclick="switchSection('settings',this)"><span class="nav-item-icon">⚙️</span>Settings</div>
+        <div class="nav-item" onclick="window.location.href='../../index.html'"><span class="nav-item-icon">↩</span>Back to site</div>
       </div>
     </nav>
   </div>
 
   <div class="mobile-nav">
-    <div class="mn-item active" onclick="switchSection('dashboard',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-chart"/></svg> Dashboard</div>
-    <div class="mn-item" onclick="switchSection('listings',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg> Listings</div>
-    <div class="mn-item" onclick="switchSection('users',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg> Users</div>
-    <div class="mn-item" onclick="switchSection('enquiries',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-inbox"/></svg> Enquiries</div>
-    <div class="mn-item" onclick="switchSection('payments',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-card"/></svg> Payments</div>
-    <div class="mn-item" onclick="switchSection('reviews',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-star"/></svg> Reviews</div>
-    <div class="mn-item" onclick="switchSection('alerts',this)"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bell"/></svg> Alerts</div>
-    <div class="mn-item" onclick="window.location.href='../../index.html'"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-back"/></svg> Site</div>
+    <div class="mn-item active" onclick="switchSection('dashboard',this)">📊 Dashboard</div>
+    <div class="mn-item" onclick="switchSection('listings',this)">🏠 Listings</div>
+    <div class="mn-item" onclick="switchSection('users',this)">👥 Users</div>
+    <div class="mn-item" onclick="switchSection('enquiries',this)">📨 Enquiries</div>
+    <div class="mn-item" onclick="switchSection('payments',this)">💳 Payments</div>
+    <div class="mn-item" onclick="switchSection('reviews',this)">⭐ Reviews</div>
+    <div class="mn-item" onclick="switchSection('alerts',this)">🔔 Alerts</div>
+    <div class="mn-item" onclick="window.location.href='../../index.html'">↩ Site</div>
   </div>
 
   <main class="main">
@@ -416,8 +420,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 <script>
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 </script>
-<script src="../../js/icons.js"></script>
-  <script src="../../js/api.js"></script>
+<script src="../../js/api.js"></script>
 <script src="../../js/app.js"></script>
 <script>
 
@@ -499,7 +502,7 @@ async function loadDashboard() {
         <td>${l.views || 0}</td>
         <td>
           ${l.status === 'pending_review'
-            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')"><svg width="14" height="14" style="color:#16a34a;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg> Approve</button>`
+            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')">✓ Approve</button>`
             : `<button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>`
           }
         </td>
@@ -565,8 +568,8 @@ function renderListingsTable(listings) {
           <button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>
           <button class="btn btn-sm" style="background:#eff6ff;color:#1d4ed8" onclick="openEditModal('${l.id}')">✏️ Edit</button>
           ${l.status === 'pending_review'
-            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')"><svg width="14" height="14" style="color:#16a34a;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg> Approve</button>
-               <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')"><svg width="14" height="14" style="color:#dc2626;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-reject"/></svg> Reject</button>`
+            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>
+               <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="rejectListing('${l.id}')">✗ Reject</button>`
             : `<button class="btn btn-sm" style="background:${l.status==='active'?'#fef3c7':'#dcfce7'};color:${l.status==='active'?'#d97706':'#16a34a'}" onclick="toggleStatus('${l.id}','${l.status}')">${l.status==='active'?'Suspend':'Activate'}</button>`
           }
           <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626" onclick="confirmDelete('${l.id}')">Del</button>

@@ -4,6 +4,10 @@
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Search Properties – Movin.ie</title>
   <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Movin"/>
   <style>
     .sr-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.75rem 1rem}
     .sr-search-row{display:flex;gap:8px;margin-bottom:.6rem;position:relative}
@@ -470,6 +474,11 @@
 
     doSearch()
   </script>
+  <footer class="site-footer" id="site-footer"></footer>
+  <div id="rv-section" style="padding:1rem 1rem 0;display:none">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
+    <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem"></div>
+  </div>
   <footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>
