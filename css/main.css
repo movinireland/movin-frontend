@@ -52,8 +52,8 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 }
 .nav-logo {
   font-family: 'Playfair Display', serif;
-  font-size: 22px; font-weight: 700; color: var(--green);
-  cursor: pointer; flex-shrink: 0;
+  font-size: 26px; font-weight: 900; color: var(--green);
+  cursor: pointer; flex-shrink: 0; letter-spacing: -0.5px;
 }
 .nav-logo span { color: var(--orange); }
 .nav-links {
@@ -163,7 +163,8 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
   border: 1px solid var(--border); cursor: pointer;
   transition: transform .15s, box-shadow .15s;
 }
-.prop-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.prop-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.1); }
+@media(max-width:600px){.prop-card:active{transform:scale(.98)}}
 .prop-card-img {
   height: 180px; position: relative; overflow: hidden;
   background: linear-gradient(135deg, #c8dfd4, #e9f4ef);

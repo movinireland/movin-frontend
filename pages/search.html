@@ -21,7 +21,14 @@
     *{box-sizing:border-box}
 
     /* ── Top search bar ── */
-    .sr-topbar{background:var(--white,#fff);border-bottom:1px solid var(--border);padding:.65rem 1rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.06);transition:box-shadow .2s}
+    /* ── Premium search topbar ── */
+    .sr-topbar{background:var(--white,#fff);border-bottom:1px solid var(--border);padding:.75rem 1rem .65rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(0,0,0,.07);transition:box-shadow .2s}
+    /* Bigger search bar */
+    .sr-search-row{display:flex;gap:8px;align-items:center;margin-bottom:.65rem;position:relative}
+    .sr-input{flex:1;border:2px solid var(--border);border-radius:50px;padding:11px 18px;font-size:14px;font-family:inherit;background:var(--white,#fff);color:var(--text,#111);outline:none;transition:border-color .15s;min-width:0}
+    .sr-input:focus{border-color:var(--green,#1a5c45)}
+    .sr-search-btn{background:var(--green,#1a5c45);color:#fff;border:none;border-radius:50px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .15s}
+    .sr-search-btn:active{background:#0e3d2e}
     .sr-search-row{display:flex;gap:8px;margin-bottom:.65rem;position:relative}
     .sr-input{flex:1;min-width:0;border:2px solid var(--border);border-radius:50px;padding:11px 18px;font-size:14px;outline:none;background:#fafaf8;-webkit-appearance:none;font-family:inherit;transition:border .15s}
     .sr-input:focus{border-color:var(--g);background:#fff}
@@ -132,17 +139,55 @@
     </div>
   </div>
 
-  <!-- Quick links bar -->
-  <div class="quick-links">
-    <a href="map-search.html" class="ql-btn"><svg width="13" height="13" style="color:#1a5c45"><use href="/icons.svg#icon-map"/></svg> Map view</a>
-    <button class="ql-btn" onclick="createAlert()" id="create-alert-btn"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Create alert</button>
-    <a href="compare.html" class="ql-btn"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-chart"/></svg> Compare</a>
+  <!-- Quick filters + links -->
+  <div style="background:var(--white,#fff);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:center">
+    <style>.qf-chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--border);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:500;background:var(--white,#fff);cursor:pointer;color:#666;white-space:nowrap;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent;text-decoration:none;flex-shrink:0}.qf-chip:hover{border-color:var(--green);color:var(--green)}.qf-chip.active{background:var(--gl,#e9f4ef);border-color:var(--green);color:var(--green)}</style>
+    <select class="qf-chip" id="qf-beds" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px">
+      <option value="">Any beds</option>
+      <option value="1">1+ bed</option>
+      <option value="2">2+ beds</option>
+      <option value="3">3+ beds</option>
+      <option value="4">4+ beds</option>
+      <option value="5">5+ beds</option>
+    </select>
+    <select class="qf-chip" id="qf-min" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px">
+      <option value="">Min price</option>
+      <option value="50000">€50k</option>
+      <option value="100000">€100k</option>
+      <option value="150000">€150k</option>
+      <option value="200000">€200k</option>
+      <option value="250000">€250k</option>
+      <option value="300000">€300k</option>
+      <option value="400000">€400k</option>
+      <option value="500000">€500k</option>
+    </select>
+    <select class="qf-chip" id="qf-max" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px">
+      <option value="">Max price</option>
+      <option value="100000">€100k</option>
+      <option value="200000">€200k</option>
+      <option value="300000">€300k</option>
+      <option value="400000">€400k</option>
+      <option value="500000">€500k</option>
+      <option value="600000">€600k</option>
+      <option value="750000">€750k</option>
+      <option value="1000000">€1m</option>
+    </select>
+    <select class="qf-chip" id="qf-type" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px">
+      <option value="">Any type</option>
+      <option value="house">House</option>
+      <option value="apartment">Apartment</option>
+      <option value="bungalow">Bungalow</option>
+      <option value="site">Site</option>
+    </select>
+    <div style="width:1px;height:20px;background:var(--border);flex-shrink:0"></div>
+    <a href="map-search.html" class="qf-chip"><svg width="12" height="12" style="color:#1a5c45"><use href="/icons.svg#icon-map"/></svg> Map</a>
+    <button class="qf-chip" onclick="createAlert()" id="create-alert-btn"><svg width="12" height="12" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Alert</button>
   </div>
 
   <!-- Results header -->
-  <div class="results-header">
-    <div class="results-count" id="result-count">Loading…</div>
-    <select class="sort-select" id="sort-sel" onchange="doSearch()">
+  <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border)">
+    <div class="results-count" id="result-count" style="font-size:13px;color:#888">Loading…</div>
+    <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
       <option value="newest">Most recent</option>
       <option value="price_asc">Price ↑</option>
       <option value="price_desc">Price ↓</option>
