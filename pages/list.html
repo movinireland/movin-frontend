@@ -157,12 +157,8 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Town / Area</label>
-            <input class="form-input" type="text" id="address_area" placeholder="e.g. Rathmines"/>
-          </div>
-          <div class="form-group">
             <label class="form-label">County <span class="req">*</span></label>
-            <select class="form-input form-select" id="county">
+            <select class="form-input form-select" id="county" onchange="onCountyChange()">
               <option value="">Select county…</option>
               <option>Dublin</option><option>Cork</option><option>Galway</option>
               <option>Limerick</option><option>Waterford</option><option>Kerry</option>
@@ -172,9 +168,20 @@
               <option>Sligo</option><option>Leitrim</option><option>Roscommon</option>
               <option>Longford</option><option>Westmeath</option><option>Offaly</option>
               <option>Laois</option><option>Carlow</option><option>Louth</option>
-              <option>Monaghan</option><option>Cavan</option><option>Fermanagh</option>
+              <option>Monaghan</option><option>Cavan</option>
             </select>
           </div>
+          <div class="form-group" id="area-group" style="display:none">
+            <label class="form-label">Area <span class="req">*</span></label>
+            <select class="form-input form-select" id="address_area">
+              <option value="">Select area…</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" id="area-other-group" style="display:none">
+          <label class="form-label">Specific area / townland</label>
+          <input class="form-input" type="text" id="address_area_text" placeholder="e.g. Rathmines, Sandymount…"/>
+          <div class="form-hint">Optional — helps buyers find your property more easily</div>
         </div>
         <div class="form-group">
           <label class="form-label">Eircode</label>
@@ -477,7 +484,7 @@
           property_type:  document.querySelector('#type-grid .type-btn.on').dataset.val || 'house',
           property_style: document.getElementById('property_style').value,
           address_line1:  document.getElementById('address_line1').value.trim(),
-          address_area:   document.getElementById('address_area').value.trim(),
+          address_area:   (document.getElementById('address_area').value || document.getElementById('address_area_text')?.value || '').trim(),
           county:         document.getElementById('county').value,
           eircode:        document.getElementById('eircode').value.trim(),
           price:          parseInt(document.getElementById('price').value),

@@ -142,6 +142,21 @@
   <!-- Quick filters + links -->
   <div style="background:var(--white,#fff);border-bottom:1px solid var(--border);padding:.5rem 1rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;align-items:center">
     <style>.qf-chip{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--border);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:500;background:var(--white,#fff);cursor:pointer;color:#666;white-space:nowrap;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent;text-decoration:none;flex-shrink:0}.qf-chip:hover{border-color:var(--green);color:var(--green)}.qf-chip.active{background:var(--gl,#e9f4ef);border-color:var(--green);color:var(--green)}</style>
+    <select class="qf-chip" id="qf-county" onchange="onSearchCountyChange()" style="-webkit-appearance:none;padding-right:10px">
+      <option value="">All counties</option>
+      <option>Dublin</option><option>Cork</option><option>Galway</option>
+      <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+      <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+      <option>Wexford</option><option>Kilkenny</option><option>Clare</option>
+      <option>Tipperary</option><option>Donegal</option><option>Mayo</option>
+      <option>Sligo</option><option>Leitrim</option><option>Roscommon</option>
+      <option>Longford</option><option>Westmeath</option><option>Offaly</option>
+      <option>Laois</option><option>Carlow</option><option>Louth</option>
+      <option>Monaghan</option><option>Cavan</option>
+    </select>
+    <select class="qf-chip" id="qf-area" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px;display:none">
+      <option value="">All areas</option>
+    </select>
     <select class="qf-chip" id="qf-beds" onchange="doSearch()" style="-webkit-appearance:none;padding-right:10px">
       <option value="">Any beds</option>
       <option value="1">1+ bed</option>
@@ -335,7 +350,14 @@
         else p.classList.remove('active')
       })
     }
-    if (urlP.get('county')) searchCounty = urlP.get('county')
+    if (urlP.get('county')) {
+      searchCounty = urlP.get('county')
+      var qfC = document.getElementById('qf-county')
+      if (qfC) {
+        qfC.value = searchCounty
+        onSearchCountyChange()
+      }
+    }
     if (urlP.get('q')) {
       searchQuery = urlP.get('q')
       document.getElementById('search-q').value = searchQuery
