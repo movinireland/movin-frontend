@@ -293,7 +293,7 @@
     if (county && info) {
       document.title = 'Properties in ' + county + ' – Movin.ie'
       document.getElementById('hero-county').textContent = county
-      document.getElementById('hero-title').textContent  = (info.emoji ? info.emoji + ' ' : '') + 'Properties in ' + county
+      document.getElementById('hero-title').innerHTML  = (info.emoji ? info.emoji + ' ' : '') + 'Properties in ' + county
       document.getElementById('hero-sub').textContent    = info.desc
 
       // SEO meta

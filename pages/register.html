@@ -1,158 +1,474 @@
 <!DOCTYPE html>
 <html lang="en">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script>
-(function(){
-  var t=localStorage.getItem('movin_theme');
-  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
-})()
-</script>
+<script>(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()</script>
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Account – Movin.ie</title>
-  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    .auth-divider {
-  display: flex; align-items: center; gap: 10px;
-  margin: 1.25rem 0; font-size: 13px; color: #aaa;
-}
-.auth-divider::before, .auth-divider::after {
-  content: ''; flex: 1; border-top: 1px solid var(--border);
-}
-    .auth-wrap { min-height:calc(100vh - 64px); display:flex; align-items:center; justify-content:center; padding:2rem; }
-    .auth-card { background:#fff; border-radius:20px; padding:2.5rem; width:100%; max-width:440px; border:1px solid var(--border); box-shadow:var(--shadow-lg); }
-    .auth-logo { font-family:'Playfair Display',serif; font-size:26px; font-weight:700; color:var(--green); text-align:center; margin-bottom:.5rem; cursor:pointer; }
-    .auth-logo span { color:var(--orange); }
-    .auth-title { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; text-align:center; margin-bottom:.5rem; }
-    .auth-sub { font-size:14px; color:#999; text-align:center; margin-bottom:2rem; font-weight:300; }
-    .auth-switch { text-align:center; margin-top:1.5rem; font-size:14px; color:#888; }
-    .auth-switch a { color:var(--green); font-weight:500; cursor:pointer; }
-    .free-badge { background:var(--green-light); color:var(--green); font-size:12px; font-weight:500; padding:6px 14px; border-radius:var(--radius-pill); text-align:center; margin-bottom:1.75rem; }
+    .auth-wrap{min-height:calc(100vh - 64px);display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem 4rem;background:var(--bg,#f5f2ec)}
+    .auth-card{background:var(--white,#fff);border-radius:20px;padding:2.25rem;width:100%;max-width:460px;border:1px solid var(--border);box-shadow:0 8px 40px rgba(0,0,0,.08)}
+    .auth-logo{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--green,#1a5c45);text-align:center;margin-bottom:.4rem;cursor:pointer}
+    .auth-logo span{color:#e07b3f}
+    .auth-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:.35rem;color:var(--text,#111)}
+    .auth-sub{font-size:13px;color:#999;text-align:center;margin-bottom:1.5rem;font-weight:300}
+    .auth-divider{display:flex;align-items:center;gap:10px;margin:1.25rem 0;font-size:13px;color:#aaa}
+    .auth-divider::before,.auth-divider::after{content:'';flex:1;border-top:1px solid var(--border)}
+    .auth-switch{text-align:center;margin-top:1.25rem;font-size:14px;color:#888}
+    .auth-switch a{color:var(--green,#1a5c45);font-weight:500;cursor:pointer;text-decoration:none}
+
+    /* Account type toggle */
+    .acct-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.5rem}
+    .acct-btn{border:2px solid var(--border);border-radius:14px;padding:.85rem;text-align:center;cursor:pointer;background:var(--white,#fff);transition:all .15s;-webkit-tap-highlight-color:transparent}
+    .acct-btn:hover{border-color:var(--green,#1a5c45)}
+    .acct-btn.on{border-color:var(--green,#1a5c45);background:var(--gl,#e9f4ef)}
+    .acct-btn-icon{font-size:26px;margin-bottom:5px}
+    .acct-btn-title{font-size:13px;font-weight:600;color:var(--text,#111);margin-bottom:2px}
+    .acct-btn-sub{font-size:11px;color:#aaa;line-height:1.4}
+    .acct-btn.on .acct-btn-title{color:var(--green,#1a5c45)}
+
+    /* Step indicator */
+    .steps{display:flex;align-items:center;gap:0;margin-bottom:1.5rem}
+    .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+    .step-dot{width:28px;height:28px;border-radius:50%;background:#e8e4dc;color:#aaa;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .step.done .step-dot{background:var(--green,#1a5c45);color:#fff}
+    .step.active .step-dot{background:var(--green,#1a5c45);color:#fff;box-shadow:0 0 0 4px rgba(26,92,69,.15)}
+    .step-label{font-size:10px;color:#aaa;font-weight:500}
+    .step.active .step-label,.step.done .step-label{color:var(--green,#1a5c45)}
+    .step-line{flex:1;height:2px;background:#e8e4dc;margin-bottom:14px}
+    .step-line.done{background:var(--green,#1a5c45)}
+
+    /* OTP input */
+    .otp-wrap{display:flex;gap:8px;justify-content:center;margin:1.5rem 0}
+    .otp-input{width:46px;height:52px;border:2px solid var(--border);border-radius:12px;text-align:center;font-size:22px;font-weight:700;color:var(--text,#111);background:var(--white,#fff);outline:none;font-family:inherit;-webkit-appearance:none;transition:border .15s}
+    .otp-input:focus{border-color:var(--green,#1a5c45)}
+    .otp-input.filled{border-color:var(--green,#1a5c45);background:var(--gl,#e9f4ef)}
+
+    /* Agent fields */
+    .agent-section{background:var(--gl,#e9f4ef);border-radius:14px;padding:1rem;margin-bottom:1rem;border:1.5px solid #c8dfd4}
+    .agent-section-title{font-size:12px;font-weight:600;color:var(--green,#1a5c45);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem}
+
+    /* Phone step */
+    .phone-step{display:none}
+    .phone-step.visible{display:block}
+
+    [data-theme="dark"] .auth-card{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .acct-btn{background:#1e1e1e;border-color:#2a2a2a}
+    [data-theme="dark"] .acct-btn.on{background:#0d2e1e;border-color:#2ecc8a}
+    [data-theme="dark"] .acct-btn-title{color:#e8e8e8}
+    [data-theme="dark"] .acct-btn.on .acct-btn-title{color:#2ecc8a}
+    [data-theme="dark"] .otp-input{background:#1e1e1e;border-color:#2a2a2a;color:#e8e8e8}
+    [data-theme="dark"] .otp-input.filled{background:#0d2e1e;border-color:#2ecc8a}
+    [data-theme="dark"] .agent-section{background:#0d2e1e;border-color:#1a4a2e}
   </style>
 </head>
 <body>
-  <nav class="nav" id="main-nav"></nav>
-  <div class="auth-wrap">
-    <div class="auth-card">
-      <div class="auth-logo" onclick="window.location.href='../index.html'">mov<span>in</span></div>
-      <h1 class="auth-title">Create your account</h1>
-      <p class="auth-sub">Join thousands of people finding and listing homes on Movin.ie</p>
-      <div class="free-badge">🎉 Your first property listing is completely free</div>
+<nav class="nav" id="main-nav"></nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo" onclick="window.location.href='../index.html'">mov<span>in</span></div>
+    <h1 class="auth-title" id="card-title">Create your account</h1>
+    <p class="auth-sub" id="card-sub">Ireland's fairest property marketplace</p>
+
+    <!-- Step indicator -->
+    <div class="steps" id="steps-bar">
+      <div class="step active" id="step-1"><div class="step-dot">1</div><div class="step-label">Account</div></div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step" id="step-2"><div class="step-dot">2</div><div class="step-label">Phone</div></div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step" id="step-3"><div class="step-dot">3</div><div class="step-label">Verify</div></div>
+    </div>
+
+    <div id="auth-alert"></div>
+
+    <!-- ── STEP 1: Account type + details ── -->
+    <div id="step1-wrap">
+      <!-- Account type -->
+      <div class="acct-toggle">
+        <div class="acct-btn on" id="btn-personal" onclick="setType('personal')">
+          <div class="acct-btn-icon">🏠</div>
+          <div class="acct-btn-title">Personal</div>
+          <div class="acct-btn-sub">Buying, renting or selling your own home</div>
+        </div>
+        <div class="acct-btn" id="btn-agent" onclick="setType('agent')">
+          <div class="acct-btn-icon">🏢</div>
+          <div class="acct-btn-title">Agent / Professional</div>
+          <div class="acct-btn-sub">Estate agent, landlord or developer</div>
+        </div>
+      </div>
+
+      <!-- Google sign in -->
       <div id="g_id_onload"
-     data-client_id="785116519260-atuctihtm6m3v34m8eeq1k1mme8ko3o5.apps.googleusercontent.com"
-     data-callback="handleGoogleSignIn"
-     data-auto_prompt="false">
-</div>
-<div class="g_id_signin"
-     data-type="standard"
-     data-size="large"
-     data-theme="outline"
-     data-text="continue_with"
-     data-shape="pill"
-     data-width="360">
-</div>
-<div class="auth-divider">
-  <span>or continue with email</span>
-</div>
-      <div id="auth-alert"></div>
-      <form onsubmit="doRegister(event)">
+           data-client_id="785116519260-atuctihtm6m3v34m8eeq1k1mme8ko3o5.apps.googleusercontent.com"
+           data-callback="handleGoogleSignIn"
+           data-auto_prompt="false"></div>
+      <div style="display:flex;justify-content:center;margin-bottom:.5rem">
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="pill" data-width="360"></div>
+      </div>
+
+      <div class="auth-divider"><span>or sign up with email</span></div>
+
+      <form id="reg-form" onsubmit="doStep1(event)">
         <div class="form-group">
-          <label class="form-label">Full name <span class="req">*</span></label>
-          <input class="form-input" type="text" id="name" placeholder="Aoife Murphy" required autocomplete="name" />
+          <label class="form-label">Full name *</label>
+          <input class="form-input" type="text" id="name" placeholder="Aoife Murphy" required autocomplete="name"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Email address <span class="req">*</span></label>
-          <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email" />
+          <label class="form-label">Email address *</label>
+          <input class="form-input" type="email" id="email" placeholder="you@example.com" required autocomplete="email"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Phone number</label>
-          <input class="form-input" type="tel" id="phone" placeholder="085 123 4567" autocomplete="tel" />
-          <div class="form-hint">Shown to buyers/renters on your listings</div>
+          <label class="form-label">Password *</label>
+          <input class="form-input" type="password" id="password" placeholder="At least 8 characters" required autocomplete="new-password"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Password <span class="req">*</span></label>
-          <input class="form-input" type="password" id="password" placeholder="At least 8 characters" required autocomplete="new-password" />
+          <label class="form-label">Confirm password *</label>
+          <input class="form-input" type="password" id="confirm" placeholder="Repeat your password" required/>
         </div>
-        <div class="form-group">
-          <label class="form-label">Confirm password <span class="req">*</span></label>
-          <input class="form-input" type="password" id="confirm" placeholder="Repeat your password" required />
+
+        <!-- Agent extra fields -->
+        <div id="agent-fields" style="display:none">
+          <div class="agent-section">
+            <div class="agent-section-title">🏢 Professional details</div>
+            <div class="form-group">
+              <label class="form-label">Agency / Company name *</label>
+              <input class="form-input" type="text" id="agency_name" placeholder="e.g. Murphy & Co Estate Agents"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">PSRA licence number</label>
+              <input class="form-input" type="text" id="psra_number" placeholder="e.g. 001234"/>
+              <div class="form-hint">Property Services Regulatory Authority number — builds trust with buyers</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">County you operate in *</label>
+              <select class="form-input form-select" id="agent_county">
+                <option value="">Select county</option>
+                <option>Dublin</option><option>Cork</option><option>Galway</option>
+                <option>Limerick</option><option>Waterford</option><option>Kerry</option>
+                <option>Meath</option><option>Kildare</option><option>Wicklow</option>
+                <option>Wexford</option><option>Kilkenny</option><option>Clare</option>
+                <option>Tipperary</option><option>Donegal</option><option>Mayo</option>
+                <option>Sligo</option><option>Leitrim</option><option>Roscommon</option>
+                <option>Longford</option><option>Westmeath</option><option>Offaly</option>
+                <option>Laois</option><option>Carlow</option><option>Louth</option>
+                <option>Monaghan</option><option>Cavan</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website (optional)</label>
+              <input class="form-input" type="url" id="agent_website" placeholder="https://www.youragency.ie"/>
+            </div>
+          </div>
         </div>
+
         <div style="font-size:12px;color:#aaa;margin-bottom:1rem;line-height:1.6">
-          By creating an account you agree to our <a href="terms-of-service.html" style="color:var(--green)">Terms of Service</a> and <a href="privacy-policy.html" style="color:var(--green)">Privacy Policy</a>.
+          By creating an account you agree to our <a href="terms-of-service.html" style="color:var(--green,#1a5c45)">Terms</a> and <a href="privacy-policy.html" style="color:var(--green,#1a5c45)">Privacy Policy</a>.
         </div>
-        <button type="submit" class="btn btn-primary btn-block btn-lg" id="reg-btn">Create account</button>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="reg-btn">Continue →</button>
       </form>
+
       <p class="auth-switch">Already have an account? <a href="login.html">Sign in →</a></p>
     </div>
+
+    <!-- ── STEP 2: Phone number ── -->
+    <div id="step2-wrap" style="display:none">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <div style="font-size:48px;margin-bottom:.75rem">📱</div>
+        <div style="font-size:14px;color:#888;line-height:1.6">Add your phone number so buyers and renters can contact you directly. This will appear on your listings.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone number *</label>
+        <div style="display:flex;gap:8px">
+          <select class="form-input form-select" id="phone-country" style="width:100px;flex-shrink:0">
+            <option value="+353">🇮🇪 +353</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+49">🇩🇪 +49</option>
+            <option value="+33">🇫🇷 +33</option>
+            <option value="+39">🇮🇹 +39</option>
+            <option value="+34">🇪🇸 +34</option>
+            <option value="+48">🇵🇱 +48</option>
+            <option value="+380">🇺🇦 +380</option>
+            <option value="+86">🇨🇳 +86</option>
+            <option value="+91">🇮🇳 +91</option>
+          </select>
+          <input class="form-input" type="tel" id="phone-number" placeholder="085 123 4567" style="flex:1"/>
+        </div>
+        <div class="form-hint">Your number will only be shown to logged-in users on your listings</div>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="doStep2()" id="phone-btn">Send verification code →</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:.75rem;font-size:13px" onclick="skipPhone()">Skip for now — add later in profile</button>
+    </div>
+
+    <!-- ── STEP 3: OTP verification ── -->
+    <div id="step3-wrap" style="display:none">
+      <div style="text-align:center;margin-bottom:1rem">
+        <div style="font-size:48px;margin-bottom:.75rem">📧</div>
+        <div style="font-size:14px;color:#888;line-height:1.6;margin-bottom:.5rem">We've sent a 6-digit code to</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text,#111)" id="verify-email-display"></div>
+      </div>
+      <div class="otp-wrap" id="otp-inputs">
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,0)"/>
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,1)"/>
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,2)"/>
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,3)"/>
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,4)"/>
+        <input class="otp-input" type="number" maxlength="1" min="0" max="9" oninput="otpInput(this,5)"/>
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="doVerify()" id="verify-btn">Verify & complete →</button>
+      <div style="text-align:center;margin-top:1rem;font-size:13px;color:#aaa">
+        Didn't get it? <button onclick="resendOTP()" style="background:none;border:none;color:var(--green,#1a5c45);font-weight:500;cursor:pointer;font-size:13px;padding:0" id="resend-btn">Resend code</button>
+        <span id="resend-timer" style="display:none;color:#aaa"> (wait <span id="timer-sec">60</span>s)</span>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <script>
-    async function handleGoogleSignIn(response) {
-  const alert = document.getElementById('auth-alert')
-  try {
-    const res = await fetch(window.MOVIN_API_URL + '/api/auth/google', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential: response.credential })
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  if (API.auth.isLoggedIn()) window.location.href = 'dashboard.html'
+  renderNav()
+
+  var accountType = 'personal'
+  var registeredToken = null
+  var registeredUser = null
+
+  function setType(type) {
+    accountType = type
+    document.getElementById('btn-personal').classList.toggle('on', type === 'personal')
+    document.getElementById('btn-agent').classList.toggle('on', type === 'agent')
+    document.getElementById('agent-fields').style.display = type === 'agent' ? 'block' : 'none'
+    // Make agent fields required
+    var agentReqs = ['agency_name', 'agent_county']
+    agentReqs.forEach(function(id) {
+      var el = document.getElementById(id)
+      if (el) el.required = type === 'agent'
     })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error)
-    localStorage.setItem('movin_token', data.token)
-    localStorage.setItem('movin_user', JSON.stringify(data.user))
-    toast('Welcome! 🎉')
-    window.location.href = 'dashboard.html'
-  } catch(err) {
-    alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
   }
-}
-    window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
-  </script>
-  <script src="../js/api.js"></script>
-  <script src="../js/app.js"></script>
-  <script>
-    if (API.auth.isLoggedIn()) window.location.href = 'dashboard.html'
-    renderNav()
 
-    async function doRegister(e) {
-      e.preventDefault()
-      const btn = document.getElementById('reg-btn')
-      const alert = document.getElementById('auth-alert')
-      const pw = document.getElementById('password').value
-      const confirm = document.getElementById('confirm').value
-      alert.innerHTML = ''
-
-      if (pw !== confirm) {
-        alert.innerHTML = '<div class="alert alert-error">Passwords do not match.</div>'
-        return
-      }
-      if (pw.length < 8) {
-        alert.innerHTML = '<div class="alert alert-error">Password must be at least 8 characters.</div>'
-        return
-      }
-
-      btn.classList.add('btn-loading'); btn.disabled = true
-      try {
-        await API.auth.register(
-          document.getElementById('name').value,
-          document.getElementById('email').value,
-          pw,
-          document.getElementById('phone').value
-        )
-        // Show verification message instead of redirecting
-        document.querySelector('.auth-card').innerHTML =
-          '<div style="text-align:center;padding:1rem 0">' +
-          '<div style="font-size:48px;margin-bottom:1rem">📧</div>' +
-          '<div style="font-family:Playfair Display,serif;font-size:22px;font-weight:700;color:#111;margin-bottom:.75rem">Check your email</div>' +
-          '<p style="font-size:14px;color:#888;line-height:1.7;margin-bottom:1.5rem">We\'ve sent a verification link to <strong style="color:#333">' + document.getElementById('email').value + '</strong>.<br>Click the link to activate your account.</p>' +
-          '<div style="background:#e9f4ef;border-radius:12px;padding:1rem;font-size:13px;color:#1a5c45;margin-bottom:1.5rem">Didn\'t get it? Check your spam folder or <button onclick="resendVerification()" style="background:none;border:none;color:#1a5c45;font-weight:500;cursor:pointer;padding:0;font-size:13px;text-decoration:underline">resend the email</button>.</div>' +
-          '<a href="login.html" style="color:#1a5c45;font-size:14px;font-weight:500">Already verified? Sign in →</a>' +
-          '</div>'
-      } catch(err) {
-        alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
-        btn.classList.remove('btn-loading'); btn.disabled = false
-      }
+  function setStep(n) {
+    for (var i = 1; i <= 3; i++) {
+      var dot = document.querySelector('#step-' + i + ' .step-dot')
+      var stepEl = document.getElementById('step-' + i)
+      var wrap = document.getElementById('step' + i + '-wrap')
+      if (i < n) { stepEl.className = 'step done'; dot.textContent = '✓' }
+      else if (i === n) { stepEl.className = 'step active'; dot.textContent = i }
+      else { stepEl.className = 'step'; dot.textContent = i }
+      if (wrap) wrap.style.display = i === n ? 'block' : 'none'
     }
-  </script>
-  <footer class="site-footer" id="site-footer"></footer>
+    for (var j = 1; j <= 2; j++) {
+      document.getElementById('line-' + j).className = 'step-line' + (j < n ? ' done' : '')
+    }
+  }
+
+  // ── Step 1: Register ─────────────────────────────────────────────────────
+  async function doStep1(e) {
+    e.preventDefault()
+    var alertEl = document.getElementById('auth-alert')
+    var btn = document.getElementById('reg-btn')
+    alertEl.innerHTML = ''
+
+    var pw = document.getElementById('password').value
+    var confirm = document.getElementById('confirm').value
+    if (pw !== confirm) { alertEl.innerHTML = err('Passwords do not match.'); return }
+    if (pw.length < 8) { alertEl.innerHTML = err('Password must be at least 8 characters.'); return }
+    if (accountType === 'agent' && !document.getElementById('agency_name').value.trim()) {
+      alertEl.innerHTML = err('Agency name is required for agents.')
+      return
+    }
+
+    btn.disabled = true; btn.textContent = 'Creating account…'
+    try {
+      var body = {
+        name:         document.getElementById('name').value.trim(),
+        email:        document.getElementById('email').value.trim(),
+        password:     pw,
+        account_type: accountType
+      }
+      if (accountType === 'agent') {
+        body.agency_name   = document.getElementById('agency_name').value.trim()
+        body.psra_number   = document.getElementById('psra_number').value.trim()
+        body.agent_county  = document.getElementById('agent_county').value
+        body.agent_website = document.getElementById('agent_website').value.trim()
+      }
+
+      var res = await fetch(window.MOVIN_API_URL + '/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      var data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+
+      registeredToken = data.token
+      registeredUser  = data.user
+      localStorage.setItem('movin_token', data.token)
+      localStorage.setItem('movin_user', JSON.stringify(data.user))
+
+      // Move to phone step
+      setStep(2)
+      document.getElementById('verify-email-display').textContent = body.email
+
+    } catch(e) {
+      alertEl.innerHTML = err(e.message)
+      btn.disabled = false; btn.textContent = 'Continue →'
+    }
+  }
+
+  // ── Step 2: Phone ────────────────────────────────────────────────────────
+  async function doStep2() {
+    var btn = document.getElementById('phone-btn')
+    var alertEl = document.getElementById('auth-alert')
+    alertEl.innerHTML = ''
+    var countryCode = document.getElementById('phone-country').value
+    var number = document.getElementById('phone-number').value.trim().replace(/\s/g, '')
+    if (!number) { alertEl.innerHTML = err('Please enter your phone number.'); return }
+
+    // Format phone
+    if (number.startsWith('0')) number = number.substring(1)
+    var fullPhone = countryCode + number
+
+    btn.disabled = true; btn.textContent = 'Saving…'
+    try {
+      // Save phone to profile
+      var token = localStorage.getItem('movin_token')
+      await fetch(window.MOVIN_API_URL + '/api/auth/me', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ phone: fullPhone })
+      })
+      // Move to OTP step — send email OTP
+      await sendOTP()
+      setStep(3)
+    } catch(e) {
+      alertEl.innerHTML = err(e.message)
+      btn.disabled = false; btn.textContent = 'Send verification code →'
+    }
+  }
+
+  function skipPhone() {
+    sendOTP()
+    setStep(3)
+  }
+
+  // ── OTP ──────────────────────────────────────────────────────────────────
+  async function sendOTP() {
+    var token = localStorage.getItem('movin_token')
+    await fetch(window.MOVIN_API_URL + '/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    startResendTimer()
+  }
+
+  async function resendOTP() {
+    document.getElementById('resend-btn').disabled = true
+    await sendOTP()
+    toast('Code resent!', 'info')
+  }
+
+  function startResendTimer() {
+    var sec = 60
+    document.getElementById('resend-btn').style.display = 'none'
+    document.getElementById('resend-timer').style.display = 'inline'
+    var t = setInterval(function() {
+      sec--
+      document.getElementById('timer-sec').textContent = sec
+      if (sec <= 0) {
+        clearInterval(t)
+        document.getElementById('resend-btn').style.display = 'inline'
+        document.getElementById('resend-btn').disabled = false
+        document.getElementById('resend-timer').style.display = 'none'
+      }
+    }, 1000)
+  }
+
+  function otpInput(el, idx) {
+    var inputs = document.querySelectorAll('.otp-input')
+    var val = el.value.toString().slice(-1)
+    el.value = val
+    el.classList.toggle('filled', !!val)
+    if (val && idx < 5) inputs[idx + 1].focus()
+    // Auto verify when all 6 filled
+    var code = Array.from(inputs).map(function(i) { return i.value }).join('')
+    if (code.length === 6) doVerify()
+  }
+
+  async function doVerify() {
+    var inputs = document.querySelectorAll('.otp-input')
+    var code = Array.from(inputs).map(function(i) { return i.value }).join('')
+    if (code.length < 6) { document.getElementById('auth-alert').innerHTML = err('Please enter the full 6-digit code.'); return }
+
+    var btn = document.getElementById('verify-btn')
+    btn.disabled = true; btn.textContent = 'Verifying…'
+
+    try {
+      var token = localStorage.getItem('movin_token')
+      var res = await fetch(window.MOVIN_API_URL + '/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ code: code })
+      })
+      var data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+
+      toast('Welcome to Movin.ie! 🎉')
+      window.location.href = 'dashboard.html'
+    } catch(e) {
+      document.getElementById('auth-alert').innerHTML = err(e.message)
+      btn.disabled = false; btn.textContent = 'Verify & complete →'
+      // Shake OTP inputs
+      document.getElementById('otp-inputs').style.animation = 'shake .3s ease'
+      setTimeout(function() { document.getElementById('otp-inputs').style.animation = '' }, 300)
+    }
+  }
+
+  function err(msg) {
+    return '<div style="background:#fef2f2;border:1px solid #fecaca;color:#dc2626;border-radius:10px;padding:.75rem 1rem;font-size:13px;margin-bottom:1rem">' + msg + '</div>'
+  }
+
+  // ── Google Sign-In → phone step ──────────────────────────────────────────
+  async function handleGoogleSignIn(response) {
+    var alertEl = document.getElementById('auth-alert')
+    try {
+      var res = await fetch(window.MOVIN_API_URL + '/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: response.credential, account_type: accountType })
+      })
+      var data = await res.json()
+      if (!res.ok) throw new Error(data.error)
+      localStorage.setItem('movin_token', data.token)
+      localStorage.setItem('movin_user', JSON.stringify(data.user))
+      registeredToken = data.token
+      registeredUser  = data.user
+
+      // If no phone yet → go to phone step, else dashboard
+      if (!data.user.phone) {
+        document.getElementById('steps-bar').style.display = 'flex'
+        document.getElementById('verify-email-display').textContent = data.user.email
+        setStep(2)
+      } else {
+        toast('Welcome back! 🎉')
+        window.location.href = 'dashboard.html'
+      }
+    } catch(e) {
+      alertEl.innerHTML = err(e.message)
+    }
+  }
+
+  // Add shake animation
+  var style = document.createElement('style')
+  style.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}'
+  document.head.appendChild(style)
+</script>
+<footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>

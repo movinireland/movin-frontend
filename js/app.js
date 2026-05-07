@@ -278,11 +278,23 @@ function buildPropertyCard(listing, savedIds = []) {
   const imgSrc = photo ? (photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo) : null
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
-  const typeBg = listing.listing_type === 'rent' ? '#e07b3f' : listing.listing_type === 'share' ? '#1d4ed8' : '#1a5c45'
-  const isNew = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
-  const daysAgo = Math.floor((Date.now() - new Date(listing.created_at).getTime()) / 86400000)
-  const timeStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago'
+  const typeBg    = listing.listing_type === 'rent' ? '#e07b3f' : listing.listing_type === 'share' ? '#1d4ed8' : '#1a5c45'
+  const isNew     = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
+  const daysAgo   = Math.floor((Date.now() - new Date(listing.created_at).getTime()) / 86400000)
+  const timeStr   = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago'
 
+  // BER colour class
+  function berClass(ber) {
+    if (!ber) return ''
+    var r = ber.replace(/[^A-Za-z0-9]/g,'').toUpperCase()
+    if (r.startsWith('A')) return 'ber-A' + (r[1]||'1')
+    if (r.startsWith('B')) return 'ber-B' + (r[1]||'1')
+    if (r.startsWith('C')) return 'ber-C' + (r[1]||'1')
+    if (r.startsWith('D')) return 'ber-D' + (r[1]||'1')
+    return 'ber-' + r
+  }
+
+  // Price drop
   let priceDropPct = 0
   if (listing.price_history) {
     try {
@@ -292,128 +304,46 @@ function buildPropertyCard(listing, savedIds = []) {
     } catch(e) {}
   }
 
+  const berBadge = listing.ber_rating
+    ? `<span class="ber-badge ${berClass(listing.ber_rating)}" title="BER Rating">⚡ ${listing.ber_rating}</span>`
+    : ''
+
   return `
     <div class="prop-card" onclick="window.location.href='${root}listing.html?id=${listing.id}'">
-      <div style="position:relative;height:180px;overflow:hidden;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">
+      <div class="prop-card-img" style="height:175px">
         ${imgSrc
-          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"/>`
-          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🏡</div>`
+          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" onload="this.classList.add('loaded')" style="width:100%;height:100%;object-fit:cover;display:block"/>`
+          : `<div style="width:100%;height:175px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">🏡</div>`
         }
-        <div style="position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap">
-          ${listing.is_featured ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">⭐ Featured</span>` : `<span style="background:${typeBg};color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">${typeLabel}</span>`}
-          ${isNew && !listing.is_featured ? '<span style="background:#e07b3f;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">✨ New</span>' : ''}
-          ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
+        <div class="prop-card-tags">
+          ${listing.is_featured ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">⭐ Featured</span>` : `<span style="background:${typeBg};color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${typeLabel}</span>`}
+          ${isNew ? '<span style="background:#e07b3f;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">✨ New</span>' : ''}
+          ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
         </div>
-        <button style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:${isSaved ? '#e07b3f' : '#888'};box-shadow:0 2px 8px rgba(0,0,0,.15)"
-          onclick="event.stopPropagation();toggleSave('${listing.id}',this)">${isSaved ? '♥' : '♡'}</button>
-        <button style="position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#555;font-weight:700"
-          onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)" title="Compare">⊕</button>
-        <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px">${timeStr}</div>
+        <button class="prop-card-save ${isSaved ? 'saved' : ''}"
+          onclick="event.stopPropagation();toggleSave('${listing.id}',this)"
+          style="color:${isSaved ? '#e07b3f' : '#888'}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="${isSaved ? '#e07b3f' : 'none'}" stroke="${isSaved ? '#e07b3f' : '#888'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+        <button style="position:absolute;bottom:8px;left:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#555;font-weight:700"
+          onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)">⊕</button>
+        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
         <div class="prop-card-loc">${listing.address_area || listing.county}</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
-          ${listing.bedrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bed',13,'#aaa')} ${listing.bedrooms} bed</span>` : ''}
-          ${listing.bathrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bath',13,'#aaa')} ${listing.bathrooms} bath</span>` : ''}
-          ${listing.floor_size_m2 ? `<span style="display:flex;align-items:center;gap:3px">${icon('size',13,'#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.ber_rating ? `<span style="display:flex;align-items:center;gap:3px">${icon('ber',13,'#aaa')} ${listing.ber_rating}</span>` : ''}
+          ${listing.bedrooms    ? `<span>${icon('bed',11,'#bbb')} ${listing.bedrooms}bd</span>` : ''}
+          ${listing.bathrooms   ? `<span>${icon('bath',11,'#bbb')} ${listing.bathrooms}ba</span>` : ''}
+          ${listing.floor_size_m2 ? `<span>${icon('size',11,'#bbb')} ${listing.floor_size_m2}m²</span>` : ''}
+          ${listing.property_type ? `<span style="text-transform:capitalize">${listing.property_type}</span>` : ''}
+          ${berBadge}
         </div>
       </div>
     </div>
   `
 }
-
-// ── Toggle save (heart button) ────────────────────────────────────────────────
-async function toggleSave(listingId, btn) {
-  if (!window.API.auth.isLoggedIn()) {
-    toast('Sign in to save listings', 'info')
-    return
-  }
-  const isSaved = btn.classList.contains('saved')
-  try {
-    if (isSaved) {
-      await window.API.saved.unsave(listingId)
-      btn.classList.remove('saved')
-      btn.textContent = '♡'
-      btn.style.color = '#fff'
-      toast('Removed from saved')
-    } else {
-      await window.API.saved.save(listingId)
-      btn.classList.add('saved')
-      btn.textContent = '♥'
-      btn.style.color = '#e07b3f'
-      toast('Saved to your list ♥')
-    }
-  } catch (e) {
-    toast(e.message, 'error')
-  }
-}
-
-// ── Compare properties ───────────────────────────────────────────────────────
-var compareList = JSON.parse(localStorage.getItem('movin_compare') || '[]')
-
-function toggleCompare(id, title, price, type, btn) {
-  var idx = compareList.findIndex(function(x) { return x.id === id })
-  if (idx > -1) {
-    compareList.splice(idx, 1)
-    if (btn) { btn.textContent = '⊕'; btn.style.background = 'rgba(255,255,255,.88)'; btn.style.color = '#555' }
-  } else {
-    if (compareList.length >= 3) { toast('Max 3 properties to compare', 'info'); return }
-    compareList.push({ id: id, title: title, price: price, type: type })
-    if (btn) { btn.textContent = '✓'; btn.style.background = '#1a5c45'; btn.style.color = '#fff' }
-  }
-  localStorage.setItem('movin_compare', JSON.stringify(compareList))
-  updateCompareBar()
-}
-
-function updateCompareBar() {
-  var bar = document.getElementById('compare-bar')
-  if (!bar) return
-  if (!compareList.length) { bar.style.display = 'none'; return }
-  bar.style.display = 'flex'
-  var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
-  bar.innerHTML =
-    '<div style="display:flex;align-items:center;gap:.75rem;flex:1;flex-wrap:wrap">' +
-      '<span style="font-size:13px;font-weight:500;color:#111">' + compareList.length + '/3 selected</span>' +
-      compareList.map(function(x) {
-        return '<span style="background:#e9f4ef;color:#1a5c45;font-size:12px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px">' +
-          x.title.substring(0,25) + (x.title.length>25?'…':'') +
-          '<button onclick="removeCompare(\'' + x.id + '\')" style="background:none;border:none;cursor:pointer;color:#1a5c45;font-size:14px;padding:0;line-height:1">×</button>' +
-        '</span>'
-      }).join('') +
-    '</div>' +
-    (compareList.length >= 2 ?
-      '<a href="' + root + 'compare.html" class="btn btn-primary btn-sm">Compare →</a>' :
-      '<span style="font-size:12px;color:#aaa">Select ' + (2-compareList.length) + ' more</span>'
-    ) +
-    '<button onclick="clearCompare()" style="background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:4px">×</button>'
-}
-
-function clearCompare() {
-  compareList = []
-  localStorage.setItem('movin_compare', '[]')
-  updateCompareBar()
-}
-
-function removeCompare(id) {
-  var idx = compareList.findIndex(function(x) { return x.id === id })
-  if (idx > -1) { compareList.splice(idx, 1) }
-  localStorage.setItem('movin_compare', JSON.stringify(compareList))
-  updateCompareBar()
-}
-
-window.toggleCompare = toggleCompare
-window.updateCompareBar = updateCompareBar
-window.clearCompare = clearCompare
-window.removeCompare = removeCompare
-
-window.toast = toast
-window.formatPrice = formatPrice
-window.timeAgo = timeAgo
-window.requireLogin = requireLogin
-window.renderNav = renderNav
 window.buildPropertyCard = buildPropertyCard
 window.toggleSave = toggleSave
 
