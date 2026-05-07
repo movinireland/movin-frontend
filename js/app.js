@@ -305,7 +305,7 @@ function buildPropertyCard(listing, savedIds = []) {
   }
 
   const berBadge = listing.ber_rating
-    ? `<span class="ber-badge ${berClass(listing.ber_rating)}" title="BER Rating">⚡ ${listing.ber_rating}</span>`
+    ? `<span class="ber-badge ${berClass(listing.ber_rating)}">${listing.ber_rating}</span>`
     : ''
 
   return `

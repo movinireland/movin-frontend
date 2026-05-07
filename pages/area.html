@@ -293,7 +293,7 @@
     if (county && info) {
       document.title = 'Properties in ' + county + ' – Movin.ie'
       document.getElementById('hero-county').textContent = county
-      document.getElementById('hero-title').innerHTML  = (info.emoji ? info.emoji + ' ' : '') + 'Properties in ' + county
+      document.getElementById('hero-title').innerHTML  = 'Properties in <span style="color:#e07b3f">' + county + '</span>'
       document.getElementById('hero-sub').textContent    = info.desc
 
       // SEO meta
@@ -311,7 +311,7 @@
 
       // Nearby chips
       var chips = (info.nearby || []).map(function(c) {
-        return '<a href="area.html?county=' + encodeURIComponent(c) + '" class="nearby-chip">' + (COUNTIES[c] ? COUNTIES[c].emoji + ' ' : '') + c + '</a>'
+        return '<a href="area.html?county=' + encodeURIComponent(c) + '" class="nearby-chip">' + c + '</a>'
       }).join('')
       document.getElementById('nearby-chips').innerHTML = chips || '<span style="color:#aaa;font-size:13px">No nearby counties</span>'
 
@@ -319,13 +319,13 @@
       // No county — show all Ireland
       document.title = 'All Properties – Movin.ie'
       document.getElementById('hero-county').textContent = 'All Ireland'
-      document.getElementById('hero-title').textContent  = '🏠 Properties across Ireland'
+      document.getElementById('hero-title').innerHTML  = 'Properties across <span style="color:#e07b3f">Ireland</span>'
       document.getElementById('hero-sub').textContent    = 'Browse all listings on Movin.ie'
       document.getElementById('canonical').href          = 'https://movin.ie/pages/area.html'
 
       // Show all counties as chips
       var allChips = Object.keys(COUNTIES).map(function(c) {
-        return '<a href="area.html?county=' + encodeURIComponent(c) + '" class="nearby-chip">' + COUNTIES[c].emoji + ' ' + c + '</a>'
+        return '<a href="area.html?county=' + encodeURIComponent(c) + '" class="nearby-chip">' + c + '</a>'
       }).join('')
       document.getElementById('nearby-chips').innerHTML = allChips
       document.querySelector('.nearby-title').textContent = 'Browse by county'

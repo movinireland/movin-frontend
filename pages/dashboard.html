@@ -336,7 +336,10 @@
         headers: { 'Authorization': 'Bearer ' + token }
       })
       var listings = await res.json()
-      if (!Array.isArray(listings)) throw new Error(listings.error || 'Could not load listings')
+      if (!Array.isArray(listings)) {
+        console.error('Listings response:', listings)
+        throw new Error(listings.error || listings.message || 'Could not load listings. Try refreshing.')
+      }
 
       if (!listings.length) {
         document.getElementById('stats-row').style.display = 'none'
@@ -379,8 +382,13 @@
         '</div>'
       }).join('')
     } catch(e) {
-      console.error('loadListings:', e)
-      el.innerHTML = '<div class="alert-error">' + e.message + ' <button onclick="loadListings()" class="btn btn-ghost btn-sm" style="margin-left:.5rem">Retry</button></div>'
+      console.error('loadListings error:', e)
+      el.innerHTML = '<div style="padding:1.5rem;text-align:center">' +
+        '<div style="font-size:32px;margin-bottom:.75rem">⚠️</div>' +
+        '<div style="font-size:14px;font-weight:500;color:#111;margin-bottom:.4rem">Could not load listings</div>' +
+        '<div style="font-size:12px;color:#aaa;margin-bottom:1rem">' + e.message + '</div>' +
+        '<button onclick="loadListings()" class="btn btn-primary btn-sm">Try again</button>' +
+      '</div>'
     }
   }
 
@@ -748,7 +756,13 @@
     })
 
     // Switch to tab from URL
-    switchTab(activeTab)
+    try {
+      switchTab(activeTab)
+    } catch(e) {
+      console.error('switchTab error:', e)
+      // Fallback — directly load listings
+      loadListings()
+    }
   }
 
   // Wait for DOM + scripts to be ready
