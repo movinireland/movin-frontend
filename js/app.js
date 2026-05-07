@@ -237,6 +237,19 @@ function buildPropertyCard(listing, savedIds = []) {
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
   const isNew = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
+  // Price drop badge
+  let priceDropPct = 0
+  if (listing.price_history) {
+    try {
+      const hist = typeof listing.price_history === 'string' ? JSON.parse(listing.price_history) : listing.price_history
+      if (hist && hist.length > 0) {
+        const originalPrice = hist[0].price
+        if (originalPrice > listing.price) {
+          priceDropPct = Math.round(((originalPrice - listing.price) / originalPrice) * 100)
+        }
+      }
+    } catch(e) {}
+  }
   const badgeClass = listing.listing_type === 'rent' ? 'badge-orange' : listing.listing_type === 'share' ? 'badge-blue' : 'badge-green'
 
   return `
@@ -247,12 +260,19 @@ function buildPropertyCard(listing, savedIds = []) {
           <span class="badge ${badgeClass}">${typeLabel}</span>
           ${listing.is_new_dev ? '<span class="badge badge-blue">New dev</span>' : ''}
           ${isNew && !listing.is_new_dev ? '<span class="badge" style="background:#e07b3f;color:#fff">New</span>' : ''}
+          ${priceDropPct > 0 ? '<span class="badge" style="background:#dc2626;color:#fff">▼ ' + priceDropPct + '% reduced</span>' : ''}
         </div>
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
           title="${isSaved ? 'Unsave' : 'Save'}"
           style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
           ${isSaved ? '♥' : '♡'}
+        </button>
+        <button class="prop-card-compare"
+          onclick="event.stopPropagation(); toggleCompare('${listing.id}', '${listing.title.replace(/'/g, '')}', '${listing.price}', '${listing.listing_type}', this)"
+          title="Compare"
+          style="position:absolute;bottom:7px;left:7px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;color:#555">
+          ⊕
         </button>
       </div>
       <div class="prop-card-body">
@@ -295,6 +315,66 @@ async function toggleSave(listingId, btn) {
     toast(e.message, 'error')
   }
 }
+
+// ── Compare properties ───────────────────────────────────────────────────────
+var compareList = JSON.parse(localStorage.getItem('movin_compare') || '[]')
+
+function toggleCompare(id, title, price, type, btn) {
+  var idx = compareList.findIndex(function(x) { return x.id === id })
+  if (idx > -1) {
+    compareList.splice(idx, 1)
+    if (btn) { btn.textContent = '⊕'; btn.style.background = 'rgba(255,255,255,.9)'; btn.style.color = '#555' }
+  } else {
+    if (compareList.length >= 3) { toast('Max 3 properties to compare', 'info'); return }
+    compareList.push({ id: id, title: title, price: price, type: type })
+    if (btn) { btn.textContent = '✓'; btn.style.background = '#1a5c45'; btn.style.color = '#fff' }
+  }
+  localStorage.setItem('movin_compare', JSON.stringify(compareList))
+  updateCompareBar()
+}
+
+function updateCompareBar() {
+  var bar = document.getElementById('compare-bar')
+  if (!bar) return
+  if (!compareList.length) { bar.style.display = 'none'; return }
+  bar.style.display = 'flex'
+  var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+  bar.innerHTML =
+    '<div style="display:flex;align-items:center;gap:.75rem;flex:1;flex-wrap:wrap">' +
+      '<span style="font-size:13px;font-weight:500;color:#111">' + compareList.length + '/3 selected</span>' +
+      compareList.map(function(x) {
+        return '<span style="background:#e9f4ef;color:#1a5c45;font-size:12px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px">' +
+          x.title.substring(0,25) + (x.title.length>25?'…':'') +
+          '<button onclick="removeCompare(\'' + x.id + '\')" style="background:none;border:none;cursor:pointer;color:#1a5c45;font-size:14px;padding:0;line-height:1">×</button>' +
+        '</span>'
+      }).join('') +
+    '</div>' +
+    (compareList.length >= 2 ?
+      '<a href="' + root + 'compare.html" class="btn btn-primary btn-sm">Compare →</a>' :
+      '<span style="font-size:12px;color:#aaa">Select ' + (2-compareList.length) + ' more</span>'
+    ) +
+    '<button onclick="clearCompare()" style="background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:4px">×</button>'
+}
+
+function clearCompare() {
+  compareList = []
+  localStorage.setItem('movin_compare', '[]')
+  updateCompareBar()
+  document.querySelectorAll('.prop-card-compare').forEach(function(b) {
+    b.textContent = '⊕'; b.style.background = 'rgba(255,255,255,.9)'; b.style.color = '#555'
+  })
+}
+
+function removeCompare(id) {
+  var idx = compareList.findIndex(function(x) { return x.id === id })
+  if (idx > -1) { compareList.splice(idx, 1) }
+  localStorage.setItem('movin_compare', JSON.stringify(compareList))
+  updateCompareBar()
+}
+window.removeCompare = removeCompare
+window.toggleCompare = toggleCompare
+window.updateCompareBar = updateCompareBar
+window.clearCompare = clearCompare
 
 window.toast = toast
 window.formatPrice = formatPrice

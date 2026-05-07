@@ -437,11 +437,14 @@
           `<strong>${res.total.toLocaleString()}</strong> <span>propert${res.total === 1 ? 'y' : 'ies'}${countLabel}</span>`
 
         if (!res.listings.length) {
-          grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-            <div class="empty-icon"><svg width="16" height="16" style="color:#aaa;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></div>
-            <h3>No properties found</h3>
-            <p>Try a different area or adjust your filters.</p>
-            <button class="btn btn-ghost btn-sm" onclick="clearSearch()">Clear search</button>
+          grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem">
+            <div style="font-size:44px;margin-bottom:1rem">🔍</div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#111;margin-bottom:.5rem">No properties found</h3>
+            <p style="font-size:14px;color:#aaa;margin-bottom:1.5rem;max-width:300px;margin-left:auto;margin-right:auto">Try widening your search — remove a filter or choose a different area.</p>
+            <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
+              <button onclick="clearSearch()" class="btn btn-primary btn-sm">Clear all filters</button>
+              <button onclick="window.location.href='map-search.html'" class="btn btn-ghost btn-sm">Try map search</button>
+            </div>
           </div>`
           document.getElementById('pagination').innerHTML = ''
           return
@@ -473,12 +476,36 @@
     if (searchCounty || searchQuery) showSearchChip(searchCounty || searchQuery)
 
     doSearch()
+
+    // Init compare bar
+    if (typeof updateCompareBar === 'function') updateCompareBar()
+
+    // Recently viewed
+    setTimeout(function() {
+      if (typeof renderRecentlyViewed !== 'function') return
+      renderRecentlyViewed('rv-strip')
+      var strip = document.getElementById('rv-strip')
+      if (strip && strip.children.length > 0) {
+        document.getElementById('rv-wrap').style.display = 'block'
+      }
+      if (typeof renderFooter === 'function') renderFooter()
+    }, 400)
   </script>
   <footer class="site-footer" id="site-footer"></footer>
   <div id="rv-section" style="padding:1rem 1rem 0;display:none">
     <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
     <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem"></div>
   </div>
+  <footer class="site-footer" id="site-footer"></footer>
+  <!-- Compare bar -->
+  <div id="compare-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #1a5c45;padding:.75rem 1rem;z-index:500;gap:.75rem;align-items:center;box-shadow:0 -4px 20px rgba(0,0,0,.1)"></div>
+
+  <!-- Recently viewed -->
+  <div id="rv-wrap" style="padding:1rem 1rem 0;display:none">
+    <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
+    <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;scrollbar-width:none"></div>
+  </div>
+
   <footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Compare Properties – Movin.ie</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+<meta name="theme-color" content="#1a5c45"/>
+<style>
+:root{--g:#1a5c45;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+.compare-wrap{max-width:960px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.compare-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#111;margin-bottom:1.5rem}
+.compare-grid{display:grid;gap:1rem;margin-bottom:2rem}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px}
+.compare-table th{background:var(--g);color:#fff;padding:.85rem 1rem;text-align:left;font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.compare-table td{padding:.85rem 1rem;border-bottom:1px solid var(--border);vertical-align:top}
+.compare-table tr:hover td{background:#fafaf8}
+.compare-table .row-label{font-weight:500;color:#555;background:#fafaf8;width:120px}
+.prop-col{text-align:center}
+.prop-photo{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:.75rem}
+.prop-photo-placeholder{width:100%;height:160px;background:var(--gl);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:.75rem}
+.prop-price{font-size:18px;font-weight:500;color:var(--g);margin-bottom:.25rem}
+.prop-name{font-size:13px;font-weight:500;color:#111;margin-bottom:.5rem}
+.badge-green{background:#dcfce7;color:#16a34a;font-size:11px;padding:2px 8px;border-radius:10px;display:inline-block}
+.badge-red{background:#fee2e2;color:#dc2626;font-size:11px;padding:2px 8px;border-radius:10px;display:inline-block}
+.empty-compare{text-align:center;padding:4rem 1rem}
+.spinner{width:24px;height:24px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:2rem auto;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<nav class="nav" id="main-nav"></nav>
+
+<div class="compare-wrap">
+  <div class="compare-title">Compare properties</div>
+  <div id="compare-content"><div class="spinner"></div></div>
+</div>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+renderNav()
+
+async function loadCompare() {
+  var el = document.getElementById('compare-content')
+  var list = []
+  try { list = JSON.parse(localStorage.getItem('movin_compare') || '[]') } catch(e) {}
+
+  if (list.length < 2) {
+    el.innerHTML = '<div class="empty-compare">' +
+      '<div style="font-size:44px;margin-bottom:1rem">⊕</div>' +
+      '<h3 style="font-family:Playfair Display,serif;font-size:20px;font-weight:700;margin-bottom:.5rem">No properties to compare</h3>' +
+      '<p style="color:#aaa;margin-bottom:1.5rem">Select 2–3 properties from search results using the ⊕ button</p>' +
+      '<a href="search.html" class="btn btn-primary">Browse listings</a>' +
+      '</div>'
+    return
+  }
+
+  // Fetch full details for each
+  var listings = await Promise.all(list.map(function(x) {
+    return fetch(window.MOVIN_API_URL + '/api/listings/' + x.id)
+      .then(function(r) { return r.json() })
+      .catch(function() { return null })
+  }))
+  listings = listings.filter(Boolean)
+
+  if (!listings.length) {
+    el.innerHTML = '<p style="color:#aaa;text-align:center;padding:3rem">Could not load listings.</p>'
+    return
+  }
+
+  function val(v, suffix) {
+    if (v === null || v === undefined || v === '') return '<span style="color:#ccc">—</span>'
+    return v + (suffix || '')
+  }
+  function yn(v) {
+    return v ? '<span class="badge-green">✓ Yes</span>' : '<span class="badge-red">✗ No</span>'
+  }
+
+  var colW = Math.floor(100 / (listings.length + 1)) + '%'
+
+  var html = '<table class="compare-table"><thead><tr>' +
+    '<th style="width:120px">Feature</th>' +
+    listings.map(function(l) {
+      var photo = l.photos && l.photos.length ? l.photos[0].url : null
+      return '<th class="prop-col">' +
+        (photo ? '<img src="' + photo + '" class="prop-photo"/>' : '<div class="prop-photo-placeholder">🏡</div>') +
+        '<div class="prop-price">' + formatPrice(l.price, l.listing_type) + '</div>' +
+        '<div class="prop-name">' + l.title + '</div>' +
+        '<a href="listing.html?id=' + l.id + '" class="btn btn-primary btn-sm" style="margin-bottom:.5rem">View →</a>' +
+        '<button onclick="removeFromCompare(\'' + l.id + '\')" style="background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;display:block;margin:0 auto">Remove</button>' +
+      '</th>'
+    }).join('') +
+  '</tr></thead><tbody>'
+
+  var rows = [
+    ['Type',         function(l) { return l.listing_type === 'rent' ? 'To Rent' : l.listing_type === 'share' ? 'Sharing' : 'For Sale' }],
+    ['Property',     function(l) { return val(l.property_type) }],
+    ['County',       function(l) { return val(l.county) }],
+    ['Address',      function(l) { return val(l.address_line1) }],
+    ['Bedrooms',     function(l) { return val(l.bedrooms, ' beds') }],
+    ['Bathrooms',    function(l) { return val(l.bathrooms, ' baths') }],
+    ['Floor size',   function(l) { return val(l.floor_size_m2, ' m²') }],
+    ['Price / m²',   function(l) { return l.floor_size_m2 && l.price ? '€' + Math.round(l.price/l.floor_size_m2).toLocaleString('en-IE') : '<span style="color:#ccc">—</span>' }],
+    ['BER rating',   function(l) { return val(l.ber_rating) }],
+    ['Parking',      function(l) { return yn(l.parking) }],
+    ['Garden',       function(l) { return yn(l.garden) }],
+    ['Garage',       function(l) { return yn(l.garage) }],
+    ['Alarm',        function(l) { return yn(l.alarm) }],
+    ['Views',        function(l) { return val(l.views) }],
+  ]
+
+  rows.forEach(function(row) {
+    html += '<tr><td class="row-label">' + row[0] + '</td>' +
+      listings.map(function(l) { return '<td style="text-align:center">' + row[1](l) + '</td>' }).join('') +
+    '</tr>'
+  })
+
+  html += '</tbody></table>'
+
+  html += '<div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">' +
+    '<button onclick="clearCompare()" class="btn btn-ghost btn-sm">Clear all</button>' +
+    '<a href="search.html" class="btn btn-ghost btn-sm">← Back to search</a>' +
+  '</div>'
+
+  el.innerHTML = html
+}
+
+function removeFromCompare(id) {
+  var list = JSON.parse(localStorage.getItem('movin_compare') || '[]')
+  list = list.filter(function(x) { return x.id !== id })
+  localStorage.setItem('movin_compare', JSON.stringify(list))
+  loadCompare()
+}
+
+function clearCompare() {
+  localStorage.setItem('movin_compare', '[]')
+  window.location.href = 'search.html'
+}
+
+loadCompare()
+</script>
+</body>
+</html>
