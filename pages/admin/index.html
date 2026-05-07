@@ -6,10 +6,6 @@
 <title>Admin Panel – Movin.ie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
-<link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#1a5c45"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Movin"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:100vh}
@@ -202,12 +198,15 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 
     <!-- USERS -->
     <div id="section-users" class="section">
-      <div class="topbar"><div class="topbar-title">Users</div></div>
+      <div class="topbar">
+        <div class="topbar-title">Users</div>
+        <div class="topbar-right"><span id="user-count" style="font-size:13px;color:#888"></span></div>
+      </div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
-            <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th></tr></thead>
-            <tbody id="users-body"><tr><td colspan="4" style="text-align:center;padding:2rem;color:#aaa">Manage users directly in Supabase → Table Editor → users</td></tr></tbody>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Listings</th><th>Verified</th><th>Joined</th></tr></thead>
+            <tbody id="users-body"><tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
           </table>
         </div>
       </div>
@@ -452,6 +451,7 @@ async function loadSection(id) {
     case 'dashboard':  await loadDashboard(); break
     case 'listings':   await loadAllListings(); break
     case 'enquiries':  await loadEnquiries(); break
+    case 'users':      await loadUsers(); break
   }
 }
 
@@ -664,22 +664,33 @@ function closeDeleteModal() {
 async function loadEnquiries() {
   try {
     const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', {
+    // Try admin/all first, fallback to inbox
+    let res = await fetch(window.MOVIN_API_URL + '/api/enquiries/admin/all', {
       headers: { 'Authorization': 'Bearer ' + token }
     })
+    if (!res.ok) {
+      res = await fetch(window.MOVIN_API_URL + '/api/enquiries/inbox', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+    }
     const data = await res.json()
     const enqs = data.enquiries || []
-    document.getElementById('enqs-body').innerHTML = enqs.map(e => `
-      <tr>
-        <td><div style="font-weight:500;font-size:13px">${e.sender_name}</div></td>
-        <td style="font-size:13px;color:#888">${e.sender_email}</td>
+    const unread = enqs.filter(e => !e.is_read).length
+    document.getElementById('enqs-body').innerHTML = enqs.length ? enqs.map(e => `
+      <tr style="${!e.is_read ? 'background:#fffbeb' : ''}">
+        <td><div style="font-weight:500;font-size:13px">${e.sender_name || '—'}</div></td>
+        <td style="font-size:13px;color:#888">${e.sender_email || '—'}</td>
         <td style="font-size:13px">${e.listing_title || '—'}</td>
-        <td style="font-size:13px;color:#666;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.message}</td>
+        <td style="font-size:13px;color:#666;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${(e.message||'').replace(/"/g,"'")} ">${e.message || '—'}</td>
         <td style="font-size:12px;color:#aaa">${new Date(e.created_at).toLocaleDateString('en-IE')}</td>
         <td><span class="status-badge ${e.is_read ? 'status-active' : 'status-pending'}">${e.is_read ? 'Read' : 'New'}</span></td>
-      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">No enquiries</td></tr>'
+      </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">No enquiries yet</td></tr>'
+    // Update stat
+    const statEl = document.getElementById('stat-unread')
+    if (statEl) statEl.textContent = unread + ' unread'
   } catch(e) {
-    document.getElementById('enqs-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">Could not load enquiries</td></tr>'
+    console.error('Load enquiries error:', e)
+    document.getElementById('enqs-body').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;color:#aaa">Could not load enquiries: ' + e.message + '</td></tr>'
   }
 }
 
@@ -821,6 +832,37 @@ async function saveEdit() {
     alertEl.innerHTML = '<div class="alert alert-err">' + err.message + '</div>'
     btn.textContent = 'Save changes'
     btn.disabled = false
+  }
+}
+
+// ── Users ─────────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/users/admin/all', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    if (!res.ok) throw new Error('Could not load users — endpoint may not be deployed yet')
+    const data = await res.json()
+    const users = data.users || []
+    const countEl = document.getElementById('user-count')
+    if (countEl) countEl.textContent = users.length + ' users'
+    document.getElementById('users-body').innerHTML = users.length ? users.map(u => `
+      <tr>
+        <td><div style="font-weight:500;font-size:13px">${u.name || '—'}</div></td>
+        <td style="font-size:13px;color:#888">${u.email}</td>
+        <td style="font-size:13px;color:#888">${u.phone || '—'}</td>
+        <td>
+          <span class="status-badge ${u.role === 'admin' ? 'status-active' : 'status-draft'}">${u.role || 'user'}</span>
+        </td>
+        <td style="font-size:13px;text-align:center">${u.listing_count || 0}</td>
+        <td style="text-align:center">${u.email_verified ? '✅' : '⏳'}</td>
+        <td style="font-size:12px;color:#aaa">${new Date(u.created_at).toLocaleDateString('en-IE')}</td>
+      </tr>`).join('') :
+      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No users yet</td></tr>'
+  } catch(e) {
+    document.getElementById('users-body').innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">' + e.message + '<br><small>You can also manage users in <a href="https://supabase.com/dashboard" target="_blank" style="color:#1a5c45">Supabase → Table Editor → users</a></small></td></tr>'
   }
 }
 
