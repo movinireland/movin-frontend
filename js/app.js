@@ -3,6 +3,35 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
+// ── Dark mode ────────────────────────────────────────────────────────────────
+function initTheme() {
+  var saved = localStorage.getItem('movin_theme')
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+  var theme = saved || (prefersDark ? 'dark' : 'light')
+  applyTheme(theme)
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme)
+  localStorage.setItem('movin_theme', theme)
+  // Update all toggle buttons
+  document.querySelectorAll('.theme-toggle').forEach(function(btn) {
+    btn.textContent = theme === 'dark' ? '☀️' : '🌙'
+    btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+  })
+}
+
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme') || 'light'
+  applyTheme(current === 'dark' ? 'light' : 'dark')
+}
+
+window.toggleTheme = toggleTheme
+window.initTheme = initTheme
+
+// Apply theme immediately to avoid flash
+initTheme()
+
 // ── Icon system ───────────────────────────────────────────────────────────────
 var MOVIN_ICON_IDS = {
   'home':'icon-home','search':'icon-search','location':'icon-location','map':'icon-map',
@@ -161,6 +190,7 @@ function renderNav(activePage = '') {
       </ul>
  
       <div class="nav-right" style="position:relative">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
         ${isLoggedIn ? `
           <div class="nav-user" id="nav-user-btn" onclick="toggleNavDropdown()">
             <div class="nav-avatar">${user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
