@@ -4,30 +4,62 @@
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
 // ── Dark mode ────────────────────────────────────────────────────────────────
-function initTheme() {
-  var saved = localStorage.getItem('movin_theme')
-  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-  var theme = saved || (prefersDark ? 'dark' : 'light')
-  applyTheme(theme)
+function getSystemTheme() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
-function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme)
-  localStorage.setItem('movin_theme', theme)
-  // Update all toggle buttons
+function initTheme() {
+  var saved = localStorage.getItem('movin_theme')
+  // 'auto' or null = follow system, 'dark'/'light' = manual override
+  if (!saved || saved === 'auto') {
+    // Follow system — don't set data-theme, CSS media query handles it
+    document.documentElement.removeAttribute('data-theme')
+    localStorage.setItem('movin_theme', 'auto')
+  } else {
+    document.documentElement.setAttribute('data-theme', saved)
+  }
+  updateToggleBtn()
+}
+
+function updateToggleBtn() {
+  var saved = localStorage.getItem('movin_theme') || 'auto'
+  var isDark = saved === 'dark' || (saved === 'auto' && getSystemTheme() === 'dark')
   document.querySelectorAll('.theme-toggle').forEach(function(btn) {
-    btn.textContent = theme === 'dark' ? '☀️' : '🌙'
-    btn.title = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'
+    btn.textContent = isDark ? '☀️' : '🌙'
+    btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode'
   })
 }
 
+function applyTheme(theme) {
+  if (theme === 'auto') {
+    document.documentElement.removeAttribute('data-theme')
+  } else {
+    document.documentElement.setAttribute('data-theme', theme)
+  }
+  localStorage.setItem('movin_theme', theme)
+  updateToggleBtn()
+}
+
 function toggleTheme() {
-  var current = document.documentElement.getAttribute('data-theme') || 'light'
-  applyTheme(current === 'dark' ? 'light' : 'dark')
+  var saved = localStorage.getItem('movin_theme') || 'auto'
+  var isDark = saved === 'dark' || (saved === 'auto' && getSystemTheme() === 'dark')
+  // Manual toggle: if currently dark → force light, if light → force dark
+  applyTheme(isDark ? 'light' : 'dark')
 }
 
 window.toggleTheme = toggleTheme
 window.initTheme = initTheme
+
+// Listen for system theme changes and update if in auto mode
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+    var saved = localStorage.getItem('movin_theme')
+    if (!saved || saved === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+      updateToggleBtn()
+    }
+  })
+}
 
 // Apply theme immediately to avoid flash
 initTheme()

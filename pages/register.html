@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+(function(){
+  var t=localStorage.getItem('movin_theme');
+  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+})()
+</script>
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Account – Movin.ie</title>
