@@ -1,6 +1,6 @@
 // js/api.js — All calls to the Movin.ie backend API
 
-const API_URL = window.MOVIN_API_URL || 'http://localhost:3001'
+function getApiUrl() { return window.MOVIN_API_URL || 'http://localhost:3001' }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -32,7 +32,7 @@ async function request(method, path, body = null, isFormData = false) {
   if (token) headers['Authorization'] = `Bearer ${token}`
   if (!isFormData && body) headers['Content-Type'] = 'application/json'
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${getApiUrl()}${path}`, {
     method,
     headers,
     body: isFormData ? body : (body ? JSON.stringify(body) : undefined)
