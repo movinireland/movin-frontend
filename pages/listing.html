@@ -20,7 +20,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
   <style>
-    .breadcrumb{padding:.6rem 1rem;font-size:12px;color:#aaa;background:var(--white);border-bottom:1px solid #f5f2ec}
+    .breadcrumb{padding:.65rem 1rem;font-size:12px;color:#aaa;background:var(--white,#fff);border-bottom:1px solid var(--border,#f5f2ec);display:flex;align-items:center;gap:6px}
     .breadcrumb span{color:var(--g);cursor:pointer}
     /* ── Zoopla-style gallery ── */
     .gallery-wrap{position:relative;background:#111;user-select:none}
@@ -58,7 +58,7 @@
     .d-loc{font-size:13px;color:#aaa;margin-bottom:.75rem}
     .d-price{font-size:28px;font-weight:500;color:var(--g);margin-bottom:.75rem}
     .d-stats{display:flex;gap:.5rem;flex-wrap:wrap}
-    .d-stat{background:var(--gl);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:500;color:var(--g)}
+    .d-stat{background:var(--gl,#e9f4ef);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:500;color:var(--g);display:inline-flex;align-items:center;gap:5px}
     /* ── Action strip ── */
     .action-strip{display:flex;gap:10px;padding:.85rem 1rem;background:var(--white,#fff);border-top:1px solid var(--border);border-bottom:1px solid var(--border);align-items:center}
     .btn-enquire{flex:1;background:#e07b3f;color:#fff;border:none;border-radius:50px;padding:14px 0;font-size:15px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:background .15s}
@@ -71,6 +71,7 @@
     /* Save button on photo */
     .gallery-save-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.95);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:19px;z-index:3;box-shadow:0 2px 12px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent;transition:transform .15s}
     .gallery-save-btn:active{transform:scale(.92)}
+    [data-theme="dark"] .gallery-save-btn{background:rgba(30,30,30,.95)}
     /* Share drawer */
     .share-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;display:none;backdrop-filter:blur(2px)}
     .share-drawer-bg.open{display:block}
@@ -97,9 +98,10 @@
     .detail-section{padding:1rem;border-bottom:1px solid var(--border)}
     .detail-section h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:.75rem}
     .desc-text{font-size:14px;color:#666;line-height:1.8;font-weight:300}
-    .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem}
-    .feat-item{display:flex;align-items:center;gap:8px;font-size:13px;color:#555}
-    .feat-ico{width:30px;height:30px;border-radius:7px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+    .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+    .feat-item{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:var(--text,#333);background:var(--white,#fff);border:1.5px solid var(--border,#e8e4dc);border-radius:12px;padding:.75rem 1rem}
+    .feat-ico{width:36px;height:36px;border-radius:10px;background:var(--gl,#e9f4ef);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    [data-theme="dark"] .feat-item{background:#1e1e1e;border-color:#2a2a2a;color:#e8e8e8}
     #property-map{height:260px;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);margin-bottom:.75rem}
     .nearby-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:1rem;overflow-x:auto;-webkit-overflow-scrolling:touch}
     .nearby-tabs::-webkit-scrollbar{display:none}
@@ -114,7 +116,7 @@
     .nearby-dist{font-size:11px;color:#aaa;margin-top:2px}
     .nearby-loading,.nearby-empty{text-align:center;padding:1.5rem;color:var(--muted);font-size:13px}
     .enq-card{padding:1rem;background:var(--white)}
-    .enq-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:.2rem}
+    .enq-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:.2rem;color:var(--text,#111)}
     .enq-by{font-size:12px;color:#aaa;margin-bottom:1rem}
     .enq-form{display:flex;flex-direction:column;gap:10px}
     .divider-text{display:flex;align-items:center;gap:8px;margin:.25rem 0}
@@ -276,7 +278,9 @@
               '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
               '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
             '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
-            '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()">♡</button>' +
+            '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()" aria-label="Save listing">' +
+            '<svg id="save-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+          '</button>' +
           '</div>'
 
       if (galleryPhotos.length > 1) {
@@ -425,7 +429,7 @@
           ? '<div class="divider-text"><span>or</span></div><button class="call-btn" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 ' + L.lister_phone + '</button>'
           : ''
 
-        var phoneBtn = L.lister_phone
+        var phoneBtn = (L.lister_phone && L.show_phone !== false)
           ? '<a href="tel:' + L.lister_phone + '" class="btn-phone"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.63 19.79 19.79 0 01.03 1 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>' + L.lister_phone + '</a>'
           : ''
 
