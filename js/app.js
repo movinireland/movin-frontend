@@ -231,59 +231,53 @@ function buildPropertyCard(listing, savedIds = []) {
   const root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
   const isSaved = savedIds.includes(listing.id)
   const photo = listing.primary_photo || listing.photos?.[0]?.url || null
-  const imgContent = photo
-    ? `<img src="${photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo}" alt="${listing.title}" loading="lazy" />`
-    : `<span style="font-size:52px">🏡</span>`
+  const imgSrc = photo ? (photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo) : null
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
+  const typeBg = listing.listing_type === 'rent' ? '#e07b3f' : listing.listing_type === 'share' ? '#1d4ed8' : '#1a5c45'
   const isNew = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
-  // Price drop badge
+  const daysAgo = Math.floor((Date.now() - new Date(listing.created_at).getTime()) / 86400000)
+  const timeStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago'
+
   let priceDropPct = 0
   if (listing.price_history) {
     try {
       const hist = typeof listing.price_history === 'string' ? JSON.parse(listing.price_history) : listing.price_history
-      if (hist && hist.length > 0) {
-        const originalPrice = hist[0].price
-        if (originalPrice > listing.price) {
-          priceDropPct = Math.round(((originalPrice - listing.price) / originalPrice) * 100)
-        }
+      if (hist && hist.length > 0 && hist[0].price > listing.price) {
+        priceDropPct = Math.round(((hist[0].price - listing.price) / hist[0].price) * 100)
       }
     } catch(e) {}
   }
-  const badgeClass = listing.listing_type === 'rent' ? 'badge-orange' : listing.listing_type === 'share' ? 'badge-blue' : 'badge-green'
 
   return `
-    <div class="prop-card" onclick="window.location.href='${root}listing.html?id=${listing.id}'">
-      <div class="prop-card-img">
-        ${imgContent}
-        <div class="prop-card-tags">
-          <span class="badge ${badgeClass}">${typeLabel}</span>
-          ${listing.is_new_dev ? '<span class="badge badge-blue">New dev</span>' : ''}
-          ${isNew && !listing.is_new_dev ? '<span class="badge" style="background:#e07b3f;color:#fff">New</span>' : ''}
-          ${priceDropPct > 0 ? '<span class="badge" style="background:#dc2626;color:#fff">▼ ' + priceDropPct + '% reduced</span>' : ''}
+    <div class="pc" onclick="window.location.href='${root}listing.html?id=${listing.id}'" style="background:#fff;border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid #f0ede6;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 28px rgba(0,0,0,.12)'" onmouseleave="this.style.transform='';this.style.boxShadow='0 2px 12px rgba(0,0,0,.07)'">
+
+      <div style="position:relative;height:180px;overflow:hidden;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"/>`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🏡</div>`
+        }
+        <div style="position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap">
+          <span style="background:${typeBg};color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">${typeLabel}</span>
+          ${isNew ? '<span style="background:#e07b3f;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">✨ New</span>' : ''}
+          ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
         </div>
-        <button class="prop-card-save ${isSaved ? 'saved' : ''}"
-          onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
-          title="${isSaved ? 'Unsave' : 'Save'}"
-          style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
-          ${isSaved ? '♥' : '♡'}
-        </button>
-        <button class="prop-card-compare"
-          onclick="event.stopPropagation(); toggleCompare('${listing.id}', '${listing.title.replace(/'/g, '')}', '${listing.price}', '${listing.listing_type}', this)"
-          title="Compare"
-          style="position:absolute;bottom:7px;left:7px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;color:#555">
-          ⊕
-        </button>
+        <button style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:${isSaved ? '#e07b3f' : '#888'};box-shadow:0 2px 8px rgba(0,0,0,.15)"
+          onclick="event.stopPropagation();toggleSave('${listing.id}',this)">${isSaved ? '♥' : '♡'}</button>
+        <button style="position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#555;font-weight:700"
+          onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)" title="Compare">⊕</button>
+        <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px">${timeStr}</div>
       </div>
-      <div class="prop-card-body">
-        <div class="prop-card-loc">${listing.address_area || listing.county}</div>
-        <div class="prop-card-title">${listing.title}</div>
-        <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
-        <div class="prop-card-meta">
-          ${listing.bedrooms ? `<span>${icon('bed', 13, '#aaa')} ${listing.bedrooms} bed${listing.bedrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.bathrooms ? `<span>${icon('bath', 13, '#aaa')} ${listing.bathrooms} bath${listing.bathrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.floor_size_m2 ? `<span>${icon('size', 13, '#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.ber_rating ? `<span>${icon('ber', 13, '#aaa')} ${listing.ber_rating}</span>` : ''}
+
+      <div style="padding:.85rem .9rem .9rem">
+        <div style="font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:.5px;font-weight:500;margin-bottom:3px">${listing.address_area || listing.county}</div>
+        <div style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#111;margin-bottom:6px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${listing.title}</div>
+        <div style="font-size:20px;font-weight:600;color:#1a5c45;margin-bottom:8px;font-family:'Playfair Display',serif">${formatPrice(listing.price, listing.listing_type)}</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #f5f2ec;padding-top:8px">
+          ${listing.bedrooms ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('bed',13,'#aaa')} ${listing.bedrooms} bed</span>` : ''}
+          ${listing.bathrooms ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('bath',13,'#aaa')} ${listing.bathrooms} bath</span>` : ''}
+          ${listing.floor_size_m2 ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('size',13,'#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
+          ${listing.ber_rating ? `<span style="font-size:12px;color:#666;display:flex;align-items:center;gap:3px">${icon('ber',13,'#aaa')} ${listing.ber_rating}</span>` : ''}
         </div>
       </div>
     </div>

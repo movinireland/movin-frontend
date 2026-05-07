@@ -9,60 +9,89 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
   <style>
-    .sr-topbar{background:var(--white);border-bottom:1px solid var(--border);padding:.75rem 1rem}
-    .sr-search-row{display:flex;gap:8px;margin-bottom:.6rem;position:relative}
-    .sr-input{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:var(--rp);padding:10px 16px;font-size:14px;outline:none;background:#fafaf8;-webkit-appearance:none}
-    .sr-input:focus{border-color:var(--g)}
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+    *{box-sizing:border-box}
 
-    /* ── Autocomplete dropdown ── */
-    .search-suggestions{position:absolute;top:100%;left:0;right:60px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:50;margin-top:4px;overflow:hidden;display:none}
+    /* ── Top search bar ── */
+    .sr-topbar{background:#fff;border-bottom:1px solid var(--border);padding:.75rem 1rem;position:sticky;top:0;z-index:100}
+    .sr-search-row{display:flex;gap:8px;margin-bottom:.65rem;position:relative}
+    .sr-input{flex:1;min-width:0;border:2px solid var(--border);border-radius:50px;padding:11px 18px;font-size:14px;outline:none;background:#fafaf8;-webkit-appearance:none;font-family:inherit;transition:border .15s}
+    .sr-input:focus{border-color:var(--g);background:#fff}
+    .sr-search-btn{background:var(--g);color:#fff;border:none;border-radius:50px;padding:11px 20px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;font-family:inherit;flex-shrink:0}
+    .sr-search-btn:active{transform:scale(.97)}
+
+    /* ── Autocomplete ── */
+    .search-suggestions{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.12);z-index:200;margin-top:6px;overflow:hidden;display:none}
     .search-suggestions.open{display:block}
-    .suggestion-item{padding:.75rem 1rem;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f5f2ec}
+    .suggestion-item{padding:.85rem 1rem;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid #f5f2ec;-webkit-tap-highlight-color:transparent}
     .suggestion-item:last-child{border-bottom:none}
-    .suggestion-item:hover{background:var(--gl)}
+    .suggestion-item:hover,.suggestion-item:active{background:var(--gl)}
     .suggestion-icon{font-size:16px;flex-shrink:0}
     .suggestion-main{font-weight:500;color:#111}
     .suggestion-sub{font-size:12px;color:#aaa}
-    .suggestion-tag{font-size:10px;padding:2px 7px;border-radius:var(--rp);background:var(--gl);color:var(--g);font-weight:500;margin-left:auto;flex-shrink:0}
+    .suggestion-tag{font-size:10px;padding:2px 8px;border-radius:20px;background:var(--gl);color:var(--g);font-weight:500;margin-left:auto;flex-shrink:0}
 
-    .sr-pills{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+    /* ── Type pills ── */
+    .sr-pills{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none}
     .sr-pills::-webkit-scrollbar{display:none}
-    .pill{border:1.5px solid var(--border);border-radius:var(--rp);padding:6px 14px;font-size:13px;background:#fafaf8;cursor:pointer;color:#555;white-space:nowrap;transition:all .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+    .pill{border:1.5px solid var(--border);border-radius:50px;padding:7px 16px;font-size:13px;font-weight:500;background:#fafaf8;cursor:pointer;color:#666;white-space:nowrap;transition:all .15s;-webkit-tap-highlight-color:transparent;flex-shrink:0;font-family:inherit}
     .pill.active{background:var(--g);color:#fff;border-color:var(--g)}
-    .filter-btn{display:flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:var(--rp);padding:6px 14px;font-size:13px;background:#fafaf8;cursor:pointer;color:#555;flex-shrink:0}
-    .results-header{display:flex;justify-content:space-between;align-items:center;padding:.75rem 1rem;font-size:14px}
-    .results-count{font-weight:500}
-    .results-count span{font-size:12px;color:var(--muted);font-weight:300}
-    .sort-select{border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:#fafaf8;outline:none;font-family:inherit;-webkit-appearance:none;cursor:pointer}
+    .filter-btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;background:#fafaf8;cursor:pointer;color:#555;flex-shrink:0;font-family:inherit;-webkit-tap-highlight-color:transparent}
+    .filter-btn.has-filters{background:var(--gl);border-color:var(--g);color:var(--g)}
 
-    /* active search chip */
-    .search-chip{display:inline-flex;align-items:center;gap:6px;background:var(--gl);color:var(--g);border:1px solid var(--border);border-radius:var(--rp);padding:4px 12px;font-size:13px;font-weight:500;margin-bottom:.5rem}
-    .search-chip button{background:none;border:none;color:var(--g);cursor:pointer;font-size:14px;line-height:1;padding:0}
+    /* ── Search chip ── */
+    .search-chip{display:inline-flex;align-items:center;gap:6px;background:var(--gl);color:var(--g);border:1px solid #c8dfd4;border-radius:50px;padding:5px 14px;font-size:13px;font-weight:500;margin-bottom:.5rem}
+    .search-chip button{background:none;border:none;color:var(--g);cursor:pointer;font-size:16px;line-height:1;padding:0}
 
-    /* filter sheet */
-    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+    /* ── Results bar ── */
+    .results-header{display:flex;justify-content:space-between;align-items:center;padding:.65rem 1rem;background:#f5f2ec}
+    .results-count{font-size:13px;font-weight:500;color:#555}
+    .results-count strong{color:#111;font-size:14px}
+    .sort-select{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;background:#fff;outline:none;font-family:inherit;-webkit-appearance:none;cursor:pointer;color:#555;font-weight:500}
+
+    /* ── Grid ── */
+    .listings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;padding:.85rem}
+    @media(max-width:380px){.listings-grid{grid-template-columns:1fr;gap:.75rem}}
+    @media(min-width:640px){.listings-grid{grid-template-columns:repeat(2,1fr);gap:1rem;padding:1rem}}
+    @media(min-width:900px){.listings-grid{grid-template-columns:repeat(3,1fr)}}
+
+    /* ── Filter modal ── */
+    .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
     .modal-bg.open{opacity:1;pointer-events:all}
-    .modal{background:var(--white);border-radius:20px 20px 0 0;padding:1.25rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease}
+    .modal{background:#fff;border-radius:24px 24px 0 0;padding:1.25rem 1.25rem 2rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease}
     .modal-bg.open .modal{transform:translateY(0)}
-    .modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .75rem}
-    .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1rem}
+    .modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 1rem}
+    .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1.25rem}
     .filter-section{margin-bottom:1.25rem}
-    .filter-section-label{font-size:12px;font-weight:500;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.6rem}
+    .filter-section-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.65rem}
     .filter-opts{display:flex;flex-wrap:wrap;gap:6px}
-    .f-opt{border:1.5px solid var(--border);border-radius:8px;padding:5px 12px;font-size:13px;cursor:pointer;background:#fafaf8;color:#666;transition:all .15s}
-    .f-opt.on{border-color:var(--g);color:var(--g);background:var(--gl)}
+    .f-opt{border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:13px;cursor:pointer;background:#fafaf8;color:#666;transition:all .15s;font-family:inherit;-webkit-tap-highlight-color:transparent}
+    .f-opt.on{border-color:var(--g);color:var(--g);background:var(--gl);font-weight:500}
     .f-range{display:flex;gap:8px;align-items:center}
-    .f-range select{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:8px 10px;font-size:13px;background:#fafaf8;outline:none;font-family:inherit;-webkit-appearance:none}
+    .f-range select{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:9px 12px;font-size:13px;background:#fafaf8;outline:none;font-family:inherit;-webkit-appearance:none}
     .ber-wrap{display:flex;flex-wrap:wrap;gap:5px}
-    .ber-btn{width:36px;height:26px;border-radius:5px;border:1.5px solid var(--border);font-size:11px;font-weight:500;cursor:pointer;background:#fafaf8;font-family:inherit}
+    .ber-btn{padding:5px 10px;border-radius:8px;border:1.5px solid var(--border);font-size:11px;font-weight:600;cursor:pointer;background:#fafaf8;font-family:inherit;transition:all .15s}
     .ber-btn.on{background:#2aaa50;color:#fff;border-color:#2aaa50}
-    .cb-col{display:flex;flex-direction:column;gap:8px}
-    .cb-row{display:flex;align-items:center;gap:8px;cursor:pointer}
-    .cb-row input{accent-color:var(--g);width:16px;height:16px;cursor:pointer}
+    .cb-col{display:flex;flex-direction:column;gap:10px}
+    .cb-row{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;color:#555}
+    .cb-row input{accent-color:var(--g);width:18px;height:18px;cursor:pointer}
 
-    .listings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;padding:0 .75rem}
-    @media(max-width:400px){.listings-grid{grid-template-columns:1fr}}
-    @media(min-width:768px){.listings-grid{grid-template-columns:repeat(3,1fr)}}
+    /* ── Filter apply btn ── */
+    .filter-apply{width:100%;background:var(--g);color:#fff;border:none;border-radius:50px;padding:14px;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:.5rem}
+
+    /* ── Pagination ── */
+    .pg-btn{border:1.5px solid var(--border);background:#fff;color:#555;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+    .pg-btn.on{background:var(--g);color:#fff;border-color:var(--g)}
+    .pg-btn:hover:not(.on){background:var(--gl)}
+
+    /* ── Empty ── */
+    .empty{text-align:center;padding:3rem 1rem;grid-column:1/-1}
+
+    /* ── Map/alert strip ── */
+    .quick-links{display:flex;gap:8px;padding:.5rem 1rem;overflow-x:auto;scrollbar-width:none;background:#f5f2ec}
+    .quick-links::-webkit-scrollbar{display:none}
+    .ql-btn{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;color:#555;cursor:pointer;white-space:nowrap;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+    .ql-btn:hover{border-color:var(--g);color:var(--g)}
   </style>
 </head>
 <body>
@@ -76,28 +105,27 @@
              autocomplete="off"
              oninput="handleSearchInput(this.value)"
              onkeydown="handleSearchKey(event)"/>
-      <button class="btn btn-primary btn-sm" onclick="doSearch()">Search</button>
-
-      <!-- Autocomplete suggestions -->
+      <button class="sr-search-btn" onclick="doSearch()">Search</button>
       <div class="search-suggestions" id="suggestions"></div>
     </div>
-
-    <!-- Active search chip -->
     <div id="search-chip-wrap"></div>
-
-    <!-- Type pills -->
     <div class="sr-pills">
       <button class="pill active" data-type="sale"  onclick="togglePill(this)">Buy</button>
       <button class="pill" data-type="rent"  onclick="togglePill(this)">Rent</button>
       <button class="pill" data-type="share" onclick="togglePill(this)">Sharing</button>
       <button class="pill" data-type="new"   onclick="togglePill(this)">New homes</button>
-      <button class="filter-btn" onclick="document.getElementById('filter-modal').classList.add('open')">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <path d="M1 2h12M3 7h8M5 12h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+      <button class="filter-btn" id="filter-btn" onclick="document.getElementById('filter-modal').classList.add('open')">
+        <svg width="14" height="14" style="color:currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="21" y2="5"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="19" x2="14" y2="19"/></svg>
         Filters
       </button>
     </div>
+  </div>
+
+  <!-- Quick links bar -->
+  <div class="quick-links">
+    <a href="map-search.html" class="ql-btn"><svg width="13" height="13" style="color:#1a5c45"><use href="/icons.svg#icon-map"/></svg> Map view</a>
+    <button class="ql-btn" onclick="document.getElementById('filter-modal').classList.add('open')"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Create alert</button>
+    <a href="compare.html" class="ql-btn"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-chart"/></svg> Compare</a>
   </div>
 
   <!-- Results header -->
@@ -105,16 +133,17 @@
     <div class="results-count" id="result-count">Loading…</div>
     <select class="sort-select" id="sort-sel" onchange="doSearch()">
       <option value="newest">Most recent</option>
-      <option value="price_asc">Price: low → high</option>
-      <option value="price_desc">Price: high → low</option>
+      <option value="price_asc">Price ↑</option>
+      <option value="price_desc">Price ↓</option>
       <option value="most_viewed">Most viewed</option>
     </select>
   </div>
 
-  <!-- Results -->
+  <!-- Results grid -->
   <div id="results-grid" class="listings-grid">
-    <div class="loading-wrap" style="grid-column:1/-1">
-      <div class="spinner"></div><span>Loading properties…</span>
+    <div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#aaa">
+      <div class="spinner" style="margin:0 auto 1rem"></div>
+      Loading properties…
     </div>
   </div>
 
