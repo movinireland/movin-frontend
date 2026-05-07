@@ -329,16 +329,27 @@
     try {
       var token = localStorage.getItem('movin_token')
       if (!token) {
-        el.innerHTML = '<div class="alert-error">Please <a href="login.html" style="color:#1a5c45;font-weight:500">sign in</a> to see your listings.</div>'
+        el.innerHTML = '<div style="padding:1rem;background:#fef2f2;border-radius:10px;color:#dc2626;font-size:13px">No token found — please <a href="login.html">sign in</a></div>'
         return
       }
+
+      // Show debug info
+      el.innerHTML = '<div style="padding:1rem;font-size:12px;color:#888;background:#f5f2ec;border-radius:10px;margin-bottom:.5rem">Connecting to API...<br>Token: ' + token.substring(0,20) + '...<br>URL: ' + window.MOVIN_API_URL + '</div>'
+
       var res = await fetch(window.MOVIN_API_URL + '/api/listings/mine', {
         headers: { 'Authorization': 'Bearer ' + token }
       })
-      var listings = await res.json()
-      if (!Array.isArray(listings)) {
-        console.error('Listings response:', listings)
-        throw new Error(listings.error || listings.message || 'Could not load listings. Try refreshing.')
+
+      var responseText = await res.text()
+      var listings
+      try { listings = JSON.parse(responseText) } catch(e) { 
+        el.innerHTML = '<div style="padding:1rem;background:#fef2f2;border-radius:10px;color:#dc2626;font-size:13px">Response not JSON:<br>' + responseText.substring(0,200) + '</div>'
+        return
+      }
+
+      if (!res.ok || !Array.isArray(listings)) {
+        el.innerHTML = '<div style="padding:1rem;background:#fef2f2;border-radius:10px;color:#dc2626;font-size:13px">API Error (status ' + res.status + '):<br>' + JSON.stringify(listings) + '</div>'
+        return
       }
 
       if (!listings.length) {
