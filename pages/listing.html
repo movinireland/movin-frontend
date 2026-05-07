@@ -22,12 +22,35 @@
   <style>
     .breadcrumb{padding:.6rem 1rem;font-size:12px;color:#aaa;background:var(--white);border-bottom:1px solid #f5f2ec}
     .breadcrumb span{color:var(--g);cursor:pointer}
-    .gallery-scroll{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:1rem 1rem .5rem;scroll-snap-type:x mandatory}
-    .gallery-scroll::-webkit-scrollbar{display:none}
-    .gallery-main{width:80vw;max-width:400px;flex-shrink:0;border-radius:var(--r);overflow:hidden;height:240px;display:flex;align-items:center;justify-content:center;font-size:50px;scroll-snap-align:start;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)}
-    .gallery-main img{width:100%;height:100%;object-fit:cover}
-    .gallery-thumb{width:100px;flex-shrink:0;border-radius:10px;overflow:hidden;height:80px;display:flex;align-items:center;justify-content:center;font-size:24px;scroll-snap-align:start;background:linear-gradient(135deg,#f5e6d0,#fdf4ea)}
-    .gallery-thumb img{width:100%;height:100%;object-fit:cover}
+    /* ── Zoopla-style gallery ── */
+    .gallery-wrap{position:relative;background:#111;user-select:none}
+    .gallery-hero{width:100%;height:280px;position:relative;overflow:hidden;cursor:pointer}
+    @media(min-width:600px){.gallery-hero{height:400px}}
+    .gallery-hero img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s}
+    .gallery-hero:hover img{transform:scale(1.02)}
+    .gallery-hero-placeholder{width:100%;height:280px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:64px}
+    .gallery-counter{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;font-size:12px;font-weight:500;padding:5px 10px;border-radius:20px;display:flex;align-items:center;gap:5px}
+    .gallery-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent}
+    .gallery-nav:hover{background:#fff}
+    .gallery-prev{left:10px}
+    .gallery-next{right:10px}
+    .gallery-thumbs{display:flex;gap:4px;padding:4px;background:#111;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .gallery-thumbs::-webkit-scrollbar{display:none}
+    .gallery-thumb-item{width:72px;height:52px;flex-shrink:0;border-radius:4px;overflow:hidden;cursor:pointer;opacity:.6;transition:opacity .15s;border:2px solid transparent}
+    .gallery-thumb-item:hover{opacity:.85}
+    .gallery-thumb-item.active{opacity:1;border-color:#e07b3f}
+    .gallery-thumb-item img{width:100%;height:100%;object-fit:cover;display:block}
+    /* Lightbox */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center}
+    .lightbox.open{display:flex}
+    .lightbox-img{max-width:95vw;max-height:85vh;object-fit:contain;border-radius:4px}
+    .lightbox-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:22px;width:40px;height:40px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .lightbox-close:hover{background:rgba(255,255,255,.25)}
+    .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:#fff;font-size:20px;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .lightbox-nav:hover{background:rgba(255,255,255,.25)}
+    .lightbox-prev{left:16px}
+    .lightbox-next{right:16px}
+    .lightbox-counter{position:absolute;bottom:20px;color:rgba(255,255,255,.7);font-size:13px}
     .detail-header{padding:1rem 1rem .5rem}
     .d-tag-row{display:flex;gap:6px;align-items:center;margin-bottom:.6rem;flex-wrap:wrap}
     .d-age{font-size:12px;color:#bbb}
@@ -199,19 +222,101 @@
       return '€' + Number(price).toLocaleString('en-IE') + (type === 'rent' ? '/mo' : '')
     }
 
+    var galleryPhotos = []
+    var galleryIndex  = 0
+    var lbPhotos      = []
+    var lbIndex       = 0
+
     function buildGallery(listing) {
-      var photos = listing.photos || []
-      if (photos.length === 0) {
-        return '<div class="gallery-main"><div class="no-photo-placeholder">🏠</div></div>' +
-               '<div class="gallery-thumb" style="background:linear-gradient(135deg,#dce8f5,#eaf2fb)">🛋</div>' +
-               '<div class="gallery-thumb" style="background:linear-gradient(135deg,#f5e6d0,#fdf4ea)">🍳</div>'
+      galleryPhotos = listing.photos || []
+      galleryIndex  = 0
+
+      if (!galleryPhotos.length) {
+        return '<div class="gallery-wrap"><div class="gallery-hero-placeholder">🏠</div></div>'
       }
-      var html = '<div class="gallery-main"><img src="' + photos[0].url + '" alt="' + listing.title + '" loading="eager"/></div>'
-      for (var i = 1; i < photos.length; i++) {
-        html += '<div class="gallery-thumb"><img src="' + photos[i].url + '" alt="' + listing.title + '" loading="lazy"/></div>'
+
+      var heroHtml =
+        '<div class="gallery-wrap">' +
+          '<div class="gallery-hero" onclick="openLightbox(0)" id="gallery-hero">' +
+            '<img id="gallery-main-img" src="' + galleryPhotos[0].url + '" alt="' + listing.title + '" loading="eager"/>' +
+            (galleryPhotos.length > 1 ?
+              '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
+              '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
+            '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
+          '</div>'
+
+      if (galleryPhotos.length > 1) {
+        heroHtml += '<div class="gallery-thumbs" id="gallery-thumbs">'
+        for (var i = 0; i < galleryPhotos.length; i++) {
+          heroHtml += '<div class="gallery-thumb-item' + (i===0?' active':'') + '" data-idx="' + i + '" onclick="goToPhoto(' + i + ')">' +
+            '<img src="' + galleryPhotos[i].url + '" loading="lazy"/>' +
+          '</div>'
+        }
+        heroHtml += '</div>'
       }
-      return html
+
+      heroHtml += '</div>'
+      return heroHtml
     }
+
+    function slideGallery(dir) {
+      if (!galleryPhotos.length) return
+      galleryIndex = (galleryIndex + dir + galleryPhotos.length) % galleryPhotos.length
+      goToPhoto(galleryIndex)
+    }
+
+    function goToPhoto(idx) {
+      galleryIndex = idx
+      var img = document.getElementById('gallery-main-img')
+      var cur = document.getElementById('gallery-cur')
+      if (img) img.src = galleryPhotos[idx].url
+      if (cur) cur.textContent = idx + 1
+      document.querySelectorAll('.gallery-thumb-item').forEach(function(el) {
+        el.classList.toggle('active', parseInt(el.dataset.idx) === idx)
+      })
+      // Scroll thumb into view
+      var thumbEl = document.querySelector('.gallery-thumb-item[data-idx="' + idx + '"]')
+      if (thumbEl) thumbEl.scrollIntoView({ behavior:'smooth', inline:'nearest', block:'nearest' })
+    }
+
+    // ── Lightbox ──────────────────────────────────────────────────────────────
+    function openLightbox(idx) {
+      lbPhotos = galleryPhotos
+      lbIndex  = idx
+      var lb = document.getElementById('lightbox')
+      if (!lb) return
+      lb.classList.add('open')
+      updateLightbox()
+      document.body.style.overflow = 'hidden'
+    }
+
+    function closeLightbox() {
+      var lb = document.getElementById('lightbox')
+      if (lb) lb.classList.remove('open')
+      document.body.style.overflow = ''
+    }
+
+    function slideLightbox(dir) {
+      lbIndex = (lbIndex + dir + lbPhotos.length) % lbPhotos.length
+      updateLightbox()
+    }
+
+    function updateLightbox() {
+      var img = document.getElementById('lb-img')
+      var ctr = document.getElementById('lb-counter')
+      if (img) img.src = lbPhotos[lbIndex].url
+      if (ctr) ctr.textContent = (lbIndex + 1) + ' / ' + lbPhotos.length
+    }
+
+    // Swipe support for lightbox
+    var lbTouchX = 0
+    document.addEventListener('keydown', function(e) {
+      var lb = document.getElementById('lightbox')
+      if (!lb || !lb.classList.contains('open')) return
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'ArrowLeft') slideLightbox(-1)
+      if (e.key === 'ArrowRight') slideLightbox(1)
+    })
 
     async function load() {
       if (!listingId) { window.location.href = 'search.html'; return }
@@ -363,7 +468,7 @@
               '<div>' +
                 '<div style="font-size:13px;font-weight:500">' + (L.lister_name || 'Property owner') + '</div>' +
                 '<div style="font-size:11px;color:#bbb">Listed on movin.ie</div>' +
-              '<div style="margin-top:6px"><button onclick="reportListing('' + L.id + '')" style="background:none;border:none;color:#ccc;font-size:11px;cursor:pointer;padding:0;font-family:inherit">Report this listing</button></div>' +
+              '<div style="margin-top:6px"><button onclick="reportListing(\'' + L.id + '\')" style="background:none;border:none;color:#ccc;font-size:11px;cursor:pointer;padding:0;font-family:inherit">Report this listing</button></div>' +
               '</div>' +
             '</div>' +
           '</div>' +
@@ -534,7 +639,27 @@ Type your reason:')
       })
     }
 
+    // Touch swipe for gallery
+    document.addEventListener('touchstart', function(e) {
+      if (e.target.closest('.gallery-wrap')) lbTouchX = e.touches[0].clientX
+    }, { passive: true })
+    document.addEventListener('touchend', function(e) {
+      if (!e.target.closest('.gallery-wrap')) return
+      var dx = e.changedTouches[0].clientX - lbTouchX
+      if (Math.abs(dx) > 40) slideGallery(dx < 0 ? 1 : -1)
+    }, { passive: true })
+
     load()
   </script>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" ontouchstart="lbTouchX=event.touches[0].clientX" ontouchend="var dx=event.changedTouches[0].clientX-lbTouchX;if(Math.abs(dx)>40)slideLightbox(dx<0?1:-1)">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <img class="lightbox-img" id="lb-img" src="" alt="Property photo"/>
+    <button class="lightbox-nav lightbox-prev" onclick="slideLightbox(-1)">&#8249;</button>
+    <button class="lightbox-nav lightbox-next" onclick="slideLightbox(1)">&#8250;</button>
+    <div class="lightbox-counter" id="lb-counter">1 / 1</div>
+  </div>
+
 </body>
 </html>
