@@ -59,8 +59,26 @@
     .d-price{font-size:28px;font-weight:500;color:var(--g);margin-bottom:.75rem}
     .d-stats{display:flex;gap:.5rem;flex-wrap:wrap}
     .d-stat{background:var(--gl);border-radius:8px;padding:6px 10px;font-size:12px;font-weight:500;color:var(--g)}
-    .action-strip{display:flex;gap:8px;padding:.75rem 1rem;background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-    .action-strip .btn{flex:1;font-size:13px;padding:10px 8px}
+    .action-strip{display:flex;gap:10px;padding:.85rem 1rem;background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border);align-items:center}
+    .action-strip .btn{flex:none}
+    /* Save button on photo */
+    .gallery-save-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,.2);-webkit-tap-highlight-color:transparent}
+    .gallery-save-btn:active{transform:scale(.92)}
+    /* Share drawer */
+    .share-drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:800;display:none}
+    .share-drawer-bg.open{display:block}
+    .share-drawer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:1.25rem 1.5rem 2rem;z-index:801;transform:translateY(100%);transition:transform .25s ease}
+    .share-drawer.open{transform:translateY(0)}
+    .share-drawer-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto .75rem}
+    .share-drawer-title{font-size:14px;font-weight:500;color:#111;margin-bottom:1.25rem;text-align:center}
+    .share-options{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+    .share-opt{display:flex;flex-direction:column;align-items:center;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .share-opt-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px}
+    .share-opt-label{font-size:11px;color:#555;font-weight:500}
+    .so-whatsapp{background:#e8f9f0}
+    .so-facebook{background:#e8f0fd}
+    .so-copy{background:#f5f2ec}
+    .so-print{background:#fdf0e6}
     .detail-section{padding:1rem;border-bottom:1px solid var(--border)}
     .detail-section h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:.75rem}
     .desc-text{font-size:14px;color:#666;line-height:1.8;font-weight:300}
@@ -254,6 +272,7 @@
               '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
               '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
             '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
+            '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()">♡</button>' +
           '</div>'
 
       if (galleryPhotos.length > 1) {
@@ -403,7 +422,7 @@
           : ''
 
         var phoneBtn = L.lister_phone
-          ? '<button class="btn btn-ghost" style="font-size:13px" onclick="window.location.href=\'tel:' + L.lister_phone + '\'"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-phone"/></svg> Call</button>'
+          ? '<a href="tel:' + L.lister_phone + '" class="btn" style="background:#fff;border:1.5px solid #1a5c45;color:#1a5c45;font-size:13px;padding:11px 14px;border-radius:50px;display:inline-flex;align-items:center;gap:6px;font-weight:500;text-decoration:none;flex:1"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;vertical-align:middle"><use href="/icons.svg#icon-phone"/></svg>' + L.lister_phone + '</a>'
           : ''
 
         var mapsQuery = encodeURIComponent(L.address_line1 + ' ' + (L.address_area || '') + ' ' + L.county + ' Ireland')
@@ -575,16 +594,18 @@
     async function handleSave() {
       if (!API.auth.isLoggedIn()) { toast('Sign in to save listings', 'info'); return }
       var btn = document.getElementById('save-btn')
-      var saved = btn.textContent.includes('♥')
+      var saved = btn.textContent === '♥'
       try {
         if (saved) {
           await API.saved.unsave(listingId)
-          btn.textContent = '♡ Save'
+          btn.textContent = '♡'
+          btn.style.color = '#888'
           toast('Removed from saved')
         } else {
           await API.saved.save(listingId)
-          btn.textContent = '♥ Saved'
-          toast('Saved! ♥')
+          btn.textContent = '♥'
+          btn.style.color = '#e07b3f'
+          toast('Saved ♥')
         }
       } catch(e) { toast(e.message, 'error') }
     }
@@ -618,6 +639,16 @@
       var total = monthly * n
       document.getElementById('mc-monthly').textContent = '€' + Math.round(monthly).toLocaleString('en-IE') + '/mo'
       document.getElementById('mc-meta').textContent = 'Total repayment: €' + Math.round(total).toLocaleString('en-IE') + ' · Loan: €' + Math.round(principal).toLocaleString('en-IE')
+    }
+
+    // Share drawer
+    function openShareDrawer() {
+      document.getElementById('share-bg').classList.add('open')
+      document.getElementById('share-drawer').classList.add('open')
+    }
+    function closeShareDrawer() {
+      document.getElementById('share-bg').classList.remove('open')
+      document.getElementById('share-drawer').classList.remove('open')
     }
 
     // Copy link
