@@ -451,16 +451,38 @@
           '</div>' +
 
           '<div class="action-strip">' +
-            '<button class="btn btn-primary" style="font-size:13px" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg> Enquire</button>' +
-            phoneBtn +
-            '<button class="btn btn-ghost" id="save-btn" style="font-size:13px" onclick="handleSave()"><svg width="16" height="16" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-heart"/></svg> Save</button>' +
-            '<button class="btn btn-ghost" style="font-size:13px;padding:10px 8px" onclick="window.print()" title="Print listing"><svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-document"/></svg> Print</button>' +
-            '<button class="btn btn-ghost" style="font-size:13px;padding:10px 8px" onclick="copyLink()" id="copy-btn"><svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-document"/></svg> Copy</button>' +
-            '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href) + '" target="_blank" class="btn btn-ghost" style="font-size:13px;padding:10px 8px;color:#1877f2;border-color:#1877f2"><svg width="14" height="14" viewBox="0 0 24 24" fill="#1877f2" style="vertical-align:middle"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Share</a>' +
-            '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' - ' + fmtPrice(L.price, L.listing_type) + ' - ' + window.location.href) + '" target="_blank" class="btn btn-ghost" style="font-size:13px;color:#25d366;border-color:#25d366"><svg width="16" height="16" viewBox="0 0 24 24" fill="#25d366" style="vertical-align:middle"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> Share</a>' +
+            '<button style="background:#e07b3f;color:#fff;font-size:14px;font-weight:500;padding:13px 0;border-radius:50px;flex:1;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;-webkit-tap-highlight-color:transparent" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">' +
+              '<svg width="16" height="16" style="color:#fff;flex-shrink:0;vertical-align:middle"><use href="/icons.svg#icon-message"/></svg> Enquire' +
+            '</button>' +
+            (L.lister_phone ? '<a href="tel:' + L.lister_phone + '" style="background:#fff;color:#1a5c45;border:2px solid #1a5c45;font-size:13px;font-weight:500;padding:12px 14px;border-radius:50px;flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;-webkit-tap-highlight-color:transparent"><svg width="15" height="15" style="color:#1a5c45;flex-shrink:0;vertical-align:middle"><use href="/icons.svg#icon-phone"/></svg>' + L.lister_phone + '</a>' : '') +
+            '<button onclick="openShareDrawer()" style="background:#f5f2ec;border:none;border-radius:50%;width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;color:#555;font-weight:300;-webkit-tap-highlight-color:transparent;font-family:inherit" title="More">+</button>' +
           '</div>' +
 
-          '<div class="detail-section"><h2>About this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
+          '<div class="share-drawer-bg" id="share-bg" onclick="closeShareDrawer()"></div>' +
+          '<div class="share-drawer" id="share-drawer">' +
+            '<div class="share-drawer-handle"></div>' +
+            '<div class="share-drawer-title">Share &amp; more</div>' +
+            '<div class="share-options">' +
+              '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' — ' + fmtPrice(L.price, L.listing_type) + '\n' + window.location.href) + '" target="_blank" class="share-opt">' +
+                '<div class="share-opt-icon so-whatsapp"><svg width="28" height="28" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>' +
+                '<span class="share-opt-label">WhatsApp</span>' +
+              '</a>' +
+              '<a href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href) + '" target="_blank" class="share-opt">' +
+                '<div class="share-opt-icon so-facebook"><svg width="28" height="28" viewBox="0 0 24 24" fill="#1877f2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></div>' +
+                '<span class="share-opt-label">Facebook</span>' +
+              '</a>' +
+              '<div class="share-opt" onclick="copyLink();closeShareDrawer()">' +
+                '<div class="share-opt-icon so-copy" style="font-size:24px">🔗</div>' +
+                '<span class="share-opt-label">Copy link</span>' +
+              '</div>' +
+              '<div class="share-opt" onclick="window.print();closeShareDrawer()">' +
+                '<div class="share-opt-icon so-print" style="font-size:24px">🖨️</div>' +
+                '<span class="share-opt-label">Print</span>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="detail-section"><h2>About this property</h2>out this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
 
           (L.listing_type !== 'rent' && L.listing_type !== 'share' ? '<div class="mort-section" id="mort-section"><h2>Mortgage calculator</h2><div class="mort-grid"><div><label class="mort-label">Purchase price (€)</label><input class="mort-input" id="mc-price" type="number" value="' + L.price + '" oninput="calcMort()"/></div><div><label class="mort-label">Deposit (€)</label><input class="mort-input" id="mc-deposit" type="number" value="' + Math.round(parseInt(L.price)*0.1) + '" oninput="calcMort()"/></div><div><label class="mort-label">Term (years)</label><input class="mort-input" id="mc-term" type="number" value="30" min="5" max="35" oninput="calcMort()"/></div><div><label class="mort-label">Interest rate (%)</label><input class="mort-input" id="mc-rate" type="number" value="4.0" step="0.1" min="0.1" oninput="calcMort()"/></div></div><div class="mort-result" id="mc-result"><div class="mort-monthly" id="mc-monthly">€0/mo</div><div class="mort-meta" id="mc-meta">Enter values above to calculate</div></div></div>' : '') +
 
