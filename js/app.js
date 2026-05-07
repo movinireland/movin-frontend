@@ -3,6 +3,49 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
+// ── Dark mode ────────────────────────────────────────────────────────────────
+function getSystemTheme() {
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+function initTheme() {
+  var saved = localStorage.getItem('movin_theme')
+  if (!saved || saved === 'auto') {
+    document.documentElement.removeAttribute('data-theme')
+    localStorage.setItem('movin_theme', 'auto')
+  } else {
+    document.documentElement.setAttribute('data-theme', saved)
+  }
+  updateToggleBtn()
+}
+function updateToggleBtn() {
+  var saved = localStorage.getItem('movin_theme') || 'auto'
+  var isDark = saved === 'dark' || (saved === 'auto' && getSystemTheme() === 'dark')
+  document.querySelectorAll('.theme-toggle').forEach(function(btn) {
+    btn.textContent = isDark ? '☀️' : '🌙'
+    btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode'
+  })
+}
+function applyTheme(theme) {
+  if (theme === 'auto') document.documentElement.removeAttribute('data-theme')
+  else document.documentElement.setAttribute('data-theme', theme)
+  localStorage.setItem('movin_theme', theme)
+  updateToggleBtn()
+}
+function toggleTheme() {
+  var saved = localStorage.getItem('movin_theme') || 'auto'
+  var isDark = saved === 'dark' || (saved === 'auto' && getSystemTheme() === 'dark')
+  applyTheme(isDark ? 'light' : 'dark')
+}
+window.toggleTheme = toggleTheme
+window.initTheme = initTheme
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+    var saved = localStorage.getItem('movin_theme')
+    if (!saved || saved === 'auto') { document.documentElement.removeAttribute('data-theme'); updateToggleBtn() }
+  })
+}
+initTheme()
+
 // ── Icon system ───────────────────────────────────────────────────────────────
 var MOVIN_ICON_IDS = {
   'home':'icon-home','search':'icon-search','location':'icon-location','map':'icon-map',
@@ -161,6 +204,7 @@ function renderNav(activePage = '') {
       </ul>
  
       <div class="nav-right" style="position:relative">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">🌙</button>
         ${isLoggedIn ? `
           <div class="nav-user" id="nav-user-btn" onclick="toggleNavDropdown()">
             <div class="nav-avatar">${user?.name?.charAt(0)?.toUpperCase() || 'U'}</div>
@@ -231,39 +275,50 @@ function buildPropertyCard(listing, savedIds = []) {
   const root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
   const isSaved = savedIds.includes(listing.id)
   const photo = listing.primary_photo || listing.photos?.[0]?.url || null
-  const imgContent = photo
-    ? `<img src="${photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo}" alt="${listing.title}" loading="lazy" />`
-    : `<span style="font-size:52px">🏡</span>`
+  const imgSrc = photo ? (photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo) : null
 
   const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
+  const typeBg = listing.listing_type === 'rent' ? '#e07b3f' : listing.listing_type === 'share' ? '#1d4ed8' : '#1a5c45'
   const isNew = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
-  const badgeClass = listing.listing_type === 'rent' ? 'badge-orange' : listing.listing_type === 'share' ? 'badge-blue' : 'badge-green'
+  const daysAgo = Math.floor((Date.now() - new Date(listing.created_at).getTime()) / 86400000)
+  const timeStr = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago'
+
+  let priceDropPct = 0
+  if (listing.price_history) {
+    try {
+      const hist = typeof listing.price_history === 'string' ? JSON.parse(listing.price_history) : listing.price_history
+      if (hist && hist.length > 0 && hist[0].price > listing.price)
+        priceDropPct = Math.round(((hist[0].price - listing.price) / hist[0].price) * 100)
+    } catch(e) {}
+  }
 
   return `
     <div class="prop-card" onclick="window.location.href='${root}listing.html?id=${listing.id}'">
-      <div class="prop-card-img">
-        ${imgContent}
-        <div class="prop-card-tags">
-          <span class="badge ${badgeClass}">${typeLabel}</span>
-          ${listing.is_new_dev ? '<span class="badge badge-blue">New dev</span>' : ''}
-          ${isNew && !listing.is_new_dev ? '<span class="badge" style="background:#e07b3f;color:#fff">New</span>' : ''}
+      <div style="position:relative;height:180px;overflow:hidden;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block"/>`
+          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:48px">🏡</div>`
+        }
+        <div style="position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap">
+          ${listing.is_featured ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">⭐ Featured</span>` : `<span style="background:${typeBg};color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">${typeLabel}</span>`}
+          ${isNew && !listing.is_featured ? '<span style="background:#e07b3f;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">✨ New</span>' : ''}
+          ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
         </div>
-        <button class="prop-card-save ${isSaved ? 'saved' : ''}"
-          onclick="event.stopPropagation(); toggleSave('${listing.id}', this)"
-          title="${isSaved ? 'Unsave' : 'Save'}"
-          style="font-size:16px;line-height:1;color:${isSaved ? '#e07b3f' : '#fff'}">
-          ${isSaved ? '♥' : '♡'}
-        </button>
+        <button style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);border:none;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:${isSaved ? '#e07b3f' : '#888'};box-shadow:0 2px 8px rgba(0,0,0,.15)"
+          onclick="event.stopPropagation();toggleSave('${listing.id}',this)">${isSaved ? '♥' : '♡'}</button>
+        <button style="position:absolute;bottom:10px;left:10px;background:rgba(255,255,255,.88);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:#555;font-weight:700"
+          onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)" title="Compare">⊕</button>
+        <div style="position:absolute;bottom:10px;right:10px;background:rgba(0,0,0,.5);color:#fff;font-size:10px;padding:3px 8px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
         <div class="prop-card-loc">${listing.address_area || listing.county}</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
-          ${listing.bedrooms ? `<span>${icon('bed', 13, '#aaa')} ${listing.bedrooms} bed${listing.bedrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.bathrooms ? `<span>${icon('bath', 13, '#aaa')} ${listing.bathrooms} bath${listing.bathrooms > 1 ? 's' : ''}</span>` : ''}
-          ${listing.floor_size_m2 ? `<span>${icon('size', 13, '#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.ber_rating ? `<span>${icon('ber', 13, '#aaa')} ${listing.ber_rating}</span>` : ''}
+          ${listing.bedrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bed',13,'#aaa')} ${listing.bedrooms} bed</span>` : ''}
+          ${listing.bathrooms ? `<span style="display:flex;align-items:center;gap:3px">${icon('bath',13,'#aaa')} ${listing.bathrooms} bath</span>` : ''}
+          ${listing.floor_size_m2 ? `<span style="display:flex;align-items:center;gap:3px">${icon('size',13,'#aaa')} ${listing.floor_size_m2}m²</span>` : ''}
+          ${listing.ber_rating ? `<span style="display:flex;align-items:center;gap:3px">${icon('ber',13,'#aaa')} ${listing.ber_rating}</span>` : ''}
         </div>
       </div>
     </div>
@@ -296,6 +351,64 @@ async function toggleSave(listingId, btn) {
   }
 }
 
+// ── Compare properties ───────────────────────────────────────────────────────
+var compareList = JSON.parse(localStorage.getItem('movin_compare') || '[]')
+
+function toggleCompare(id, title, price, type, btn) {
+  var idx = compareList.findIndex(function(x) { return x.id === id })
+  if (idx > -1) {
+    compareList.splice(idx, 1)
+    if (btn) { btn.textContent = '⊕'; btn.style.background = 'rgba(255,255,255,.88)'; btn.style.color = '#555' }
+  } else {
+    if (compareList.length >= 3) { toast('Max 3 properties to compare', 'info'); return }
+    compareList.push({ id: id, title: title, price: price, type: type })
+    if (btn) { btn.textContent = '✓'; btn.style.background = '#1a5c45'; btn.style.color = '#fff' }
+  }
+  localStorage.setItem('movin_compare', JSON.stringify(compareList))
+  updateCompareBar()
+}
+
+function updateCompareBar() {
+  var bar = document.getElementById('compare-bar')
+  if (!bar) return
+  if (!compareList.length) { bar.style.display = 'none'; return }
+  bar.style.display = 'flex'
+  var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+  bar.innerHTML =
+    '<div style="display:flex;align-items:center;gap:.75rem;flex:1;flex-wrap:wrap">' +
+      '<span style="font-size:13px;font-weight:500;color:#111">' + compareList.length + '/3 selected</span>' +
+      compareList.map(function(x) {
+        return '<span style="background:#e9f4ef;color:#1a5c45;font-size:12px;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px">' +
+          x.title.substring(0,25) + (x.title.length>25?'…':'') +
+          '<button onclick="removeCompare(\'' + x.id + '\')" style="background:none;border:none;cursor:pointer;color:#1a5c45;font-size:14px;padding:0;line-height:1">×</button>' +
+        '</span>'
+      }).join('') +
+    '</div>' +
+    (compareList.length >= 2 ?
+      '<a href="' + root + 'compare.html" class="btn btn-primary btn-sm">Compare →</a>' :
+      '<span style="font-size:12px;color:#aaa">Select ' + (2-compareList.length) + ' more</span>'
+    ) +
+    '<button onclick="clearCompare()" style="background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:4px">×</button>'
+}
+
+function clearCompare() {
+  compareList = []
+  localStorage.setItem('movin_compare', '[]')
+  updateCompareBar()
+}
+
+function removeCompare(id) {
+  var idx = compareList.findIndex(function(x) { return x.id === id })
+  if (idx > -1) { compareList.splice(idx, 1) }
+  localStorage.setItem('movin_compare', JSON.stringify(compareList))
+  updateCompareBar()
+}
+
+window.toggleCompare = toggleCompare
+window.updateCompareBar = updateCompareBar
+window.clearCompare = clearCompare
+window.removeCompare = removeCompare
+
 window.toast = toast
 window.formatPrice = formatPrice
 window.timeAgo = timeAgo
@@ -327,6 +440,7 @@ function renderFooter() {
             '<a href="' + root + 'pages/search.html?listing_type=rent">Properties to rent</a>' +
             '<a href="' + root + 'pages/search.html?listing_type=share">Sharing</a>' +
             '<a href="' + root + 'pages/map-search.html">Map search</a>' +
+            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
@@ -373,6 +487,30 @@ function renderFooter() {
     '</div>'
 }
 window.renderFooter = renderFooter
+
+// ── Recently viewed ───────────────────────────────────────────────────────────
+function renderRecentlyViewed(containerId, excludeId) {
+  var el = document.getElementById(containerId)
+  if (!el) return
+  try {
+    var rv = JSON.parse(localStorage.getItem('movin_rv') || '[]')
+    rv = rv.filter(function(x) { return x.id !== excludeId }).slice(0, 4)
+    if (!rv.length) { el.style.display = 'none'; return }
+    el.innerHTML = rv.map(function(x) {
+      var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
+      var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
+      var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+      return '<div onclick="window.location.href=\'' + root + 'listing.html?id=' + x.id + '\'" style="flex:0 0 140px;background:var(--white,#fff);border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
+        '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
+        '<div style="padding:.6rem">' +
+          '<div style="font-size:11px;font-weight:500;color:var(--text,#111);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.title + '</div>' +
+          '<div style="font-size:12px;color:#1a5c45;font-weight:500;margin-top:2px">€' + Number(x.price).toLocaleString('en-IE') + (x.type === 'rent' ? '/mo' : '') + '</div>' +
+        '</div>' +
+      '</div>'
+    }).join('')
+  } catch(e) { el.style.display = 'none' }
+}
+window.renderRecentlyViewed = renderRecentlyViewed
 
 // ── Recently viewed ───────────────────────────────────────────────────────────
 function renderRecentlyViewed(containerId, excludeId) {
