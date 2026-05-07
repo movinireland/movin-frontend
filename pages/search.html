@@ -132,7 +132,7 @@
   <!-- Quick links bar -->
   <div class="quick-links">
     <a href="map-search.html" class="ql-btn"><svg width="13" height="13" style="color:#1a5c45"><use href="/icons.svg#icon-map"/></svg> Map view</a>
-    <button class="ql-btn" onclick="document.getElementById('filter-modal').classList.add('open')"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Create alert</button>
+    <button class="ql-btn" onclick="createAlert()" id="create-alert-btn"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Create alert</button>
     <a href="compare.html" class="ql-btn"><svg width="13" height="13" style="color:#555"><use href="/icons.svg#icon-chart"/></svg> Compare</a>
   </div>
 
@@ -346,7 +346,48 @@
     function handleSearchKey(e) {
       if (e.key === 'Enter') {
         document.getElementById('suggestions').classList.remove('open')
-        doSearch()
+        function createAlert() {
+      if (!API.auth.isLoggedIn()) {
+        if (confirm('Sign in to create search alerts. Go to login?')) window.location.href = 'login.html'
+        return
+      }
+      var params = buildSearchParams()
+      var label = (params.listing_type === 'sale' ? 'For Sale' : params.listing_type === 'rent' ? 'To Rent' : 'Properties') +
+        (params.county ? ' in ' + params.county : ' in Ireland') +
+        (params.bedrooms ? ', ' + params.bedrooms + '+ beds' : '')
+
+      fetch(window.MOVIN_API_URL + '/api/alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('movin_token') },
+        body: JSON.stringify({ ...params, label: label })
+      })
+      .then(function(r) { return r.json() })
+      .then(function(data) {
+        if (data.id) {
+          toast('🔔 Alert created! We will email you when new listings match.', 'success')
+          document.getElementById('create-alert-btn').textContent = '✓ Alert created'
+          document.getElementById('create-alert-btn').style.color = '#1a5c45'
+        } else {
+          toast(data.error || 'Could not create alert', 'error')
+        }
+      })
+      .catch(function() { toast('Could not create alert', 'error') })
+    }
+
+    function buildSearchParams() {
+      var params = { listing_type: activeType || 'sale' }
+      var q = document.getElementById('search-q').value.trim()
+      if (q) params.county = q
+      var beds = document.getElementById('f-beds') ? document.getElementById('f-beds').value : ''
+      var min  = document.getElementById('f-min')  ? document.getElementById('f-min').value  : ''
+      var max  = document.getElementById('f-max')  ? document.getElementById('f-max').value  : ''
+      if (beds) params.bedrooms  = beds
+      if (min)  params.min_price = min
+      if (max)  params.max_price = max
+      return params
+    }
+
+    doSearch()
       }
       if (e.key === 'Escape') {
         document.getElementById('suggestions').classList.remove('open')

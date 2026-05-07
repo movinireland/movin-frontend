@@ -636,6 +636,83 @@
     // Init push after login check
     setTimeout(initPush, 1000)
 
+    // ── Search Alerts ──────────────────────────────────────────────────────
+    async function loadAlerts() {
+      var el = document.getElementById('alerts-list')
+      try {
+        var token = localStorage.getItem('movin_token')
+        var res = await fetch(window.MOVIN_API_URL + '/api/alerts', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        })
+        var data = await res.json()
+        var alerts = Array.isArray(data) ? data : []
+
+        if (!alerts.length) {
+          el.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa">' +
+            '<div style="font-size:36px;margin-bottom:.75rem">🔔</div>' +
+            '<div style="font-size:14px;font-weight:500;color:#111;margin-bottom:.5rem">No search alerts yet</div>' +
+            '<p style="font-size:13px;color:#aaa;margin-bottom:1rem">Go to search, set your filters and click "Create alert"</p>' +
+            '<a href="search.html" class="btn btn-primary btn-sm">Browse listings</a>' +
+          '</div>'
+          return
+        }
+
+        el.innerHTML = alerts.map(function(a) {
+          var c = JSON.parse(a.criteria || '{}')
+          var tags = [
+            c.listing_type ? (c.listing_type === 'sale' ? 'For Sale' : c.listing_type === 'rent' ? 'To Rent' : 'Sharing') : null,
+            c.county || null,
+            c.bedrooms ? c.bedrooms + '+ beds' : null,
+            c.min_price ? '€' + parseInt(c.min_price).toLocaleString('en-IE') + '+' : null,
+            c.max_price ? 'up to €' + parseInt(c.max_price).toLocaleString('en-IE') : null
+          ].filter(Boolean)
+
+          return '<div style="background:var(--white,#fff);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem">' +
+            '<div style="width:40px;height:40px;background:#e9f4ef;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🔔</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="font-size:14px;font-weight:500;color:var(--text,#111);margin-bottom:4px">' + a.label + '</div>' +
+              '<div style="display:flex;gap:4px;flex-wrap:wrap">' +
+                tags.map(function(t) { return '<span style="background:#f5f2ec;color:#555;font-size:11px;padding:2px 8px;border-radius:10px">' + t + '</span>' }).join('') +
+              '</div>' +
+              (a.last_sent ? '<div style="font-size:11px;color:#aaa;margin-top:4px">Last sent: ' + new Date(a.last_sent).toLocaleDateString('en-IE') + '</div>' : '') +
+            '</div>' +
+            '<div style="display:flex;gap:6px;flex-shrink:0">' +
+              '<button onclick="toggleAlert('' + a.id + '',this)" style="background:' + (a.is_active ? '#e9f4ef' : '#f5f2ec') + ';color:' + (a.is_active ? '#1a5c45' : '#aaa') + ';border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">' + (a.is_active ? '● On' : '○ Off') + '</button>' +
+              '<button onclick="deleteAlert('' + a.id + '',this)" style="background:#fee2e2;color:#dc2626;border:none;border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer;font-family:inherit">Delete</button>' +
+            '</div>' +
+          '</div>'
+        }).join('')
+      } catch(e) {
+        el.innerHTML = '<div style="color:#aaa;text-align:center;padding:2rem">' + e.message + '</div>'
+      }
+    }
+
+    async function toggleAlert(id, btn) {
+      try {
+        var token = localStorage.getItem('movin_token')
+        var res = await fetch(window.MOVIN_API_URL + '/api/alerts/' + id + '/toggle', {
+          method: 'PUT', headers: { 'Authorization': 'Bearer ' + token }
+        })
+        var data = await res.json()
+        btn.textContent = data.is_active ? '● On' : '○ Off'
+        btn.style.background = data.is_active ? '#e9f4ef' : '#f5f2ec'
+        btn.style.color = data.is_active ? '#1a5c45' : '#aaa'
+        toast(data.is_active ? 'Alert enabled' : 'Alert paused', 'info')
+      } catch(e) { toast(e.message, 'error') }
+    }
+
+    async function deleteAlert(id, btn) {
+      if (!confirm('Delete this search alert?')) return
+      try {
+        var token = localStorage.getItem('movin_token')
+        await fetch(window.MOVIN_API_URL + '/api/alerts/' + id, {
+          method: 'DELETE', headers: { 'Authorization': 'Bearer ' + token }
+        })
+        btn.closest('div[style*="border-radius:12px"]').remove()
+        toast('Alert deleted')
+      } catch(e) { toast(e.message, 'error') }
+    }
+
     // Get user info from token
     try {
       var payload = JSON.parse(atob(token.split('.')[1]))
