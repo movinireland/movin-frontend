@@ -330,7 +330,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc">${listing.address_area || listing.county}</div>
+        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">
@@ -387,9 +387,23 @@ function renderFooter() {
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/about.html">About us</a>' +
             '<a href="' + root + 'pages/list.html">List your property</a>' +
+            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
             '<a href="mailto:hello@movin.ie">Contact</a>' +
             '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
             '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Neighbourhood guides</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin">Dublin 4</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%206&county=Dublin">Dublin 6</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Rathmines&county=Dublin">Rathmines</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin">Blackrock</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Malahide&county=Dublin">Malahide</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Swords&county=Dublin">Swords</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Galway%20City%20Centre&county=Galway">Galway City</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Cork%20City%20Centre&county=Cork">Cork City</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
@@ -487,7 +501,6 @@ if (document.readyState === 'loading') {
 } else {
   loadIconSprite()
 }
-
 // ── Cookie Consent Banner ────────────────────────────────────────────────────
 function initCookieConsent() {
   if (localStorage.getItem('movin_cookie_consent')) return
