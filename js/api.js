@@ -192,6 +192,22 @@ const saved = {
   }
 }
 
+// ── Push notifications ───────────────────────────────────────────────────────
+
+const push = {
+  async getVapidKey() {
+    return request('GET', '/api/push/vapid-key')
+  },
+
+  async subscribe(subscription) {
+    return request('POST', '/api/push/subscribe', { subscription })
+  },
+
+  async unsubscribe(endpoint) {
+    return request('POST', '/api/push/unsubscribe', { endpoint })
+  }
+}
+
 // ── Export ────────────────────────────────────────────────────────────────────
 
-window.API = { auth, listings, photos, enquiries, payments, saved, getUser, getToken }
+window.API = { auth, listings, photos, enquiries, payments, saved, push, getUser, getToken }
