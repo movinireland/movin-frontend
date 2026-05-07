@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()</script>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Neighbourhood Guide – Movin.ie</title>
+<meta id="meta-desc" name="description" content="Neighbourhood guide on Movin.ie"/>
+<meta id="og-title" property="og:title" content="Neighbourhood Guide – Movin.ie"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+<meta name="theme-color" content="#1a5c45"/>
+<style>
+:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+.ng-hero{background:linear-gradient(135deg,var(--g),var(--gd));padding:2.5rem 1.25rem 2rem;color:#fff;position:relative;overflow:hidden}
+.ng-hero::before{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.04);top:-150px;right:-100px;pointer-events:none}
+.ng-breadcrumb{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:.65rem;display:flex;align-items:center;gap:6px}
+.ng-breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none}
+.ng-breadcrumb a:hover{color:#fff}
+.ng-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:.35rem;line-height:1.15;letter-spacing:-.5px;position:relative;z-index:1}
+.ng-subtitle{font-size:14px;color:rgba(255,255,255,.7);font-weight:300;margin-bottom:1.5rem;position:relative;z-index:1}
+.ng-stats{display:flex;gap:.85rem;flex-wrap:wrap;position:relative;z-index:1}
+.ng-stat{background:rgba(255,255,255,.12);border-radius:12px;padding:.65rem 1rem;text-align:center;backdrop-filter:blur(4px)}
+.ng-stat-n{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#fff}
+.ng-stat-l{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+
+/* Content */
+.ng-wrap{max-width:900px;margin:0 auto;padding:1.25rem 1rem 4rem}
+.ng-section{margin-bottom:2rem}
+.ng-section h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text,#111);margin-bottom:.85rem;padding-bottom:.5rem;border-bottom:2px solid var(--gl,#e9f4ef)}
+.ng-section p{font-size:14px;color:#666;line-height:1.8;font-weight:300;margin-bottom:.75rem}
+.ng-section p strong{color:var(--text,#111);font-weight:500}
+
+/* Pros/cons */
+.pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+@media(max-width:500px){.pros-cons{grid-template-columns:1fr}}
+.pros-card{background:var(--gl,#e9f4ef);border-radius:14px;padding:1rem 1.1rem}
+.cons-card{background:#fdf4f0;border-radius:14px;padding:1rem 1.1rem}
+.pc-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.65rem}
+.pros-card .pc-title{color:var(--g,#1a5c45)}
+.cons-card .pc-title{color:#c9642a}
+.pc-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-bottom:.5rem;color:#555;line-height:1.5}
+.pc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.pros-card .pc-dot{background:var(--g,#1a5c45)}
+.cons-card .pc-dot{background:#e07b3f}
+
+/* Quick facts */
+.quick-facts{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem;margin-bottom:1.5rem}
+@media(min-width:500px){.quick-facts{grid-template-columns:repeat(4,1fr)}}
+.qf-item{background:var(--white,#fff);border:1px solid var(--border);border-radius:12px;padding:.75rem;text-align:center}
+.qf-icon{font-size:22px;margin-bottom:.35rem}
+.qf-val{font-size:14px;font-weight:600;color:var(--text,#111)}
+.qf-label{font-size:10px;color:#aaa;margin-top:1px}
+
+/* Listings section */
+.ng-listings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+@media(min-width:600px){.ng-listings-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* Nearby areas */
+.nearby-areas{display:flex;flex-wrap:wrap;gap:8px;margin-top:.75rem}
+.nearby-area-chip{background:var(--white,#fff);border:1.5px solid var(--border);border-radius:50px;padding:7px 16px;font-size:13px;font-weight:500;color:#555;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.nearby-area-chip:hover{border-color:var(--g);color:var(--g)}
+
+/* Dark mode */
+[data-theme="dark"] .ng-section h2{color:#e8e8e8}
+[data-theme="dark"] .ng-section p{color:#888}
+[data-theme="dark"] .qf-item{background:#1a1a1a;border-color:#2a2a2a}
+[data-theme="dark"] .qf-val{color:#e8e8e8}
+[data-theme="dark"] .pros-card{background:#0d2e1e}
+[data-theme="dark"] .cons-card{background:#2a1a10}
+[data-theme="dark"] .pc-item{color:#aaa}
+[data-theme="dark"] .nearby-area-chip{background:#1a1a1a;border-color:#2a2a2a;color:#aaa}
+</style>
+</head>
+<body>
+<nav class="nav" id="main-nav"></nav>
+
+<div class="ng-hero">
+  <div class="ng-breadcrumb">
+    <a href="../index.html">Home</a> ›
+    <a href="area.html" id="bc-county-link">Properties</a> ›
+    <span id="bc-area">Loading…</span>
+  </div>
+  <h1 class="ng-title" id="ng-title">Neighbourhood Guide</h1>
+  <p class="ng-subtitle" id="ng-subtitle">Discover what it's like to live here</p>
+  <div class="ng-stats" id="ng-stats">
+    <div class="ng-stat"><div class="ng-stat-n" id="stat-listings">—</div><div class="ng-stat-l">For sale</div></div>
+    <div class="ng-stat"><div class="ng-stat-n" id="stat-avg">—</div><div class="ng-stat-l">Avg price</div></div>
+    <div class="ng-stat"><div class="ng-stat-n" id="stat-rent">—</div><div class="ng-stat-l">Avg rent/mo</div></div>
+  </div>
+</div>
+
+<div class="ng-wrap">
+
+  <!-- Quick facts -->
+  <div class="ng-section">
+    <div class="quick-facts" id="quick-facts">
+      <div class="qf-item"><div class="qf-icon">🏠</div><div class="qf-val" id="qf-type">—</div><div class="qf-label">Common type</div></div>
+      <div class="qf-item"><div class="qf-icon">📐</div><div class="qf-val" id="qf-size">—</div><div class="qf-label">Avg size</div></div>
+      <div class="qf-item"><div class="qf-icon">🛏</div><div class="qf-val" id="qf-beds">—</div><div class="qf-label">Avg beds</div></div>
+      <div class="qf-item"><div class="qf-icon">📅</div><div class="qf-val" id="qf-new">—</div><div class="qf-label">New this month</div></div>
+    </div>
+  </div>
+
+  <!-- About section — dynamic per area -->
+  <div class="ng-section" id="about-section"></div>
+
+  <!-- Pros & Cons -->
+  <div class="ng-section" id="pros-cons-section"></div>
+
+  <!-- Live listings -->
+  <div class="ng-section">
+    <h2 id="listings-heading">Properties for sale</h2>
+    <div id="ng-listings-grid" class="ng-listings-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa"><div class="spinner" style="margin:0 auto 1rem"></div></div>
+    </div>
+    <div style="margin-top:1rem;text-align:center">
+      <a id="view-all-link" href="search.html" class="btn btn-primary">View all listings →</a>
+    </div>
+  </div>
+
+  <!-- Nearby areas -->
+  <div class="ng-section" id="nearby-section">
+    <h2>Nearby areas</h2>
+    <div class="nearby-areas" id="nearby-areas"></div>
+  </div>
+
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+renderNav()
+
+var params = new URLSearchParams(window.location.search)
+var area   = params.get('area')   || ''
+var county = params.get('county') || ''
+
+// ── Neighbourhood data ─────────────────────────────────────────────────────
+var NEIGHBOURHOOD_DATA = {
+  'Dublin 4': {
+    desc: 'Dublin 4 is one of Ireland\'s most prestigious postcodes, home to embassies, Georgian townhouses and some of the country\'s finest restaurants. Ballsbridge, Donnybrook and Sandymount sit within its boundaries.',
+    vibe: 'Upmarket · Leafy · Embassy belt · Rugby country',
+    pros: ['Excellent restaurants and cafes','Walking distance to city centre','Prestigious address','Beautiful Georgian architecture','Great schools nearby'],
+    cons: ['Among the most expensive in Dublin','Parking can be difficult','Very competitive property market','Traffic congestion during rush hour']
+  },
+  'Dublin 6': {
+    desc: 'Dublin 6 — covering Ranelagh, Rathmines and Rathgar — is beloved by young professionals and families alike. Excellent cafes, restaurants and a vibrant village atmosphere make it one of the most desirable postcodes.',
+    vibe: 'Vibrant · Café culture · Young professionals · Family friendly',
+    pros: ['Excellent café and restaurant scene','Great transport links','Strong community feel','Period properties with character','Close to Luas and city centre'],
+    cons: ['Premium prices for the area','Some streets can be noisy','Parking limited in village areas','Very competitive rental market']
+  },
+  'Dublin 2': {
+    desc: 'Dublin 2 is the heart of the city — home to Grafton Street, St Stephen\'s Green, Merrion Square and many of Dublin\'s iconic buildings. Living here puts you at the centre of everything.',
+    vibe: 'City centre · Cultural hub · Business district · Cosmopolitan',
+    pros: ['Everything on your doorstep','World-class restaurants and bars','Cultural institutions nearby','Excellent public transport','Lively atmosphere'],
+    cons: ['City centre noise and traffic','Limited green space','Higher cost of living','Parking expensive','Can feel busy']
+  },
+  'Rathmines': {
+    desc: 'Rathmines is one of Dublin\'s most popular urban villages, known for its distinctive town hall clock tower, excellent cafes and strong student and young professional community.',
+    vibe: 'Urban village · Students · Young professionals · Great food',
+    pros: ['Lively café and bar scene','Good transport links','Strong community','Period flat conversions','Close to Portobello and Ranelagh'],
+    cons: ['Heavy traffic on main street','Competitive rental market','Parking difficult','Some areas very busy on weekends']
+  },
+  'Blackrock': {
+    desc: 'Blackrock is a thriving coastal village in South County Dublin, offering the best of suburban living with excellent DART access, a weekly market, and a strong sense of community.',
+    vibe: 'Coastal village · DART access · Family friendly · Upmarket',
+    pros: ['Excellent DART connection to city','Blackrock Market on weekends','Great schools','Coastal walks and parks','Village atmosphere'],
+    cons: ['Premium property prices','Traffic on N11 can be heavy','Limited nightlife compared to city','Competitive property market']
+  },
+  'Swords': {
+    desc: 'Swords is North County Dublin\'s largest town, offering excellent value compared to the city, with strong transport links including the M1 motorway and proximity to Dublin Airport.',
+    vibe: 'Suburban · Good value · Family friendly · Transport links',
+    pros: ['Good value for money','Close to Dublin Airport','Large shopping centres','New developments','Strong community'],
+    cons: ['Further from city centre','Limited direct DART/Luas','Traffic on N1 can be heavy','Less character than village areas']
+  },
+  'Malahide': {
+    desc: 'Malahide is a picturesque coastal village in North County Dublin, famous for its castle, marina and beach. It offers an excellent quality of life with great DART access.',
+    vibe: 'Coastal · Village charm · Affluent · Great quality of life',
+    pros: ['Beautiful coastal setting','Malahide Castle and grounds','Excellent DART access','Great restaurants','Strong community feel'],
+    cons: ['Premium prices','Limited availability','Popular so competitive market','Traffic at peak times']
+  }
+}
+
+var DEFAULT_DATA = {
+  desc: county + (area ? ', ' + area : '') + ' is a sought-after location in Ireland with a mix of property types to suit all buyers and renters. Browse the latest listings below to find your next home.',
+  vibe: 'Residential · Community · Ireland',
+  pros: ['Good community spirit','Range of property types','Local amenities nearby','Access to schools and services'],
+  cons: ['Market can be competitive','Check transport links for your commute']
+}
+
+var NEARBY_MAP = {
+  'Dublin 4': ['Dublin 2','Dublin 6','Blackrock','Sandymount'],
+  'Dublin 6': ['Rathmines','Dublin 4','Dublin 8','Terenure'],
+  'Dublin 2': ['Dublin 1','Dublin 4','Dublin 8','Dublin 6'],
+  'Rathmines': ['Dublin 6','Dublin 8','Dublin 4','Ranelagh'],
+  'Blackrock': ['Dún Laoghaire','Stillorgan','Dublin 4','Monkstown'],
+  'Swords': ['Malahide','Donabate','Balbriggan','Dublin 15'],
+  'Malahide': ['Swords','Portmarnock','Kinsealy','Baldoyle']
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+;(function init() {
+  var title = area ? area + ', ' + county : county
+  document.title = title + ' Area Guide – Movin.ie'
+  document.getElementById('ng-title').textContent = area || county
+  document.getElementById('ng-subtitle').textContent = county + (area ? ' · ' + county : '') + ' · Neighbourhood guide'
+  document.getElementById('bc-area').textContent = area || county
+  document.getElementById('bc-county-link').href = 'area.html?county=' + encodeURIComponent(county)
+  document.getElementById('bc-county-link').textContent = county
+
+  document.getElementById('meta-desc').content = 'Discover ' + (area||county) + ' — property prices, what it\'s like to live there, pros & cons, and latest listings on Movin.ie.'
+  document.getElementById('og-title').content = (area||county) + ' Area Guide – Movin.ie'
+  document.getElementById('view-all-link').href = 'search.html?county=' + encodeURIComponent(county) + (area ? '&q=' + encodeURIComponent(area) : '')
+  document.getElementById('listings-heading').textContent = 'Properties in ' + (area || county)
+
+  var data = NEIGHBOURHOOD_DATA[area] || NEIGHBOURHOOD_DATA[county] || DEFAULT_DATA
+
+  // About section
+  document.getElementById('about-section').innerHTML =
+    '<h2>About ' + (area || county) + '</h2>' +
+    '<p>' + data.desc + '</p>' +
+    '<p style="font-size:13px;font-weight:500;color:var(--g,#1a5c45);background:var(--gl,#e9f4ef);border-radius:10px;padding:.65rem 1rem;display:inline-block">' + data.vibe + '</p>'
+
+  // Pros & cons
+  document.getElementById('pros-cons-section').innerHTML =
+    '<h2>Living in ' + (area || county) + '</h2>' +
+    '<div class="pros-cons">' +
+      '<div class="pros-card"><div class="pc-title">✓ Pros</div>' +
+        data.pros.map(function(p) { return '<div class="pc-item"><div class="pc-dot"></div>' + p + '</div>' }).join('') +
+      '</div>' +
+      '<div class="cons-card"><div class="pc-title">✗ Cons</div>' +
+        data.cons.map(function(c) { return '<div class="pc-item"><div class="pc-dot"></div>' + c + '</div>' }).join('') +
+      '</div>' +
+    '</div>'
+
+  // Nearby areas
+  var nearby = NEARBY_MAP[area] || NEARBY_MAP[county] || []
+  if (nearby.length) {
+    document.getElementById('nearby-areas').innerHTML = nearby.map(function(n) {
+      return '<a href="neighbourhood.html?area=' + encodeURIComponent(n) + '&county=' + encodeURIComponent(county) + '" class="nearby-area-chip">' + n + '</a>'
+    }).join('')
+  } else {
+    document.getElementById('nearby-section').style.display = 'none'
+  }
+
+  loadListings()
+  if (typeof renderFooter === 'function') renderFooter()
+})()
+
+async function loadListings() {
+  var grid = document.getElementById('ng-listings-grid')
+  try {
+    var searchParams = new URLSearchParams({ county: county, limit: 6 })
+    if (area && !area.startsWith('Dublin')) searchParams.append('q', area)
+
+    var [saleRes, rentRes] = await Promise.all([
+      fetch(window.MOVIN_API_URL + '/api/listings?county=' + encodeURIComponent(county) + '&listing_type=sale&limit=50').then(function(r){return r.json()}),
+      fetch(window.MOVIN_API_URL + '/api/listings?county=' + encodeURIComponent(county) + '&listing_type=rent&limit=50').then(function(r){return r.json()})
+    ])
+
+    // Stats
+    var salePrices = (saleRes.listings||[]).map(function(l){return parseInt(l.price)}).filter(Boolean)
+    var rentPrices = (rentRes.listings||[]).map(function(l){return parseInt(l.price)}).filter(Boolean)
+
+    document.getElementById('stat-listings').textContent = (saleRes.total||0).toLocaleString('en-IE')
+    if (salePrices.length) {
+      var avg = Math.round(salePrices.reduce(function(a,b){return a+b},0)/salePrices.length)
+      document.getElementById('stat-avg').textContent = avg >= 1000000 ? '€'+(avg/1000000).toFixed(1)+'m' : '€'+Math.round(avg/1000)+'k'
+    }
+    if (rentPrices.length) {
+      var avgR = Math.round(rentPrices.reduce(function(a,b){return a+b},0)/rentPrices.length)
+      document.getElementById('stat-rent').textContent = '€'+avgR.toLocaleString('en-IE')
+    }
+
+    // Quick facts
+    var allListings = (saleRes.listings||[]).concat(rentRes.listings||[])
+    if (allListings.length) {
+      var types = {}
+      allListings.forEach(function(l){ if(l.property_type) types[l.property_type]=(types[l.property_type]||0)+1 })
+      var topType = Object.keys(types).sort(function(a,b){return types[b]-types[a]})[0]
+      var avgBeds = Math.round(allListings.filter(function(l){return l.bedrooms}).reduce(function(s,l){return s+l.bedrooms},0)/allListings.filter(function(l){return l.bedrooms}).length)
+      var avgSize = Math.round(allListings.filter(function(l){return l.floor_size_m2}).reduce(function(s,l){return s+parseInt(l.floor_size_m2)},0)/allListings.filter(function(l){return l.floor_size_m2}).length)
+      var thisMonth = allListings.filter(function(l){ return l.created_at && (Date.now()-new Date(l.created_at).getTime())<30*86400000 }).length
+
+      if (topType) document.getElementById('qf-type').textContent = topType.charAt(0).toUpperCase()+topType.slice(1)
+      if (avgSize) document.getElementById('qf-size').textContent = avgSize + 'm²'
+      if (avgBeds) document.getElementById('qf-beds').textContent = avgBeds + ' beds'
+      document.getElementById('qf-new').textContent = thisMonth
+    }
+
+    // Show listings grid
+    var savedIds = API.auth.isLoggedIn() ? (await API.saved.all().catch(function(){return[]})).map(function(s){return s.id}) : []
+    var show = (saleRes.listings||[]).slice(0,6)
+    if (!show.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa">No listings found yet in this area.</div>'
+      return
+    }
+    grid.innerHTML = show.map(function(l) { return buildPropertyCard(l, savedIds) }).join('')
+  } catch(e) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa">' + e.message + '</div>'
+  }
+}
+</script>
+</body>
+</html>

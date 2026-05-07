@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <script>
-(function(){
-  var t=localStorage.getItem('movin_theme');
-  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
-})()
-</script>
+<script>(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()</script>
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Agent Profile – Movin.ie</title>
+<meta id="og-title" property="og:title" content="Agent Profile – Movin.ie"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/main.css"/>
 <link rel="manifest" href="/manifest.json"/>
@@ -17,41 +13,119 @@
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
 <meta name="theme-color" content="#1a5c45"/>
 <style>
-:root{--g:#1a5c45;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
-.agent-hero{background:linear-gradient(135deg,var(--g),#0e3d2e);padding:2.5rem 1.5rem;color:#fff}
-.agent-card{display:flex;gap:1.25rem;align-items:center;max-width:700px;margin:0 auto}
-.agent-av{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;flex-shrink:0;border:3px solid rgba(255,255,255,.3)}
-.agent-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:.25rem}
-.agent-meta{font-size:13px;color:rgba(255,255,255,.7)}
-.agent-stats{display:flex;gap:1.5rem;margin-top:.75rem}
-.agent-stat-n{font-size:20px;font-weight:700}
-.agent-stat-l{font-size:11px;color:rgba(255,255,255,.6)}
-.listings-wrap{max-width:700px;margin:0 auto;padding:1.5rem 1rem 4rem}
-.listings-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#111;margin-bottom:1rem}
-.spinner{width:24px;height:24px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:2rem auto;display:block}
-@keyframes spin{to{transform:rotate(360deg)}}
+:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+
+/* Hero */
+.agent-hero{background:linear-gradient(135deg,var(--g),var(--gd));padding:2.5rem 1.25rem 2rem;color:#fff}
+.agent-hero-inner{max-width:900px;margin:0 auto}
+.agent-card{display:flex;gap:1.25rem;align-items:flex-start}
+.agent-av{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;flex-shrink:0;border:3px solid rgba(255,255,255,.3)}
+.agent-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:.25rem;line-height:1.15}
+.agent-agency{font-size:14px;color:rgba(255,255,255,.8);font-weight:500;margin-bottom:.2rem}
+.agent-meta{font-size:12px;color:rgba(255,255,255,.6)}
+.agent-stats{display:flex;gap:1.25rem;margin-top:1rem;flex-wrap:wrap}
+.agent-stat{text-align:center}
+.agent-stat-n{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
+.agent-stat-l{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.agent-verified{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;margin-top:.5rem}
+
+/* Stars */
+.stars{display:inline-flex;gap:2px}
+.star{font-size:16px;line-height:1}
+.star.filled{color:#e07b3f}
+.star.empty{color:rgba(255,255,255,.3)}
+.rating-num{font-size:22px;font-weight:700;margin-right:6px}
+
+/* Tabs */
+.agent-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--white,#fff);overflow-x:auto;scrollbar-width:none}
+.agent-tabs::-webkit-scrollbar{display:none}
+.agent-tab{padding:.85rem 1.25rem;font-size:14px;font-weight:500;color:#888;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;margin-bottom:-1px;-webkit-tap-highlight-color:transparent;flex-shrink:0;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+.agent-tab.active{color:var(--g);border-bottom-color:var(--g)}
+
+/* Content wrap */
+.agent-content{max-width:900px;margin:0 auto;padding:1.25rem 1rem 4rem}
+
+/* Review card */
+.review-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.85rem}
+.review-header{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.review-av{width:38px;height:38px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:var(--g);flex-shrink:0}
+.review-name{font-size:14px;font-weight:600;color:var(--text,#111)}
+.review-date{font-size:11px;color:#bbb;margin-top:1px}
+.review-stars{display:flex;gap:2px;margin-bottom:.5rem}
+.review-star{font-size:14px}
+.review-star.on{color:#e07b3f}
+.review-star.off{color:#e8e4dc}
+.review-text{font-size:13px;color:#666;line-height:1.7;font-weight:300}
+.review-listing{font-size:11px;color:#aaa;margin-top:.5rem;display:flex;align-items:center;gap:4px}
+
+/* Write review */
+.write-review-card{background:var(--gl,#e9f4ef);border:1.5px solid #c8dfd4;border-radius:16px;padding:1.25rem;margin-bottom:1.5rem}
+.write-review-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--g);margin-bottom:.75rem}
+.star-picker{display:flex;gap:6px;margin-bottom:1rem}
+.star-pick{font-size:28px;cursor:pointer;transition:transform .1s;-webkit-tap-highlight-color:transparent;color:#e8e4dc;line-height:1}
+.star-pick.on{color:#e07b3f}
+.star-pick:active{transform:scale(.85)}
+
+/* Empty state */
+.empty-reviews{text-align:center;padding:2.5rem 1rem;color:#aaa}
+.empty-reviews-icon{font-size:40px;margin-bottom:.75rem}
+
+/* Dark mode */
+[data-theme="dark"] .review-card{background:#1a1a1a;border-color:#2a2a2a}
+[data-theme="dark"] .review-name{color:#e8e8e8}
+[data-theme="dark"] .review-text{color:#888}
+[data-theme="dark"] .write-review-card{background:#0d2e1e;border-color:#1a4a2e}
+[data-theme="dark"] .agent-tabs{background:#1a1a1a;border-bottom-color:#2a2a2a}
+[data-theme="dark"] .agent-tab.active{color:#2ecc8a;border-bottom-color:#2ecc8a}
 </style>
 </head>
 <body>
 <nav class="nav" id="main-nav"></nav>
 
 <div id="agent-hero" class="agent-hero">
-  <div class="agent-card">
-    <div class="agent-av" id="av-letter">?</div>
-    <div>
-      <div class="agent-name" id="agent-name">Loading…</div>
-      <div class="agent-meta" id="agent-meta">Movin.ie member</div>
-      <div class="agent-stats">
-        <div><div class="agent-stat-n" id="stat-listings">—</div><div class="agent-stat-l">Active listings</div></div>
-        <div><div class="agent-stat-n" id="stat-views">—</div><div class="agent-stat-l">Total views</div></div>
+  <div class="agent-hero-inner">
+    <div class="agent-card">
+      <div class="agent-av" id="av-letter">?</div>
+      <div style="flex:1">
+        <div class="agent-name" id="agent-name">Loading…</div>
+        <div class="agent-agency" id="agent-agency" style="display:none"></div>
+        <div class="agent-meta" id="agent-meta">Movin.ie member</div>
+        <div id="agent-verified" class="agent-verified" style="display:none">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Verified member
+        </div>
+        <div class="agent-stats" id="agent-stats">
+          <div class="agent-stat"><div class="agent-stat-n" id="stat-listings">—</div><div class="agent-stat-l">Listings</div></div>
+          <div class="agent-stat"><div class="agent-stat-n" id="stat-views">—</div><div class="agent-stat-l">Views</div></div>
+          <div class="agent-stat" id="stat-rating-wrap" style="display:none">
+            <div class="agent-stat-n" id="stat-rating">—</div>
+            <div class="agent-stat-l">Rating</div>
+          </div>
+          <div class="agent-stat" id="stat-reviews-wrap" style="display:none">
+            <div class="agent-stat-n" id="stat-reviews">—</div>
+            <div class="agent-stat-l">Reviews</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="listings-wrap">
-  <div class="listings-title">All listings</div>
-  <div id="agent-listings"><div class="spinner"></div></div>
+<!-- Tabs -->
+<div class="agent-tabs">
+  <button class="agent-tab active" onclick="showTab('listings',this)">Listings</button>
+  <button class="agent-tab" onclick="showTab('reviews',this)">Reviews</button>
+</div>
+
+<!-- Listings tab -->
+<div id="tab-listings" class="agent-content">
+  <div id="agent-listings"><div style="text-align:center;padding:3rem"><div class="spinner" style="margin:0 auto"></div></div></div>
+</div>
+
+<!-- Reviews tab -->
+<div id="tab-reviews" class="agent-content" style="display:none">
+  <div id="write-review-wrap"></div>
+  <div id="reviews-list"><div style="text-align:center;padding:3rem"><div class="spinner" style="margin:0 auto"></div></div></div>
 </div>
 
 <footer class="site-footer" id="site-footer"></footer>
@@ -62,43 +136,174 @@
 <script src="../js/app.js"></script>
 <script>
 renderNav()
-
 var agentId = new URLSearchParams(window.location.search).get('id')
+var agentName = ''
+var selectedRating = 0
+
+function showTab(tab, btn) {
+  document.getElementById('tab-listings').style.display = tab === 'listings' ? 'block' : 'none'
+  document.getElementById('tab-reviews').style.display  = tab === 'reviews'  ? 'block' : 'none'
+  document.querySelectorAll('.agent-tab').forEach(function(b) { b.classList.remove('active') })
+  btn.classList.add('active')
+  if (tab === 'reviews' && !document.getElementById('reviews-list').dataset.loaded) {
+    loadReviews()
+  }
+}
+
+function starsHTML(rating, total) {
+  var s = ''
+  for (var i = 1; i <= 5; i++) {
+    s += '<span class="star ' + (i <= Math.round(rating) ? 'filled' : 'empty') + '">★</span>'
+  }
+  return s
+}
 
 async function loadAgent() {
   if (!agentId) { window.location.href = 'search.html'; return }
   try {
-    // Fetch agent's active listings
-    var res = await fetch(window.MOVIN_API_URL + '/api/listings?user_id=' + agentId + '&limit=50')
+    var res  = await fetch(window.MOVIN_API_URL + '/api/listings?user_id=' + agentId + '&limit=50')
     var data = await res.json()
     var listings = data.listings || []
 
-    if (!listings.length) {
-      document.getElementById('agent-listings').innerHTML =
-        '<div style="text-align:center;padding:2rem;color:#aaa">No active listings found.</div>'
-      return
-    }
+    var name = listings.length ? (listings[0].lister_name || 'Property owner') : 'Property owner'
+    agentName = name
+    var totalViews = listings.reduce(function(s,l) { return s+(l.views||0) }, 0)
 
-    // Get agent name from first listing
-    var name = listings[0].lister_name || 'Property owner'
-    var totalViews = listings.reduce(function(s,l) { return s + (l.views||0) }, 0)
-
-    document.getElementById('av-letter').textContent = name.charAt(0).toUpperCase()
-    document.getElementById('agent-name').textContent = name
-    document.getElementById('agent-meta').textContent = 'Listed on Movin.ie · ' + listings[0].county
+    document.getElementById('av-letter').textContent   = name.charAt(0).toUpperCase()
+    document.getElementById('agent-name').textContent  = name
+    document.getElementById('agent-meta').textContent  = 'Listed on Movin.ie' + (listings.length && listings[0].county ? ' · ' + listings[0].county : '')
     document.getElementById('stat-listings').textContent = listings.length
-    document.getElementById('stat-views').textContent = totalViews.toLocaleString('en-IE')
+    document.getElementById('stat-views').textContent    = totalViews.toLocaleString('en-IE')
     document.title = name + ' – Movin.ie'
 
-    document.getElementById('agent-listings').innerHTML =
-      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem">' +
-      listings.map(function(l) { return buildPropertyCard(l) }).join('') +
-      '</div>'
+    if (!listings.length) {
+      document.getElementById('agent-listings').innerHTML =
+        '<div style="text-align:center;padding:3rem;color:#aaa"><div style="font-size:36px;margin-bottom:.75rem">🏠</div><p>No active listings</p></div>'
+    } else {
+      document.getElementById('agent-listings').innerHTML =
+        '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem">' +
+        listings.map(function(l) { return buildPropertyCard(l) }).join('') +
+        '</div>'
+    }
 
+    // Load review stats
+    loadReviewStats()
     if (typeof renderFooter === 'function') renderFooter()
   } catch(e) {
     document.getElementById('agent-listings').innerHTML =
-      '<div style="text-align:center;padding:2rem;color:#aaa">Could not load listings: ' + e.message + '</div>'
+      '<div style="text-align:center;padding:2rem;color:#aaa">' + e.message + '</div>'
+  }
+}
+
+async function loadReviewStats() {
+  try {
+    var res  = await fetch(window.MOVIN_API_URL + '/api/reviews/user/' + agentId)
+    var data = await res.json()
+    if (data.total > 0) {
+      document.getElementById('stat-rating').textContent  = data.average_rating
+      document.getElementById('stat-reviews').textContent = data.total
+      document.getElementById('stat-rating-wrap').style.display  = 'block'
+      document.getElementById('stat-reviews-wrap').style.display = 'block'
+    }
+  } catch(e) {}
+}
+
+async function loadReviews() {
+  var el = document.getElementById('reviews-list')
+  el.dataset.loaded = '1'
+  try {
+    var res  = await fetch(window.MOVIN_API_URL + '/api/reviews/user/' + agentId)
+    var data = await res.json()
+    var reviews = data.reviews || []
+
+    // Write review form (only if logged in and not own profile)
+    var user = API.auth.currentUser()
+    var writeWrap = document.getElementById('write-review-wrap')
+    if (API.auth.isLoggedIn() && user && user.id !== agentId) {
+      writeWrap.innerHTML = buildWriteReviewForm()
+    } else if (!API.auth.isLoggedIn()) {
+      writeWrap.innerHTML = '<div style="background:var(--gl,#e9f4ef);border-radius:12px;padding:1rem;margin-bottom:1.25rem;font-size:13px;color:var(--g,#1a5c45);text-align:center"><a href="login.html" style="color:var(--g);font-weight:600">Sign in</a> to leave a review</div>'
+    }
+
+    if (!reviews.length) {
+      el.innerHTML = '<div class="empty-reviews"><div class="empty-reviews-icon">⭐</div><div style="font-size:15px;font-weight:500;color:var(--text,#111);margin-bottom:.4rem">No reviews yet</div><p style="font-size:13px">Be the first to review ' + agentName + '</p></div>'
+      return
+    }
+
+    // Average rating display
+    var avgHtml = ''
+    if (data.average_rating) {
+      avgHtml = '<div style="display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--white,#fff);border:1px solid var(--border);border-radius:14px;margin-bottom:1.25rem">' +
+        '<div><span class="rating-num">' + data.average_rating + '</span><div class="stars">' + starsHTML(data.average_rating) + '</div></div>' +
+        '<div style="font-size:13px;color:#888">' + data.total + ' review' + (data.total !== 1 ? 's' : '') + '</div>' +
+      '</div>'
+    }
+
+    el.innerHTML = avgHtml + reviews.map(function(r) {
+      var stars = ''
+      for (var i = 1; i <= 5; i++) {
+        stars += '<span class="review-star ' + (i <= r.rating ? 'on' : 'off') + '">★</span>'
+      }
+      var dateStr = new Date(r.created_at).toLocaleDateString('en-IE', { month:'short', year:'numeric' })
+      return '<div class="review-card">' +
+        '<div class="review-header">' +
+          '<div class="review-av">' + (r.reviewer_name||'A').charAt(0).toUpperCase() + '</div>' +
+          '<div><div class="review-name">' + (r.reviewer_name||'Anonymous') + '</div>' +
+          '<div class="review-date">' + dateStr + '</div></div>' +
+        '</div>' +
+        '<div class="review-stars">' + stars + '</div>' +
+        (r.comment ? '<div class="review-text">' + r.comment + '</div>' : '') +
+        (r.listing_title ? '<div class="review-listing"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>' + r.listing_title + '</div>' : '') +
+      '</div>'
+    }).join('')
+  } catch(e) {
+    el.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa">' + e.message + '</div>'
+  }
+}
+
+function buildWriteReviewForm() {
+  return '<div class="write-review-card">' +
+    '<div class="write-review-title">Leave a review</div>' +
+    '<div style="font-size:13px;color:#1a5c45;margin-bottom:.75rem">How was your experience with ' + agentName + '?</div>' +
+    '<div class="star-picker" id="star-picker">' +
+      '<span class="star-pick" onclick="setRating(1)">★</span>' +
+      '<span class="star-pick" onclick="setRating(2)">★</span>' +
+      '<span class="star-pick" onclick="setRating(3)">★</span>' +
+      '<span class="star-pick" onclick="setRating(4)">★</span>' +
+      '<span class="star-pick" onclick="setRating(5)">★</span>' +
+    '</div>' +
+    '<textarea id="review-comment" class="form-input form-textarea" placeholder="Share your experience — was the agent responsive, professional, honest? (optional)" style="min-height:90px;margin-bottom:.75rem"></textarea>' +
+    '<div id="review-alert" style="margin-bottom:.5rem"></div>' +
+    '<button onclick="submitReview()" class="btn btn-primary" style="width:100%">Submit review</button>' +
+  '</div>'
+}
+
+function setRating(n) {
+  selectedRating = n
+  var stars = document.querySelectorAll('.star-pick')
+  stars.forEach(function(s, i) {
+    s.classList.toggle('on', i < n)
+  })
+}
+
+async function submitReview() {
+  if (!selectedRating) { toast('Please select a star rating', 'error'); return }
+  var comment = document.getElementById('review-comment')?.value.trim() || ''
+  var alertEl = document.getElementById('review-alert')
+  try {
+    var token = localStorage.getItem('movin_token')
+    var res = await fetch(window.MOVIN_API_URL + '/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ reviewed_user_id: agentId, rating: selectedRating, comment: comment, review_type: 'agent' })
+    })
+    var data = await res.json()
+    if (!res.ok) throw new Error(data.error)
+    document.getElementById('write-review-wrap').innerHTML =
+      '<div style="background:#e9f4ef;border-radius:12px;padding:1rem;margin-bottom:1.25rem;font-size:13px;color:#1a5c45;text-align:center">✅ Review submitted — it will appear after approval. Thank you!</div>'
+    toast('Review submitted!', 'success')
+  } catch(e) {
+    alertEl.innerHTML = '<div style="background:#fef2f2;border-radius:8px;padding:.65rem .85rem;font-size:13px;color:#dc2626">' + e.message + '</div>'
   }
 }
 

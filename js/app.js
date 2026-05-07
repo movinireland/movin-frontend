@@ -387,9 +387,21 @@ function renderFooter() {
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/about.html">About us</a>' +
             '<a href="' + root + 'pages/list.html">List your property</a>' +
+            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
             '<a href="mailto:hello@movin.ie">Contact</a>' +
             '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
             '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Neighbourhood guides</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin">Dublin 4</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%206&county=Dublin">Dublin 6</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Rathmines&county=Dublin">Rathmines</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin">Blackrock</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Malahide&county=Dublin">Malahide</a>' +
+            '<a href="' + root + 'pages/neighbourhood.html?area=Swords&county=Dublin">Swords</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
