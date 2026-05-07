@@ -203,7 +203,7 @@
       return new Promise(resolve => {
         if (window.google) { resolve(); return }
         const s = document.createElement('script')
-        s.src = 'https://maps.googleapis.com/maps/api/js?key=' + window.GOOGLE_MAPS_KEY + '&libraries=places'
+        s.src = 'https://maps.googleapis.com/maps/api/js?key=' + window.GOOGLE_MAPS_KEY + '&libraries=places,geometry'
         s.onload = resolve
         document.head.appendChild(s)
       })
@@ -242,10 +242,10 @@
     }
 
     const nearbyTypes = {
-      bus:      { type: 'bus_station', icon: '🚌', cls: 'ni-bus' },
-      school:   { type: 'school',      icon: '🏫', cls: 'ni-school' },
-      hospital: { type: 'hospital',    icon: '🏥', cls: 'ni-hospital' },
-      shop:     { type: 'supermarket', icon: '🛒', cls: 'ni-shop' },
+      bus:      { type: 'transit_station', icon: '🚌', cls: 'ni-bus' },
+      school:   { type: 'school',          icon: '🏫', cls: 'ni-school' },
+      hospital: { type: 'hospital',        icon: '🏥', cls: 'ni-hospital' },
+      shop:     { type: 'supermarket',     icon: '🛒', cls: 'ni-shop' },
     }
 
     let mapInstance = null
@@ -263,12 +263,15 @@
       listEl.innerHTML = '<div class="nearby-loading">🔍 Finding nearby places…</div>'
       const service = new google.maps.places.PlacesService(mapInstance)
       const config = nearbyTypes[type]
-      service.nearbySearch({ location: locationInstance, radius: 1000, type: config.type }, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
+      service.nearbySearch({ location: locationInstance, radius: 2000, type: config.type }, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
           nearbyCache[type] = results.slice(0, 6)
           renderNearby(type, nearbyCache[type])
+        } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+          listEl.innerHTML = '<div class="nearby-empty">None found within 2km</div>'
         } else {
-          listEl.innerHTML = '<div class="nearby-empty">No nearby places found</div>'
+          console.warn('Places API status:', status)
+          listEl.innerHTML = '<div class="nearby-empty">Could not load nearby places</div>'
         }
       })
     }
@@ -279,9 +282,12 @@
       if (!places.length) { listEl.innerHTML = '<div class="nearby-empty">None found nearby</div>'; return }
       listEl.innerHTML = places.map(function(p) {
         var dist = ''
-        if (google.maps.geometry) {
-          dist = ' · ' + Math.round(google.maps.geometry.spherical.computeDistanceBetween(locationInstance, p.geometry.location)) + 'm'
-        }
+        try {
+          if (google.maps.geometry && google.maps.geometry.spherical) {
+            var meters = google.maps.geometry.spherical.computeDistanceBetween(locationInstance, p.geometry.location)
+            dist = ' · ' + (meters < 1000 ? Math.round(meters) + 'm' : (meters/1000).toFixed(1) + 'km')
+          }
+        } catch(e) {}
         return '<div class="nearby-item"><div class="nearby-icon ' + config.cls + '">' + config.icon + '</div><div class="nearby-info"><div class="nearby-name">' + p.name + '</div><div class="nearby-dist">' + p.vicinity + dist + '</div></div></div>'
       }).join('')
     }
