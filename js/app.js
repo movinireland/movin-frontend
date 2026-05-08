@@ -691,3 +691,224 @@ if (document.readyState === 'loading') {
     init()
   }
 })()
+
+// ── Global mobile sticky quick-search bar (auto-injected) ───────────────────
+;(function() {
+  // Pages where the sticky search would duplicate an already-prominent
+  // search experience and just clutter the UI.
+  function pageHasOwnSearch() {
+    var p = location.pathname.toLowerCase()
+    if (p === '/' || p === '' || /\/index\.html?$/.test(p)) return true
+    if (/\/(search|map-search|drive-time|commercial|latest)\.html$/.test(p)) return true
+    return false
+  }
+  function pathPrefix() { return /\/pages\//.test(location.pathname) ? '../' : '' }
+
+  var googleMapsLoading = false
+  function ensureGoogleMaps(cb) {
+    if (window.google && google.maps && google.maps.places) { cb && cb(); return }
+    if (googleMapsLoading) {
+      var i = 0
+      var iv = setInterval(function(){
+        if (window.google && google.maps && google.maps.places) {
+          clearInterval(iv); cb && cb()
+        } else if (++i > 80) clearInterval(iv)
+      }, 100)
+      return
+    }
+    googleMapsLoading = true
+    window._qsearchOnReady = function() { cb && cb() }
+    var s = document.createElement('script')
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=_qsearchOnReady&v=weekly'
+    s.async = true
+    s.defer = true
+    document.head.appendChild(s)
+  }
+
+  function injectQuickSearch() {
+    if (pageHasOwnSearch()) return
+    if (document.querySelector('.qsearch-strip')) return
+
+    // Sticky pill at the top
+    var strip = document.createElement('div')
+    strip.className = 'qsearch-strip'
+    strip.innerHTML =
+      '<button type="button" class="qsearch-trigger" aria-label="Search properties">' +
+        '<span class="qs-search-icon">' +
+          '<svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+        '</span>' +
+        '<span class="qs-text" id="qsearch-text">Search homes, areas or Eircodes…</span>' +
+        '<span class="qs-mode-pill" id="qsearch-mode-pill">Buy</span>' +
+      '</button>'
+    // Insert at the very top of <body> so it's always visible
+    document.body.insertBefore(strip, document.body.firstChild)
+    document.body.classList.add('has-qsearch')
+
+    // Modal sheet
+    var modal = document.createElement('div')
+    modal.className = 'qsearch-modal'
+    modal.id = 'qsearch-modal'
+    modal.setAttribute('role', 'dialog')
+    modal.setAttribute('aria-modal', 'true')
+    modal.innerHTML =
+      '<div class="qsearch-sheet" role="document">' +
+        '<div class="qsearch-handle"></div>' +
+        '<div class="qsearch-head">' +
+          '<div class="qsearch-title">Find your home</div>' +
+          '<button class="qsearch-close" type="button" aria-label="Close">×</button>' +
+        '</div>' +
+        '<div class="qsearch-tabs" role="tablist">' +
+          '<button type="button" class="on" data-mode="sale">Buy</button>' +
+          '<button type="button" data-mode="rent">Rent</button>' +
+          '<button type="button" data-mode="share">Sharing</button>' +
+        '</div>' +
+        '<div class="qsearch-input-wrap">' +
+          '<svg class="qs-pin" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>' +
+          '<input class="qsearch-input" id="qsearch-input" type="text" autocomplete="off" placeholder="Address, university, town, county or Eircode…"/>' +
+        '</div>' +
+        '<div class="qsearch-filters">' +
+          '<div>' +
+            '<label for="qsearch-beds">Beds</label>' +
+            '<select id="qsearch-beds">' +
+              '<option value="">Any</option>' +
+              '<option value="1">1+</option>' +
+              '<option value="2">2+</option>' +
+              '<option value="3">3+</option>' +
+              '<option value="4">4+</option>' +
+              '<option value="5">5+</option>' +
+            '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label for="qsearch-min">Min €</label>' +
+            '<select id="qsearch-min">' +
+              '<option value="">No min</option>' +
+              '<option value="100000">€100k</option>' +
+              '<option value="200000">€200k</option>' +
+              '<option value="300000">€300k</option>' +
+              '<option value="500000">€500k</option>' +
+            '</select>' +
+          '</div>' +
+          '<div>' +
+            '<label for="qsearch-max">Max €</label>' +
+            '<select id="qsearch-max">' +
+              '<option value="">No max</option>' +
+              '<option value="200000">€200k</option>' +
+              '<option value="300000">€300k</option>' +
+              '<option value="500000">€500k</option>' +
+              '<option value="750000">€750k</option>' +
+              '<option value="1000000">€1m+</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+        '<button class="qsearch-submit" type="button" id="qsearch-submit">' +
+          '<svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+          'Search properties' +
+        '</button>' +
+        '<div class="qsearch-shortcuts">' +
+          '<button type="button" class="qsearch-shortcut" data-county="Dublin">Dublin</button>' +
+          '<button type="button" class="qsearch-shortcut" data-county="Cork">Cork</button>' +
+          '<button type="button" class="qsearch-shortcut" data-county="Galway">Galway</button>' +
+          '<button type="button" class="qsearch-shortcut" data-county="Wicklow">Wicklow</button>' +
+          '<button type="button" class="qsearch-shortcut" data-county="Kildare">Kildare</button>' +
+          '<button type="button" class="qsearch-shortcut" data-county="Meath">Meath</button>' +
+        '</div>' +
+      '</div>'
+    document.body.appendChild(modal)
+
+    var state = { mode: 'sale', origin: null }   // origin: { lat, lng, label }
+
+    function setMode(m) {
+      state.mode = m
+      modal.querySelectorAll('.qsearch-tabs button').forEach(function(b){
+        b.classList.toggle('on', b.dataset.mode === m)
+      })
+      var pill = document.getElementById('qsearch-mode-pill')
+      if (pill) pill.textContent = m === 'sale' ? 'Buy' : (m === 'rent' ? 'Rent' : 'Share')
+    }
+    function open() {
+      modal.classList.add('open')
+      document.documentElement.style.overflow = 'hidden'
+      ensureGoogleMaps(attachPlaces)
+      setTimeout(function(){ document.getElementById('qsearch-input').focus() }, 200)
+    }
+    function close() {
+      modal.classList.remove('open')
+      document.documentElement.style.overflow = ''
+    }
+    strip.querySelector('.qsearch-trigger').addEventListener('click', open)
+    modal.querySelector('.qsearch-close').addEventListener('click', close)
+    modal.addEventListener('click', function(e){ if (e.target === modal) close() })
+    modal.querySelectorAll('.qsearch-tabs button').forEach(function(b){
+      b.addEventListener('click', function(){ setMode(b.dataset.mode) })
+    })
+    modal.querySelectorAll('.qsearch-shortcut').forEach(function(b){
+      b.addEventListener('click', function(){
+        submit({ county: b.dataset.county })
+      })
+    })
+    document.getElementById('qsearch-submit').addEventListener('click', function(){ submit() })
+    document.getElementById('qsearch-input').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') submit()
+      if (e.key === 'Escape') close()
+    })
+
+    function attachPlaces() {
+      var input = document.getElementById('qsearch-input')
+      if (!input || input.dataset.acBound) return
+      if (!window.google || !google.maps || !google.maps.places) return
+      input.dataset.acBound = '1'
+      var ac = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'ie' },
+        fields: ['geometry','name','formatted_address','address_components','types']
+      })
+      ac.addListener('place_changed', function(){
+        var place = ac.getPlace()
+        if (!place || !place.geometry || !place.geometry.location) return
+        var loc = place.geometry.location
+        var label = (place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0)
+          ? place.name + ' — ' + place.formatted_address
+          : (place.formatted_address || place.name || input.value)
+        var comp = place.address_components || []
+        function pick(t){ var c = comp.find(function(x){return x.types.indexOf(t)!==-1}); return c ? c.long_name : '' }
+        state.origin = {
+          lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
+          lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
+          label: label,
+          county: (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
+        }
+        // Auto-submit on pick — feels snappy
+        submit()
+      })
+    }
+
+    function submit(extra) {
+      var p   = new URLSearchParams()
+      var q   = document.getElementById('qsearch-input').value.trim()
+      var beds= document.getElementById('qsearch-beds').value
+      var min = document.getElementById('qsearch-min').value
+      var max = document.getElementById('qsearch-max').value
+      p.set('listing_type', state.mode)
+      if (state.origin) {
+        p.set('lat',  state.origin.lat)
+        p.set('lng',  state.origin.lng)
+        p.set('near', state.origin.label)
+        if (state.origin.county) p.set('county', state.origin.county)
+      } else if (extra && extra.county) {
+        p.set('county', extra.county)
+      } else if (q) {
+        p.set('q', q)
+      }
+      if (beds) p.set('bedrooms', beds)
+      if (min)  p.set('min_price', min)
+      if (max)  p.set('max_price', max)
+      window.location.href = pathPrefix() + 'pages/search.html?' + p.toString()
+    }
+
+    setMode('sale')
+  }
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', injectQuickSearch)
+  else
+    injectQuickSearch()
+})()
