@@ -187,23 +187,37 @@
     .dt-circle-info .dot{width:10px;height:10px;border-radius:50%;background:var(--g)}
     .dt-circle-info .dot.b{background:var(--o)}
 
-    /* ── Suggestion dropdown ── */
-    .dt-sugg{
-      position:absolute;background:#fff;border:1px solid var(--border);
-      border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.14);z-index:200;
-      max-height:280px;overflow-y:auto;display:none;min-width:280px
+    /* ── Google Places autocomplete dropdown — themed to match the site ── */
+    .pac-container{
+      border-radius:14px;margin-top:6px;
+      border:1px solid var(--border);background:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.14);
+      font-family:'DM Sans',sans-serif;overflow:hidden;
+      z-index:9999
     }
-    .dt-sugg.open{display:block}
-    .dt-sugg-item{
-      padding:.7rem 1rem;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;
-      border-bottom:1px solid #f5f2ec;-webkit-tap-highlight-color:transparent
+    .pac-container::after{display:none !important} /* hide "powered by Google" stripe */
+    .pac-item{
+      padding:.65rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;
+      cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1.4;
+      display:flex;align-items:center;gap:10px
     }
-    .dt-sugg-item:hover,.dt-sugg-item:active{background:var(--gl)}
-    .dt-sugg-item:last-child{border-bottom:none}
-    .dt-sugg-icon{color:var(--g);font-size:14px;display:inline-flex}
-    .dt-sugg-main{font-weight:500;color:#111}
-    .dt-sugg-sub{font-size:11px;color:#aaa}
-    .dt-sugg-tag{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--gl);color:var(--g);font-weight:500;margin-left:auto;flex-shrink:0}
+    .pac-item:first-child{border-top:none}
+    .pac-item:hover,.pac-item-selected{background:var(--gl)}
+    .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+    .pac-item-query{color:var(--text,#111);font-weight:500;font-size:13px}
+    .pac-matched{color:var(--g)}
+    [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a;box-shadow:0 14px 36px rgba(0,0,0,.5)}
+    [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .pac-item-query{color:#e8e8e8}
+    [data-theme="dark"] .pac-matched{color:#7ec9a8}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .pac-item{border-color:#2a2a2a;color:#aaa}
+      :root:not([data-theme="light"]) .pac-item:hover,
+      :root:not([data-theme="light"]) .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+      :root:not([data-theme="light"]) .pac-item-query{color:#e8e8e8}
+    }
 
     /* Dark mode */
     [data-theme="dark"] body{background:#0f0f0f;color:#e8e8e8}
@@ -312,10 +326,6 @@
   </div>
 </div>
 
-<!-- Sugg lists (positioned via JS) -->
-<div class="dt-sugg" id="sugg-a"></div>
-<div class="dt-sugg" id="sugg-b"></div>
-
 <!-- Body -->
 <div class="dt-shell">
 
@@ -399,48 +409,22 @@
   // Approx mean speed in km/h used to convert mins → radius
   var MODE_SPEEDS = { driving: 50, cycling: 18, walking: 5 }
 
-  // ── Counties + Dublin districts (location dictionary) ────────────────────
-  var DUBLIN = [
-    {code:'D1',name:'Dublin 1',area:'City Centre',lat:53.353,lng:-6.260},
-    {code:'D2',name:'Dublin 2',area:'City Centre South',lat:53.336,lng:-6.249},
-    {code:'D3',name:'Dublin 3',area:'Clontarf, Fairview',lat:53.367,lng:-6.215},
-    {code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook',lat:53.328,lng:-6.224},
-    {code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines',lat:53.319,lng:-6.260},
-    {code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough',lat:53.358,lng:-6.281},
-    {code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham',lat:53.339,lng:-6.292},
-    {code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin',lat:53.376,lng:-6.262},
-    {code:'D14',name:'Dublin 14',area:'Dundrum, Rathfarnham',lat:53.288,lng:-6.241},
-    {code:'D15',name:'Dublin 15',area:'Blanchardstown',lat:53.388,lng:-6.385},
-    {code:'D18',name:'Dublin 18',area:'Sandyford, Foxrock',lat:53.247,lng:-6.226},
-    {code:'D24',name:'Dublin 24',area:'Tallaght',lat:53.286,lng:-6.371}
-  ]
+  // County centroids — used only to estimate a listing's location when the
+  // backend doesn't return lat/lng for it.
   var COUNTIES = [
-    {name:'Dublin',     lat:53.349, lng:-6.260},
-    {name:'Cork',       lat:51.898, lng:-8.475},
-    {name:'Galway',     lat:53.270, lng:-9.057},
-    {name:'Limerick',   lat:52.668, lng:-8.630},
-    {name:'Waterford',  lat:52.259, lng:-7.110},
-    {name:'Kerry',      lat:52.155, lng:-9.567},
-    {name:'Meath',      lat:53.605, lng:-6.656},
-    {name:'Kildare',    lat:53.156, lng:-6.910},
-    {name:'Wicklow',    lat:52.980, lng:-6.044},
-    {name:'Wexford',    lat:52.336, lng:-6.464},
-    {name:'Kilkenny',   lat:52.654, lng:-7.244},
-    {name:'Clare',      lat:52.906, lng:-9.000},
-    {name:'Tipperary',  lat:52.473, lng:-8.161},
-    {name:'Donegal',    lat:54.654, lng:-8.110},
-    {name:'Mayo',       lat:53.853, lng:-9.299},
-    {name:'Sligo',      lat:54.276, lng:-8.476},
-    {name:'Leitrim',    lat:54.124, lng:-8.000},
-    {name:'Roscommon',  lat:53.627, lng:-8.190},
-    {name:'Longford',   lat:53.726, lng:-7.794},
-    {name:'Westmeath',  lat:53.535, lng:-7.337},
-    {name:'Offaly',     lat:53.235, lng:-7.713},
-    {name:'Laois',      lat:52.994, lng:-7.331},
-    {name:'Carlow',     lat:52.836, lng:-6.926},
-    {name:'Louth',      lat:53.918, lng:-6.539},
-    {name:'Monaghan',   lat:54.249, lng:-6.968},
-    {name:'Cavan',      lat:53.990, lng:-7.360}
+    {name:'Dublin', lat:53.349, lng:-6.260}, {name:'Cork', lat:51.898, lng:-8.475},
+    {name:'Galway', lat:53.270, lng:-9.057}, {name:'Limerick', lat:52.668, lng:-8.630},
+    {name:'Waterford', lat:52.259, lng:-7.110}, {name:'Kerry', lat:52.155, lng:-9.567},
+    {name:'Meath', lat:53.605, lng:-6.656}, {name:'Kildare', lat:53.156, lng:-6.910},
+    {name:'Wicklow', lat:52.980, lng:-6.044}, {name:'Wexford', lat:52.336, lng:-6.464},
+    {name:'Kilkenny', lat:52.654, lng:-7.244}, {name:'Clare', lat:52.906, lng:-9.000},
+    {name:'Tipperary', lat:52.473, lng:-8.161}, {name:'Donegal', lat:54.654, lng:-8.110},
+    {name:'Mayo', lat:53.853, lng:-9.299}, {name:'Sligo', lat:54.276, lng:-8.476},
+    {name:'Leitrim', lat:54.124, lng:-8.000}, {name:'Roscommon', lat:53.627, lng:-8.190},
+    {name:'Longford', lat:53.726, lng:-7.794}, {name:'Westmeath', lat:53.535, lng:-7.337},
+    {name:'Offaly', lat:53.235, lng:-7.713}, {name:'Laois', lat:52.994, lng:-7.331},
+    {name:'Carlow', lat:52.836, lng:-6.926}, {name:'Louth', lat:53.918, lng:-6.539},
+    {name:'Monaghan', lat:54.249, lng:-6.968}, {name:'Cavan', lat:53.990, lng:-7.360}
   ]
 
   // ── Time-pill row ────────────────────────────────────────────────────────
@@ -498,74 +482,91 @@
       var h = document.getElementById('dt-map-help')
       if (h) { h.style.transition = 'opacity .4s'; h.style.opacity = '0'; setTimeout(function(){ h.remove() }, 500) }
     }, 6500)
+
+    // Wire up real Google Places autocomplete on both inputs
+    setupAutocomplete('loc-a', 'a')
+    setupAutocomplete('loc-b', 'b')
   }
 
-  // ── Suggestion typeahead ─────────────────────────────────────────────────
-  function buildSuggestions(q){
-    var Q = (q||'').toUpperCase().trim()
-    if (!Q) return []
-    var out = []
-    DUBLIN.forEach(function(d){
-      if (d.code.indexOf(Q) === 0 || d.name.toUpperCase().indexOf(Q) !== -1)
-        out.push({type:'district', label:d.name, sub:d.area, lat:d.lat, lng:d.lng})
+  // ── Google Places autocomplete (universal: addresses, Eircodes,
+  //    universities, businesses, towns, landmarks, …) ──────────────────────
+  var geocoder
+  function setupAutocomplete(inputId, slot){
+    var input = document.getElementById(inputId)
+    var wrap  = document.getElementById('loc-' + slot + '-wrap')
+    if (!input || !window.google || !google.maps || !google.maps.places) return
+
+    var ac = new google.maps.places.Autocomplete(input, {
+      // Bias to Ireland so a search for "trinity" finds Trinity College Dublin
+      // instead of unrelated places overseas.
+      componentRestrictions: { country: 'ie' },
+      fields: ['geometry', 'name', 'formatted_address', 'place_id', 'types'],
+      // No `types` filter → accepts addresses, places of interest, regions,
+      // postal codes (Eircodes), establishments, etc.
     })
-    COUNTIES.forEach(function(c){
-      if (c.name.toUpperCase().indexOf(Q) === 0 || c.name.toUpperCase().indexOf(Q) !== -1)
-        out.push({type:'county', label:c.name, sub:'County', lat:c.lat, lng:c.lng})
-    })
-    // Optional Eircode-ish entry
-    if (/^[A-Z][0-9]/.test(Q)){
-      out.unshift({type:'eircode', label:'Eircode: '+Q, sub:'Search by Eircode (approx.)', lat:53.349, lng:-6.260})
-    }
-    return out.slice(0, 7)
-  }
+    if (map) ac.bindTo('bounds', map)
 
-  function attachSugg(inputId, suggId, slot){
-    var inp  = document.getElementById(inputId)
-    var box  = document.getElementById(suggId)
-    var wrap = document.getElementById('loc-' + slot + '-wrap')
-
-    function position(){
-      var r = wrap.getBoundingClientRect()
-      box.style.top = (r.bottom + 4 + window.scrollY) + 'px'
-      box.style.left = r.left + 'px'
-      box.style.width = r.width + 'px'
-    }
-
-    inp.addEventListener('input', function(){
-      var q = inp.value
-      wrap.classList.toggle('has-value', !!q.trim())
-      var items = buildSuggestions(q)
-      if (!items.length){ box.classList.remove('open'); return }
-      box.innerHTML = items.map(function(it){
-        var tag = it.type === 'district' ? 'Dublin' : it.type === 'eircode' ? 'Eircode' : 'County'
-        return '<div class="dt-sugg-item" data-payload=\'' + JSON.stringify(it).replace(/'/g,'&apos;').replace(/"/g,'&quot;') + '\'>'
-          + '<span class="dt-sugg-icon">'
-          +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-          + '</span>'
-          + '<div><div class="dt-sugg-main">' + it.label + '</div><div class="dt-sugg-sub">' + it.sub + '</div></div>'
-          + '<span class="dt-sugg-tag">' + tag + '</span>'
-          + '</div>'
-      }).join('')
-      box.querySelectorAll('.dt-sugg-item').forEach(function(it){
-        it.addEventListener('click', function(){
-          var payload = JSON.parse(it.getAttribute('data-payload').replace(/&apos;/g,"'").replace(/&quot;/g,'"'))
-          setPoint(slot, { name: payload.label, lat: payload.lat, lng: payload.lng })
-          box.classList.remove('open')
-        })
+    ac.addListener('place_changed', function(){
+      var place = ac.getPlace()
+      if (!place || !place.geometry || !place.geometry.location){
+        // User pressed Enter without picking a suggestion — fall back to geocode
+        if ((input.value || '').trim()) geocodeAndSet(input.value, slot)
+        return
+      }
+      var loc = place.geometry.location
+      var label = place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0
+        ? place.name + ' — ' + place.formatted_address
+        : (place.formatted_address || place.name || input.value)
+      setPoint(slot, {
+        name: label,
+        lat:  loc.lat(),
+        lng:  loc.lng()
       })
-      position(); box.classList.add('open')
     })
 
-    inp.addEventListener('focus', function(){ if (box.innerHTML) { position(); box.classList.add('open') } })
-    document.addEventListener('click', function(e){
-      if (!wrap.contains(e.target) && !box.contains(e.target)) box.classList.remove('open')
+    // Track the "has-value" class so the × clear button shows up
+    input.addEventListener('input', function(){
+      wrap.classList.toggle('has-value', !!input.value.trim())
     })
-    window.addEventListener('resize', position)
-    window.addEventListener('scroll', position, true)
+
+    // Enter without picking from the dropdown → geocode whatever they typed
+    input.addEventListener('keydown', function(e){
+      if (e.key !== 'Enter') return
+      // If the PAC dropdown is showing a highlighted item, let it handle Enter
+      var pac = document.querySelector('.pac-container .pac-item-selected')
+      if (pac) return
+      // Slight delay so any place_changed fires first; if it does, pointA/B
+      // becomes set and we can skip the geocode fallback
+      var before = (slot === 'a') ? pointA : pointB
+      setTimeout(function(){
+        var after = (slot === 'a') ? pointA : pointB
+        if (after !== before) return // a place was picked
+        if ((input.value || '').trim()) geocodeAndSet(input.value, slot)
+      }, 80)
+    })
   }
-  attachSugg('loc-a','sugg-a','a')
-  attachSugg('loc-b','sugg-b','b')
+
+  function geocodeAndSet(query, slot){
+    var q = (query || '').trim()
+    if (!q) return
+    if (!window.google || !google.maps) return
+    if (!geocoder) geocoder = new google.maps.Geocoder()
+    geocoder.geocode({
+      address: q,
+      componentRestrictions: { country: 'IE' }
+    }, function(results, status){
+      if (status === 'OK' && results && results[0]){
+        var r = results[0]
+        setPoint(slot, {
+          name: r.formatted_address || q,
+          lat:  r.geometry.location.lat(),
+          lng:  r.geometry.location.lng()
+        })
+      } else {
+        if (window.toast) toast('Couldn\'t find "' + q + '" — try a different place or Eircode', 'err')
+      }
+    })
+  }
 
   // ── Point management ─────────────────────────────────────────────────────
   function setPoint(slot, p){
@@ -793,7 +794,7 @@
 </script>
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&v=weekly"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initMap&v=weekly"
   async defer>
 </script>
 
