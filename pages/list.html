@@ -11,8 +11,8 @@
   <title>List Your Property – Movin.ie</title>
   <link rel="stylesheet" href="../css/main.css"/>
   <link rel="manifest" href="/manifest.json"/>
-<link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+  <link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
   <meta name="theme-color" content="#1a5c45"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
@@ -37,130 +37,6 @@
     .type-lbl{font-size:12px;color:#666;font-weight:500}
     .type-btn.on .type-lbl{color:var(--green);font-weight:600}
 
-    /* ── Category gate (Residential vs Commercial) ── */
-    .cat-gate{max-width:760px;margin:-2.5rem auto 0;padding:0 1.25rem 2.5rem;position:relative;z-index:3}
-    .cat-gate-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:22px;padding:1.75rem;box-shadow:0 14px 40px rgba(0,0,0,.08)}
-    .cat-gate-eyebrow{font-size:11px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem;font-weight:500}
-    .cat-gate-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text,#111);margin-bottom:.4rem}
-    .cat-gate-sub{font-size:14px;color:var(--muted,#888);font-weight:300;margin-bottom:1.5rem;line-height:1.5}
-    .cat-pick{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
-    @media(max-width:560px){.cat-pick{grid-template-columns:1fr}}
-    .cat-card{
-      position:relative;border:1.5px solid var(--border);border-radius:18px;padding:1.5rem 1.25rem;
-      cursor:pointer;background:#fafaf8;text-align:left;transition:all .2s ease;overflow:hidden;
-      -webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;gap:.5rem
-    }
-    .cat-card::after{content:'';position:absolute;inset:0;border-radius:18px;border:2px solid transparent;transition:border-color .2s,box-shadow .2s;pointer-events:none}
-    .cat-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.08)}
-    .cat-card:hover::after{border-color:var(--green-light,#e9f4ef)}
-    .cat-card .cat-icon{
-      width:54px;height:54px;border-radius:14px;background:var(--green-light,#e9f4ef);
-      display:flex;align-items:center;justify-content:center;color:var(--green,#1a5c45);
-      transition:transform .25s ease;margin-bottom:.25rem
-    }
-    .cat-card .cat-icon svg{width:26px;height:26px}
-    .cat-card:hover .cat-icon{transform:scale(1.05) rotate(-3deg)}
-    .cat-card .cat-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text,#111)}
-    .cat-card .cat-desc{font-size:13px;color:var(--muted,#888);font-weight:300;line-height:1.55}
-    .cat-card .cat-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.5rem}
-    .cat-card .cat-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:50px;background:#fff;color:#666;border:1px solid var(--border);letter-spacing:.3px}
-    .cat-card .cat-arrow{
-      position:absolute;top:1rem;right:1rem;width:30px;height:30px;border-radius:50%;
-      background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;
-      transition:all .2s ease
-    }
-    .cat-card .cat-arrow svg{width:14px;height:14px}
-    .cat-card:hover .cat-arrow{background:var(--green);color:#fff;transform:translateX(3px)}
-    .cat-card.commercial .cat-icon{background:#fdf0e6;color:#e07b3f}
-
-    /* Active category chip + switch */
-    .cat-active-strip{
-      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
-      background:var(--green-light,#e9f4ef);color:var(--green,#1a5c45);
-      padding:.7rem 1rem;border-radius:14px;margin:0 0 1.25rem;font-size:13px;font-weight:500
-    }
-    .cat-active-strip .cat-active-name{display:inline-flex;align-items:center;gap:8px}
-    .cat-active-strip .cat-active-name svg{width:16px;height:16px}
-    .cat-switch-btn{background:#fff;border:1px solid rgba(26,92,69,.25);color:var(--green);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s}
-    .cat-switch-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
-
-    [data-theme="dark"] .cat-gate-card{background:#1a1a1a;border-color:#2a2a2a}
-    [data-theme="dark"] .cat-card{background:#0f0f0f;border-color:#2a2a2a}
-    [data-theme="dark"] .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
-    [data-theme="dark"] .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
-    @media(prefers-color-scheme:dark){
-      :root:not([data-theme="light"]) .cat-gate-card{background:#1a1a1a;border-color:#2a2a2a}
-      :root:not([data-theme="light"]) .cat-card{background:#0f0f0f;border-color:#2a2a2a}
-      :root:not([data-theme="light"]) .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
-      :root:not([data-theme="light"]) .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
-    }
-
-    /* ── Address lookup (Google Places) ── */
-    .form-hint-strong{font-size:12px;color:var(--green);font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
-    .form-hint-strong.show{display:inline-flex}
-    .form-hint-strong svg{width:14px;height:14px;flex-shrink:0}
-    .form-hint-warn{font-size:12px;color:#c25a1f;font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
-    .form-hint-warn.show{display:inline-flex}
-    .form-hint-warn svg{width:14px;height:14px;flex-shrink:0}
-
-    /* Eircode visibility toggle */
-    .vis-toggle{
-      display:flex;align-items:center;gap:.85rem;background:#fafaf8;border:1.5px solid var(--border);
-      border-radius:14px;padding:.85rem 1rem;margin-top:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent;
-      transition:border-color .15s,background .15s
-    }
-    .vis-toggle:hover{border-color:var(--green)}
-    .vis-toggle.on{border-color:var(--green);background:var(--green-light)}
-    .vis-toggle .vis-icon{
-      width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--border);
-      display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)
-    }
-    .vis-toggle.on .vis-icon{background:var(--green);color:#fff;border-color:var(--green)}
-    .vis-toggle .vis-icon svg{width:18px;height:18px}
-    .vis-toggle .vis-text{flex:1;min-width:0}
-    .vis-toggle .vis-title{font-size:14px;font-weight:600;color:#111;line-height:1.3}
-    .vis-toggle .vis-sub{font-size:12px;color:#777;font-weight:300;margin-top:2px;line-height:1.4}
-    .vis-toggle.on .vis-title{color:var(--green)}
-    .vis-switch{
-      width:42px;height:24px;border-radius:50px;background:#ddd;flex-shrink:0;position:relative;
-      transition:background .2s ease
-    }
-    .vis-switch::after{
-      content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
-      background:#fff;transition:transform .2s ease;box-shadow:0 1px 4px rgba(0,0,0,.2)
-    }
-    .vis-toggle.on .vis-switch{background:var(--green)}
-    .vis-toggle.on .vis-switch::after{transform:translateX(18px)}
-
-    [data-theme="dark"] .vis-toggle{background:#0f0f0f;border-color:#2a2a2a}
-    [data-theme="dark"] .vis-toggle.on{background:#0d2e1e;border-color:#2ecc8a}
-    [data-theme="dark"] .vis-toggle .vis-title{color:#e8e8e8}
-    [data-theme="dark"] .vis-toggle.on .vis-title{color:#7ec9a8}
-    [data-theme="dark"] .vis-toggle .vis-icon{background:#1a1a1a;border-color:#2a2a2a;color:#7ec9a8}
-    [data-theme="dark"] .vis-toggle.on .vis-icon{background:#2ecc8a;color:#0f0f0f;border-color:#2ecc8a}
-
-    /* Google Places dropdown — themed */
-    .pac-container{
-      border-radius:14px;margin-top:6px;
-      border:1px solid var(--border);background:#fff;
-      box-shadow:0 14px 36px rgba(0,0,0,.14);
-      font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999
-    }
-    .pac-container::after{display:none !important}
-    .pac-item{
-      padding:.65rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;
-      -webkit-tap-highlight-color:transparent;line-height:1.4;display:flex;align-items:center;gap:10px
-    }
-    .pac-item:first-child{border-top:none}
-    .pac-item:hover,.pac-item-selected{background:var(--green-light)}
-    .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
-    .pac-item-query{color:#111;font-weight:500;font-size:13px}
-    .pac-matched{color:var(--green)}
-    [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
-    [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
-    [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
-    [data-theme="dark"] .pac-item-query{color:#e8e8e8}
-    [data-theme="dark"] .pac-matched{color:#7ec9a8}
     .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
     .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
     .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
@@ -200,6 +76,113 @@
     .uploading-overlay{position:absolute;inset:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center}
     .upload-spinner{width:20px;height:20px;border-radius:50%;border:2px solid #e9f4ef;border-top-color:#1a5c45;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── Category gate (Residential vs Commercial) ── */
+    .cat-gate{max-width:760px;margin:-2.5rem auto 0;padding:0 1.25rem 2.5rem;position:relative;z-index:3}
+    .cat-gate-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:22px;padding:1.75rem;box-shadow:0 14px 40px rgba(0,0,0,.08)}
+    .cat-gate-eyebrow{font-size:11px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem;font-weight:500}
+    .cat-gate-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text,#111);margin-bottom:.4rem}
+    .cat-gate-sub{font-size:14px;color:var(--muted,#888);font-weight:300;margin-bottom:1.5rem;line-height:1.5}
+    .cat-pick{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+    @media(max-width:560px){.cat-pick{grid-template-columns:1fr}}
+    .cat-card{
+      position:relative;border:1.5px solid var(--border);border-radius:18px;padding:1.5rem 1.25rem;
+      cursor:pointer;background:#fafaf8;text-align:left;transition:all .2s ease;overflow:hidden;
+      -webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;gap:.5rem
+    }
+    .cat-card::after{content:'';position:absolute;inset:0;border-radius:18px;border:2px solid transparent;transition:border-color .2s,box-shadow .2s;pointer-events:none}
+    .cat-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.08)}
+    .cat-card:hover::after{border-color:var(--green-light,#e9f4ef)}
+    .cat-card .cat-icon{
+      width:54px;height:54px;border-radius:14px;background:var(--green-light,#e9f4ef);
+      display:flex;align-items:center;justify-content:center;color:var(--green,#1a5c45);
+      transition:transform .25s ease;margin-bottom:.25rem
+    }
+    .cat-card .cat-icon svg{width:26px;height:26px}
+    .cat-card:hover .cat-icon{transform:scale(1.05) rotate(-3deg)}
+    .cat-card .cat-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text,#111)}
+    .cat-card .cat-desc{font-size:13px;color:var(--muted,#888);font-weight:300;line-height:1.55}
+    .cat-card .cat-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.5rem}
+    .cat-card .cat-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:50px;background:#fff;color:#666;border:1px solid var(--border);letter-spacing:.3px}
+    .cat-card .cat-arrow{position:absolute;top:1rem;right:1rem;width:30px;height:30px;border-radius:50%;background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;transition:all .2s ease}
+    .cat-card .cat-arrow svg{width:14px;height:14px}
+    .cat-card:hover .cat-arrow{background:var(--green);color:#fff;transform:translateX(3px)}
+    .cat-card.commercial .cat-icon{background:#fdf0e6;color:#e07b3f}
+
+    .cat-active-strip{
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+      background:var(--green-light,#e9f4ef);color:var(--green,#1a5c45);
+      padding:.7rem 1rem;border-radius:14px;margin:0 0 1.25rem;font-size:13px;font-weight:500
+    }
+    .cat-active-strip .cat-active-name{display:inline-flex;align-items:center;gap:8px}
+    .cat-active-strip .cat-active-name svg{width:16px;height:16px}
+    .cat-switch-btn{background:#fff;border:1px solid rgba(26,92,69,.25);color:var(--green);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s}
+    .cat-switch-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+
+    /* ── Eircode status hints ── */
+    .form-hint-strong{font-size:12px;color:var(--green);font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
+    .form-hint-strong.show{display:inline-flex}
+    .form-hint-strong svg{width:14px;height:14px;flex-shrink:0}
+    .form-hint-warn{font-size:12px;color:#c25a1f;font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
+    .form-hint-warn.show{display:inline-flex}
+    .form-hint-warn svg{width:14px;height:14px;flex-shrink:0}
+
+    /* ── Eircode visibility toggle ── */
+    .vis-toggle{
+      display:flex;align-items:center;gap:.85rem;background:#fafaf8;border:1.5px solid var(--border);
+      border-radius:14px;padding:.85rem 1rem;margin-top:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent;
+      transition:border-color .15s,background .15s
+    }
+    .vis-toggle:hover{border-color:var(--green)}
+    .vis-toggle.on{border-color:var(--green);background:var(--green-light)}
+    .vis-toggle .vis-icon{
+      width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)
+    }
+    .vis-toggle.on .vis-icon{background:var(--green);color:#fff;border-color:var(--green)}
+    .vis-toggle .vis-icon svg{width:18px;height:18px}
+    .vis-toggle .vis-text{flex:1;min-width:0}
+    .vis-toggle .vis-title{font-size:14px;font-weight:600;color:#111;line-height:1.3}
+    .vis-toggle .vis-sub{font-size:12px;color:#777;font-weight:300;margin-top:2px;line-height:1.4}
+    .vis-toggle.on .vis-title{color:var(--green)}
+    .vis-switch{
+      width:42px;height:24px;border-radius:50px;background:#ddd;flex-shrink:0;position:relative;transition:background .2s ease
+    }
+    .vis-switch::after{
+      content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+      background:#fff;transition:transform .2s ease;box-shadow:0 1px 4px rgba(0,0,0,.2)
+    }
+    .vis-toggle.on .vis-switch{background:var(--green)}
+    .vis-toggle.on .vis-switch::after{transform:translateX(18px)}
+
+    /* ── Google Places dropdown — themed to match the site ── */
+    .pac-container{
+      border-radius:14px;margin-top:6px;
+      border:1px solid var(--border);background:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.14);
+      font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999
+    }
+    .pac-container::after{display:none !important}
+    .pac-item{
+      padding:.65rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;line-height:1.4;display:flex;align-items:center;gap:10px
+    }
+    .pac-item:first-child{border-top:none}
+    .pac-item:hover,.pac-item-selected{background:var(--green-light)}
+    .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+    .pac-item-query{color:#111;font-weight:500;font-size:13px}
+    .pac-matched{color:var(--green)}
+
+    [data-theme="dark"] .cat-gate-card,[data-theme="dark"] .vis-toggle,[data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .cat-card{background:#0f0f0f;border-color:#2a2a2a}
+    [data-theme="dark"] .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
+    [data-theme="dark"] .vis-toggle.on{background:#0d2e1e;border-color:#2ecc8a}
+    [data-theme="dark"] .vis-toggle .vis-title{color:#e8e8e8}
+    [data-theme="dark"] .vis-toggle.on .vis-title{color:#7ec9a8}
+    [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .pac-item-query{color:#e8e8e8}
   </style>
 </head>
 <body>
@@ -211,13 +194,13 @@
     <p id="hero-sub">Reach thousands of buyers and renters across Ireland — in minutes</p>
   </div>
 
-  <!-- Category gate (Residential vs Commercial) — shown first -->
+  <!-- Step 0 — Residential vs Commercial picker. Shown first; once chosen,
+       the rest of the form appears and the seven-step wizard kicks in. -->
   <div class="cat-gate" id="cat-gate">
     <div class="cat-gate-card">
       <div class="cat-gate-eyebrow">Step 1 of 2</div>
       <div class="cat-gate-title">What kind of property are you listing?</div>
       <div class="cat-gate-sub">Pick a category to start. You can always change it later.</div>
-
       <div class="cat-pick">
         <button type="button" class="cat-card residential" onclick="pickCategory('residential')" aria-label="List a residential property">
           <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
@@ -231,7 +214,6 @@
           </div>
           <div class="cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
         </button>
-
         <button type="button" class="cat-card commercial" onclick="pickCategory('commercial')" aria-label="List a commercial property">
           <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 9h2"/><path d="M9 13h2"/><path d="M9 17h2"/><path d="M13 9h2"/><path d="M13 13h2"/><path d="M13 17h2"/></svg></div>
           <div class="cat-name">Commercial</div>
@@ -279,7 +261,6 @@
         <div class="card-title" id="type-card-title">What type of property is it?</div>
         <div class="card-sub" id="type-card-sub">Choose the best match</div>
 
-        <!-- Residential type grid -->
         <div class="type-grid" id="type-grid-residential">
           <div class="type-btn on" data-val="house"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">House</div></div>
           <div class="type-btn" data-val="apartment"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div><div class="type-lbl">Apartment</div></div>
@@ -287,7 +268,6 @@
           <div class="type-btn" data-val="site"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-site"/></svg></div><div class="type-lbl">Site / Land</div></div>
         </div>
 
-        <!-- Commercial type grid (hidden until Commercial picked) -->
         <div class="type-grid cols-3" id="type-grid-commercial" style="display:none">
           <div class="type-btn on" data-val="office"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">Office</div></div>
           <div class="type-btn" data-val="retail"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">Retail</div></div>
@@ -341,7 +321,7 @@
       </div>
     </div>
 
-    <!-- Step 2 -->
+    <!-- Step 2 — Address + Eircode (REQUIRED) + visibility toggle -->
     <div id="step-2" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Address &amp; location</div>
@@ -384,7 +364,7 @@
 
         <div class="form-group">
           <label class="form-label" for="eircode">Eircode <span class="req">*</span></label>
-          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" autocomplete="postal-code" maxlength="8" style="max-width:180px;text-transform:uppercase" oninput="onEircodeInput()" onblur="resolveEircode()"/>
+          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" autocomplete="postal-code" maxlength="8" style="max-width:200px;text-transform:uppercase" oninput="onEircodeInput()" onblur="resolveEircode()"/>
           <div class="form-hint">We use the Eircode to drop your property at the exact spot on the map — that's how buyers find you in drive-time and area searches.</div>
           <div class="form-hint-strong" id="eircode-ok">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
@@ -396,11 +376,9 @@
           </div>
         </div>
 
-        <!-- Hidden, captured from Google -->
         <input type="hidden" id="latitude"/>
         <input type="hidden" id="longitude"/>
 
-        <!-- Public visibility toggle -->
         <div class="vis-toggle on" id="eircode-vis" onclick="toggleEircodeVis()" role="switch" aria-checked="true" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleEircodeVis()}">
           <div class="vis-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -426,14 +404,14 @@
         <div class="card-sub">Help buyers and renters filter accurately</div>
         <div class="form-row-3">
           <div class="form-group">
-            <label class="form-label">Bedrooms</label>
+            <label class="form-label" id="bedrooms-label">Bedrooms</label>
             <select class="form-input form-select" id="bedrooms">
               <option value="">—</option><option>1</option><option>2</option>
               <option>3</option><option>4</option><option>5</option><option>6</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Bathrooms</label>
+            <label class="form-label" id="bathrooms-label">Bathrooms</label>
             <select class="form-input form-select" id="bathrooms">
               <option value="">—</option><option>1</option><option>2</option>
               <option>3</option><option>4</option>
@@ -474,25 +452,22 @@
       </div>
     </div>
 
-    <!-- Step 4: Photos with primary photo selection -->
+    <!-- Step 4 -->
     <div id="step-4" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Add photos</div>
         <div class="card-sub">Listings with photos get 5× more enquiries. The first photo will be your main cover photo.</div>
-
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
           <div class="upload-zone-icon"><svg width="40" height="40" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-camera"/></svg></div>
           <div class="upload-zone-text">Tap to add photos</div>
           <div class="upload-zone-hint">JPG, PNG or WEBP · Max 10MB each · Up to 20 photos</div>
         </div>
         <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handlePhotos(this.files)"/>
-
         <div id="photo-count" class="photo-count" style="display:none"></div>
         <div id="photo-tip" class="photo-tip" style="display:none">
           ✨ <strong>Tap any photo</strong> to set it as the main cover photo · <strong>×</strong> to remove
         </div>
         <div id="photo-grid" class="photo-grid"></div>
-
         <div style="display:flex;justify-content:space-between;margin-top:1.25rem">
           <button class="btn btn-ghost" onclick="goStep(3)">← Back</button>
           <button class="btn btn-primary" onclick="goStep(5)">Next: Publish →</button>
@@ -538,10 +513,10 @@
     if (!requireLogin()) {}
     renderNav('list')
 
-    var selectedPhotos = []   // array of File objects (null if removed)
-    var primaryIndex = 0      // which index is the main photo
+    var selectedPhotos = []
+    var primaryIndex = 0
     var createdListingId = null
-    var listingCategory = 'residential' // 'residential' | 'commercial'
+    var listingCategory = 'residential'
 
     // ── Category gate ─────────────────────────────────────────────────────
     function pickCategory(cat){
@@ -552,7 +527,6 @@
 
       var isCom = cat === 'commercial'
 
-      // Hero copy + badge
       document.getElementById('hero-title').innerHTML = isCom
         ? 'List your <em>commercial</em> property'
         : 'List your property on <em>Movin.ie</em>'
@@ -563,7 +537,6 @@
         ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>Commercial property'
         : '✦ First listing always free'
 
-      // Active strip
       var strip = document.getElementById('cat-active-strip')
       strip.style.display = ''
       document.getElementById('cat-active-label').textContent = isCom ? 'commercial' : 'residential'
@@ -571,7 +544,6 @@
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>'
 
-      // Step-1 copy
       document.getElementById('type-card-title').textContent = isCom
         ? 'What kind of commercial space?'
         : 'What type of property is it?'
@@ -579,58 +551,47 @@
         ? 'Pick the closest match — buyers and tenants filter by category.'
         : 'Choose the best match'
 
-      // Swap type grids
       document.getElementById('type-grid-residential').style.display = isCom ? 'none' : ''
       document.getElementById('type-grid-commercial').style.display  = isCom ? '' : 'none'
 
-      // Commercial doesn't have "Sharing" or residential property styles
       var optShare = document.getElementById('opt-share')
       if (optShare) optShare.style.display = isCom ? 'none' : ''
-      if (isCom && document.getElementById('listing_type').value === 'share') {
+      if (isCom && document.getElementById('listing_type').value === 'share')
         document.getElementById('listing_type').value = 'rent'
-      }
       document.getElementById('style-group').style.display = isCom ? 'none' : ''
 
-      // Specs labels (commercial uses different bedroom/bathroom semantics)
-      var bedLbl  = document.querySelector('label[for="bedrooms"]') || document.getElementById('bedrooms')?.previousElementSibling
-      var bathLbl = document.querySelector('label[for="bathrooms"]') || document.getElementById('bathrooms')?.previousElementSibling
+      var bedLbl  = document.getElementById('bedrooms-label')
+      var bathLbl = document.getElementById('bathrooms-label')
       if (bedLbl)  bedLbl.textContent  = isCom ? 'Office / room count' : 'Bedrooms'
       if (bathLbl) bathLbl.textContent = isCom ? 'WC / restrooms'      : 'Bathrooms'
 
-      // Bind type-btn click handlers (must be done after grid is visible)
       bindTypeButtons()
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
-
     function resetCategory(){
       document.getElementById('cat-gate').style.display = ''
       document.getElementById('steps-bar').style.display = 'none'
       document.getElementById('form-wrap').style.display = 'none'
-      // Re-render gate hero
       document.getElementById('hero-title').innerHTML = 'List your property on <em>Movin.ie</em>'
       document.getElementById('hero-sub').textContent = 'Reach thousands of buyers and renters across Ireland — in minutes'
       document.getElementById('hero-badge').innerHTML = '✦ First listing always free'
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
+    window.pickCategory  = pickCategory
+    window.resetCategory = resetCategory
 
-    window.pickCategory   = pickCategory
-    window.resetCategory  = resetCategory
-
-    // Auto-pick from URL: ?category=commercial or ?category=residential
     ;(function(){
       var p = new URLSearchParams(location.search)
       var c = (p.get('category') || '').toLowerCase()
       if (c === 'commercial' || c === 'residential') pickCategory(c)
     })()
 
-    // Type selector — works for whichever grid is currently visible
     function bindTypeButtons(){
       document.querySelectorAll('.type-grid .type-btn').forEach(function(b){
         if (b.dataset.bound) return
         b.dataset.bound = '1'
         b.addEventListener('click', function(){
-          var grid = b.closest('.type-grid')
-          if (!grid) return
+          var grid = b.closest('.type-grid'); if (!grid) return
           grid.querySelectorAll('.type-btn').forEach(function(x){ x.classList.remove('on') })
           b.classList.add('on')
         })
@@ -638,7 +599,6 @@
     }
     bindTypeButtons()
 
-    // Plan selector
     document.querySelectorAll('.plan-opt').forEach(function(b) {
       b.addEventListener('click', function() {
         document.querySelectorAll('.plan-opt').forEach(function(x) { x.classList.remove('on') })
@@ -646,44 +606,29 @@
       })
     })
 
-    // Listing type change
     document.getElementById('listing_type').addEventListener('change', function() {
       document.getElementById('price-hint').textContent =
         this.value === 'rent' || this.value === 'share' ? 'Enter monthly rent in €' : 'Enter asking price in €'
     })
 
-    // Drag and drop
     var zone = document.getElementById('upload-zone')
     zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over') })
     zone.addEventListener('dragleave', function() { zone.classList.remove('drag-over') })
     zone.addEventListener('drop', function(e) {
-      e.preventDefault()
-      zone.classList.remove('drag-over')
-      handlePhotos(e.dataTransfer.files)
+      e.preventDefault(); zone.classList.remove('drag-over'); handlePhotos(e.dataTransfer.files)
     })
 
     function handlePhotos(files) {
       Array.from(files).forEach(function(file) {
-        if (selectedPhotos.filter(Boolean).length >= 20) {
-          toast('Max 20 photos allowed', 'error')
-          return
-        }
-        if (file.size > 10 * 1024 * 1024) {
-          toast(file.name + ' is too large (max 10MB)', 'error')
-          return
-        }
+        if (selectedPhotos.filter(Boolean).length >= 20) { toast('Max 20 photos allowed', 'error'); return }
+        if (file.size > 10 * 1024 * 1024) { toast(file.name + ' is too large (max 10MB)', 'error'); return }
         var idx = selectedPhotos.length
         selectedPhotos.push(file)
-
         var reader = new FileReader()
-        reader.onload = function(e) {
-          addPhotoThumb(e.target.result, idx)
-          updatePhotoUI()
-        }
+        reader.onload = function(e) { addPhotoThumb(e.target.result, idx); updatePhotoUI() }
         reader.readAsDataURL(file)
       })
     }
-
     function addPhotoThumb(src, idx) {
       var grid = document.getElementById('photo-grid')
       var div = document.createElement('div')
@@ -696,63 +641,44 @@
         '<button class="photo-set-main" onclick="setMainPhoto(' + idx + ')">Set as main</button>'
       grid.appendChild(div)
     }
-
     function removePhoto(idx) {
       selectedPhotos[idx] = null
-      var el = document.getElementById('photo-' + idx)
-      if (el) el.remove()
-
-      // If removing primary photo, set next available as primary
+      var el = document.getElementById('photo-' + idx); if (el) el.remove()
       if (idx === primaryIndex) {
         var nextIdx = selectedPhotos.findIndex(function(p, i) { return p !== null && i !== idx })
-        if (nextIdx !== -1) {
-          setMainPhoto(nextIdx)
-        } else {
-          primaryIndex = 0
-        }
+        if (nextIdx !== -1) setMainPhoto(nextIdx); else primaryIndex = 0
       }
       updatePhotoUI()
     }
-
     function setMainPhoto(idx) {
       if (!selectedPhotos[idx]) return
       primaryIndex = idx
-
-      // Update all photo items
       document.querySelectorAll('.photo-item').forEach(function(el) {
         el.classList.remove('is-primary')
-        var badge = el.querySelector('.photo-badge')
-        if (badge) badge.remove()
+        var badge = el.querySelector('.photo-badge'); if (badge) badge.remove()
       })
-
       var el = document.getElementById('photo-' + idx)
       if (el) {
         el.classList.add('is-primary')
         var img = el.querySelector('img')
         if (img && !el.querySelector('.photo-badge')) {
           var badge = document.createElement('div')
-          badge.className = 'photo-badge'
-          badge.textContent = 'Main photo'
+          badge.className = 'photo-badge'; badge.textContent = 'Main photo'
           el.insertBefore(badge, img.nextSibling)
         }
       }
-
       toast('✓ Main photo updated', 'ok')
     }
-
     function updatePhotoUI() {
       var count = selectedPhotos.filter(Boolean).length
       var countEl = document.getElementById('photo-count')
       var tipEl = document.getElementById('photo-tip')
-
       if (count > 0) {
         countEl.style.display = 'block'
         countEl.textContent = count + ' photo' + (count === 1 ? '' : 's') + ' added'
         tipEl.style.display = 'block'
       } else {
-        countEl.style.display = 'none'
-        tipEl.style.display = 'none'
-        primaryIndex = 0
+        countEl.style.display = 'none'; tipEl.style.display = 'none'; primaryIndex = 0
       }
     }
 
@@ -771,7 +697,6 @@
           document.getElementById('eircode').focus()
           return
         }
-        // Make sure we've geocoded — if not, try once now and bail until it succeeds
         var lat = document.getElementById('latitude').value
         var lng = document.getElementById('longitude').value
         if (!lat || !lng) {
@@ -780,12 +705,10 @@
           return
         }
       }
-
       for (var i = 1; i <= 5; i++) {
         var el = document.getElementById('step-' + i)
         if (el) el.style.display = i === n ? 'block' : 'none'
       }
-
       document.querySelectorAll('.step-item').forEach(function(s) {
         var sn = parseInt(s.dataset.step)
         s.classList.remove('active', 'done')
@@ -793,77 +716,70 @@
         if (sn < n)  s.classList.add('done')
         s.querySelector('.step-num').textContent = sn < n ? '✓' : sn
       })
-
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     async function publishListing() {
       var btn = document.getElementById('publish-btn')
       var alertEl = document.getElementById('form-alert')
-      btn.classList.add('btn-loading')
-      btn.disabled = true
-
+      btn.classList.add('btn-loading'); btn.disabled = true
       try {
         var activeGridId = listingCategory === 'commercial' ? 'type-grid-commercial' : 'type-grid-residential'
         var activeBtn    = document.querySelector('#' + activeGridId + ' .type-btn.on')
         var payload = {
-          title:          document.getElementById('title').value.trim(),
-          description:    document.getElementById('description').value.trim(),
-          category:       listingCategory,
-          listing_type:   document.getElementById('listing_type').value,
-          property_type:  (activeBtn && activeBtn.dataset.val) || (listingCategory === 'commercial' ? 'office' : 'house'),
-          property_style: listingCategory === 'commercial' ? '' : document.getElementById('property_style').value,
-          address_line1:  document.getElementById('address_line1').value.trim(),
-          address_area:   (document.getElementById('address_area').value || document.getElementById('address_area_text')?.value || '').trim(),
-          county:         document.getElementById('county').value,
-          eircode:        document.getElementById('eircode').value.trim().toUpperCase(),
+          title:           document.getElementById('title').value.trim(),
+          description:     document.getElementById('description').value.trim(),
+          category:        listingCategory,
+          listing_type:    document.getElementById('listing_type').value,
+          property_type:   (activeBtn && activeBtn.dataset.val) || (listingCategory === 'commercial' ? 'office' : 'house'),
+          property_style:  listingCategory === 'commercial' ? '' : document.getElementById('property_style').value,
+          address_line1:   document.getElementById('address_line1').value.trim(),
+          address_area:    (document.getElementById('address_area').value || document.getElementById('address_area_text')?.value || '').trim(),
+          county:          document.getElementById('county').value,
+          eircode:         document.getElementById('eircode').value.trim().toUpperCase(),
           eircode_visible: !!document.getElementById('eircode-vis').classList.contains('on'),
-          latitude:       parseFloat(document.getElementById('latitude').value)  || null,
-          longitude:      parseFloat(document.getElementById('longitude').value) || null,
-          price:          parseInt(document.getElementById('price').value),
-          bedrooms:       document.getElementById('bedrooms').value || null,
-          bathrooms:      document.getElementById('bathrooms').value || null,
-          floor_size_m2:  document.getElementById('floor_size_m2').value || null,
-          ber_rating:     document.getElementById('ber_rating').value || null,
-          parking:        document.getElementById('f-parking').checked,
-          garden:         document.getElementById('f-garden').checked,
-          garage:         document.getElementById('f-garage').checked,
-          alarm:          document.getElementById('f-alarm').checked,
-          wheelchair:     document.getElementById('f-wheelchair').checked,
+          latitude:        parseFloat(document.getElementById('latitude').value)  || null,
+          longitude:       parseFloat(document.getElementById('longitude').value) || null,
+          price:           parseInt(document.getElementById('price').value),
+          bedrooms:        document.getElementById('bedrooms').value || null,
+          bathrooms:       document.getElementById('bathrooms').value || null,
+          floor_size_m2:   document.getElementById('floor_size_m2').value || null,
+          ber_rating:      document.getElementById('ber_rating').value || null,
+          parking:         document.getElementById('f-parking').checked,
+          garden:          document.getElementById('f-garden').checked,
+          garage:          document.getElementById('f-garage').checked,
+          alarm:           document.getElementById('f-alarm').checked,
+          wheelchair:      document.getElementById('f-wheelchair').checked,
         }
 
         var res = await API.listings.create(payload)
         createdListingId = res.listing.id
 
-        // Upload photos — primary photo first
         var filesToUpload = []
-        if (selectedPhotos[primaryIndex]) {
-          filesToUpload.push(selectedPhotos[primaryIndex])
-        }
-        selectedPhotos.forEach(function(f, i) {
-          if (f && i !== primaryIndex) filesToUpload.push(f)
-        })
-
+        if (selectedPhotos[primaryIndex]) filesToUpload.push(selectedPhotos[primaryIndex])
+        selectedPhotos.forEach(function(f, i) { if (f && i !== primaryIndex) filesToUpload.push(f) })
         if (filesToUpload.length > 0) {
           btn.textContent = 'Uploading photos…'
-          try {
-            await API.photos.upload(createdListingId, filesToUpload)
-          } catch(e) {
-            console.warn('Photo upload failed:', e.message)
-          }
+          try { await API.photos.upload(createdListingId, filesToUpload) }
+          catch(e) { console.warn('Photo upload failed:', e.message) }
         }
 
-        // Notify Movin admins (dev@movin.ie) for approval — never blocks UX
+        // Notify Movin admins (dev@movin.ie) — best-effort, never blocks UX
         try {
-          API.listings.notifyAdminOfNewListing(createdListingId, {
-            title:         payload.title,
-            category:      listingCategory,
-            property_type: payload.property_type,
-            listing_type:  payload.listing_type,
-            county:        payload.county,
-            price:         payload.price,
-            owner:         (window.API.getUser && window.API.getUser()) || null
-          })
+          if (API.listings.notifyAdminOfNewListing) {
+            API.listings.notifyAdminOfNewListing(createdListingId, {
+              title:         payload.title,
+              category:      listingCategory,
+              property_type: payload.property_type,
+              listing_type:  payload.listing_type,
+              county:        payload.county,
+              eircode:       payload.eircode,
+              latitude:      payload.latitude,
+              longitude:     payload.longitude,
+              price:         payload.price,
+              owner:         (window.API.getUser && window.API.getUser()) || null
+            })
+          }
         } catch(_) {}
 
         if (res.requires_payment) {
@@ -874,42 +790,33 @@
           toast(listingCategory === 'commercial'
             ? '🎉 Commercial listing submitted for review!'
             : '🎉 Listing submitted for review!')
-
-          // Commercial listings land on commercial.html; residential go to detail
           if (listingCategory === 'commercial') {
             window.location.href = 'commercial.html?new=' + createdListingId
           } else {
             window.location.href = 'listing.html?id=' + createdListingId
           }
         }
-
       } catch(err) {
-        alertEl.innerHTML = '<div class="alert alert-error">' + err.message + '</div>'
+        alertEl.innerHTML = '<div class="alert alert-error">' + (err.message || 'Could not publish') + '</div>'
         window.scrollTo({ top: 0, behavior: 'smooth' })
-        btn.classList.remove('btn-loading')
-        btn.disabled = false
+        btn.classList.remove('btn-loading'); btn.disabled = false
         btn.textContent = '🚀 Publish listing'
       }
     }
 
     // ── Eircode validation + Google geocoding ─────────────────────────────
-    // Eircode pattern: 3 chars + 1 space (optional) + 4 chars (e.g. "D02 EH73")
     function isLikelyEircode(s){
       var v = String(s || '').toUpperCase().replace(/\s+/g,'')
       return /^[A-Z0-9]{7}$/.test(v)
     }
-
     function showEircodeStatus(state, msg){
       var ok   = document.getElementById('eircode-ok')
       var warn = document.getElementById('eircode-warn')
-      ok.classList.remove('show')
-      warn.classList.remove('show')
+      ok.classList.remove('show'); warn.classList.remove('show')
       if (state === 'ok')   { ok.classList.add('show');   if (msg) document.getElementById('eircode-ok-text').textContent   = msg }
       if (state === 'warn') { warn.classList.add('show'); if (msg) document.getElementById('eircode-warn-text').textContent = msg }
     }
-
     function onEircodeInput(){
-      // Reset cached lat/lng on every change so we re-validate on blur
       document.getElementById('latitude').value  = ''
       document.getElementById('longitude').value = ''
       showEircodeStatus(null)
@@ -921,7 +828,6 @@
       if (window.google && google.maps && google.maps.Geocoder) _geocoder = new google.maps.Geocoder()
       return _geocoder
     }
-
     function resolveEircode(thenAdvance){
       var raw = (document.getElementById('eircode').value || '').trim().toUpperCase()
       if (!raw) return
@@ -929,37 +835,22 @@
         showEircodeStatus('warn', 'That doesn\'t look like a valid Eircode (e.g. D06 W9X4).')
         return
       }
-      // Normalise to "XXX XXXX" form
       var clean = raw.replace(/\s+/g,'')
       var pretty = clean.slice(0,3) + ' ' + clean.slice(3)
       document.getElementById('eircode').value = pretty
-
       var gc = ensureGeocoder()
-      if (!gc) {
-        // Maps not loaded yet — quietly skip; will retry on Next click
-        return
-      }
-      gc.geocode({
-        address: pretty,
-        componentRestrictions: { country: 'IE' }
-      }, function(results, status){
+      if (!gc) return
+      gc.geocode({ address: pretty, componentRestrictions: { country: 'IE' } }, function(results, status){
         if (status === 'OK' && results && results[0]) {
           var r = results[0]
           var loc = r.geometry.location
           document.getElementById('latitude').value  = loc.lat()
           document.getElementById('longitude').value = loc.lng()
-
-          // Try to fill county + a sensible address line if those are empty
           var comps = r.address_components || []
-          function pick(type){
-            var c = comps.find(function(x){ return x.types.indexOf(type) !== -1 })
-            return c ? c.long_name : ''
-          }
+          function pick(type){ var c = comps.find(function(x){ return x.types.indexOf(type) !== -1 }); return c ? c.long_name : '' }
           var countySel = document.getElementById('county')
           if (!countySel.value) {
-            var county = pick('administrative_area_level_1') || pick('administrative_area_level_2')
-            // Strip "County " prefix if present
-            county = county.replace(/^County\s+/i,'')
+            var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
             if (county) {
               for (var i = 0; i < countySel.options.length; i++){
                 if (countySel.options[i].value && countySel.options[i].value.toLowerCase() === county.toLowerCase()) {
@@ -971,11 +862,9 @@
             }
           }
           if (!document.getElementById('address_line1').value.trim()) {
-            // Use the formatted address minus the Eircode + country
             var fa = (r.formatted_address || '').replace(pretty,'').replace(/,?\s*Ireland\s*$/i,'').replace(/,\s*$/,'').trim()
             if (fa) document.getElementById('address_line1').value = fa
           }
-
           showEircodeStatus('ok', '✓ Located — your property is pinned on the map.')
           if (thenAdvance) goStep(3)
         } else {
@@ -986,9 +875,7 @@
     window.onEircodeInput = onEircodeInput
     window.resolveEircode = resolveEircode
 
-    // ── Address-line typeahead via Google Places (any address, university,
-    //    landmark, town in Ireland). Fills county + Eircode + lat/lng if
-    //    Google returns them. ─────────────────────────────────────────────
+    // ── Address autocomplete (any address / university / town / Eircode) ─
     function setupAddressAutocomplete(){
       if (!window.google || !google.maps || !google.maps.places) return
       var input = document.getElementById('address_line1')
@@ -999,28 +886,20 @@
         fields: ['geometry', 'name', 'formatted_address', 'address_components']
       })
       ac.addListener('place_changed', function(){
-        var place = ac.getPlace()
-        if (!place) return
+        var place = ac.getPlace(); if (!place) return
         if (place.geometry && place.geometry.location){
           document.getElementById('latitude').value  = place.geometry.location.lat()
           document.getElementById('longitude').value = place.geometry.location.lng()
         }
         var fa   = place.formatted_address || place.name || input.value
         var comp = place.address_components || []
-        function pick(type){
-          var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 })
-          return c ? c.long_name : ''
-        }
-        // Address line: keep what Google formatted but strip Eircode/Ireland
+        function pick(type){ var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 }); return c ? c.long_name : '' }
         var ec  = pick('postal_code')
         var trimmed = fa
-        if (ec)      trimmed = trimmed.replace(ec, '')
+        if (ec) trimmed = trimmed.replace(ec, '')
         trimmed = trimmed.replace(/,?\s*Ireland\s*$/i,'').replace(/,\s*,/g,',').replace(/^[\s,]+|[\s,]+$/g,'')
         if (trimmed) input.value = trimmed
-
-        // County
-        var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2'))
-                       .replace(/^County\s+/i,'')
+        var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
         if (county) {
           var sel = document.getElementById('county')
           for (var i = 0; i < sel.options.length; i++){
@@ -1031,7 +910,6 @@
             }
           }
         }
-        // Eircode
         if (ec) {
           var clean = ec.toUpperCase().replace(/\s+/g,'')
           if (clean.length === 7) ec = clean.slice(0,3) + ' ' + clean.slice(3)
@@ -1042,13 +920,12 @@
         }
       })
     }
-    // Called by the Maps script tag once the API is ready
     window.initListMaps = function(){
       ensureGeocoder()
       setupAddressAutocomplete()
     }
 
-    // ── Public-visibility toggle for the Eircode ──────────────────────────
+    // ── Eircode visibility toggle ─────────────────────────────────────────
     function toggleEircodeVis(){
       var el = document.getElementById('eircode-vis')
       var on = !el.classList.contains('on')

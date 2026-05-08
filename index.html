@@ -214,6 +214,23 @@ button,input,select{font-family:inherit}
 .img-d{background:linear-gradient(135deg,#e8d4f5,#f4eafc)}
 .img-e{background:linear-gradient(135deg,#d4f5d4,#eafcea)}
 
+/* ─── Google Places dropdown — themed to match the site ─── */
+.pac-container{border-radius:14px;margin-top:6px;border:1px solid var(--border);background:var(--white,#fff);box-shadow:0 14px 36px rgba(0,0,0,.14);font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999}
+.pac-container::after{display:none !important}
+.pac-item{padding:.7rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;-webkit-tap-highlight-color:transparent;line-height:1.4;display:flex;align-items:center;gap:10px}
+.pac-item:first-child{border-top:none}
+.pac-item:hover,.pac-item-selected{background:var(--gl)}
+.pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+.pac-item-query{color:var(--text,#111);font-weight:500;font-size:13px}
+.pac-matched{color:var(--g)}
+[data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+[data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+[data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+[data-theme="dark"] .pac-item-query{color:#e8e8e8}
+[data-theme="dark"] .pac-matched{color:#7ec9a8}
+/* Hide the legacy hand-rolled hero suggestion box once Places is wired */
+body.hero-places-ready .sugg-box{display:none !important}
+
 /* ─── PWA splash screen ─── */
 .pwa-splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;opacity:1;transition:opacity .45s ease,visibility .45s ease;-webkit-user-select:none;user-select:none}
 .pwa-splash.hide{opacity:0;visibility:hidden;pointer-events:none}
@@ -307,7 +324,7 @@ button,input,select{font-family:inherit}
     <div class="search-main" style="position:relative">
       <span class="search-ico-abs"><svg width="16" height="16" style="color:#aaa;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></span>
       <input class="search-inp" type="text" id="hero-loc"
-        placeholder="Area, county, Eircode or D1, D2…"
+        placeholder="Address, university, town, county, Eircode…"
         autocomplete="off"
         oninput="handleLoc(this.value)"
         onkeydown="if(event.key==='Enter')doSearch()"/>
@@ -537,6 +554,10 @@ function selectLoc(item){
 function showChip(label){document.getElementById('chip-wrap').innerHTML=`<span class="search-chip">📍 ${label}<button class="chip-x" onclick="clearSearch()">×</button></span>`}
 function clearSearch(){searchQuery='';searchCounty='';document.getElementById('hero-loc').value='';document.getElementById('chip-wrap').innerHTML=''}
 document.addEventListener('click',e=>{if(!e.target.closest('.search-main'))document.getElementById('loc-sugg')?.classList.remove('open')})
+// When the user picks a place from the Google Places dropdown we capture
+// its lat/lng so search.html can sort listings by distance to it.
+let searchOrigin = null   // { lat, lng, label } or null
+
 function doSearch(){
   document.getElementById('loc-sugg').classList.remove('open')
   const p=new URLSearchParams()
@@ -557,9 +578,88 @@ function doSearch(){
   if(ptype)p.set('property_type',ptype)
   if(ber)p.set('ber',ber)
   document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
+  // Pass the picked place's coordinates so search.html can show distance + sort closest-first
+  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
+    p.set('lat',  searchOrigin.lat)
+    p.set('lng',  searchOrigin.lng)
+    p.set('near', searchOrigin.label || q || '')
+  }
   window.location.href='pages/search.html?'+p.toString()
 }
-function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);doSearch()}
+function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);searchOrigin=null;doSearch()}
+
+// ── Google Places autocomplete on the hero search input ─────────────────
+// Loaded asynchronously below; this becomes the picker for any address /
+// university / Eircode / town in Ireland, and captures lat/lng so the
+// results page can show "X km away" on each listing.
+window.initHeroSearch = function(){
+  if (!window.google || !google.maps || !google.maps.places) return
+  const input = document.getElementById('hero-loc')
+  if (!input || input.dataset.acBound) return
+  input.dataset.acBound = '1'
+  document.body.classList.add('hero-places-ready')
+  // Suppress the existing custom dropdown — Places replaces it
+  const sugg = document.getElementById('loc-sugg')
+  if (sugg) sugg.classList.remove('open')
+  window.handleLoc = function(){}
+
+  const ac = new google.maps.places.Autocomplete(input, {
+    componentRestrictions: { country: 'ie' },
+    fields: ['geometry','name','formatted_address','address_components','types']
+  })
+  ac.addListener('place_changed', function(){
+    const place = ac.getPlace()
+    if (!place) return
+    applyHeroPlace(place)
+  })
+
+  // Enter without picking a suggestion → geocode the typed text
+  input.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return
+    if (document.querySelector('.pac-container .pac-item-selected')) return
+    const v = (input.value || '').trim()
+    if (!v) return
+    const gc = window._heroGeo = window._heroGeo || new google.maps.Geocoder()
+    gc.geocode({ address: v, componentRestrictions: { country: 'IE' } }, function(results, status){
+      if (status === 'OK' && results && results[0]) applyHeroPlace(results[0])
+      else doSearch()
+    })
+  })
+}
+
+function applyHeroPlace(place){
+  const comp = place.address_components || []
+  const pick = (t) => { const c = comp.find(x => x.types.indexOf(t) !== -1); return c ? c.long_name : '' }
+  const county   = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i, '')
+  const locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
+  const postcode = pick('postal_code')
+  const label = (place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0)
+    ? place.name + ' — ' + place.formatted_address
+    : (place.formatted_address || place.name || document.getElementById('hero-loc').value)
+
+  // Capture coordinates for distance-aware results
+  if (place.geometry && place.geometry.location){
+    const loc = place.geometry.location
+    searchOrigin = {
+      lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
+      lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
+      label: label
+    }
+  }
+
+  // Update the input + visible chip + state used by doSearch()
+  document.getElementById('hero-loc').value = label
+  searchQuery  = label
+  searchCounty = county || ''
+  // Pretty Dublin postcode handling: "Dublin 6" gets sent as the q since the
+  // backend expects a county filter for Dublin not a district code
+  const dub = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
+  if (dub) { searchCounty = 'Dublin'; searchQuery = label }
+  if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim())) searchQuery = postcode.toUpperCase()
+  showChip(label)
+  // Don't auto-submit — just like Bayut, picking the place primes the search
+  // and the user clicks Search (or hits Enter again) when ready
+}
 async function loadFeatured(){
   const grid=document.getElementById('featured-grid')
   try{
@@ -622,6 +722,12 @@ updateNav()
   }
 })()
 </script>
+
+<!-- Google Maps + Places (loaded last so it can call window.initHeroSearch) -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initHeroSearch&v=weekly"
+  async defer></script>
+
 <footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>

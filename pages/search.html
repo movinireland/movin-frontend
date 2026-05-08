@@ -111,7 +111,39 @@
     .ql-btn{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;color:#555;cursor:pointer;white-space:nowrap;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
     .ql-btn:hover{border-color:var(--g);color:var(--g)}
 
-    /* ── Google Places dropdown — themed to match the site ── */
+    /* ── "Searching near" origin chip ── */
+    .origin-bar{
+      display:flex;align-items:center;gap:.65rem;
+      background:linear-gradient(135deg,var(--g),#0e3d2e);color:#fff;
+      padding:.7rem 1rem;font-size:13px;font-weight:500;
+      border-bottom:1px solid var(--border)
+    }
+    .origin-bar .origin-pin{
+      width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.15);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0
+    }
+    .origin-bar .origin-pin svg{width:14px;height:14px;stroke:#fff;fill:none}
+    .origin-bar .origin-where{flex:1;min-width:0;line-height:1.3}
+    .origin-bar .origin-where strong{font-weight:700}
+    .origin-bar .origin-where .origin-sub{display:block;font-size:11px;color:rgba(255,255,255,.65);font-weight:400;margin-top:2px}
+    .origin-bar .origin-clear{
+      background:rgba(255,255,255,.15);color:#fff;border:none;
+      width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0
+    }
+    .origin-bar .origin-clear:hover{background:rgba(255,255,255,.28)}
+
+    /* ── Distance pill on each property card ── */
+    .prop-dist-pill{
+      position:absolute;bottom:8px;left:8px;
+      display:inline-flex;align-items:center;gap:4px;
+      background:rgba(26,92,69,.95);color:#fff;
+      font-size:11px;font-weight:700;padding:4px 9px;border-radius:50px;
+      box-shadow:0 2px 8px rgba(0,0,0,.25);letter-spacing:.2px;z-index:2
+    }
+    .prop-dist-pill svg{width:11px;height:11px;stroke:#fff;fill:none}
+
+    /* ── Google Places dropdown — themed ── */
     .pac-container{
       border-radius:16px;margin-top:6px;
       border:1px solid var(--border);background:#fff;
@@ -128,6 +160,9 @@
     .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
     .pac-item-query{color:#111;font-weight:500;font-size:13px}
     .pac-matched{color:var(--g)}
+    /* hide the legacy in-flow custom suggestion panel once Places is wired */
+    body.places-ready .search-suggestions{display:none !important}
+
     [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
     [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
     [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
@@ -140,8 +175,6 @@
       :root:not([data-theme="light"]) .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
       :root:not([data-theme="light"]) .pac-item-query{color:#e8e8e8}
     }
-    /* Hide the legacy in-flow custom suggestions panel once Google Places is wired */
-    body.places-ready .search-suggestions{display:none !important}
   </style>
 </head>
 <body>
@@ -169,6 +202,18 @@
         Filters
       </button>
     </div>
+  </div>
+
+  <!-- "Searching near …" origin bar (only shown when arriving with a lat/lng) -->
+  <div class="origin-bar" id="origin-bar" style="display:none">
+    <div class="origin-pin">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    </div>
+    <div class="origin-where">
+      <span>Searching near <strong id="origin-name">your location</strong></span>
+      <span class="origin-sub" id="origin-sub">Properties below are sorted by distance.</span>
+    </div>
+    <button class="origin-clear" type="button" aria-label="Clear search location" onclick="clearOrigin()">×</button>
   </div>
 
   <!-- Quick filters + links -->
@@ -235,6 +280,7 @@
   <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border)">
     <div class="results-count" id="result-count" style="font-size:13px;color:#888">Loading…</div>
     <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
+      <option value="distance" id="sort-distance" style="display:none">Closest first</option>
       <option value="newest">Most recent</option>
       <option value="price_asc">Price ↑</option>
       <option value="price_desc">Price ↓</option>
@@ -393,6 +439,75 @@
     if (urlP.get('q')) {
       searchQuery = urlP.get('q')
       document.getElementById('search-q').value = searchQuery
+    }
+
+    // ── Search origin (for distance-from-place rendering) ─────────────────
+    var searchOrigin = null
+    ;(function readOriginFromUrl(){
+      var lat = parseFloat(urlP.get('lat'))
+      var lng = parseFloat(urlP.get('lng'))
+      var near = urlP.get('near') || urlP.get('place') || ''
+      if (isFinite(lat) && isFinite(lng)){
+        searchOrigin = { lat: lat, lng: lng, label: near || (lat.toFixed(3) + ', ' + lng.toFixed(3)) }
+        if (near && !document.getElementById('search-q').value) document.getElementById('search-q').value = near
+        showOriginBar()
+        var sd = document.getElementById('sort-distance')
+        if (sd) { sd.style.display = ''; document.getElementById('sort-sel').value = 'distance' }
+      }
+    })()
+    function showOriginBar(){
+      if (!searchOrigin) return
+      document.getElementById('origin-bar').style.display = ''
+      document.getElementById('origin-name').textContent = searchOrigin.label
+    }
+    window.clearOrigin = function(){
+      searchOrigin = null
+      document.getElementById('origin-bar').style.display = 'none'
+      var sd = document.getElementById('sort-distance')
+      if (sd) sd.style.display = 'none'
+      if (document.getElementById('sort-sel').value === 'distance')
+        document.getElementById('sort-sel').value = 'newest'
+      // strip lat/lng/near from the URL without reloading
+      var p = new URLSearchParams(location.search)
+      ;['lat','lng','near','place'].forEach(function(k){ p.delete(k) })
+      history.replaceState(null, '', location.pathname + (p.toString() ? '?'+p.toString() : ''))
+      doSearch()
+    }
+
+    // Haversine distance (km) — used to compute distance from search origin
+    function haversineKm(lat1, lng1, lat2, lng2){
+      var R = 6371
+      var dLat = (lat2-lat1) * Math.PI/180
+      var dLng = (lng2-lng1) * Math.PI/180
+      var a = Math.sin(dLat/2)*Math.sin(dLat/2)
+            + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)
+            * Math.sin(dLng/2)*Math.sin(dLng/2)
+      return 2 * R * Math.asin(Math.sqrt(a))
+    }
+    function formatDistance(km){
+      if (km == null || !isFinite(km)) return ''
+      if (km < 1) return Math.round(km*1000) + ' m'
+      if (km < 10) return km.toFixed(1) + ' km'
+      return Math.round(km) + ' km'
+    }
+    function listingPoint(l){
+      if (l.latitude  != null && l.longitude  != null) return [parseFloat(l.latitude), parseFloat(l.longitude)]
+      if (l.lat       != null && l.lng        != null) return [parseFloat(l.lat),       parseFloat(l.lng)]
+      return null
+    }
+    function listingDistance(l){
+      if (!searchOrigin) return null
+      var p = listingPoint(l); if (!p) return null
+      return haversineKm(searchOrigin.lat, searchOrigin.lng, p[0], p[1])
+    }
+    function injectDistancePill(cardHtml, distKm){
+      if (distKm == null) return cardHtml
+      var pill = '<div class="prop-dist-pill">'
+        + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+        + formatDistance(distKm) + ' away'
+        + '</div>'
+      // Place inside the prop-card-img region (right before .prop-card-body)
+      return cardHtml.replace('<div class="prop-card-body">', pill + '<div class="prop-card-body">')
     }
 
     // ── Autocomplete ────────────────────────────────────────────────────────
@@ -600,9 +715,12 @@
       if (berEl.length) filters.ber = berEl[0]
       if (document.getElementById('f-parking')?.checked) filters.parking = '1'
       if (document.getElementById('f-garden')?.checked)  filters.garden  = '1'
-      filters.sort  = document.getElementById('sort-sel').value
+      var pickedSort = document.getElementById('sort-sel').value
+      // Distance sort is computed client-side — fall back to "newest" on the API
+      filters.sort  = (pickedSort === 'distance') ? 'newest' : pickedSort
       filters.page  = page
-      filters.limit = 12
+      // When sorting by distance we pull a wider net so the closest are actually included
+      filters.limit = (pickedSort === 'distance' && searchOrigin) ? 60 : 12
 
       try {
         const savedIds = API.auth.isLoggedIn()
@@ -613,8 +731,9 @@
 
         const countLabel = searchQuery || searchCounty || searchDistrict
           ? ` in <strong>${searchQuery || searchCounty}</strong>` : ''
+        const nearLabel = searchOrigin ? ` near <strong>${searchOrigin.label}</strong>` : ''
         document.getElementById('result-count').innerHTML =
-          `<strong>${res.total.toLocaleString()}</strong> <span>propert${res.total === 1 ? 'y' : 'ies'}${countLabel}</span>`
+          `<strong>${res.total.toLocaleString()}</strong> <span>propert${res.total === 1 ? 'y' : 'ies'}${countLabel}${nearLabel}</span>`
 
         if (!res.listings.length) {
           grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem">
@@ -630,7 +749,24 @@
           return
         }
 
-        grid.innerHTML = res.listings.map(l => buildPropertyCard(l, savedIds)).join('')
+        // Build cards — when origin is set, attach a distance pill and (if
+        // distance-sort selected) sort by distance ascending.
+        var rendered = res.listings.slice()
+        if (searchOrigin) {
+          rendered.forEach(function(l){ l.__dist = listingDistance(l) })
+          if (pickedSort === 'distance') {
+            rendered.sort(function(a,b){
+              var da = a.__dist == null ?  Infinity : a.__dist
+              var db = b.__dist == null ?  Infinity : b.__dist
+              return da - db
+            })
+            rendered = rendered.slice(0, 12)
+          }
+        }
+        grid.innerHTML = rendered.map(function(l){
+          var html = buildPropertyCard(l, savedIds)
+          return injectDistancePill(html, l.__dist != null ? l.__dist : null)
+        }).join('')
 
         // Pagination
         const pg = document.getElementById('pagination')
@@ -673,8 +809,9 @@
 
     // ── Google Places autocomplete on the search input ───────────────────
     // Lets users type any address, university, town or Eircode in Ireland.
-    // When a place is picked we map it back into the existing search state
-    // (county / district / generic query) so all the existing filters keep working.
+    // When a place is picked we capture its lat/lng so results can be sorted
+    // by distance, and route the result through the existing selectSuggestion
+    // so the rest of the filters keep working.
     window.initSearchMaps = function(){
       if (!window.google || !google.maps || !google.maps.places) return
       var input = document.getElementById('search-q')
@@ -684,8 +821,6 @@
       // Hide the in-flow custom suggestion panel — Google Places replaces it
       var legacy = document.getElementById('suggestions')
       if (legacy) legacy.classList.remove('open')
-      // Make the inline `oninput` handler a no-op so the legacy panel
-      // doesn't keep popping up beneath the .pac-container
       window.handleSearchInput = function(){}
 
       var ac = new google.maps.places.Autocomplete(input, {
@@ -695,76 +830,68 @@
       ac.addListener('place_changed', function(){
         var place = ac.getPlace()
         if (!place) return
-
-        var comp = place.address_components || []
-        function pick(type){
-          var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 })
-          return c ? c.long_name : ''
-        }
-        var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
-        var locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
-        var postcode = pick('postal_code')
-
-        // Build an item compatible with the existing selectSuggestion()
-        var item = null
-        var label = place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0
-          ? place.name + ' — ' + place.formatted_address
-          : (place.formatted_address || place.name || input.value)
-
-        // If the place is a Dublin postcode like "Dublin 6" turn it into a district hit
-        var dubMatch = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
-        if (dubMatch){
-          item = { type:'district', code:'D'+dubMatch[1].toUpperCase(), name:label, area:'' }
-        } else if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim())) {
-          item = { type:'eircode', code:postcode.toUpperCase(), name:label, area:'' }
-        } else if (county) {
-          item = { type:'county', code:county, name:label, area:'' }
-        } else {
-          item = { type:'place', code:'', name:label, area:'' }
-        }
-
-        // If geometry is present, store it for any future map-aware features
-        if (place.geometry && place.geometry.location){
-          window.lastSearchPoint = {
-            lat: place.geometry.location.lat(),
-            lng: place.geometry.location.lng(),
-            label: label
-          }
-        }
-
-        // Reuse the existing selection handler so search params are set
-        // consistently with the rest of the page.
-        if (typeof selectSuggestion === 'function') selectSuggestion(item)
-        else { input.value = label; if (typeof doSearch === 'function') doSearch() }
+        applyPickedPlace(place)
       })
 
-      // If the user hits Enter without picking a suggestion, geocode their
-      // typed text so a free-typed Eircode / address still resolves.
+      // Enter key without picking a suggestion → geocode the typed text
       input.addEventListener('keydown', function(e){
         if (e.key !== 'Enter') return
         if (document.querySelector('.pac-container .pac-item-selected')) return
         var q = (input.value || '').trim()
         if (!q) return
-        if (!google.maps.Geocoder) return
         var gc = window._searchGeocoder = window._searchGeocoder || new google.maps.Geocoder()
         gc.geocode({ address: q, componentRestrictions: { country: 'IE' } }, function(results, status){
-          if (status === 'OK' && results && results[0]){
-            var r = results[0]
-            var compR = r.address_components || []
-            function pickR(t){ var c = compR.find(function(x){ return x.types.indexOf(t)!==-1 }); return c ? c.long_name : '' }
-            var pcode = pickR('postal_code')
-            var cty   = (pickR('administrative_area_level_1') || pickR('administrative_area_level_2')).replace(/^County\s+/i,'')
-            var item  = pcode ? { type:'eircode', code:pcode.toUpperCase(), name:r.formatted_address }
-                              : (cty ? { type:'county', code:cty, name:r.formatted_address }
-                                     : { type:'place', code:'', name:r.formatted_address })
-            if (typeof selectSuggestion === 'function') selectSuggestion(item)
-          }
+          if (status === 'OK' && results && results[0]) applyPickedPlace(results[0])
         })
       })
     }
+
+    function applyPickedPlace(place){
+      var comp = place.address_components || []
+      function pick(type){
+        var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 })
+        return c ? c.long_name : ''
+      }
+      var county   = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
+      var locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
+      var postcode = pick('postal_code')
+      var label    = (place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0)
+        ? place.name + ' — ' + place.formatted_address
+        : (place.formatted_address || place.name || document.getElementById('search-q').value)
+
+      // Set the search origin (drives the distance pill + Closest-first sort)
+      if (place.geometry && place.geometry.location){
+        searchOrigin = {
+          lat:   typeof place.geometry.location.lat === 'function' ? place.geometry.location.lat() : place.geometry.location.lat,
+          lng:   typeof place.geometry.location.lng === 'function' ? place.geometry.location.lng() : place.geometry.location.lng,
+          label: label
+        }
+        showOriginBar()
+        var sd = document.getElementById('sort-distance')
+        if (sd) { sd.style.display = ''; document.getElementById('sort-sel').value = 'distance' }
+        // Reflect the origin in the URL so it survives reloads / share links
+        var p = new URLSearchParams(location.search)
+        p.set('lat',  searchOrigin.lat)
+        p.set('lng',  searchOrigin.lng)
+        p.set('near', label)
+        history.replaceState(null, '', location.pathname + '?' + p.toString())
+      }
+
+      // Map the place into our existing search-state shape
+      var item
+      var dub = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
+      if (dub)                 item = { type:'district', code:'D'+dub[1].toUpperCase(), name:label }
+      else if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim()))
+                               item = { type:'eircode',  code:postcode.toUpperCase(),  name:label }
+      else if (county)         item = { type:'county',   code:county,                  name:label }
+      else                     item = { type:'place',    code:'',                       name:label }
+
+      if (typeof selectSuggestion === 'function') selectSuggestion(item)
+      else { document.getElementById('search-q').value = label; doSearch() }
+    }
   </script>
 
-  <!-- Google Maps + Places (loaded last so it can call window.initSearchMaps) -->
+  <!-- Google Maps + Places -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initSearchMaps&v=weekly"
     async defer></script>
