@@ -87,7 +87,16 @@ function toast(message, type = 'success', duration = 3500) {
   const container = existing || (() => {
     const c = document.createElement('div')
     c.className = 'toast-container'
+    var hasTabBar = document.body.classList.contains('has-tab-bar')
+    var bottomMobile = hasTabBar ? 'calc(76px + env(safe-area-inset-bottom, 0px))' : '1.25rem'
     c.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:8px'
+    var mq = window.matchMedia('(max-width:767px)')
+    function applyPos(){
+      if (mq.matches) { c.style.bottom = bottomMobile; c.style.right = '1rem'; c.style.left = '1rem' }
+      else            { c.style.bottom = '1.5rem'; c.style.right = '1.5rem'; c.style.left = 'auto' }
+    }
+    applyPos()
+    if (mq.addEventListener) mq.addEventListener('change', applyPos)
     document.body.appendChild(c)
     return c
   })()

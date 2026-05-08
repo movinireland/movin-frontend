@@ -1074,3 +1074,114 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 @media (max-width: 767px) {
   .nav-back { display: inline-flex; }
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Site-wide UI polish
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Smooth tap feedback on all real buttons + links that act as buttons */
+button, .btn, a.btn {
+  -webkit-tap-highlight-color: transparent;
+}
+button:not(:disabled):active,
+.btn:not(:disabled):active,
+a.btn:active {
+  transform: scale(.97);
+}
+
+/* Keyboard-accessible focus ring (only when navigating by keyboard) */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid rgba(26, 92, 69, .55);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Quick-action cards on the home page lift on hover instead of just scaling */
+.qa-card {
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+.qa-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(26, 92, 69, .10);
+  border-color: var(--green, #1a5c45) !important;
+}
+
+/* Property card refinement — softer shadow on hover, image zoom */
+.prop-card {
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease !important;
+}
+.prop-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, .10);
+  border-color: rgba(26, 92, 69, .25) !important;
+}
+.prop-card-img img {
+  transition: transform .35s ease;
+}
+.prop-card:hover .prop-card-img img {
+  transform: scale(1.04);
+}
+
+/* Save button on cards: nicer hover */
+.prop-card-save {
+  transition: transform .15s ease, background .15s ease !important;
+}
+.prop-card-save:hover {
+  background: #fff !important;
+  transform: scale(1.08);
+}
+
+/* Section titles: subtle fade-in entrance */
+.section-title {
+  letter-spacing: -0.3px;
+}
+
+/* Inputs across the site: softer focus ring */
+input, select, textarea {
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+input:focus, select:focus, textarea:focus,
+.form-input:focus, .ct-inp:focus, .com-inp:focus,
+.search-inp:focus, .sr-input:focus, .topbar-search:focus {
+  box-shadow: 0 0 0 4px rgba(26, 92, 69, .08);
+}
+
+/* Toast pop animation refinement */
+.toast {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.18);
+}
+
+/* Smoother nav links on desktop */
+.nav-links li {
+  position: relative;
+  transition: color .18s ease;
+}
+.nav-links li::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 2px; background: var(--green, #1a5c45);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .22s ease;
+}
+.nav-links li:hover::after,
+.nav-links li.active::after {
+  transform: scaleX(1);
+}
+
+/* Buttons: nicer primary hover */
+.btn-primary {
+  transition: background .18s ease, box-shadow .18s ease, transform .18s ease !important;
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 22px rgba(26, 92, 69, .25);
+}
+
+/* Skip link for screen readers */
+.skip-link {
+  position: absolute; top: -40px; left: 8px;
+  background: var(--green, #1a5c45); color: #fff;
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  z-index: 10000; transition: top .2s;
+}
+.skip-link:focus { top: 8px; }

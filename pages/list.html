@@ -17,18 +17,83 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
   <style>
-    .list-hero{background:linear-gradient(135deg,var(--green),var(--green-dark));padding:3rem 2rem;text-align:center}
-    .list-hero-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem}
-    .list-hero h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#fff;margin-bottom:.5rem}
-    .list-hero p{font-size:15px;color:rgba(255,255,255,.65);font-weight:300}
+    .list-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:3rem 2rem 3.5rem;text-align:center;position:relative;overflow:hidden}
+    .list-hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}
+    .list-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}
+    .list-hero > *{position:relative;z-index:2}
+    .list-hero-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem;backdrop-filter:blur(6px)}
+    .list-hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,6vw,34px);font-weight:900;color:#fff;margin-bottom:.5rem;line-height:1.1}
+    .list-hero h1 em{font-style:normal;color:#e07b3f}
+    .list-hero p{font-size:15px;color:rgba(255,255,255,.7);font-weight:300}
     .form-wrap{max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem}
     .type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:1.1rem}
-    .type-btn{border:1.5px solid var(--border);border-radius:13px;padding:.85rem .5rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .15s}
-    .type-btn:hover{border-color:var(--green)}
-    .type-btn.on{border-color:var(--green);background:var(--green-light)}
-    .type-ico{font-size:24px;margin-bottom:5px}
-    .type-lbl{font-size:11px;color:#666}
-    .type-btn.on .type-lbl{color:var(--green);font-weight:500}
+    .type-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    @media(max-width:480px){.type-grid{grid-template-columns:repeat(2,1fr)}.type-grid.cols-3{grid-template-columns:repeat(2,1fr)}}
+    .type-btn{border:1.5px solid var(--border);border-radius:14px;padding:1rem .6rem;text-align:center;cursor:pointer;background:#fafaf8;transition:all .18s ease;-webkit-tap-highlight-color:transparent}
+    .type-btn:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 18px rgba(26,92,69,.10)}
+    .type-btn.on{border-color:var(--green);background:var(--green-light);box-shadow:0 6px 18px rgba(26,92,69,.14)}
+    .type-ico{font-size:24px;margin-bottom:6px;display:flex;align-items:center;justify-content:center}
+    .type-ico svg{width:26px;height:26px;color:var(--green)}
+    .type-lbl{font-size:12px;color:#666;font-weight:500}
+    .type-btn.on .type-lbl{color:var(--green);font-weight:600}
+
+    /* ── Category gate (Residential vs Commercial) ── */
+    .cat-gate{max-width:760px;margin:-2.5rem auto 0;padding:0 1.25rem 2.5rem;position:relative;z-index:3}
+    .cat-gate-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:22px;padding:1.75rem;box-shadow:0 14px 40px rgba(0,0,0,.08)}
+    .cat-gate-eyebrow{font-size:11px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem;font-weight:500}
+    .cat-gate-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text,#111);margin-bottom:.4rem}
+    .cat-gate-sub{font-size:14px;color:var(--muted,#888);font-weight:300;margin-bottom:1.5rem;line-height:1.5}
+    .cat-pick{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+    @media(max-width:560px){.cat-pick{grid-template-columns:1fr}}
+    .cat-card{
+      position:relative;border:1.5px solid var(--border);border-radius:18px;padding:1.5rem 1.25rem;
+      cursor:pointer;background:#fafaf8;text-align:left;transition:all .2s ease;overflow:hidden;
+      -webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;gap:.5rem
+    }
+    .cat-card::after{content:'';position:absolute;inset:0;border-radius:18px;border:2px solid transparent;transition:border-color .2s,box-shadow .2s;pointer-events:none}
+    .cat-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.08)}
+    .cat-card:hover::after{border-color:var(--green-light,#e9f4ef)}
+    .cat-card .cat-icon{
+      width:54px;height:54px;border-radius:14px;background:var(--green-light,#e9f4ef);
+      display:flex;align-items:center;justify-content:center;color:var(--green,#1a5c45);
+      transition:transform .25s ease;margin-bottom:.25rem
+    }
+    .cat-card .cat-icon svg{width:26px;height:26px}
+    .cat-card:hover .cat-icon{transform:scale(1.05) rotate(-3deg)}
+    .cat-card .cat-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text,#111)}
+    .cat-card .cat-desc{font-size:13px;color:var(--muted,#888);font-weight:300;line-height:1.55}
+    .cat-card .cat-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.5rem}
+    .cat-card .cat-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:50px;background:#fff;color:#666;border:1px solid var(--border);letter-spacing:.3px}
+    .cat-card .cat-arrow{
+      position:absolute;top:1rem;right:1rem;width:30px;height:30px;border-radius:50%;
+      background:var(--green-light);color:var(--green);display:flex;align-items:center;justify-content:center;
+      transition:all .2s ease
+    }
+    .cat-card .cat-arrow svg{width:14px;height:14px}
+    .cat-card:hover .cat-arrow{background:var(--green);color:#fff;transform:translateX(3px)}
+    .cat-card.commercial .cat-icon{background:#fdf0e6;color:#e07b3f}
+
+    /* Active category chip + switch */
+    .cat-active-strip{
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+      background:var(--green-light,#e9f4ef);color:var(--green,#1a5c45);
+      padding:.7rem 1rem;border-radius:14px;margin:0 0 1.25rem;font-size:13px;font-weight:500
+    }
+    .cat-active-strip .cat-active-name{display:inline-flex;align-items:center;gap:8px}
+    .cat-active-strip .cat-active-name svg{width:16px;height:16px}
+    .cat-switch-btn{background:#fff;border:1px solid rgba(26,92,69,.25);color:var(--green);border-radius:50px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s}
+    .cat-switch-btn:hover{background:var(--green);color:#fff;border-color:var(--green)}
+
+    [data-theme="dark"] .cat-gate-card{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .cat-card{background:#0f0f0f;border-color:#2a2a2a}
+    [data-theme="dark"] .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .cat-gate-card{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .cat-card{background:#0f0f0f;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
+      :root:not([data-theme="light"]) .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
+    }
     .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
     .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
     .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
@@ -74,12 +139,50 @@
   <nav class="nav" id="main-nav"></nav>
 
   <div class="list-hero">
-    <div class="list-hero-badge">✦ First listing always free</div>
-    <h1>List your property on Movin.ie</h1>
-    <p>Reach thousands of buyers and renters across Ireland — in minutes</p>
+    <div class="list-hero-badge" id="hero-badge">✦ First listing always free</div>
+    <h1 id="hero-title">List your property on <em>Movin.ie</em></h1>
+    <p id="hero-sub">Reach thousands of buyers and renters across Ireland — in minutes</p>
   </div>
 
-  <div class="steps-bar" id="steps-bar">
+  <!-- Category gate (Residential vs Commercial) — shown first -->
+  <div class="cat-gate" id="cat-gate">
+    <div class="cat-gate-card">
+      <div class="cat-gate-eyebrow">Step 1 of 2</div>
+      <div class="cat-gate-title">What kind of property are you listing?</div>
+      <div class="cat-gate-sub">Pick a category to start. You can always change it later.</div>
+
+      <div class="cat-pick">
+        <button type="button" class="cat-card residential" onclick="pickCategory('residential')" aria-label="List a residential property">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+          <div class="cat-name">Residential</div>
+          <div class="cat-desc">A home — to sell, to let or to share. Houses, apartments, bungalows or building sites.</div>
+          <div class="cat-tags">
+            <span class="cat-tag">House</span>
+            <span class="cat-tag">Apartment</span>
+            <span class="cat-tag">Bungalow</span>
+            <span class="cat-tag">Site / Land</span>
+          </div>
+          <div class="cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+        </button>
+
+        <button type="button" class="cat-card commercial" onclick="pickCategory('commercial')" aria-label="List a commercial property">
+          <div class="cat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 9h2"/><path d="M9 13h2"/><path d="M9 17h2"/><path d="M13 9h2"/><path d="M13 13h2"/><path d="M13 17h2"/></svg></div>
+          <div class="cat-name">Commercial</div>
+          <div class="cat-desc">A business space — to sell or lease. Offices, retail, industrial, hospitality, healthcare or land.</div>
+          <div class="cat-tags">
+            <span class="cat-tag">Office</span>
+            <span class="cat-tag">Retail</span>
+            <span class="cat-tag">Industrial</span>
+            <span class="cat-tag">Hospitality</span>
+            <span class="cat-tag">Land</span>
+          </div>
+          <div class="cat-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-bar" id="steps-bar" style="display:none">
     <div class="step-item active" data-step="1"><div class="step-num">1</div><div class="step-label">Details</div></div>
     <div class="step-sep">›</div>
     <div class="step-item" data-step="2"><div class="step-num">2</div><div class="step-label">Location</div></div>
@@ -91,30 +194,55 @@
     <div class="step-item" data-step="5"><div class="step-num">5</div><div class="step-label">Publish</div></div>
   </div>
 
-  <div class="form-wrap">
+  <div class="form-wrap" id="form-wrap" style="display:none">
     <div id="form-alert"></div>
+
+    <!-- Active category strip -->
+    <div class="cat-active-strip" id="cat-active-strip" style="display:none">
+      <span class="cat-active-name">
+        <span id="cat-active-icon"></span>
+        Listing a <strong id="cat-active-label">residential</strong> property
+      </span>
+      <button type="button" class="cat-switch-btn" onclick="resetCategory()">Change</button>
+    </div>
 
     <!-- Step 1 -->
     <div id="step-1">
       <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-title">What type of property is it?</div>
-        <div class="card-sub">Choose the best match</div>
-        <div class="type-grid" id="type-grid">
-          <div class="type-btn on" data-val="house"><div class="type-ico"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">House</div></div>
-          <div class="type-btn" data-val="apartment"><div class="type-ico"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div><div class="type-lbl">Apartment</div></div>
-          <div class="type-btn" data-val="bungalow"><div class="type-ico"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bungalow"/></svg></div><div class="type-lbl">Bungalow</div></div>
-          <div class="type-btn" data-val="site"><div class="type-ico"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-site"/></svg></div><div class="type-lbl">Site / Land</div></div>
+        <div class="card-title" id="type-card-title">What type of property is it?</div>
+        <div class="card-sub" id="type-card-sub">Choose the best match</div>
+
+        <!-- Residential type grid -->
+        <div class="type-grid" id="type-grid-residential">
+          <div class="type-btn on" data-val="house"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">House</div></div>
+          <div class="type-btn" data-val="apartment"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div><div class="type-lbl">Apartment</div></div>
+          <div class="type-btn" data-val="bungalow"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-bungalow"/></svg></div><div class="type-lbl">Bungalow</div></div>
+          <div class="type-btn" data-val="site"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-site"/></svg></div><div class="type-lbl">Site / Land</div></div>
         </div>
+
+        <!-- Commercial type grid (hidden until Commercial picked) -->
+        <div class="type-grid cols-3" id="type-grid-commercial" style="display:none">
+          <div class="type-btn on" data-val="office"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">Office</div></div>
+          <div class="type-btn" data-val="retail"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">Retail</div></div>
+          <div class="type-btn" data-val="industrial"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg></div><div class="type-lbl">Industrial</div></div>
+          <div class="type-btn" data-val="hospitality"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-key"/></svg></div><div class="type-lbl">Hospitality</div></div>
+          <div class="type-btn" data-val="healthcare"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="type-lbl">Healthcare</div></div>
+          <div class="type-btn" data-val="mixed-use"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div><div class="type-lbl">Mixed-use</div></div>
+          <div class="type-btn" data-val="investment"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg></div><div class="type-lbl">Investment</div></div>
+          <div class="type-btn" data-val="warehouse"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg></div><div class="type-lbl">Warehouse</div></div>
+          <div class="type-btn" data-val="land"><div class="type-ico"><svg aria-hidden="true"><use href="/icons.svg#icon-site"/></svg></div><div class="type-lbl">Land / Site</div></div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Listing type <span class="req">*</span></label>
             <select class="form-input form-select" id="listing_type">
               <option value="sale">For Sale</option>
               <option value="rent">To Rent</option>
-              <option value="share">Sharing</option>
+              <option value="share" id="opt-share">Sharing</option>
             </select>
           </div>
-          <div class="form-group">
+          <div class="form-group" id="style-group">
             <label class="form-label">Property style</label>
             <select class="form-input form-select" id="property_style">
               <option value="">Select…</option>
@@ -316,14 +444,102 @@
     var selectedPhotos = []   // array of File objects (null if removed)
     var primaryIndex = 0      // which index is the main photo
     var createdListingId = null
+    var listingCategory = 'residential' // 'residential' | 'commercial'
 
-    // Type selector
-    document.querySelectorAll('#type-grid .type-btn').forEach(function(b) {
-      b.addEventListener('click', function() {
-        document.querySelectorAll('#type-grid .type-btn').forEach(function(x) { x.classList.remove('on') })
-        b.classList.add('on')
+    // ── Category gate ─────────────────────────────────────────────────────
+    function pickCategory(cat){
+      listingCategory = cat
+      document.getElementById('cat-gate').style.display = 'none'
+      document.getElementById('steps-bar').style.display = ''
+      document.getElementById('form-wrap').style.display = ''
+
+      var isCom = cat === 'commercial'
+
+      // Hero copy + badge
+      document.getElementById('hero-title').innerHTML = isCom
+        ? 'List your <em>commercial</em> property'
+        : 'List your property on <em>Movin.ie</em>'
+      document.getElementById('hero-sub').textContent = isCom
+        ? 'Reach buyers, tenants and investors across Ireland — flat €24.99 listing fee.'
+        : 'Reach thousands of buyers and renters across Ireland — in minutes'
+      document.getElementById('hero-badge').innerHTML = isCom
+        ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>Commercial property'
+        : '✦ First listing always free'
+
+      // Active strip
+      var strip = document.getElementById('cat-active-strip')
+      strip.style.display = ''
+      document.getElementById('cat-active-label').textContent = isCom ? 'commercial' : 'residential'
+      document.getElementById('cat-active-icon').innerHTML = isCom
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>'
+
+      // Step-1 copy
+      document.getElementById('type-card-title').textContent = isCom
+        ? 'What kind of commercial space?'
+        : 'What type of property is it?'
+      document.getElementById('type-card-sub').textContent = isCom
+        ? 'Pick the closest match — buyers and tenants filter by category.'
+        : 'Choose the best match'
+
+      // Swap type grids
+      document.getElementById('type-grid-residential').style.display = isCom ? 'none' : ''
+      document.getElementById('type-grid-commercial').style.display  = isCom ? '' : 'none'
+
+      // Commercial doesn't have "Sharing" or residential property styles
+      var optShare = document.getElementById('opt-share')
+      if (optShare) optShare.style.display = isCom ? 'none' : ''
+      if (isCom && document.getElementById('listing_type').value === 'share') {
+        document.getElementById('listing_type').value = 'rent'
+      }
+      document.getElementById('style-group').style.display = isCom ? 'none' : ''
+
+      // Specs labels (commercial uses different bedroom/bathroom semantics)
+      var bedLbl  = document.querySelector('label[for="bedrooms"]') || document.getElementById('bedrooms')?.previousElementSibling
+      var bathLbl = document.querySelector('label[for="bathrooms"]') || document.getElementById('bathrooms')?.previousElementSibling
+      if (bedLbl)  bedLbl.textContent  = isCom ? 'Office / room count' : 'Bedrooms'
+      if (bathLbl) bathLbl.textContent = isCom ? 'WC / restrooms'      : 'Bathrooms'
+
+      // Bind type-btn click handlers (must be done after grid is visible)
+      bindTypeButtons()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function resetCategory(){
+      document.getElementById('cat-gate').style.display = ''
+      document.getElementById('steps-bar').style.display = 'none'
+      document.getElementById('form-wrap').style.display = 'none'
+      // Re-render gate hero
+      document.getElementById('hero-title').innerHTML = 'List your property on <em>Movin.ie</em>'
+      document.getElementById('hero-sub').textContent = 'Reach thousands of buyers and renters across Ireland — in minutes'
+      document.getElementById('hero-badge').innerHTML = '✦ First listing always free'
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    window.pickCategory   = pickCategory
+    window.resetCategory  = resetCategory
+
+    // Auto-pick from URL: ?category=commercial or ?category=residential
+    ;(function(){
+      var p = new URLSearchParams(location.search)
+      var c = (p.get('category') || '').toLowerCase()
+      if (c === 'commercial' || c === 'residential') pickCategory(c)
+    })()
+
+    // Type selector — works for whichever grid is currently visible
+    function bindTypeButtons(){
+      document.querySelectorAll('.type-grid .type-btn').forEach(function(b){
+        if (b.dataset.bound) return
+        b.dataset.bound = '1'
+        b.addEventListener('click', function(){
+          var grid = b.closest('.type-grid')
+          if (!grid) return
+          grid.querySelectorAll('.type-btn').forEach(function(x){ x.classList.remove('on') })
+          b.classList.add('on')
+        })
       })
-    })
+    }
+    bindTypeButtons()
 
     // Plan selector
     document.querySelectorAll('.plan-opt').forEach(function(b) {
@@ -477,12 +693,15 @@
       btn.disabled = true
 
       try {
+        var activeGridId = listingCategory === 'commercial' ? 'type-grid-commercial' : 'type-grid-residential'
+        var activeBtn    = document.querySelector('#' + activeGridId + ' .type-btn.on')
         var payload = {
           title:          document.getElementById('title').value.trim(),
           description:    document.getElementById('description').value.trim(),
+          category:       listingCategory,
           listing_type:   document.getElementById('listing_type').value,
-          property_type:  document.querySelector('#type-grid .type-btn.on').dataset.val || 'house',
-          property_style: document.getElementById('property_style').value,
+          property_type:  (activeBtn && activeBtn.dataset.val) || (listingCategory === 'commercial' ? 'office' : 'house'),
+          property_style: listingCategory === 'commercial' ? '' : document.getElementById('property_style').value,
           address_line1:  document.getElementById('address_line1').value.trim(),
           address_area:   (document.getElementById('address_area').value || document.getElementById('address_area_text')?.value || '').trim(),
           county:         document.getElementById('county').value,
