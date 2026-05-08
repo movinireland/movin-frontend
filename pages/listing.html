@@ -602,6 +602,21 @@
       return '€' + Number(price).toLocaleString('en-IE') + (type === 'rent' ? '/mo' : '')
     }
 
+    // Render the Eircode for the public listing.
+    // - If the seller chose to show it, print the Eircode in bold.
+    // - If they chose to hide it (eircode_visible === false), print "Eircode —"
+    //   so visitors know the property has one but the owner kept it private.
+    function eircodeDisplay(L, color) {
+      var c = color || '#111'
+      var visible = (L.eircode_visible === undefined || L.eircode_visible === null)
+        ? true
+        : !!L.eircode_visible
+      if (visible && L.eircode) {
+        return '<strong style="color:' + c + '">' + L.eircode + '</strong>'
+      }
+      return '<span style="color:' + c + '">Eircode <span style="color:#bbb;font-weight:500">—</span></span>'
+    }
+
     var galleryPhotos = []
     var galleryIndex  = 0
     var lbPhotos      = []
@@ -836,7 +851,7 @@
               (((Date.now() - new Date(L.created_at).getTime()) / 86400000) < 7 ? '<span class="badge" style="background:#e07b3f;color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600">NEW</span>' : '') +
             '</div>' +
             '<h1 class="d-title">' + L.title + '</h1>' +
-            '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + (L.eircode ? ' · <strong>' + L.eircode + '</strong>' : '') + '</div>' +
+            '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + ' · ' + eircodeDisplay(L) + '</div>' +
             '<div class="d-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
             '<div class="d-stats">' +
               (L.bedrooms ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bed"/></svg> ' + L.bedrooms + ' beds</span>' : '') +
@@ -893,7 +908,7 @@
             '<h2>Location &amp; nearby</h2>' +
             '<div id="property-map"></div>' +
             '<p style="font-size:12px;color:#aaa;margin-bottom:1.25rem">📍 ' + L.address_line1 + ', ' + (L.address_area || '') + ', ' + L.county +
-              (L.eircode ? ' &nbsp;·&nbsp; <strong style="color:#555">' + L.eircode + '</strong>' : '') +
+              ' &nbsp;·&nbsp; ' + eircodeDisplay(L, '#555') +
               ' &nbsp;·&nbsp; <a href="https://www.google.com/maps/search/?api=1&query=' + mapsQuery + '" target="_blank" style="color:var(--g)">Open in Google Maps ↗</a>' +
             '</p>' +
             '<div class="lag-head">' +

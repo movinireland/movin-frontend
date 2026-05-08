@@ -94,6 +94,73 @@
       :root:not([data-theme="light"]) .cat-active-strip{background:#0d2e1e;color:#7ec9a8}
       :root:not([data-theme="light"]) .cat-switch-btn{background:#1a1a1a;color:#7ec9a8;border-color:rgba(126,201,168,.25)}
     }
+
+    /* ── Address lookup (Google Places) ── */
+    .form-hint-strong{font-size:12px;color:var(--green);font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
+    .form-hint-strong.show{display:inline-flex}
+    .form-hint-strong svg{width:14px;height:14px;flex-shrink:0}
+    .form-hint-warn{font-size:12px;color:#c25a1f;font-weight:500;margin-top:6px;display:none;align-items:center;gap:5px}
+    .form-hint-warn.show{display:inline-flex}
+    .form-hint-warn svg{width:14px;height:14px;flex-shrink:0}
+
+    /* Eircode visibility toggle */
+    .vis-toggle{
+      display:flex;align-items:center;gap:.85rem;background:#fafaf8;border:1.5px solid var(--border);
+      border-radius:14px;padding:.85rem 1rem;margin-top:.65rem;cursor:pointer;-webkit-tap-highlight-color:transparent;
+      transition:border-color .15s,background .15s
+    }
+    .vis-toggle:hover{border-color:var(--green)}
+    .vis-toggle.on{border-color:var(--green);background:var(--green-light)}
+    .vis-toggle .vis-icon{
+      width:38px;height:38px;border-radius:10px;background:#fff;border:1px solid var(--border);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--green)
+    }
+    .vis-toggle.on .vis-icon{background:var(--green);color:#fff;border-color:var(--green)}
+    .vis-toggle .vis-icon svg{width:18px;height:18px}
+    .vis-toggle .vis-text{flex:1;min-width:0}
+    .vis-toggle .vis-title{font-size:14px;font-weight:600;color:#111;line-height:1.3}
+    .vis-toggle .vis-sub{font-size:12px;color:#777;font-weight:300;margin-top:2px;line-height:1.4}
+    .vis-toggle.on .vis-title{color:var(--green)}
+    .vis-switch{
+      width:42px;height:24px;border-radius:50px;background:#ddd;flex-shrink:0;position:relative;
+      transition:background .2s ease
+    }
+    .vis-switch::after{
+      content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+      background:#fff;transition:transform .2s ease;box-shadow:0 1px 4px rgba(0,0,0,.2)
+    }
+    .vis-toggle.on .vis-switch{background:var(--green)}
+    .vis-toggle.on .vis-switch::after{transform:translateX(18px)}
+
+    [data-theme="dark"] .vis-toggle{background:#0f0f0f;border-color:#2a2a2a}
+    [data-theme="dark"] .vis-toggle.on{background:#0d2e1e;border-color:#2ecc8a}
+    [data-theme="dark"] .vis-toggle .vis-title{color:#e8e8e8}
+    [data-theme="dark"] .vis-toggle.on .vis-title{color:#7ec9a8}
+    [data-theme="dark"] .vis-toggle .vis-icon{background:#1a1a1a;border-color:#2a2a2a;color:#7ec9a8}
+    [data-theme="dark"] .vis-toggle.on .vis-icon{background:#2ecc8a;color:#0f0f0f;border-color:#2ecc8a}
+
+    /* Google Places dropdown — themed */
+    .pac-container{
+      border-radius:14px;margin-top:6px;
+      border:1px solid var(--border);background:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.14);
+      font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999
+    }
+    .pac-container::after{display:none !important}
+    .pac-item{
+      padding:.65rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;line-height:1.4;display:flex;align-items:center;gap:10px
+    }
+    .pac-item:first-child{border-top:none}
+    .pac-item:hover,.pac-item-selected{background:var(--green-light)}
+    .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+    .pac-item-query{color:#111;font-weight:500;font-size:13px}
+    .pac-matched{color:var(--green)}
+    [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .pac-item-query{color:#e8e8e8}
+    [data-theme="dark"] .pac-matched{color:#7ec9a8}
     .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
     .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
     .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
@@ -277,15 +344,18 @@
     <!-- Step 2 -->
     <div id="step-2" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
-        <div class="card-title">Address & location</div>
-        <div class="card-sub">Enter the full address of the property</div>
+        <div class="card-title">Address &amp; location</div>
+        <div class="card-sub">Start typing the address — pick your property from the dropdown and we'll fill in the rest.</div>
+
         <div class="form-group">
-          <label class="form-label">Address line 1 <span class="req">*</span></label>
-          <input class="form-input" type="text" id="address_line1" placeholder="e.g. 14 Leinster Road"/>
+          <label class="form-label" for="address_line1">Address <span class="req">*</span></label>
+          <input class="form-input" type="text" id="address_line1" placeholder="e.g. 14 Leinster Road, Rathmines, Dublin" autocomplete="off"/>
+          <div class="form-hint">Type a street, town, university or any place — Google will help.</div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">County <span class="req">*</span></label>
+            <label class="form-label" for="county">County <span class="req">*</span></label>
             <select class="form-input form-select" id="county" onchange="onCountyChange()">
               <option value="">Select county…</option>
               <option>Dublin</option><option>Cork</option><option>Galway</option>
@@ -300,22 +370,49 @@
             </select>
           </div>
           <div class="form-group" id="area-group" style="display:none">
-            <label class="form-label">Area <span class="req">*</span></label>
+            <label class="form-label" for="address_area">Area <span class="req">*</span></label>
             <select class="form-input form-select" id="address_area">
               <option value="">Select area…</option>
             </select>
           </div>
         </div>
         <div class="form-group" id="area-other-group" style="display:none">
-          <label class="form-label">Specific area / townland</label>
+          <label class="form-label" for="address_area_text">Specific area / townland</label>
           <input class="form-input" type="text" id="address_area_text" placeholder="e.g. Rathmines, Sandymount…"/>
           <div class="form-hint">Optional — helps buyers find your property more easily</div>
         </div>
+
         <div class="form-group">
-          <label class="form-label">Eircode</label>
-          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" style="max-width:180px"/>
+          <label class="form-label" for="eircode">Eircode <span class="req">*</span></label>
+          <input class="form-input" type="text" id="eircode" placeholder="e.g. D06 W9X4" autocomplete="postal-code" maxlength="8" style="max-width:180px;text-transform:uppercase" oninput="onEircodeInput()" onblur="resolveEircode()"/>
+          <div class="form-hint">We use the Eircode to drop your property at the exact spot on the map — that's how buyers find you in drive-time and area searches.</div>
+          <div class="form-hint-strong" id="eircode-ok">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+            <span id="eircode-ok-text">Located on the map</span>
+          </div>
+          <div class="form-hint-warn" id="eircode-warn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            <span id="eircode-warn-text">We couldn't locate that Eircode — please double-check.</span>
+          </div>
         </div>
-        <div style="display:flex;justify-content:space-between;margin-top:.5rem">
+
+        <!-- Hidden, captured from Google -->
+        <input type="hidden" id="latitude"/>
+        <input type="hidden" id="longitude"/>
+
+        <!-- Public visibility toggle -->
+        <div class="vis-toggle on" id="eircode-vis" onclick="toggleEircodeVis()" role="switch" aria-checked="true" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleEircodeVis()}">
+          <div class="vis-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="vis-text">
+            <div class="vis-title" id="vis-title">Show Eircode on the public listing</div>
+            <div class="vis-sub" id="vis-sub">Buyers and renters will see the full Eircode on this property's page.</div>
+          </div>
+          <div class="vis-switch" aria-hidden="true"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:1rem">
           <button class="btn btn-ghost" onclick="goStep(1)">← Back</button>
           <button class="btn btn-primary" onclick="goStep(3)">Next: Specs →</button>
         </div>
@@ -668,6 +765,20 @@
       if (n === 3) {
         if (!document.getElementById('address_line1').value.trim()) { toast('Please enter the address', 'error'); return }
         if (!document.getElementById('county').value) { toast('Please select a county', 'error'); return }
+        var ec = (document.getElementById('eircode').value || '').trim()
+        if (!ec || !isLikelyEircode(ec)) {
+          toast('Eircode is required — buyers find your property on the map by Eircode.', 'error')
+          document.getElementById('eircode').focus()
+          return
+        }
+        // Make sure we've geocoded — if not, try once now and bail until it succeeds
+        var lat = document.getElementById('latitude').value
+        var lng = document.getElementById('longitude').value
+        if (!lat || !lng) {
+          toast('Looking up that Eircode on the map…', 'info')
+          resolveEircode(true)
+          return
+        }
       }
 
       for (var i = 1; i <= 5; i++) {
@@ -705,7 +816,10 @@
           address_line1:  document.getElementById('address_line1').value.trim(),
           address_area:   (document.getElementById('address_area').value || document.getElementById('address_area_text')?.value || '').trim(),
           county:         document.getElementById('county').value,
-          eircode:        document.getElementById('eircode').value.trim(),
+          eircode:        document.getElementById('eircode').value.trim().toUpperCase(),
+          eircode_visible: !!document.getElementById('eircode-vis').classList.contains('on'),
+          latitude:       parseFloat(document.getElementById('latitude').value)  || null,
+          longitude:      parseFloat(document.getElementById('longitude').value) || null,
           price:          parseInt(document.getElementById('price').value),
           bedrooms:       document.getElementById('bedrooms').value || null,
           bathrooms:      document.getElementById('bathrooms').value || null,
@@ -777,7 +891,184 @@
         btn.textContent = '🚀 Publish listing'
       }
     }
+
+    // ── Eircode validation + Google geocoding ─────────────────────────────
+    // Eircode pattern: 3 chars + 1 space (optional) + 4 chars (e.g. "D02 EH73")
+    function isLikelyEircode(s){
+      var v = String(s || '').toUpperCase().replace(/\s+/g,'')
+      return /^[A-Z0-9]{7}$/.test(v)
+    }
+
+    function showEircodeStatus(state, msg){
+      var ok   = document.getElementById('eircode-ok')
+      var warn = document.getElementById('eircode-warn')
+      ok.classList.remove('show')
+      warn.classList.remove('show')
+      if (state === 'ok')   { ok.classList.add('show');   if (msg) document.getElementById('eircode-ok-text').textContent   = msg }
+      if (state === 'warn') { warn.classList.add('show'); if (msg) document.getElementById('eircode-warn-text').textContent = msg }
+    }
+
+    function onEircodeInput(){
+      // Reset cached lat/lng on every change so we re-validate on blur
+      document.getElementById('latitude').value  = ''
+      document.getElementById('longitude').value = ''
+      showEircodeStatus(null)
+    }
+
+    var _geocoder
+    function ensureGeocoder(){
+      if (_geocoder) return _geocoder
+      if (window.google && google.maps && google.maps.Geocoder) _geocoder = new google.maps.Geocoder()
+      return _geocoder
+    }
+
+    function resolveEircode(thenAdvance){
+      var raw = (document.getElementById('eircode').value || '').trim().toUpperCase()
+      if (!raw) return
+      if (!isLikelyEircode(raw)) {
+        showEircodeStatus('warn', 'That doesn\'t look like a valid Eircode (e.g. D06 W9X4).')
+        return
+      }
+      // Normalise to "XXX XXXX" form
+      var clean = raw.replace(/\s+/g,'')
+      var pretty = clean.slice(0,3) + ' ' + clean.slice(3)
+      document.getElementById('eircode').value = pretty
+
+      var gc = ensureGeocoder()
+      if (!gc) {
+        // Maps not loaded yet — quietly skip; will retry on Next click
+        return
+      }
+      gc.geocode({
+        address: pretty,
+        componentRestrictions: { country: 'IE' }
+      }, function(results, status){
+        if (status === 'OK' && results && results[0]) {
+          var r = results[0]
+          var loc = r.geometry.location
+          document.getElementById('latitude').value  = loc.lat()
+          document.getElementById('longitude').value = loc.lng()
+
+          // Try to fill county + a sensible address line if those are empty
+          var comps = r.address_components || []
+          function pick(type){
+            var c = comps.find(function(x){ return x.types.indexOf(type) !== -1 })
+            return c ? c.long_name : ''
+          }
+          var countySel = document.getElementById('county')
+          if (!countySel.value) {
+            var county = pick('administrative_area_level_1') || pick('administrative_area_level_2')
+            // Strip "County " prefix if present
+            county = county.replace(/^County\s+/i,'')
+            if (county) {
+              for (var i = 0; i < countySel.options.length; i++){
+                if (countySel.options[i].value && countySel.options[i].value.toLowerCase() === county.toLowerCase()) {
+                  countySel.value = countySel.options[i].value
+                  if (typeof onCountyChange === 'function') onCountyChange()
+                  break
+                }
+              }
+            }
+          }
+          if (!document.getElementById('address_line1').value.trim()) {
+            // Use the formatted address minus the Eircode + country
+            var fa = (r.formatted_address || '').replace(pretty,'').replace(/,?\s*Ireland\s*$/i,'').replace(/,\s*$/,'').trim()
+            if (fa) document.getElementById('address_line1').value = fa
+          }
+
+          showEircodeStatus('ok', '✓ Located — your property is pinned on the map.')
+          if (thenAdvance) goStep(3)
+        } else {
+          showEircodeStatus('warn', 'We couldn\'t locate that Eircode — please double-check.')
+        }
+      })
+    }
+    window.onEircodeInput = onEircodeInput
+    window.resolveEircode = resolveEircode
+
+    // ── Address-line typeahead via Google Places (any address, university,
+    //    landmark, town in Ireland). Fills county + Eircode + lat/lng if
+    //    Google returns them. ─────────────────────────────────────────────
+    function setupAddressAutocomplete(){
+      if (!window.google || !google.maps || !google.maps.places) return
+      var input = document.getElementById('address_line1')
+      if (!input || input.dataset.acBound) return
+      input.dataset.acBound = '1'
+      var ac = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'ie' },
+        fields: ['geometry', 'name', 'formatted_address', 'address_components']
+      })
+      ac.addListener('place_changed', function(){
+        var place = ac.getPlace()
+        if (!place) return
+        if (place.geometry && place.geometry.location){
+          document.getElementById('latitude').value  = place.geometry.location.lat()
+          document.getElementById('longitude').value = place.geometry.location.lng()
+        }
+        var fa   = place.formatted_address || place.name || input.value
+        var comp = place.address_components || []
+        function pick(type){
+          var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 })
+          return c ? c.long_name : ''
+        }
+        // Address line: keep what Google formatted but strip Eircode/Ireland
+        var ec  = pick('postal_code')
+        var trimmed = fa
+        if (ec)      trimmed = trimmed.replace(ec, '')
+        trimmed = trimmed.replace(/,?\s*Ireland\s*$/i,'').replace(/,\s*,/g,',').replace(/^[\s,]+|[\s,]+$/g,'')
+        if (trimmed) input.value = trimmed
+
+        // County
+        var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2'))
+                       .replace(/^County\s+/i,'')
+        if (county) {
+          var sel = document.getElementById('county')
+          for (var i = 0; i < sel.options.length; i++){
+            if (sel.options[i].value && sel.options[i].value.toLowerCase() === county.toLowerCase()) {
+              sel.value = sel.options[i].value
+              if (typeof onCountyChange === 'function') onCountyChange()
+              break
+            }
+          }
+        }
+        // Eircode
+        if (ec) {
+          var clean = ec.toUpperCase().replace(/\s+/g,'')
+          if (clean.length === 7) ec = clean.slice(0,3) + ' ' + clean.slice(3)
+          document.getElementById('eircode').value = ec.toUpperCase()
+          showEircodeStatus('ok', '✓ Located — your property is pinned on the map.')
+        } else {
+          showEircodeStatus('warn', 'No Eircode in that result — please type the property\'s Eircode below.')
+        }
+      })
+    }
+    // Called by the Maps script tag once the API is ready
+    window.initListMaps = function(){
+      ensureGeocoder()
+      setupAddressAutocomplete()
+    }
+
+    // ── Public-visibility toggle for the Eircode ──────────────────────────
+    function toggleEircodeVis(){
+      var el = document.getElementById('eircode-vis')
+      var on = !el.classList.contains('on')
+      el.classList.toggle('on', on)
+      el.setAttribute('aria-checked', on ? 'true' : 'false')
+      document.getElementById('vis-title').textContent = on
+        ? 'Show Eircode on the public listing'
+        : 'Hide Eircode on the public listing'
+      document.getElementById('vis-sub').textContent = on
+        ? 'Buyers and renters will see the full Eircode on this property\'s page.'
+        : 'The Eircode stays private — listings show "Eircode —" instead. We still use it for the map and drive-time.'
+    }
+    window.toggleEircodeVis = toggleEircodeVis
   </script>
+
+  <!-- Google Maps + Places (loaded last so it can pick up window.initListMaps) -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initListMaps&v=weekly"
+    async defer></script>
+
   <footer class="site-footer" id="site-footer"></footer>
 </body>
 </html>

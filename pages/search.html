@@ -110,6 +110,38 @@
     .quick-links::-webkit-scrollbar{display:none}
     .ql-btn{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;color:#555;cursor:pointer;white-space:nowrap;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
     .ql-btn:hover{border-color:var(--g);color:var(--g)}
+
+    /* ── Google Places dropdown — themed to match the site ── */
+    .pac-container{
+      border-radius:16px;margin-top:6px;
+      border:1px solid var(--border);background:#fff;
+      box-shadow:0 14px 36px rgba(0,0,0,.14);
+      font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999
+    }
+    .pac-container::after{display:none !important}
+    .pac-item{
+      padding:.7rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;line-height:1.4;display:flex;align-items:center;gap:10px
+    }
+    .pac-item:first-child{border-top:none}
+    .pac-item:hover,.pac-item-selected{background:var(--gl)}
+    .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+    .pac-item-query{color:#111;font-weight:500;font-size:13px}
+    .pac-matched{color:var(--g)}
+    [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .pac-item-query{color:#e8e8e8}
+    [data-theme="dark"] .pac-matched{color:#7ec9a8}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .pac-item{border-color:#2a2a2a;color:#aaa}
+      :root:not([data-theme="light"]) .pac-item:hover,
+      :root:not([data-theme="light"]) .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+      :root:not([data-theme="light"]) .pac-item-query{color:#e8e8e8}
+    }
+    /* Hide the legacy in-flow custom suggestions panel once Google Places is wired */
+    body.places-ready .search-suggestions{display:none !important}
   </style>
 </head>
 <body>
@@ -119,7 +151,7 @@
   <div class="sr-topbar">
     <div class="sr-search-row">
       <input class="sr-input" type="text" id="search-q"
-             placeholder="Area, county, Eircode or D1, D2…"
+             placeholder="Address, university, town, county, Eircode…"
              autocomplete="off"
              oninput="handleSearchInput(this.value)"
              onkeydown="handleSearchKey(event)"/>
@@ -638,7 +670,105 @@
       }
       if (typeof renderFooter === 'function') renderFooter()
     }, 400)
+
+    // ── Google Places autocomplete on the search input ───────────────────
+    // Lets users type any address, university, town or Eircode in Ireland.
+    // When a place is picked we map it back into the existing search state
+    // (county / district / generic query) so all the existing filters keep working.
+    window.initSearchMaps = function(){
+      if (!window.google || !google.maps || !google.maps.places) return
+      var input = document.getElementById('search-q')
+      if (!input || input.dataset.acBound) return
+      input.dataset.acBound = '1'
+      document.body.classList.add('places-ready')
+      // Hide the in-flow custom suggestion panel — Google Places replaces it
+      var legacy = document.getElementById('suggestions')
+      if (legacy) legacy.classList.remove('open')
+      // Make the inline `oninput` handler a no-op so the legacy panel
+      // doesn't keep popping up beneath the .pac-container
+      window.handleSearchInput = function(){}
+
+      var ac = new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: 'ie' },
+        fields: ['geometry','name','formatted_address','address_components','types']
+      })
+      ac.addListener('place_changed', function(){
+        var place = ac.getPlace()
+        if (!place) return
+
+        var comp = place.address_components || []
+        function pick(type){
+          var c = comp.find(function(x){ return x.types.indexOf(type) !== -1 })
+          return c ? c.long_name : ''
+        }
+        var county = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i,'')
+        var locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
+        var postcode = pick('postal_code')
+
+        // Build an item compatible with the existing selectSuggestion()
+        var item = null
+        var label = place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0
+          ? place.name + ' — ' + place.formatted_address
+          : (place.formatted_address || place.name || input.value)
+
+        // If the place is a Dublin postcode like "Dublin 6" turn it into a district hit
+        var dubMatch = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
+        if (dubMatch){
+          item = { type:'district', code:'D'+dubMatch[1].toUpperCase(), name:label, area:'' }
+        } else if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim())) {
+          item = { type:'eircode', code:postcode.toUpperCase(), name:label, area:'' }
+        } else if (county) {
+          item = { type:'county', code:county, name:label, area:'' }
+        } else {
+          item = { type:'place', code:'', name:label, area:'' }
+        }
+
+        // If geometry is present, store it for any future map-aware features
+        if (place.geometry && place.geometry.location){
+          window.lastSearchPoint = {
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+            label: label
+          }
+        }
+
+        // Reuse the existing selection handler so search params are set
+        // consistently with the rest of the page.
+        if (typeof selectSuggestion === 'function') selectSuggestion(item)
+        else { input.value = label; if (typeof doSearch === 'function') doSearch() }
+      })
+
+      // If the user hits Enter without picking a suggestion, geocode their
+      // typed text so a free-typed Eircode / address still resolves.
+      input.addEventListener('keydown', function(e){
+        if (e.key !== 'Enter') return
+        if (document.querySelector('.pac-container .pac-item-selected')) return
+        var q = (input.value || '').trim()
+        if (!q) return
+        if (!google.maps.Geocoder) return
+        var gc = window._searchGeocoder = window._searchGeocoder || new google.maps.Geocoder()
+        gc.geocode({ address: q, componentRestrictions: { country: 'IE' } }, function(results, status){
+          if (status === 'OK' && results && results[0]){
+            var r = results[0]
+            var compR = r.address_components || []
+            function pickR(t){ var c = compR.find(function(x){ return x.types.indexOf(t)!==-1 }); return c ? c.long_name : '' }
+            var pcode = pickR('postal_code')
+            var cty   = (pickR('administrative_area_level_1') || pickR('administrative_area_level_2')).replace(/^County\s+/i,'')
+            var item  = pcode ? { type:'eircode', code:pcode.toUpperCase(), name:r.formatted_address }
+                              : (cty ? { type:'county', code:cty, name:r.formatted_address }
+                                     : { type:'place', code:'', name:r.formatted_address })
+            if (typeof selectSuggestion === 'function') selectSuggestion(item)
+          }
+        })
+      })
+    }
   </script>
+
+  <!-- Google Maps + Places (loaded last so it can call window.initSearchMaps) -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initSearchMaps&v=weekly"
+    async defer></script>
+
   <footer class="site-footer" id="site-footer"></footer>
   <div id="rv-section" style="padding:1rem 1rem 0;display:none">
     <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
