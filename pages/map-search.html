@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <script>
+<script>
 (function(){
   var t=localStorage.getItem('movin_theme');
   if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
@@ -12,353 +12,874 @@
 <title>Map Search – Movin.ie</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="../css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+<meta name="theme-color" content="#1a5c45"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Movin"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:#1a5c45;color:#111;margin:0;padding:0}
-:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'DM Sans',sans-serif;background:#f7f5f0;color:#111;overflow-x:hidden}
+  :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
 
-.topbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;border-bottom:1px solid var(--border);padding:.6rem 1rem;display:flex;align-items:center;gap:8px;height:56px}
-.back-btn{background:none;border:1.5px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px}
-.topbar-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:900;color:var(--g);flex-shrink:0}
-.topbar-logo span{color:var(--o)}
-.topbar-search{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:14px;background:#fafaf8;color:#333;outline:none}
-.topbar-search:focus{border-color:var(--g)}
-.filter-pill{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;background:#fafaf8;cursor:pointer;color:#555;white-space:nowrap;flex-shrink:0}
+  /* ── Top bar ── */
+  .ms-bar{
+    position:sticky;top:0;z-index:90;
+    background:rgba(255,255,255,.96);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid var(--border);
+    padding:.65rem .85rem;display:flex;flex-direction:column;gap:.55rem
+  }
+  .ms-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .ms-back{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:38px;height:38px;border-radius:50%;
+    background:var(--gl);color:var(--g);
+    border:1px solid rgba(26,92,69,.18);cursor:pointer;flex-shrink:0;padding:0;
+    transition:all .18s ease;-webkit-tap-highlight-color:transparent
+  }
+  .ms-back:hover{background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 6px 18px rgba(26,92,69,.25);transform:translateX(-2px)}
+  .ms-back:active{transform:scale(.92)}
+  .ms-back svg{width:18px;height:18px;stroke:currentColor;fill:none}
 
-#map{position:fixed;top:56px;left:0;right:0;bottom:0;z-index:1;width:100%}
+  .ms-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:var(--g);flex-shrink:0;text-decoration:none}
+  .ms-logo span{color:var(--o)}
 
-.type-tabs{position:fixed;top:68px;left:1rem;z-index:500;display:flex;gap:6px}
-.type-tab{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#666;cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.type-tab.active{background:var(--g);color:#fff;border-color:var(--g)}
+  .ms-tabs{display:flex;background:#f0ede6;border-radius:50px;padding:3px;gap:2px;flex-shrink:0}
+  .ms-tab{
+    background:transparent;border:none;padding:7px 14px;border-radius:50px;
+    font-family:inherit;font-size:13px;font-weight:600;color:#888;cursor:pointer;
+    -webkit-tap-highlight-color:transparent;transition:all .2s ease;white-space:nowrap
+  }
+  .ms-tab.on{background:var(--g);color:#fff;box-shadow:0 4px 12px rgba(26,92,69,.25)}
 
-.results-chip{position:fixed;top:68px;right:1rem;z-index:500;background:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:500;color:#333;box-shadow:0 2px 12px rgba(0,0,0,.12);border:1px solid var(--border);display:none}
+  .ms-search{
+    flex:1;min-width:160px;border:1.5px solid var(--border);border-radius:50px;
+    padding:9px 16px;font-size:14px;font-family:inherit;background:#fafaf8;color:#222;outline:none;
+    transition:border-color .15s,background .15s,box-shadow .15s
+  }
+  .ms-search:focus{border-color:var(--g);background:#fff;box-shadow:0 0 0 4px rgba(26,92,69,.08)}
 
-.card-panel{position:fixed;bottom:0;left:0;right:0;z-index:800;background:#fff;border-radius:20px 20px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,.15);transform:translateY(100%);transition:transform .3s ease;max-height:60vh;overflow-y:auto}
-.card-panel.open{transform:translateY(0)}
-.panel-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:.75rem auto .5rem}
-.panel-close{position:absolute;top:.75rem;right:1rem;background:none;border:none;font-size:20px;cursor:pointer;color:#aaa}
-.panel-card{display:flex;gap:.85rem;padding:1rem;border-bottom:1px solid #f5f2ec;cursor:pointer}
-.panel-card:last-child{border-bottom:none}
-.panel-card:active{background:#fafaf8}
-.panel-img{width:90px;height:68px;border-radius:10px;flex-shrink:0;overflow:hidden;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:22px}
-.panel-img img{width:100%;height:100%;object-fit:cover}
-.panel-info{flex:1;min-width:0}
-.panel-price{font-size:16px;font-weight:500;color:var(--g);margin-bottom:2px}
-.panel-title{font-size:13px;font-weight:600;color:#111;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.panel-meta{font-size:11px;color:#aaa;display:flex;gap:8px;flex-wrap:wrap}
-.panel-badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;border-radius:10px;background:var(--g);color:#fff;margin-bottom:4px}
+  .ms-pill{
+    display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--border);
+    border-radius:50px;padding:7px 14px;font-size:12px;font-weight:600;
+    background:#fafaf8;cursor:pointer;color:#555;flex-shrink:0;font-family:inherit;
+    -webkit-tap-highlight-color:transparent;transition:all .15s;text-decoration:none
+  }
+  .ms-pill svg{width:14px;height:14px;stroke:currentColor;fill:none}
+  .ms-pill:hover{border-color:var(--g);color:var(--g)}
+  .ms-pill.on{background:var(--gl);border-color:var(--g);color:var(--g)}
+  .ms-pill.accent{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;border-color:var(--g);box-shadow:0 4px 12px rgba(26,92,69,.3)}
+  .ms-pill.accent:hover{box-shadow:0 6px 18px rgba(26,92,69,.4);transform:translateY(-1px)}
 
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none}
-.overlay.open{display:block}
-.filter-sheet{position:fixed;bottom:0;left:0;right:0;z-index:700;background:#fff;border-radius:20px 20px 0 0;padding:1.25rem;transform:translateY(100%);transition:transform .25s ease;max-height:80vh;overflow-y:auto}
-.filter-sheet.open{transform:translateY(0)}
-.fs-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1rem}
-.fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
-.fs-label{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px}
-.fs-sel{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:9px 10px;font-size:13px;background:#fafaf8;color:#555;outline:none;-webkit-appearance:none}
-.fs-sel:focus{border-color:var(--g)}
-.fs-apply{width:100%;background:var(--g);color:#fff;border:none;padding:13px;border-radius:50px;font-size:14px;font-weight:500;cursor:pointer;margin-top:.75rem;font-family:'DM Sans',sans-serif}
+  .ms-toggle{display:inline-flex;background:#f0ede6;border-radius:50px;padding:3px;flex-shrink:0}
+  .ms-toggle button{
+    background:transparent;border:none;padding:6px 12px;border-radius:50px;
+    font-family:inherit;font-size:12px;font-weight:600;color:#888;cursor:pointer;
+    display:inline-flex;align-items:center;gap:4px;-webkit-tap-highlight-color:transparent
+  }
+  .ms-toggle button.on{background:#fff;color:var(--g);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+  .ms-toggle button svg{width:13px;height:13px;stroke:currentColor;fill:none}
 
-.map-status{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;background:#fff;border-radius:16px;padding:1.5rem 2rem;box-shadow:0 8px 24px rgba(0,0,0,.15);text-align:center;min-width:160px}
-.spinner{width:28px;height:28px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:0 auto .75rem}
-@keyframes spin{to{transform:rotate(360deg)}}
+  /* ── Two-column layout ── */
+  .ms-shell{
+    display:grid;grid-template-columns:minmax(380px,440px) 1fr;
+    height:calc(100vh - var(--ms-bar-h, 92px));
+    min-height:560px
+  }
+  @media(max-width:900px){
+    .ms-shell{grid-template-columns:1fr;height:auto;min-height:0}
+    .ms-list{order:2;max-height:none}
+    .ms-map-wrap{order:1;height:46vh;min-height:340px;position:sticky;top:var(--ms-bar-h, 92px)}
+  }
+  body.view-list .ms-map-wrap{display:none}
+  body.view-list .ms-shell{grid-template-columns:1fr}
+  body.view-map .ms-list{display:none}
+  body.view-map .ms-shell{grid-template-columns:1fr}
+  body.view-map .ms-map-wrap{height:calc(100vh - var(--ms-bar-h, 92px));position:relative;top:0}
+
+  /* ── List ── */
+  .ms-list{
+    background:#fff;border-right:1px solid var(--border);overflow-y:auto;
+    display:flex;flex-direction:column
+  }
+  .ms-list-hdr{
+    position:sticky;top:0;z-index:5;background:#fafaf8;
+    border-bottom:1px solid var(--border);padding:.7rem 1rem;
+    display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap
+  }
+  .ms-list-count{font-size:13px;color:#555;font-weight:500}
+  .ms-list-count strong{color:#111;font-weight:700}
+  .ms-sort{
+    border:1.5px solid var(--border);border-radius:50px;padding:6px 12px;
+    font-family:inherit;font-size:12px;font-weight:500;background:#fff;color:#555;
+    outline:none;cursor:pointer;-webkit-appearance:none
+  }
+
+  .ms-row-list{padding:.5rem .65rem 6rem}
+  .ms-card{
+    display:flex;gap:.85rem;background:#fff;border:1px solid var(--border);
+    border-radius:14px;padding:.75rem;margin-bottom:.65rem;cursor:pointer;
+    transition:all .2s ease;-webkit-tap-highlight-color:transparent;
+    position:relative;overflow:hidden
+  }
+  .ms-card:hover,.ms-card.hi{
+    border-color:var(--g);transform:translateY(-2px);
+    box-shadow:0 10px 24px rgba(26,92,69,.10)
+  }
+  .ms-card-img{
+    width:120px;height:96px;border-radius:10px;flex-shrink:0;overflow:hidden;
+    background:linear-gradient(135deg,#c8dfd4,#e9f4ef);
+    display:flex;align-items:center;justify-content:center;font-size:24px;position:relative
+  }
+  .ms-card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+  .ms-card:hover .ms-card-img img,.ms-card.hi .ms-card-img img{transform:scale(1.06)}
+  .ms-card-tag{
+    position:absolute;top:6px;left:6px;background:var(--g);color:#fff;
+    font-size:9px;font-weight:700;padding:2px 7px;border-radius:50px;letter-spacing:.3px;text-transform:uppercase
+  }
+  .ms-card-tag.rent{background:var(--o)}
+  .ms-card-info{flex:1;min-width:0;display:flex;flex-direction:column}
+  .ms-card-price{font-size:17px;font-weight:700;color:var(--g);line-height:1.2;margin-bottom:2px}
+  .ms-card-title{
+    font-size:13px;font-weight:600;color:#111;margin-bottom:3px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3
+  }
+  .ms-card-loc{font-size:11px;color:#888;margin-bottom:auto;display:flex;align-items:center;gap:3px}
+  .ms-card-loc svg{width:10px;height:10px;stroke:currentColor;fill:none;flex-shrink:0}
+  .ms-card-meta{display:flex;gap:.65rem;font-size:11px;color:#666;margin-top:6px;flex-wrap:wrap;font-weight:500}
+  .ms-card-meta span{display:inline-flex;align-items:center;gap:3px}
+  .ms-card-meta svg{width:11px;height:11px;color:var(--g);flex-shrink:0;stroke:currentColor;fill:none}
+  .ms-card-fav{
+    position:absolute;top:.5rem;right:.55rem;background:rgba(255,255,255,.95);
+    border:none;border-radius:50%;width:26px;height:26px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:13px;
+    box-shadow:0 1px 4px rgba(0,0,0,.1);transition:transform .15s
+  }
+  .ms-card-fav:hover{transform:scale(1.1)}
+
+  /* Skeleton card during load */
+  .ms-skel{display:flex;gap:.85rem;padding:.75rem;margin-bottom:.65rem;border:1px solid var(--border);border-radius:14px;background:#fff}
+  .ms-skel-img{width:120px;height:96px;border-radius:10px;background:linear-gradient(90deg,#ede9e1 0%,#f5f2ec 50%,#ede9e1 100%);background-size:800px 100%;animation:msshimmer 1.4s infinite linear;flex-shrink:0}
+  .ms-skel-line{height:11px;border-radius:6px;background:linear-gradient(90deg,#ede9e1 0%,#f5f2ec 50%,#ede9e1 100%);background-size:800px 100%;animation:msshimmer 1.4s infinite linear;margin-bottom:7px}
+  .ms-skel-line.lg{width:55%;height:18px;margin-bottom:9px}
+  .ms-skel-line.md{width:80%}
+  .ms-skel-line.sm{width:38%;height:9px}
+  @keyframes msshimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+
+  .ms-empty{padding:3rem 1.5rem;text-align:center;color:#888}
+  .ms-empty h3{font-family:'Playfair Display',serif;font-size:18px;color:#111;margin-bottom:.4rem}
+  .ms-empty p{font-size:13px;font-weight:300;margin-bottom:1rem;line-height:1.55}
+  .ms-empty .btn{background:var(--g);color:#fff;padding:10px 18px;font-size:13px;border-radius:50px;border:none;cursor:pointer;text-decoration:none;display:inline-block;font-family:inherit;font-weight:600}
+
+  /* ── Map ── */
+  .ms-map-wrap{position:relative;background:#e6e6e6}
+  #map{position:absolute;inset:0;width:100%;height:100%}
+  body.view-list #map,body.view-map #map{height:100%}
+
+  .ms-map-status{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:5;
+    background:#fff;padding:1.25rem 1.75rem;border-radius:14px;text-align:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);min-width:160px
+  }
+  .ms-map-status .spinner{width:26px;height:26px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:msspin .7s linear infinite;margin:0 auto .5rem}
+  @keyframes msspin{to{transform:rotate(360deg)}}
+
+  .ms-research-btn{
+    position:absolute;top:1rem;left:50%;transform:translateX(-50%);z-index:6;
+    background:#fff;border:1.5px solid var(--g);color:var(--g);
+    border-radius:50px;padding:8px 18px;font-family:inherit;font-size:13px;font-weight:600;
+    cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.15);
+    display:none;align-items:center;gap:6px
+  }
+  .ms-research-btn.show{display:inline-flex;animation:msfade .25s ease}
+  .ms-research-btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
+  .ms-research-btn:hover{background:var(--g);color:#fff}
+  @keyframes msfade{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+  /* ── Themed Google InfoWindow ── */
+  .gm-style .gm-style-iw-c{
+    border-radius:18px !important;padding:0 !important;box-shadow:0 14px 36px rgba(0,0,0,.18) !important;
+    max-width:280px !important
+  }
+  .gm-style .gm-style-iw-d{overflow:hidden !important;padding:0 !important;max-height:none !important}
+  .gm-style .gm-ui-hover-effect{top:6px !important;right:6px !important;background:rgba(255,255,255,.9) !important;border-radius:50% !important}
+  .iw-card{font-family:'DM Sans',sans-serif;width:240px;border-radius:18px;overflow:hidden;background:#fff}
+  .iw-photo{width:100%;height:120px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:32px}
+  .iw-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .iw-body{padding:.75rem .9rem 1rem}
+  .iw-price{font-size:16px;font-weight:700;color:var(--g);margin-bottom:1px}
+  .iw-title{font-size:13px;font-weight:500;color:#111;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .iw-meta{font-size:11px;color:#888;margin-bottom:8px}
+  .iw-cta{display:block;text-align:center;background:var(--g);color:#fff;font-size:12px;font-weight:600;padding:8px;border-radius:50px;text-decoration:none}
+  .iw-cta:hover{background:var(--gd)}
+
+  /* ── Filter sheet (kept) ── */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none}
+  .overlay.open{display:block}
+  .filter-sheet{
+    position:fixed;bottom:0;left:0;right:0;z-index:700;background:#fff;
+    border-radius:24px 24px 0 0;padding:1.25rem;transform:translateY(100%);
+    transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:85vh;overflow-y:auto;
+    padding-bottom:calc(1.25rem + env(safe-area-inset-bottom,0px))
+  }
+  @media(min-width:768px){.filter-sheet{max-width:520px;margin:0 auto}}
+  .filter-sheet.open{transform:translateY(0)}
+  .fs-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto .85rem}
+  .fs-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1rem}
+  .fs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+  .fs-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px}
+  .fs-sel{
+    width:100%;border:1.5px solid var(--border);border-radius:12px;padding:11px 12px;
+    font-size:13px;background:#fafaf8;color:#444;outline:none;-webkit-appearance:none;font-family:inherit
+  }
+  .fs-sel:focus{border-color:var(--g);background:#fff}
+  .fs-apply{
+    width:100%;background:var(--g);color:#fff;border:none;padding:14px;
+    border-radius:50px;font-size:14px;font-weight:600;cursor:pointer;
+    margin-top:.75rem;font-family:inherit;
+    box-shadow:0 6px 18px rgba(26,92,69,.25)
+  }
+  .fs-reset{
+    width:100%;background:transparent;color:#666;border:1.5px solid var(--border);padding:11px;
+    border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;
+    margin-top:.5rem;font-family:inherit
+  }
+
+  /* ── Themed Google Places dropdown ── */
+  .pac-container{
+    border-radius:14px;margin-top:6px;
+    border:1px solid var(--border);background:#fff;
+    box-shadow:0 14px 36px rgba(0,0,0,.14);
+    font-family:'DM Sans',sans-serif;overflow:hidden;z-index:9999
+  }
+  .pac-container::after{display:none !important}
+  .pac-item{padding:.7rem 1rem;font-size:13px;border-top:1px solid #f5f2ec;cursor:pointer;line-height:1.4;display:flex;align-items:center;gap:10px;-webkit-tap-highlight-color:transparent}
+  .pac-item:first-child{border-top:none}
+  .pac-item:hover,.pac-item-selected{background:var(--gl)}
+  .pac-icon{margin-top:0;flex-shrink:0;opacity:.65}
+  .pac-item-query{color:#111;font-weight:500;font-size:13px}
+  .pac-matched{color:var(--g)}
+
+  /* Dark mode */
+  [data-theme="dark"] body{background:#0f0f0f;color:#e8e8e8}
+  [data-theme="dark"] .ms-bar{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+  [data-theme="dark"] .ms-search,[data-theme="dark"] .ms-pill,[data-theme="dark"] .ms-sort{background:#1a1a1a;border-color:#2a2a2a;color:#ccc}
+  [data-theme="dark"] .ms-search{color:#e8e8e8}
+  [data-theme="dark"] .ms-tabs,[data-theme="dark"] .ms-toggle{background:#0f0f0f}
+  [data-theme="dark"] .ms-toggle button.on{background:#1a1a1a;color:#7ec9a8}
+  [data-theme="dark"] .ms-list{background:#1a1a1a;border-color:#2a2a2a}
+  [data-theme="dark"] .ms-list-hdr{background:#0f0f0f;border-color:#2a2a2a}
+  [data-theme="dark"] .ms-list-count strong{color:#e8e8e8}
+  [data-theme="dark"] .ms-card{background:#1e1e1e;border-color:#2a2a2a}
+  [data-theme="dark"] .ms-card:hover,[data-theme="dark"] .ms-card.hi{border-color:#2ecc8a;box-shadow:0 10px 24px rgba(46,204,138,.10)}
+  [data-theme="dark"] .ms-card-title{color:#e8e8e8}
+  [data-theme="dark"] .ms-card-price{color:#7ec9a8}
+  [data-theme="dark"] .ms-card-fav{background:#2a2a2a;color:#aaa}
+  [data-theme="dark"] .filter-sheet{background:#1a1a1a}
+  [data-theme="dark"] .fs-sel{background:#0f0f0f;border-color:#2a2a2a;color:#ccc}
+  [data-theme="dark"] .pac-container{background:#1a1a1a;border-color:#2a2a2a}
+  [data-theme="dark"] .pac-item{border-color:#2a2a2a;color:#aaa}
+  [data-theme="dark"] .pac-item:hover,[data-theme="dark"] .pac-item-selected{background:#0d2e1e;color:#7ec9a8}
+  [data-theme="dark"] .pac-item-query{color:#e8e8e8}
+  [data-theme="dark"] .ms-skel{background:#1e1e1e;border-color:#2a2a2a}
+  [data-theme="dark"] .ms-skel-img,[data-theme="dark"] .ms-skel-line{background:linear-gradient(90deg,#1f1f1f 0%,#2a2a2a 50%,#1f1f1f 100%);background-size:800px 100%}
+  @media(prefers-color-scheme:dark){
+    :root:not([data-theme="light"]) body{background:#0f0f0f;color:#e8e8e8}
+    :root:not([data-theme="light"]) .ms-bar{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+    :root:not([data-theme="light"]) .ms-list{background:#1a1a1a;border-color:#2a2a2a}
+    :root:not([data-theme="light"]) .ms-card{background:#1e1e1e;border-color:#2a2a2a}
+    :root:not([data-theme="light"]) .ms-card-title{color:#e8e8e8}
+  }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <button class="back-btn" onclick="location.href='../index.html'">←</button>
-  <span class="topbar-logo">mov<span>in</span></span>
-  <input class="topbar-search" id="search-inp" type="text" placeholder="Area or county…" onkeydown="if(event.key==='Enter')doSearch()"/>
-  <button class="filter-pill" onclick="openFilters()">⚙ Filters</button>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Top bar -->
+<div class="ms-bar" id="ms-bar">
+  <div class="ms-row">
+    <button class="ms-back" aria-label="Back" onclick="goBackOrHome()">
+      <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <a class="ms-logo" href="../index.html">mov<span>in</span></a>
+
+    <div class="ms-tabs" role="tablist">
+      <button class="ms-tab on" data-type="sale" onclick="setType('sale',this)">Buy</button>
+      <button class="ms-tab" data-type="rent" onclick="setType('rent',this)">Rent</button>
+      <button class="ms-tab" data-type="share" onclick="setType('share',this)">Share</button>
+    </div>
+
+    <input class="ms-search" id="search-inp" type="text" autocomplete="off" placeholder="Address, town, county or Eircode…"/>
+  </div>
+
+  <div class="ms-row">
+    <button class="ms-pill" onclick="openFilters()">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M6 12h12"/><path d="M10 18h4"/></svg>
+      Filters <span id="filter-count" style="display:none;background:var(--g);color:#fff;border-radius:50px;padding:0 6px;font-size:10px;margin-left:4px"></span>
+    </button>
+    <a class="ms-pill accent" href="drive-time.html">
+      <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Drive time
+    </a>
+
+    <div style="flex:1"></div>
+
+    <div class="ms-toggle" id="view-toggle">
+      <button class="on" data-view="split" onclick="setView('split',this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="18" rx="1.5"/></svg>
+        <span class="hide-sm">Both</span>
+      </button>
+      <button data-view="list" onclick="setView('list',this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+        <span class="hide-sm">List</span>
+      </button>
+      <button data-view="map" onclick="setView('map',this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21 1 6"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/></svg>
+        <span class="hide-sm">Map</span>
+      </button>
+    </div>
+  </div>
 </div>
 
-<div class="type-tabs">
-  <div class="type-tab active" data-type="sale" onclick="setType(this)">Buy</div>
-  <div class="type-tab" data-type="rent" onclick="setType(this)">Rent</div>
-  <div class="type-tab" data-type="share" onclick="setType(this)">Sharing</div>
+<!-- Two-column shell -->
+<div class="ms-shell">
+
+  <!-- Left: list -->
+  <aside class="ms-list" id="ms-list">
+    <div class="ms-list-hdr">
+      <div class="ms-list-count" id="result-count">Loading properties…</div>
+      <select class="ms-sort" id="sort-sel" onchange="applySort()">
+        <option value="newest">Newest first</option>
+        <option value="price_asc">Price low → high</option>
+        <option value="price_desc">Price high → low</option>
+      </select>
+    </div>
+    <div class="ms-row-list" id="ms-rows">
+      <div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>
+      <div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>
+      <div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>
+      <div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>
+    </div>
+  </aside>
+
+  <!-- Right: map -->
+  <div class="ms-map-wrap" id="ms-map-wrap">
+    <div id="map"></div>
+    <button class="ms-research-btn" id="research-btn" type="button" onclick="researchInArea()">
+      <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Search this area
+    </button>
+    <div class="ms-map-status" id="map-status">
+      <div class="spinner"></div>
+      <div style="font-size:13px;color:#888">Loading map…</div>
+    </div>
+  </div>
 </div>
 
-<div class="results-chip" id="chip">Loading…</div>
-
-<div class="map-status" id="map-status">
-  <div class="spinner"></div>
-  <div style="font-size:13px;color:#888">Loading map…</div>
-</div>
-
-<div id="map"></div>
-
-<div class="card-panel" id="panel">
-  <div class="panel-handle"></div>
-  <button class="panel-close" onclick="closePanel()">×</button>
-  <div id="panel-body"></div>
-</div>
-
+<!-- Filter sheet -->
 <div class="overlay" id="overlay" onclick="closeFilters()"></div>
 <div class="filter-sheet" id="filters">
+  <div class="fs-handle"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
     <div class="fs-title">Filters</div>
-    <button onclick="closeFilters()" style="background:none;border:none;font-size:22px;color:#aaa;cursor:pointer">×</button>
+    <button onclick="closeFilters()" style="background:#f0ede6;border:none;width:32px;height:32px;border-radius:50%;color:#555;cursor:pointer;font-size:18px">×</button>
   </div>
   <div class="fs-grid">
-    <div><label class="fs-label">Min price</label>
-      <select class="fs-sel" id="f-min">
-        <option value="">No min</option><option value="50000">€50k</option><option value="100000">€100k</option>
-        <option value="150000">€150k</option><option value="200000">€200k</option><option value="300000">€300k</option>
-        <option value="400000">€400k</option><option value="500000">€500k</option>
-      </select>
+    <div>
+      <label class="fs-label" id="lbl-min">Min price</label>
+      <select class="fs-sel" id="f-min"></select>
     </div>
-    <div><label class="fs-label">Max price</label>
-      <select class="fs-sel" id="f-max">
-        <option value="">No max</option><option value="150000">€150k</option><option value="200000">€200k</option>
-        <option value="300000">€300k</option><option value="400000">€400k</option><option value="500000">€500k</option>
-        <option value="750000">€750k</option><option value="1000000">€1m+</option>
-      </select>
+    <div>
+      <label class="fs-label" id="lbl-max">Max price</label>
+      <select class="fs-sel" id="f-max"></select>
     </div>
-    <div><label class="fs-label">Bedrooms</label>
+    <div>
+      <label class="fs-label">Bedrooms</label>
       <select class="fs-sel" id="f-beds">
         <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
-        <option value="3">3+</option><option value="4">4+</option>
+        <option value="3">3+</option><option value="4">4+</option><option value="5">5+</option>
       </select>
     </div>
-    <div><label class="fs-label">Property type</label>
+    <div>
+      <label class="fs-label">Property type</label>
       <select class="fs-sel" id="f-ptype">
-        <option value="">Any</option><option value="house">House</option>
-        <option value="apartment">Apartment</option><option value="bungalow">Bungalow</option>
+        <option value="">Any</option>
+        <option value="house">House</option>
+        <option value="apartment">Apartment</option>
+        <option value="bungalow">Bungalow</option>
+        <option value="site">Site / Land</option>
       </select>
     </div>
   </div>
   <button class="fs-apply" onclick="applyFilters()">Apply filters</button>
+  <button class="fs-reset" type="button" onclick="resetFilters()">Reset all</button>
 </div>
 
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
 <script>
-var API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
-var gmap, geocoder, overlays = [], listingType = 'sale', filterCounty = ''
+  document.body.setAttribute('data-no-back','')   // we already have our own back button
+  document.body.classList.add('view-split')
 
-var CENTRES = {
-  Dublin:{lat:53.3498,lng:-6.2603}, Cork:{lat:51.8985,lng:-8.4756},
-  Galway:{lat:53.2707,lng:-9.0568}, Limerick:{lat:52.6638,lng:-8.6267},
-  Waterford:{lat:52.2593,lng:-7.1101}, Kerry:{lat:52.1545,lng:-9.5669},
-  Meath:{lat:53.6055,lng:-6.6564}, Kildare:{lat:53.1609,lng:-6.9097},
-  Wicklow:{lat:52.9808,lng:-6.0444}, default:{lat:53.35,lng:-7.5}
-}
+  function goBackOrHome(){
+    try {
+      var same = document.referrer && new URL(document.referrer, location.href).origin === location.origin
+      if (history.length > 1 && same) { history.back(); return }
+    } catch(e){}
+    location.href = '../index.html'
+  }
 
-function initMap() {
-  var mapEl = document.getElementById('map')
-  mapEl.style.height = (window.innerHeight - 56) + 'px'
-  mapEl.style.width = '100%'
+  // ── State ───────────────────────────────────────────────────────────────
+  var listingType = 'sale'
+  var sortKey     = 'newest'
+  var allListings = []     // current full set (filtered by mode + filters server-side)
+  var visible     = []     // listings currently shown in list (after sort + map filtering)
+  var origin      = null   // { lat, lng, label } if user picked a place from search
+  var gmap, infoWindow, listingMarkers = [], markerById = {}
+  var lastBoundsKey = null
 
-  gmap = new google.maps.Map(mapEl, {
-    center: CENTRES.default,
-    zoom: 7,
-    mapTypeControl: false,
-    streetViewControl: false,
-    fullscreenControl: false,
-    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER }
-  })
+  var COUNTY_CENTROIDS = {
+    Dublin:[53.349,-6.260], Cork:[51.898,-8.475], Galway:[53.270,-9.057],
+    Limerick:[52.668,-8.630], Waterford:[52.259,-7.110], Kerry:[52.155,-9.567],
+    Meath:[53.605,-6.656], Kildare:[53.156,-6.910], Wicklow:[52.980,-6.044],
+    Wexford:[52.336,-6.464], Kilkenny:[52.654,-7.244], Clare:[52.906,-9.000],
+    Tipperary:[52.473,-8.161], Donegal:[54.654,-8.110], Mayo:[53.853,-9.299],
+    Sligo:[54.276,-8.476], Leitrim:[54.124,-8.000], Roscommon:[53.627,-8.190],
+    Longford:[53.726,-7.794], Westmeath:[53.535,-7.337], Offaly:[53.235,-7.713],
+    Laois:[52.994,-7.331], Carlow:[52.836,-6.926], Louth:[53.918,-6.539],
+    Monaghan:[54.249,-6.968], Cavan:[53.990,-7.360]
+  }
+  var ECODE_CACHE_KEY = 'movin_eircode_geocode_v1'
+  var ECODE_CACHE = (function(){ try { return JSON.parse(localStorage.getItem(ECODE_CACHE_KEY) || '{}') } catch(e){ return {} }})()
+  function saveEcodeCache(){ try { localStorage.setItem(ECODE_CACHE_KEY, JSON.stringify(ECODE_CACHE)) } catch(e){} }
 
-  geocoder = new google.maps.Geocoder()
+  // ── Daft-style price ranges per mode ────────────────────────────────────
+  var PRICE_RANGES = {
+    sale: {
+      label: 'price',
+      min: [['','No min'],['50000','€50k'],['100000','€100k'],['150000','€150k'],['200000','€200k'],['250000','€250k'],['300000','€300k'],['400000','€400k'],['500000','€500k'],['750000','€750k'],['1000000','€1m']],
+      max: [['','No max'],['100000','€100k'],['150000','€150k'],['200000','€200k'],['300000','€300k'],['400000','€400k'],['500000','€500k'],['750000','€750k'],['1000000','€1m'],['1500000','€1.5m'],['2000000','€2m+']]
+    },
+    rent: {
+      label: 'rent /mo',
+      min: [['','No min'],['500','€500'],['750','€750'],['1000','€1,000'],['1250','€1,250'],['1500','€1,500'],['1750','€1,750'],['2000','€2,000'],['2500','€2,500'],['3000','€3,000']],
+      max: [['','No max'],['750','€750'],['1000','€1,000'],['1250','€1,250'],['1500','€1,500'],['1750','€1,750'],['2000','€2,000'],['2500','€2,500'],['3000','€3,000'],['4000','€4,000'],['5000','€5,000+']]
+    },
+    share: {
+      label: 'rent /mo',
+      min: [['','No min'],['300','€300'],['400','€400'],['500','€500'],['600','€600'],['700','€700'],['800','€800'],['1000','€1,000']],
+      max: [['','No max'],['400','€400'],['500','€500'],['600','€600'],['700','€700'],['800','€800'],['900','€900'],['1000','€1,000'],['1200','€1,200'],['1500','€1,500+']]
+    }
+  }
+  function fillPriceSelects(type){
+    var cfg = PRICE_RANGES[type] || PRICE_RANGES.sale
+    var minSel = document.getElementById('f-min')
+    var maxSel = document.getElementById('f-max')
+    minSel.innerHTML = cfg.min.map(function(o){ return '<option value="'+o[0]+'">'+o[1]+'</option>' }).join('')
+    maxSel.innerHTML = cfg.max.map(function(o){ return '<option value="'+o[0]+'">'+o[1]+'</option>' }).join('')
+    minSel.value = ''
+    maxSel.value = ''
+    document.getElementById('lbl-min').textContent = type === 'sale' ? 'Min price' : 'Min rent /mo'
+    document.getElementById('lbl-max').textContent = type === 'sale' ? 'Max price' : 'Max rent /mo'
+  }
+  fillPriceSelects('sale')
 
-  google.maps.event.trigger(gmap, 'resize')
-  gmap.addListener('click', function() { closePanel() })
+  // ── View toggle ─────────────────────────────────────────────────────────
+  function setView(v, btn){
+    document.body.classList.remove('view-split','view-list','view-map')
+    document.body.classList.add('view-' + v)
+    document.querySelectorAll('#view-toggle button').forEach(function(b){ b.classList.toggle('on', b.dataset.view === v) })
+    if (gmap) setTimeout(function(){ google.maps.event.trigger(gmap, 'resize') }, 80)
+  }
+  window.setView = setView
 
-  document.getElementById('map-status').style.display = 'none'
-  fetchAndPin()
-}
+  // ── Update CSS var for top-bar height (so the shell sizes correctly) ────
+  function syncBarHeight(){
+    var h = document.getElementById('ms-bar').offsetHeight
+    document.documentElement.style.setProperty('--ms-bar-h', h + 'px')
+  }
+  syncBarHeight()
+  window.addEventListener('resize', syncBarHeight)
+  new ResizeObserver(syncBarHeight).observe(document.getElementById('ms-bar'))
 
-window.addEventListener('resize', function() {
-  if (!gmap) return
-  var mapEl = document.getElementById('map')
-  mapEl.style.height = (window.innerHeight - 56) + 'px'
-  google.maps.event.trigger(gmap, 'resize')
-})
+  // ── Init Google Map ─────────────────────────────────────────────────────
+  window.initMap = function(){
+    var mapEl = document.getElementById('map')
+    gmap = new google.maps.Map(mapEl, {
+      center: { lat: 53.42, lng: -7.95 },
+      zoom: 7,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      gestureHandling: 'greedy',
+      zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+      styles: [
+        { featureType:'poi', stylers:[{visibility:'simplified'}] },
+        { featureType:'transit', stylers:[{visibility:'off'}] }
+      ]
+    })
+    google.maps.event.addListenerOnce(gmap, 'idle', function(){ document.getElementById('map-status').style.display = 'none' })
+    setTimeout(function(){ document.getElementById('map-status').style.display = 'none' }, 2000)
 
-async function fetchAndPin() {
-  showStatus('Finding properties…')
-  try {
-    var q = 'listing_type=' + listingType + '&limit=50'
-    if (filterCounty) q += '&county=' + encodeURIComponent(filterCounty)
+    // When the user pans/zooms, surface a "Search this area" button so they
+    // can refilter the list to whatever's now in view (Bayut-style).
+    gmap.addListener('idle', function(){
+      var b = gmap.getBounds(); if (!b) return
+      var key = b.toUrlValue()
+      if (key !== lastBoundsKey && lastBoundsKey != null) {
+        document.getElementById('research-btn').classList.add('show')
+      }
+      lastBoundsKey = key
+    })
+
+    setupSearch()
+    fetchListings()
+  }
+
+  // ── Search input → Google Places autocomplete ───────────────────────────
+  function setupSearch(){
+    if (!window.google || !google.maps || !google.maps.places) return
+    var input = document.getElementById('search-inp')
+    if (!input || input.dataset.acBound) return
+    input.dataset.acBound = '1'
+    var ac = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 'ie' },
+      fields: ['geometry','name','formatted_address','address_components']
+    })
+    ac.addListener('place_changed', function(){
+      var place = ac.getPlace()
+      if (!place || !place.geometry || !place.geometry.location) return
+      var loc = place.geometry.location
+      origin = {
+        lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
+        lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
+        label: place.formatted_address || place.name || input.value
+      }
+      gmap.setCenter({ lat: origin.lat, lng: origin.lng })
+      gmap.setZoom(13)
+      // Refilter so listings are sorted nearest-first
+      sortKey = sortKey   // no change to sortKey; we'll inject a "near" sort
+      applySort()
+    })
+    input.addEventListener('keydown', function(e){
+      if (e.key !== 'Enter') return
+      if (document.querySelector('.pac-container .pac-item-selected')) return
+      var q = (input.value||'').trim(); if (!q) return
+      var gc = window._geo = window._geo || new google.maps.Geocoder()
+      gc.geocode({ address:q, componentRestrictions:{ country:'IE' } }, function(results, status){
+        if (status==='OK' && results && results[0]) {
+          var loc = results[0].geometry.location
+          origin = { lat: loc.lat(), lng: loc.lng(), label: results[0].formatted_address }
+          gmap.setCenter({ lat: origin.lat, lng: origin.lng }); gmap.setZoom(13)
+          applySort()
+        }
+      })
+    })
+  }
+
+  // ── Coordinate helpers ──────────────────────────────────────────────────
+  function listingPoint(l){
+    if (l.latitude  != null && l.longitude  != null) return [parseFloat(l.latitude), parseFloat(l.longitude), 'exact']
+    if (l.lat       != null && l.lng        != null) return [parseFloat(l.lat),       parseFloat(l.lng),       'exact']
+    if (l.eircode){
+      var key = String(l.eircode).toUpperCase().replace(/\s+/g,'')
+      var hit = ECODE_CACHE[key]
+      if (hit && isFinite(hit.lat) && isFinite(hit.lng)) return [hit.lat, hit.lng, 'eircode']
+    }
+    if (l.county && COUNTY_CENTROIDS[l.county]) {
+      var c = COUNTY_CENTROIDS[l.county]
+      // jitter a tiny amount so multiple listings in same county don't stack on one pixel
+      var seed = parseInt(String(l.id||0).slice(-3),10) || 0
+      return [c[0] + ((seed%97)/97 - .5)*.04, c[1] + ((seed%67)/67 - .5)*.04, 'county']
+    }
+    return null
+  }
+  function haversineKm(lat1, lng1, lat2, lng2){
+    var R=6371, dLat=(lat2-lat1)*Math.PI/180, dLng=(lng2-lng1)*Math.PI/180
+    var a=Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2)
+    return 2*R*Math.asin(Math.sqrt(a))
+  }
+  function fmtPrice(price, type){
+    var n = parseInt(price)
+    if (!isFinite(n)) return '€—'
+    if (type === 'rent' || type === 'share') return '€' + n.toLocaleString() + '/mo'
+    if (n >= 1000000) return '€' + (n/1000000).toFixed(n>=10000000?0:1).replace(/\.0$/,'') + 'm'
+    if (n >= 1000)    return '€' + Math.round(n/1000) + 'k'
+    return '€' + n.toLocaleString()
+  }
+  function shortPrice(price, type){
+    var n = parseInt(price)
+    if (!isFinite(n)) return '€'
+    if (type === 'rent' || type === 'share') return '€' + (n>=1000 ? (Math.round(n/100)/10) + 'k' : n) + '/mo'
+    if (n >= 1000000) return '€' + (n/1000000).toFixed(n>=10000000?0:1).replace(/\.0$/,'') + 'm'
+    if (n >= 1000) return '€' + Math.round(n/1000) + 'k'
+    return '€' + n
+  }
+
+  // ── Map markers ─────────────────────────────────────────────────────────
+  function priceIcon(label, hovered){
+    var text = (label || '€').replace(/[<>&]/g,'')
+    var w = Math.max(58, text.length * 8 + 22), h = 34
+    var fill = hovered ? '#0e3d2e' : '#1a5c45', stroke='#fff'
+    var svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">' +
+        '<defs><filter id="s" x="-20%" y="-20%" width="140%" height="160%">' +
+          '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,.28)"/></filter></defs>' +
+        '<g filter="url(#s)"><path d="M11,1 H' + (w-11) + ' Q' + (w-1) + ',1 ' + (w-1) + ',11 V14 Q' + (w-1) + ',23 ' + (w-11) + ',23 H' + (w/2 + 5) +
+          ' L' + (w/2) + ',' + (h-2) + ' L' + (w/2 - 5) + ',23 H11 Q1,23 1,14 V11 Q1,1 11,1 Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5"/></g>' +
+        '<text x="'+(w/2)+'" y="16" fill="#fff" font-size="11.5" font-weight="700" font-family="DM Sans, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">'+text+'</text>' +
+      '</svg>'
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(w, h),
+      anchor: new google.maps.Point(w/2, h)
+    }
+  }
+  function clearMarkers(){
+    listingMarkers.forEach(function(m){ m.setMap(null) })
+    listingMarkers = []
+    markerById = {}
+  }
+  function paintMarkers(rows){
+    clearMarkers()
+    var bounds = new google.maps.LatLngBounds()
+    var any = false
+    rows.forEach(function(l){
+      var pt = listingPoint(l); if (!pt) return
+      var label = shortPrice(l.price, l.listing_type)
+      var m = new google.maps.Marker({
+        map: gmap, position:{ lat: pt[0], lng: pt[1] },
+        icon: priceIcon(label, false),
+        title: l.title || '',
+        zIndex: 10
+      })
+      m.movinDefault = priceIcon(label, false)
+      m.movinHover   = priceIcon(label, true)
+      m.addListener('mouseover', function(){ m.setIcon(m.movinHover); m.setZIndex(50); highlightRow(l.id, true) })
+      m.addListener('mouseout',  function(){ m.setIcon(m.movinDefault); m.setZIndex(10); highlightRow(l.id, false) })
+      m.addListener('click',     function(){ openInfo(l, m); panToMarker(m) })
+      listingMarkers.push(m)
+      markerById[l.id] = m
+      bounds.extend(m.getPosition())
+      any = true
+    })
+    if (any) {
+      gmap.fitBounds(bounds, { top:60, bottom:60, left:60, right:60 })
+      // cap zoom so a single listing doesn't zoom too far
+      var capped = false
+      var lst = google.maps.event.addListenerOnce(gmap, 'idle', function(){
+        if (!capped && gmap.getZoom() > 15) gmap.setZoom(15)
+        capped = true
+      })
+    }
+  }
+  function panToMarker(m){
+    if (!m) return
+    gmap.panTo(m.getPosition())
+  }
+  function highlightRow(id, on){
+    var row = document.querySelector('.ms-card[data-id="' + id + '"]')
+    if (!row) return
+    row.classList.toggle('hi', !!on)
+    if (on) {
+      var pane = document.getElementById('ms-list')
+      if (pane && pane.contains(row)) {
+        var top = row.offsetTop
+        if (top < pane.scrollTop || top > pane.scrollTop + pane.clientHeight - 120) {
+          pane.scrollTo({ top: Math.max(0, top - 80), behavior:'smooth' })
+        }
+      }
+    }
+  }
+  function highlightMarker(id, on){
+    var m = markerById[id]; if (!m) return
+    m.setIcon(on ? m.movinHover : m.movinDefault)
+    m.setZIndex(on ? 60 : 10)
+  }
+  function openInfo(l, marker){
+    if (!infoWindow) infoWindow = new google.maps.InfoWindow({ maxWidth: 280 })
+    var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
+    var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+    var html =
+      '<div class="iw-card">' +
+        '<div class="iw-photo">' + (imgSrc ? '<img src="'+imgSrc+'" alt=""/>' : '🏡') + '</div>' +
+        '<div class="iw-body">' +
+          '<div class="iw-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
+          '<div class="iw-title">' + (l.title || '—') + '</div>' +
+          '<div class="iw-meta">' +
+            (l.bedrooms ? l.bedrooms + ' bed · ' : '') +
+            (l.bathrooms ? l.bathrooms + ' bath · ' : '') +
+            (l.address_area || l.county || '') +
+          '</div>' +
+          '<a class="iw-cta" href="listing.html?id=' + l.id + '">View listing →</a>' +
+        '</div>' +
+      '</div>'
+    infoWindow.setContent(html)
+    infoWindow.open({ map: gmap, anchor: marker })
+  }
+
+  // ── List rendering ──────────────────────────────────────────────────────
+  function escAttr(s){ return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;') }
+  function renderList(rows){
+    var rowsEl = document.getElementById('ms-rows')
+    var countEl = document.getElementById('result-count')
+    if (!rows.length) {
+      countEl.innerHTML = '<strong>0</strong> properties'
+      rowsEl.innerHTML =
+        '<div class="ms-empty">' +
+          '<h3>No matching properties</h3>' +
+          '<p>Try widening your filters or panning the map to a different area.</p>' +
+          '<button class="btn" onclick="resetFilters();applyFilters()">Clear filters</button>' +
+        '</div>'
+      return
+    }
+    countEl.innerHTML = '<strong>' + rows.length + '</strong> propert' + (rows.length===1?'y':'ies')
+      + (origin ? ' near <strong>' + escAttr(origin.label.split(' — ')[0]) + '</strong>' : '')
+
+    rowsEl.innerHTML = rows.map(function(l){
+      var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
+      var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+      var tag = l.listing_type === 'rent' ? 'To Rent' : (l.listing_type === 'share' ? 'Sharing' : 'For Sale')
+      var tagCls = (l.listing_type === 'rent' || l.listing_type === 'share') ? 'rent' : ''
+      return ''
+        + '<div class="ms-card" data-id="' + l.id + '" onmouseenter="onRowEnter(\'' + l.id + '\')" onmouseleave="onRowLeave(\'' + l.id + '\')" onclick="onRowClick(\'' + l.id + '\')">'
+        +   '<div class="ms-card-img">'
+        +     '<span class="ms-card-tag ' + tagCls + '">' + tag + '</span>'
+        +     (imgSrc ? '<img src="' + escAttr(imgSrc) + '" alt="" loading="lazy"/>' : '🏡')
+        +   '</div>'
+        +   '<div class="ms-card-info">'
+        +     '<div class="ms-card-price">' + fmtPrice(l.price, l.listing_type) + '</div>'
+        +     '<div class="ms-card-title">' + escAttr(l.title || '—') + '</div>'
+        +     '<div class="ms-card-loc">'
+        +       '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+        +       escAttr((l.address_area || l.county || '') + (l.eircode_visible !== false && l.eircode ? ' · ' + l.eircode : ''))
+        +     '</div>'
+        +     '<div class="ms-card-meta">'
+        +       (l.bedrooms ? '<span><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M2 8a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v8"/><path d="M2 16v4"/><path d="M22 16v4"/></svg>'+l.bedrooms+'</span>' : '')
+        +       (l.bathrooms ? '<span><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20"/><path d="M5 12V5a2 2 0 0 1 4 0"/><path d="M5 18v3"/><path d="M19 18v3"/></svg>'+l.bathrooms+'</span>' : '')
+        +       (l.floor_size_m2 ? '<span><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 3v18"/></svg>'+l.floor_size_m2+'m²</span>' : '')
+        +     '</div>'
+        +   '</div>'
+        + '</div>'
+    }).join('')
+  }
+  window.onRowEnter = function(id){
+    highlightMarker(id, true)
+    var row = document.querySelector('.ms-card[data-id="' + id + '"]')
+    if (row) row.classList.add('hi')
+  }
+  window.onRowLeave = function(id){
+    highlightMarker(id, false)
+    var row = document.querySelector('.ms-card[data-id="' + id + '"]')
+    if (row) row.classList.remove('hi')
+  }
+  window.onRowClick = function(id){
+    var m = markerById[id]
+    var l = (allListings || []).find(function(x){ return String(x.id) === String(id) })
+    if (m && l) { openInfo(l, m); panToMarker(m) }
+    else        { window.location.href = 'listing.html?id=' + id }
+  }
+
+  // ── Sorting ─────────────────────────────────────────────────────────────
+  window.applySort = function(){
+    sortKey = document.getElementById('sort-sel').value
+    var rows = allListings.slice()
+    if (origin) {
+      rows.forEach(function(l){
+        var p = listingPoint(l)
+        l.__dist = p ? haversineKm(origin.lat, origin.lng, p[0], p[1]) : Infinity
+      })
+      // When we have an origin, default to nearest-first
+      rows.sort(function(a,b){ return (a.__dist||Infinity) - (b.__dist||Infinity) })
+    } else if (sortKey === 'price_asc')  rows.sort(function(a,b){ return (a.price||0) - (b.price||0) })
+    else if   (sortKey === 'price_desc') rows.sort(function(a,b){ return (b.price||0) - (a.price||0) })
+    else                                 rows.sort(function(a,b){ return new Date(b.created_at||0) - new Date(a.created_at||0) })
+
+    visible = rows
+    renderList(visible)
+    paintMarkers(visible)
+  }
+
+  // ── Fetch ───────────────────────────────────────────────────────────────
+  async function fetchListings(){
+    var rowsEl = document.getElementById('ms-rows')
+    rowsEl.innerHTML = ''
+      + '<div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>'
+      + '<div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>'
+      + '<div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>'
+      + '<div class="ms-skel"><div class="ms-skel-img"></div><div style="flex:1"><div class="ms-skel-line lg"></div><div class="ms-skel-line md"></div><div class="ms-skel-line sm"></div></div></div>'
+
+    var p = { listing_type: listingType, sort:'newest', limit: 200 }
     var min = document.getElementById('f-min').value
     var max = document.getElementById('f-max').value
     var beds = document.getElementById('f-beds').value
     var ptype = document.getElementById('f-ptype').value
-    if (min) q += '&min_price=' + min
-    if (max) q += '&max_price=' + max
-    if (beds) q += '&bedrooms=' + beds
-    if (ptype) q += '&property_type=' + ptype
+    if (min)  p.min_price = min
+    if (max)  p.max_price = max
+    if (beds) p.bedrooms  = beds
+    if (ptype) p.property_type = ptype
 
-    var r = await fetch(API_URL + '/api/listings?' + q)
-    var data = await r.json()
-    var listings = data.listings || []
-
-    hideStatus()
-    var chip = document.getElementById('chip')
-    chip.style.display = 'block'
-    chip.textContent = listings.length + ' propert' + (listings.length === 1 ? 'y' : 'ies')
-
-    clearPins()
-    if (!listings.length) return
-
-    var bounds = new google.maps.LatLngBounds()
-    for (var i = 0; i < listings.length; i++) {
-      await dropPin(listings[i], bounds)
+    try {
+      var res = await window.API.listings.search(p)
+      allListings = (res && res.listings) || []
+    } catch(e){
+      allListings = []
     }
-    gmap.fitBounds(bounds)
-    google.maps.event.trigger(gmap, 'resize')
-    if (gmap.getZoom() > 14) gmap.setZoom(14)
-
-  } catch(e) {
-    hideStatus()
-    console.error('Fetch error:', e)
+    applySort()
   }
-}
 
-function dropPin(listing, bounds) {
-  return new Promise(function(resolve) {
-    var addr = (listing.address_line1 || '') + ' ' + (listing.county || '') + ' Ireland'
-    geocoder.geocode({ address: addr }, function(results, status) {
-      var lat, lng
-      if (status === 'OK' && results[0]) {
-        lat = results[0].geometry.location.lat()
-        lng = results[0].geometry.location.lng()
-      } else {
-        var c = CENTRES[listing.county] || CENTRES.default
-        lat = c.lat + (Math.random() - .5) * .06
-        lng = c.lng + (Math.random() - .5) * .06
-      }
+  // ── Tab + filter actions ───────────────────────────────────────────────
+  window.setType = function(t, btn){
+    listingType = t
+    document.querySelectorAll('.ms-tab').forEach(function(b){ b.classList.toggle('on', b.dataset.type === t) })
+    fillPriceSelects(t)
+    fetchListings()
+  }
+  window.openFilters = function(){
+    document.getElementById('filters').classList.add('open')
+    document.getElementById('overlay').classList.add('open')
+  }
+  window.closeFilters = function(){
+    document.getElementById('filters').classList.remove('open')
+    document.getElementById('overlay').classList.remove('open')
+  }
+  window.applyFilters = function(){
+    closeFilters()
+    var n = ['f-min','f-max','f-beds','f-ptype'].filter(function(id){ return document.getElementById(id).value }).length
+    var fc = document.getElementById('filter-count')
+    if (n > 0) { fc.textContent = n; fc.style.display = '' } else { fc.style.display = 'none' }
+    fetchListings()
+  }
+  window.resetFilters = function(){
+    fillPriceSelects(listingType)
+    document.getElementById('f-beds').value = ''
+    document.getElementById('f-ptype').value = ''
+    var fc = document.getElementById('filter-count'); fc.style.display = 'none'
+  }
 
-      bounds.extend(new google.maps.LatLng(lat, lng))
-
-      var label = fmtPrice(listing.price, listing.listing_type)
-      var marker = new google.maps.Marker({
-        map: gmap,
-        position: { lat: lat, lng: lng },
-        title: listing.title,
-        icon: {
-          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="28">' +
-            '<rect x="0" y="0" width="80" height="28" rx="6" fill="#1a5c45" stroke="#fff" stroke-width="2"/>' +
-            '<text x="40" y="19" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">' + label + '</text>' +
-            '</svg>'
-          ),
-          scaledSize: new google.maps.Size(80, 28),
-          anchor: new google.maps.Point(40, 28)
-        }
-      })
-
-      marker._listing = listing
-      marker._origIcon = marker.getIcon()
-
-      marker.addListener('click', function() {
-        overlays.forEach(function(m) {
-          var ic = m.getIcon()
-          if (ic && ic.url) {
-            var url = ic.url.replace('e07b3f', '1a5c45')
-            m.setIcon(Object.assign({}, m.getIcon(), { url: url }))
-          }
-        })
-        var ic = marker.getIcon()
-        if (ic && ic.url) {
-          marker.setIcon(Object.assign({}, ic, { url: ic.url.replace('1a5c45', 'e07b3f') }))
-        }
-        showPanel(listing)
-        gmap.panTo(marker.getPosition())
-      })
-
-      overlays.push(marker)
-      setTimeout(resolve, 80)
+  // "Search this area" filter — shrinks the list/map to whatever's currently in view
+  window.researchInArea = function(){
+    if (!gmap) return
+    var b = gmap.getBounds(); if (!b) return
+    var rows = allListings.filter(function(l){
+      var p = listingPoint(l); if (!p) return false
+      return b.contains(new google.maps.LatLng(p[0], p[1]))
     })
-  })
-}
-
-function clearPins() {
-  overlays.forEach(function(m) { m.setMap(null) })
-  overlays = []
-}
-
-function showPanel(l) {
-  var photo = l.primary_photo
-    ? '<img src="' + l.primary_photo + '" alt="' + l.title + '"/>'
-    : '🏠'
-  document.getElementById('panel-body').innerHTML =
-    '<div class="panel-card" onclick="location.href=\'listing.html?id=' + l.id + '\'">' +
-      '<div class="panel-img">' + photo + '</div>' +
-      '<div class="panel-info">' +
-        '<div class="panel-badge">' + (l.listing_type === 'rent' ? 'To Rent' : 'For Sale') + '</div>' +
-        '<div class="panel-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
-        '<div class="panel-title">' + l.title + '</div>' +
-        '<div class="panel-meta">' +
-          (l.bedrooms ? '🛏 ' + l.bedrooms + '&nbsp;&nbsp;' : '') +
-          (l.bathrooms ? '🚿 ' + l.bathrooms + '&nbsp;&nbsp;' : '') +
-          '📍 ' + (l.address_area || l.county) +
-        '</div>' +
-      '</div>' +
-    '</div>'
-  document.getElementById('panel').classList.add('open')
-}
-
-function closePanel() {
-  document.getElementById('panel').classList.remove('open')
-}
-
-function fmtPrice(price, type) {
-  var n = parseInt(price)
-  if (n >= 1000000) return '€' + (n / 1000000).toFixed(1) + 'm'
-  if (n >= 1000) return '€' + Math.round(n / 1000) + 'k'
-  return '€' + n.toLocaleString() + (type === 'rent' ? '/mo' : '')
-}
-
-function setType(el) {
-  listingType = el.dataset.type
-  document.querySelectorAll('.type-tab').forEach(function(t) { t.classList.remove('active') })
-  el.classList.add('active')
-  if (gmap) fetchAndPin()
-}
-
-function openFilters() {
-  document.getElementById('filters').classList.add('open')
-  document.getElementById('overlay').classList.add('open')
-}
-function closeFilters() {
-  document.getElementById('filters').classList.remove('open')
-  document.getElementById('overlay').classList.remove('open')
-}
-function applyFilters() {
-  closeFilters()
-  if (gmap) fetchAndPin()
-}
-
-function doSearch() {
-  var val = document.getElementById('search-inp').value.trim()
-  if (!val || !gmap) return
-  var counties = ['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Clare','Tipperary','Donegal','Mayo','Sligo']
-  var match = counties.find(function(c) { return c.toLowerCase().startsWith(val.toLowerCase()) })
-  if (match) {
-    filterCounty = match
-    var c = CENTRES[match] || CENTRES.default
-    gmap.setCenter(c)
-    gmap.setZoom(11)
+    visible = rows
+    renderList(visible)
+    paintMarkers(visible)
+    document.getElementById('research-btn').classList.remove('show')
   }
-  fetchAndPin()
-}
-
-function showStatus(msg) {
-  var el = document.getElementById('map-status')
-  el.style.display = 'block'
-  el.innerHTML = '<div class="spinner"></div><div style="font-size:13px;color:#888">' + msg + '</div>'
-}
-function hideStatus() {
-  document.getElementById('map-status').style.display = 'none'
-}
 </script>
 
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&v=weekly"
-  async defer>
-</script>
-
-<script src="../js/icons.js"></script>
-<script src="../js/app.js"></script>
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initMap&v=weekly"
+  async defer></script>
 
 </body>
 </html>
