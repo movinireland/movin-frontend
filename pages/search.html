@@ -490,24 +490,104 @@
       if (km < 10) return km.toFixed(1) + ' km'
       return Math.round(km) + ' km'
     }
+    // ── County centroids — used as a fallback when a listing has no lat/lng
+    //   (e.g. it was created before the Eircode-based geocoding feature). ──
+    var COUNTY_CENTROIDS = {
+      Dublin:[53.349,-6.260], Cork:[51.898,-8.475], Galway:[53.270,-9.057],
+      Limerick:[52.668,-8.630], Waterford:[52.259,-7.110], Kerry:[52.155,-9.567],
+      Meath:[53.605,-6.656], Kildare:[53.156,-6.910], Wicklow:[52.980,-6.044],
+      Wexford:[52.336,-6.464], Kilkenny:[52.654,-7.244], Clare:[52.906,-9.000],
+      Tipperary:[52.473,-8.161], Donegal:[54.654,-8.110], Mayo:[53.853,-9.299],
+      Sligo:[54.276,-8.476], Leitrim:[54.124,-8.000], Roscommon:[53.627,-8.190],
+      Longford:[53.726,-7.794], Westmeath:[53.535,-7.337], Offaly:[53.235,-7.713],
+      Laois:[52.994,-7.331], Carlow:[52.836,-6.926], Louth:[53.918,-6.539],
+      Monaghan:[54.249,-6.968], Cavan:[53.990,-7.360]
+    }
+    // Eircode → lat/lng cache (browser-side; persists across page loads so we
+    // don't re-geocode the same Eircode on every search).
+    var ECODE_CACHE_KEY = 'movin_eircode_geocode_v1'
+    function loadEcodeCache(){ try { return JSON.parse(localStorage.getItem(ECODE_CACHE_KEY) || '{}') } catch(e) { return {} } }
+    function saveEcodeCache(c){ try { localStorage.setItem(ECODE_CACHE_KEY, JSON.stringify(c)) } catch(e){} }
+    var ECODE_CACHE = loadEcodeCache()
+
+    // Pick the best-available coords for a listing, in order of accuracy:
+    //   1. backend-stored lat/lng
+    //   2. previously-geocoded Eircode (from localStorage cache)
+    //   3. county centroid (rough but instant)
+    // Returns [lat, lng, accuracy] where accuracy ∈ {'exact','eircode','county',null}
     function listingPoint(l){
-      if (l.latitude  != null && l.longitude  != null) return [parseFloat(l.latitude), parseFloat(l.longitude)]
-      if (l.lat       != null && l.lng        != null) return [parseFloat(l.lat),       parseFloat(l.lng)]
+      if (l.latitude  != null && l.longitude  != null) return [parseFloat(l.latitude), parseFloat(l.longitude), 'exact']
+      if (l.lat       != null && l.lng        != null) return [parseFloat(l.lat),       parseFloat(l.lng),       'exact']
+      if (l.eircode){
+        var key = String(l.eircode).toUpperCase().replace(/\s+/g,'')
+        var hit = ECODE_CACHE[key]
+        if (hit && isFinite(hit.lat) && isFinite(hit.lng)) return [hit.lat, hit.lng, 'eircode']
+      }
+      if (l.county && COUNTY_CENTROIDS[l.county]) {
+        var c = COUNTY_CENTROIDS[l.county]
+        return [c[0], c[1], 'county']
+      }
       return null
     }
     function listingDistance(l){
       if (!searchOrigin) return null
       var p = listingPoint(l); if (!p) return null
-      return haversineKm(searchOrigin.lat, searchOrigin.lng, p[0], p[1])
+      var km = haversineKm(searchOrigin.lat, searchOrigin.lng, p[0], p[1])
+      return { km: km, accuracy: p[2] }
     }
-    function injectDistancePill(cardHtml, distKm){
-      if (distKm == null) return cardHtml
-      var pill = '<div class="prop-dist-pill">'
+    function injectDistancePill(cardHtml, dist){
+      if (!dist || dist.km == null) return cardHtml
+      var prefix = dist.accuracy === 'county' ? '~ ' : ''   // tilde when only county-rough
+      var pill = '<div class="prop-dist-pill"' + (dist.accuracy === 'county' ? ' title="Approximate — based on county"' : '') + '>'
         + '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
-        + formatDistance(distKm) + ' away'
+        + prefix + formatDistance(dist.km) + ' away'
         + '</div>'
-      // Place inside the prop-card-img region (right before .prop-card-body)
       return cardHtml.replace('<div class="prop-card-body">', pill + '<div class="prop-card-body">')
+    }
+
+    // Async refinement: any listing that has an Eircode but no exact lat/lng
+    // (and isn't already in the cache) gets geocoded via Google's Geocoder
+    // and the cache is persisted so the next page load is instant. After all
+    // cards in the current page have been refined we re-render the grid so
+    // distances are precise instead of county-rough.
+    var _refineTimer = null
+    async function refineDistancesViaGeocoder(listings){
+      if (!searchOrigin) return
+      if (!window.google || !google.maps || !google.maps.Geocoder) return
+      var todo = listings.filter(function(l){
+        if (l.latitude && l.longitude) return false
+        if (!l.eircode) return false
+        var key = String(l.eircode).toUpperCase().replace(/\s+/g,'')
+        return !ECODE_CACHE[key]
+      })
+      if (!todo.length) return
+      var gc = new google.maps.Geocoder()
+      var settled = 0
+      for (var i = 0; i < todo.length; i++) {
+        var l = todo[i]
+        var raw = String(l.eircode).toUpperCase().replace(/\s+/g,'')
+        var pretty = raw.length === 7 ? raw.slice(0,3) + ' ' + raw.slice(3) : raw
+        var key = raw
+        await new Promise(function(resolve){
+          gc.geocode({ address: pretty, componentRestrictions: { country: 'IE' } }, function(results, status){
+            if (status === 'OK' && results && results[0] && results[0].geometry) {
+              var loc = results[0].geometry.location
+              ECODE_CACHE[key] = { lat: loc.lat(), lng: loc.lng() }
+              settled++
+            } else {
+              // Negative cache so we don't keep retrying a bad Eircode every visit
+              ECODE_CACHE[key] = { lat: null, lng: null, fail: 1 }
+            }
+            resolve()
+          })
+        })
+        // Rough rate-limit: small pause between requests
+        await new Promise(function(r){ setTimeout(r, 60) })
+      }
+      saveEcodeCache(ECODE_CACHE)
+      if (settled > 0 && typeof rerenderWithRefinedDistances === 'function') {
+        rerenderWithRefinedDistances()
+      }
     }
 
     // ── Autocomplete ────────────────────────────────────────────────────────
@@ -752,21 +832,61 @@
         // Build cards — when origin is set, attach a distance pill and (if
         // distance-sort selected) sort by distance ascending.
         var rendered = res.listings.slice()
+        var renderedSavedIds = savedIds
         if (searchOrigin) {
           rendered.forEach(function(l){ l.__dist = listingDistance(l) })
           if (pickedSort === 'distance') {
+            // Sort: exact > eircode-cached > county-rough; missing last
+            var rank = { exact:0, eircode:1, county:2 }
             rendered.sort(function(a,b){
-              var da = a.__dist == null ?  Infinity : a.__dist
-              var db = b.__dist == null ?  Infinity : b.__dist
-              return da - db
+              var da = a.__dist, db = b.__dist
+              var ka = da ? (rank[da.accuracy] != null ? rank[da.accuracy] : 3) : 4
+              var kb = db ? (rank[db.accuracy] != null ? rank[db.accuracy] : 3) : 4
+              if (ka !== kb) return ka - kb
+              var va = (da && da.km != null) ? da.km : Infinity
+              var vb = (db && db.km != null) ? db.km : Infinity
+              return va - vb
             })
             rendered = rendered.slice(0, 12)
           }
         }
-        grid.innerHTML = rendered.map(function(l){
-          var html = buildPropertyCard(l, savedIds)
-          return injectDistancePill(html, l.__dist != null ? l.__dist : null)
-        }).join('')
+        function paintGrid(){
+          if (searchOrigin) rendered.forEach(function(l){ l.__dist = listingDistance(l) })
+          grid.innerHTML = rendered.map(function(l){
+            var html = buildPropertyCard(l, renderedSavedIds)
+            return injectDistancePill(html, l.__dist || null)
+          }).join('')
+        }
+        paintGrid()
+        // Expose a re-render hook so the async geocode refiner can update
+        // distances once Eircodes are looked up
+        window.rerenderWithRefinedDistances = function(){
+          if (searchOrigin && pickedSort === 'distance') {
+            // Re-sort because some county-rough rows may now be exact
+            rendered.forEach(function(l){ l.__dist = listingDistance(l) })
+            var rank = { exact:0, eircode:1, county:2 }
+            rendered.sort(function(a,b){
+              var da = a.__dist, db = b.__dist
+              var ka = da ? (rank[da.accuracy] != null ? rank[da.accuracy] : 3) : 4
+              var kb = db ? (rank[db.accuracy] != null ? rank[db.accuracy] : 3) : 4
+              if (ka !== kb) return ka - kb
+              var va = (da && da.km != null) ? da.km : Infinity
+              var vb = (db && db.km != null) ? db.km : Infinity
+              return va - vb
+            })
+          }
+          paintGrid()
+        }
+        // Kick off Eircode geocoding for any rendered listings without exact
+        // coords. This runs after paint so the user sees the grid immediately;
+        // when results arrive from Google the grid re-renders with precise
+        // distances (and re-sorted, if Closest-first is active).
+        if (searchOrigin) {
+          clearTimeout(_refineTimer)
+          _refineTimer = setTimeout(function(){
+            refineDistancesViaGeocoder(rendered)
+          }, 100)
+        }
 
         // Pagination
         const pg = document.getElementById('pagination')

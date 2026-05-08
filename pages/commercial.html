@@ -347,9 +347,33 @@
   }
 
   // ── Results ──────────────────────────────────────────────────────────────
-  function activeTypes(){
-    var c = CATS.find(function(x){return x.key === state.cat}) || CATS[0]
+  // Master list of property_type values that count as commercial. Used to
+  // tag listings client-side regardless of how the backend stores them.
+  var COMMERCIAL_PROPERTY_TYPES = [
+    'commercial','office','offices','retail','shop','restaurant',
+    'industrial','warehouse','factory','hospitality','hotel','pub','leisure',
+    'healthcare','medical','clinic','mixed-use','mixeduse',
+    'investment','development','agricultural','land','site'
+  ]
+  function isCommercialListing(l){
+    if (!l) return false
+    if (l.category && String(l.category).toLowerCase() === 'commercial') return true
+    var t = (l.property_type || '').toString().toLowerCase()
+    return COMMERCIAL_PROPERTY_TYPES.indexOf(t) !== -1
+  }
+  function categoryTypes(key){
+    var c = CATS.find(function(x){return x.key === key}) || CATS[0]
     return c.types
+  }
+  function listingMatchesCategory(l, key){
+    if (key === 'all') return isCommercialListing(l)
+    var t = (l.property_type || '').toString().toLowerCase()
+    return categoryTypes(key).indexOf(t) !== -1
+  }
+  function listingMatchesQuery(l, q){
+    if (!q) return true
+    var hay = ((l.title||'') + ' ' + (l.address_line1||'') + ' ' + (l.address_area||'') + ' ' + (l.county||'') + ' ' + (l.eircode||'')).toLowerCase()
+    return hay.indexOf(q.toLowerCase()) !== -1
   }
 
   async function loadResults(){
@@ -360,64 +384,86 @@
     var sort = document.getElementById('sort-sel').value
     state.sort = sort
 
-    var listings = []
-    var total    = 0
-    var seen     = {}
-    var types    = activeTypes()
+    var seen = {}
+    var pool = []
 
-    // Try each commercial property_type. Backend may not recognise all — we
-    // de-dupe and merge. If none of them return anything we'll show the empty
-    // state with a clear call-to-action.
-    try {
-      for (var i=0;i<types.length;i++){
-        var params = { property_type: types[i], sort: sort, limit: 50 }
-        if (state.mode !== 'any') params.listing_type = state.mode
-        if (state.q) params.q = state.q
-        try {
-          var res = await window.API.listings.search(params)
-          if (res && Array.isArray(res.listings)) {
-            res.listings.forEach(function(l){
-              if (!seen[l.id]) { seen[l.id] = 1; listings.push(l) }
-            })
-            total += (res.total || res.listings.length || 0)
-          }
-        } catch(e){ /* ignore single-type failure */ }
-      }
-    } catch(err){
+    async function pull(params){
+      try {
+        var r = await window.API.listings.search(params)
+        if (r && Array.isArray(r.listings)){
+          r.listings.forEach(function(l){
+            if (!seen[l.id]) { seen[l.id] = 1; pool.push(l) }
+          })
+        }
+      } catch(_){}
+    }
+
+    // Pull a wide net so we can tag commercial client-side even if the
+    // backend doesn't recognise the new property_type values yet.
+    var broad = [
+      { sort:'newest', limit:200 },
+      { sort:'newest', limit:200, listing_type:'sale' },
+      { sort:'newest', limit:200, listing_type:'rent' }
+    ]
+    // Plus each known commercial type as a fallback (in case the backend
+    // only returns matching types when explicitly filtered).
+    COMMERCIAL_PROPERTY_TYPES.forEach(function(t){
+      broad.push({ sort:'newest', limit:50, property_type: t })
+    })
+
+    try { await Promise.all(broad.map(pull)) }
+    catch(err){
       grid.innerHTML = '<div class="com-empty"><h4>Could not load listings</h4><p>Please try again in a moment.</p></div>'
       document.getElementById('res-count').textContent = 'Error loading'
       return
     }
 
-    // Sort merged
-    if (sort === 'price_asc')  listings.sort(function(a,b){return (a.price||0) - (b.price||0)})
-    if (sort === 'price_desc') listings.sort(function(a,b){return (b.price||0) - (a.price||0)})
-    if (sort === 'size_desc')  listings.sort(function(a,b){return (b.floor_size_m2||0) - (a.floor_size_m2||0)})
-    if (sort === 'newest')     listings.sort(function(a,b){return new Date(b.created_at||0) - new Date(a.created_at||0)})
+    // Keep only commercial listings, then apply mode + category + query
+    var commercial = pool.filter(isCommercialListing)
+    var filtered = commercial.filter(function(l){
+      if (state.mode !== 'any' && l.listing_type !== state.mode &&
+          // sharing isn't a concept in commercial — never strict-match it
+          !(state.mode === 'rent' && l.listing_type === 'share')) return false
+      if (!listingMatchesCategory(l, state.cat)) return false
+      if (!listingMatchesQuery(l, state.q)) return false
+      return true
+    })
 
-    // Update stats (best effort — based on what we got)
-    var saleCount = listings.filter(function(l){return l.listing_type==='sale'}).length
-    var rentCount = listings.filter(function(l){return l.listing_type==='rent'}).length
-    document.getElementById('stat-total').textContent = listings.length ? listings.length+'+' : '—'
+    // Sort
+    if (sort === 'price_asc')  filtered.sort(function(a,b){return (a.price||0) - (b.price||0)})
+    if (sort === 'price_desc') filtered.sort(function(a,b){return (b.price||0) - (a.price||0)})
+    if (sort === 'size_desc')  filtered.sort(function(a,b){return (b.floor_size_m2||0) - (a.floor_size_m2||0)})
+    if (sort === 'newest')     filtered.sort(function(a,b){return new Date(b.created_at||0) - new Date(a.created_at||0)})
+
+    // Stats reflect the entire commercial pool (not the active sub-filter)
+    var saleCount = commercial.filter(function(l){return l.listing_type==='sale'}).length
+    var rentCount = commercial.filter(function(l){return l.listing_type==='rent'}).length
+    document.getElementById('stat-total').textContent = commercial.length ? commercial.length + '+' : '—'
     document.getElementById('stat-sale').textContent  = saleCount  ? saleCount  : '—'
     document.getElementById('stat-rent').textContent  = rentCount  ? rentCount  : '—'
 
-    if (!listings.length){
+    if (!filtered.length){
+      var msg = !commercial.length
+        ? 'No commercial listings yet'
+        : 'No commercial listings match these filters'
+      var sub = !commercial.length
+        ? 'Be the first to list a commercial property — your first listing is free.'
+        : 'Try widening the filters above, or switch to All commercial / All modes.'
       grid.innerHTML = ''
         + '<div class="com-empty">'
-        +   '<h4>No commercial listings yet</h4>'
-        +   '<p>Be the first to list a commercial property — your first listing is free.</p>'
+        +   '<h4>' + msg + '</h4>'
+        +   '<p>' + sub + '</p>'
         +   '<a class="btn btn-primary" href="list.html?category=commercial">List a commercial property →</a>'
         + '</div>'
       document.getElementById('res-count').textContent = '0 listings'
       return
     }
 
-    document.getElementById('res-count').innerHTML = '<strong>' + listings.length + '</strong> commercial listing' + (listings.length===1?'':'s')
+    document.getElementById('res-count').innerHTML = '<strong>' + filtered.length + '</strong> commercial listing' + (filtered.length===1?'':'s')
       + (state.cat !== 'all' ? ' · ' + (CATS.find(function(c){return c.key===state.cat})||{}).label : '')
       + (state.q ? ' · "' + state.q + '"' : '')
 
-    grid.innerHTML = listings.map(function(l){
+    grid.innerHTML = filtered.map(function(l){
       try { return window.buildPropertyCard(l, []) }
       catch(e){ return '' }
     }).join('')
