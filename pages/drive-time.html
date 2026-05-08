@@ -163,6 +163,48 @@
 
     .dt-result-loading,.dt-result-empty{padding:2rem 1.5rem;text-align:center;font-size:13px;color:#888}
 
+    /* Drive-time pills shown on each result row */
+    .dt-times-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+    .dt-time-chip{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:11px;font-weight:600;padding:2px 8px;border-radius:50px;
+      letter-spacing:.2px;line-height:1.6
+    }
+    .dt-time-chip.a{background:rgba(26,92,69,.10);color:var(--g)}
+    .dt-time-chip.b{background:rgba(224,123,63,.12);color:#c25a1f}
+    .dt-time-chip .dt-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+    .dt-time-chip.skel{background:#f1ede4;color:transparent;width:64px;height:18px;animation:skeleton 1.1s ease-in-out infinite alternate}
+    @keyframes skeleton{from{opacity:.5}to{opacity:1}}
+    [data-theme="dark"] .dt-time-chip.a{background:rgba(46,204,138,.14);color:#7ec9a8}
+    [data-theme="dark"] .dt-time-chip.b{background:rgba(224,123,63,.18);color:#f0a06d}
+    [data-theme="dark"] .dt-time-chip.skel{background:#2a2a2a}
+
+    /* Subtle highlight when hovering a result row (for cross-hover with map) */
+    .dt-result.hi{background:var(--gl)}
+    [data-theme="dark"] .dt-result.hi{background:#0d2e1e}
+
+    /* Themed InfoWindow on map markers */
+    .gm-style .gm-style-iw-c{
+      border-radius:18px !important;padding:0 !important;box-shadow:0 14px 36px rgba(0,0,0,.18) !important;
+      max-width:280px !important
+    }
+    .gm-style .gm-style-iw-d{overflow:hidden !important;padding:0 !important;max-height:none !important}
+    .gm-style .gm-ui-hover-effect{top:6px !important;right:6px !important;background:rgba(255,255,255,.9) !important;border-radius:50% !important}
+    .iw-card{font-family:'DM Sans',sans-serif;width:240px;border-radius:18px;overflow:hidden;background:#fff}
+    .iw-photo{width:100%;height:120px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:32px}
+    .iw-photo img{width:100%;height:100%;object-fit:cover;display:block}
+    .iw-body{padding:.75rem .9rem 1rem}
+    .iw-price{font-size:16px;font-weight:700;color:var(--g);margin-bottom:1px}
+    .iw-title{font-size:13px;font-weight:500;color:#111;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .iw-meta{font-size:11px;color:#888;margin-bottom:6px}
+    .iw-times{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+    .iw-cta{display:block;text-align:center;background:var(--g);color:#fff;font-size:12px;font-weight:600;padding:8px;border-radius:50px;text-decoration:none}
+    .iw-cta:hover{background:var(--gd)}
+    [data-theme="dark"] .iw-card{background:#1a1a1a}
+    [data-theme="dark"] .iw-title{color:#e8e8e8}
+    [data-theme="dark"] .gm-style .gm-style-iw-c{background:#1a1a1a !important}
+    [data-theme="dark"] .gm-style .gm-style-iw-tc::after{background:#1a1a1a !important}
+
     /* ── Map ── */
     .dt-map-wrap{position:relative}
     #dt-map{position:absolute;inset:0;width:100%;height:100%}
@@ -404,6 +446,10 @@
   var ALL_LISTINGS = []   // last fetched
   var SAVED = []
   var map, circleA, circleB, markerA, markerB, listingMarkers = []
+  var listingMarkerById = {}    // id -> google.maps.Marker
+  var DRIVE_TIMES = {}          // listingId -> { fromA, fromB } (minutes)
+  var infoWindow = null
+  var dmService = null
 
   var TIME_OPTIONS = [10, 15, 20, 30, 45, 60]
   // Approx mean speed in km/h used to convert mins → radius
@@ -678,27 +724,200 @@
   function clearListingMarkers(){
     listingMarkers.forEach(function(m){ m.setMap(null) })
     listingMarkers = []
+    listingMarkerById = {}
   }
+
+  // Compact price label for the map pin: €595k, €1.2m, €1.8k/mo
+  function shortPrice(p, type){
+    if (!p) return '€'
+    var n = Number(p)
+    var per = (type === 'rent' || type === 'share') ? '/mo' : ''
+    if (per) {
+      // Rents tend to be < €10k/mo — show whole euros
+      return '€' + Math.round(n).toLocaleString() + per
+    }
+    if (n >= 1000000) return '€' + (n/1000000).toFixed(n>=10000000?0:1).replace(/\.0$/,'') + 'm'
+    if (n >= 1000)    return '€' + Math.round(n/1000) + 'k'
+    return '€' + Math.round(n)
+  }
+
+  // Build a price-pill SVG icon as a data URI — green by default, darker on hover
+  function priceIcon(label, hovered){
+    var text = (label || '€').replace(/[<>&]/g,'')
+    var w    = Math.max(58, text.length * 8 + 22)
+    var h    = 34
+    var fill = hovered ? '#0e3d2e' : '#1a5c45'
+    var stroke = '#ffffff'
+    // Pill body + tail down to the marker anchor point
+    var svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '">' +
+        '<defs>' +
+          '<filter id="s" x="-20%" y="-20%" width="140%" height="160%">' +
+            '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,.28)"/>' +
+          '</filter>' +
+        '</defs>' +
+        '<g filter="url(#s)">' +
+          '<path d="M11,1 H' + (w-11) + ' Q' + (w-1) + ',1 ' + (w-1) + ',11 V14 Q' + (w-1) + ',23 ' + (w-11) + ',23 H' + (w/2 + 5) +
+                  ' L' + (w/2) + ',' + (h-2) + ' L' + (w/2 - 5) + ',23 H11 Q1,23 1,14 V11 Q1,1 11,1 Z" ' +
+                  'fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.5"/>' +
+        '</g>' +
+        '<text x="' + (w/2) + '" y="16" fill="#fff" font-size="11.5" font-weight="700" font-family="DM Sans, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">' + text + '</text>' +
+      '</svg>'
+    return {
+      url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
+      scaledSize: new google.maps.Size(w, h),
+      anchor: new google.maps.Point(w/2, h)
+    }
+  }
+
   function paintListingMarkers(rows){
     clearListingMarkers()
     rows.slice(0, 80).forEach(function(l){
       var c = listingCoords(l); if (!c) return
+      var label = shortPrice(l.price, l.listing_type)
       var m = new google.maps.Marker({
         map, position:{ lat: c[0], lng: c[1] },
-        icon:{
-          path: google.maps.SymbolPath.CIRCLE,
-          scale: 8, fillColor:'#1a5c45', fillOpacity:.9, strokeColor:'#fff', strokeWeight:2
-        },
-        title: l.title
+        icon: priceIcon(label, false),
+        title: l.title || '',
+        zIndex: 10
       })
-      m.addListener('click', function(){ window.location.href = 'listing.html?id='+l.id })
+      m.movinDefaultIcon = priceIcon(label, false)
+      m.movinHoverIcon   = priceIcon(label, true)
+
+      m.addListener('mouseover', function(){ m.setIcon(m.movinHoverIcon); m.setZIndex(50); highlightRow(l.id, true) })
+      m.addListener('mouseout',  function(){ m.setIcon(m.movinDefaultIcon); m.setZIndex(10); highlightRow(l.id, false) })
+      m.addListener('click', function(){ openInfoWindow(l, m) })
+
       listingMarkers.push(m)
+      listingMarkerById[l.id] = m
     })
+  }
+
+  function highlightRow(id, on){
+    var row = document.querySelector('.dt-result[data-id="' + id + '"]')
+    if (!row) return
+    row.classList.toggle('hi', !!on)
+    if (on){
+      var pane = document.getElementById('dt-result-rows')
+      if (pane && pane.contains(row)){
+        var rt = row.offsetTop
+        if (rt < pane.scrollTop || rt > pane.scrollTop + pane.clientHeight - 80){
+          pane.scrollTo({ top: Math.max(0, rt - 80), behavior: 'smooth' })
+        }
+      }
+    }
+  }
+  function highlightMarker(id, on){
+    var m = listingMarkerById[id]; if (!m) return
+    m.setIcon(on ? m.movinHoverIcon : m.movinDefaultIcon)
+    m.setZIndex(on ? 60 : 10)
+  }
+
+  function openInfoWindow(l, marker){
+    if (!infoWindow) infoWindow = new google.maps.InfoWindow({ maxWidth: 280 })
+    var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
+    var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+    var t = DRIVE_TIMES[l.id] || {}
+    var times = ''
+    if (pointA && t.fromA != null) times += '<span class="dt-time-chip a"><span class="dt-dot"></span>' + t.fromA + ' min from A</span>'
+    if (pointB && t.fromB != null) times += '<span class="dt-time-chip b"><span class="dt-dot"></span>' + t.fromB + ' min from B</span>'
+
+    var html =
+      '<div class="iw-card">' +
+        '<div class="iw-photo">' + (imgSrc ? '<img src="' + imgSrc + '" alt=""/>' : '🏡') + '</div>' +
+        '<div class="iw-body">' +
+          '<div class="iw-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
+          '<div class="iw-title">' + (l.title || '—') + '</div>' +
+          '<div class="iw-meta">' +
+            (l.bedrooms ? l.bedrooms + ' bed · ' : '') +
+            (l.bathrooms ? l.bathrooms + ' bath · ' : '') +
+            (l.address_area || l.county || '') +
+          '</div>' +
+          (times ? '<div class="iw-times">' + times + '</div>' : '') +
+          '<a class="iw-cta" href="listing.html?id=' + l.id + '">View listing →</a>' +
+        '</div>' +
+      '</div>'
+    infoWindow.setContent(html)
+    infoWindow.open({ map: map, anchor: marker })
   }
 
   function fmtPrice(p, type){
     if (!p) return '—'
     return '€' + Number(p).toLocaleString() + (type === 'rent' || type === 'share' ? '/mo' : '')
+  }
+
+  // ── Distance Matrix: real drive time from A and B to each listing ───────
+  function googleTravelMode(){
+    if (!window.google) return null
+    if (travelMode === 'cycling') return google.maps.TravelMode.BICYCLING
+    if (travelMode === 'walking') return google.maps.TravelMode.WALKING
+    return google.maps.TravelMode.DRIVING
+  }
+
+  function rebuildResultRows(){
+    // Re-render side list using the latest DRIVE_TIMES cache
+    paintList(ALL_LISTINGS)
+  }
+
+  async function computeDriveTimes(rows){
+    DRIVE_TIMES = {}
+    if (!window.google || !google.maps) { rebuildResultRows(); return }
+    if (!pointA && !pointB) { rebuildResultRows(); return }
+    if (!rows.length) { rebuildResultRows(); return }
+
+    if (!dmService) dmService = new google.maps.DistanceMatrixService()
+
+    var origins = []
+    if (pointA) origins.push(new google.maps.LatLng(pointA.lat, pointA.lng))
+    if (pointB) origins.push(new google.maps.LatLng(pointB.lat, pointB.lng))
+
+    // Optimistic placeholders so the side list immediately shows "loading…"
+    rows.forEach(function(l){ DRIVE_TIMES[l.id] = { loading: true } })
+    rebuildResultRows()
+
+    var CHUNK = 25  // Distance Matrix limit
+    var mode = googleTravelMode()
+
+    for (var i = 0; i < rows.length; i += CHUNK){
+      var chunk = rows.slice(i, i + CHUNK)
+      var pairs = chunk.map(function(l){
+        var c = listingCoords(l); return c ? { l: l, ll: new google.maps.LatLng(c[0], c[1]) } : null
+      }).filter(Boolean)
+      if (!pairs.length) continue
+
+      // eslint-disable-next-line no-loop-func
+      await new Promise(function(resolve){
+        dmService.getDistanceMatrix({
+          origins: origins,
+          destinations: pairs.map(function(p){ return p.ll }),
+          travelMode: mode,
+          unitSystem: google.maps.UnitSystem.METRIC
+        }, function(resp, status){
+          if (status === 'OK' && resp && resp.rows){
+            pairs.forEach(function(p, idx){
+              var info = { fromA: null, fromB: null }
+              var slotA = pointA ? 0 : -1
+              var slotB = pointB ? (pointA ? 1 : 0) : -1
+              if (slotA >= 0){
+                var elA = resp.rows[slotA] && resp.rows[slotA].elements && resp.rows[slotA].elements[idx]
+                if (elA && elA.duration && elA.duration.value != null) info.fromA = Math.round(elA.duration.value / 60)
+              }
+              if (slotB >= 0){
+                var elB = resp.rows[slotB] && resp.rows[slotB].elements && resp.rows[slotB].elements[idx]
+                if (elB && elB.duration && elB.duration.value != null) info.fromB = Math.round(elB.duration.value / 60)
+              }
+              DRIVE_TIMES[p.l.id] = info
+            })
+          } else {
+            // API failed — mark as unknown so chips disappear (instead of staying as skeletons)
+            pairs.forEach(function(p){ DRIVE_TIMES[p.l.id] = { fromA: null, fromB: null } })
+          }
+          resolve()
+        })
+      })
+      // Re-paint after each chunk so users see progress
+      rebuildResultRows()
+    }
   }
 
   function paintList(rows){
@@ -717,8 +936,24 @@
     rowsEl.innerHTML = rows.slice(0, 60).map(function(l){
       var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
       var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+
+      // Drive-time chips
+      var t = DRIVE_TIMES[l.id]
+      var chips = ''
+      if (pointA || pointB){
+        if (t && t.loading){
+          if (pointA) chips += '<span class="dt-time-chip skel"></span>'
+          if (pointB) chips += '<span class="dt-time-chip skel"></span>'
+        } else {
+          if (pointA && t && t.fromA != null)
+            chips += '<span class="dt-time-chip a"><span class="dt-dot"></span>' + t.fromA + ' min from A</span>'
+          if (pointB && t && t.fromB != null)
+            chips += '<span class="dt-time-chip b"><span class="dt-dot"></span>' + t.fromB + ' min from B</span>'
+        }
+      }
+
       return ''
-        + '<div class="dt-result" onclick="window.location.href=\'listing.html?id=' + l.id + '\'">'
+        + '<div class="dt-result" data-id="' + l.id + '" onclick="onRowClick(\'' + l.id + '\')" onmouseenter="onRowEnter(\'' + l.id + '\')" onmouseleave="onRowLeave(\'' + l.id + '\')">'
         +   '<div class="dt-result-img">' + (imgSrc ? '<img src="'+imgSrc+'" alt=""/>' : '🏡') + '</div>'
         +   '<div class="dt-result-info">'
         +     '<div class="dt-result-price">' + fmtPrice(l.price, l.listing_type) + '</div>'
@@ -728,9 +963,28 @@
         +       (l.bathrooms ? '<span>' + l.bathrooms + ' bath</span>' : '')
         +       (l.address_area || l.county ? '<span>📍 ' + (l.address_area || l.county) + '</span>' : '')
         +     '</div>'
+        +     (chips ? '<div class="dt-times-row">' + chips + '</div>' : '')
         +   '</div>'
         + '</div>'
     }).join('')
+  }
+
+  // Cross-hover with map markers
+  window.onRowEnter = function(id){
+    highlightMarker(id, true)
+    var row = document.querySelector('.dt-result[data-id="' + id + '"]')
+    if (row) row.classList.add('hi')
+  }
+  window.onRowLeave = function(id){
+    highlightMarker(id, false)
+    var row = document.querySelector('.dt-result[data-id="' + id + '"]')
+    if (row) row.classList.remove('hi')
+  }
+  window.onRowClick = function(id){
+    var m = listingMarkerById[id]
+    var l = (ALL_LISTINGS || []).find(function(x){ return String(x.id) === String(id) })
+    if (m && l) { openInfoWindow(l, m); map.panTo(m.getPosition()) }
+    else        { window.location.href = 'listing.html?id=' + id }
   }
 
   // Debounced runner so typing/sliding doesn't spam the API
@@ -783,8 +1037,12 @@
 
     inRange.sort(function(a,b){ return new Date(b.created_at||0) - new Date(a.created_at||0) })
     ALL_LISTINGS = inRange
+    DRIVE_TIMES = {}    // reset cache — distance matrix will repopulate
     paintList(inRange)
     paintListingMarkers(inRange)
+
+    // Compute exact drive times from A and B → each listing (chunked Distance Matrix calls)
+    if (pointA || pointB) computeDriveTimes(inRange)
   }
 
   // Re-run on filter changes
