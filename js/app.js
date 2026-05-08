@@ -159,10 +159,13 @@ function renderNav(activePage = '') {
  
         <li class="${activePage === 'rent' ? 'active' : ''}"
             onclick="window.location.href='${root}pages/search.html?listing_type=rent'">Rent</li>
- 
+
+        <li class="${activePage === 'commercial' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/commercial.html'">Commercial</li>
+
         <li class="${activePage === 'list' ? 'active' : ''}"
             onclick="window.location.href='${root}pages/list.html'">List your property</li>
- 
+
         <li onclick="window.location.href='${root}pages/search.html?new_dev=1'">New homes</li>
  
         <!-- Tools dropdown -->
@@ -387,8 +390,9 @@ function renderFooter() {
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/about.html">About us</a>' +
             '<a href="' + root + 'pages/list.html">List your property</a>' +
+            '<a href="' + root + 'pages/commercial.html">Commercial property</a>' +
             '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
-            '<a href="mailto:hello@movin.ie">Contact</a>' +
+            '<a href="' + root + 'pages/contact.html">Contact us</a>' +
             '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
             '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
           '</div>' +
@@ -587,7 +591,7 @@ if (document.readyState === 'loading') {
     if (isHome()) return 'home'
     if (/\/map-search\.html$/.test(p)) return 'map'
     if (/\/list\.html$/.test(p)) return 'list'
-    if (/\/(search|listing|sold|area|neighbourhood|agent|compare)\.html$/.test(p)) return 'search'
+    if (/\/(search|listing|sold|area|neighbourhood|agent|compare|commercial)\.html$/.test(p)) return 'search'
     if (/\/(dashboard|login|register|payment-success)/.test(p) || /\/admin\//.test(p)) return 'account'
     return ''
   }

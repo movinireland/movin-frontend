@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){
+  var t=localStorage.getItem('movin_theme');
+  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Contact – Movin.ie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Movin"/>
+  <style>
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+
+    .ct-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:3.25rem 1.25rem 4.5rem;text-align:center;position:relative;overflow:hidden}
+    .ct-hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}
+    .ct-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-180px;right:-160px;pointer-events:none}
+    .ct-eyebrow{font-size:11px;color:rgba(255,255,255,.55);letter-spacing:2px;text-transform:uppercase;position:relative;z-index:2;margin-bottom:.65rem}
+    .ct-hero h1{font-family:'Playfair Display',serif;font-size:clamp(28px,7vw,42px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:.75rem;position:relative;z-index:2}
+    .ct-hero h1 em{font-style:normal;color:#e07b3f}
+    .ct-hero p{font-size:14px;color:rgba(255,255,255,.72);font-weight:300;max-width:480px;margin:0 auto;position:relative;z-index:2;line-height:1.6}
+
+    .ct-wrap{max-width:1040px;margin:-3rem auto 0;padding:0 1rem 3rem;position:relative;z-index:3}
+
+    .ct-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:1.25rem;align-items:start}
+    @media(max-width:880px){.ct-grid{grid-template-columns:1fr}}
+
+    /* ── Form card ── */
+    .ct-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:20px;padding:1.75rem;box-shadow:0 12px 36px rgba(0,0,0,.06)}
+    .ct-card-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text,#111);margin-bottom:.35rem}
+    .ct-card-sub{font-size:13px;color:var(--muted,#888);font-weight:300;margin-bottom:1.5rem}
+
+    .ct-row{margin-bottom:1rem}
+    .ct-row.two{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    @media(max-width:480px){.ct-row.two{grid-template-columns:1fr}}
+    .ct-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;display:block}
+    .ct-inp,.ct-sel,.ct-area{
+      width:100%;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;
+      font-size:14px;font-family:inherit;background:#fafaf8;color:var(--text,#111);
+      outline:none;transition:border-color .15s,background .15s;-webkit-appearance:none
+    }
+    .ct-inp:focus,.ct-sel:focus,.ct-area:focus{border-color:var(--g);background:var(--white,#fff)}
+    .ct-area{min-height:140px;resize:vertical;line-height:1.55}
+    .ct-sel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23aaa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px;cursor:pointer}
+
+    .ct-submit{
+      width:100%;background:var(--g);color:#fff;border:none;border-radius:50px;
+      padding:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      transition:background .15s,transform .15s
+    }
+    .ct-submit:hover{background:var(--gd)}
+    .ct-submit:active{transform:scale(.98)}
+    .ct-fineprint{font-size:11px;color:#aaa;margin-top:.85rem;text-align:center;line-height:1.5}
+
+    /* ── Side info ── */
+    .ct-info{display:flex;flex-direction:column;gap:.85rem}
+    .ct-info-card{
+      background:var(--white,#fff);border:1px solid var(--border);border-radius:18px;
+      padding:1.25rem;display:flex;gap:.85rem;align-items:flex-start;text-decoration:none;color:inherit;
+      transition:transform .15s,border-color .15s,box-shadow .15s
+    }
+    .ct-info-card:hover{border-color:var(--g);transform:translateY(-2px);box-shadow:0 10px 24px rgba(26,92,69,.08)}
+    .ct-info-icon{
+      width:42px;height:42px;border-radius:12px;background:var(--gl);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--g)
+    }
+    .ct-info-icon svg{width:20px;height:20px}
+    .ct-info-title{font-size:14px;font-weight:600;color:var(--text,#111);margin-bottom:2px}
+    .ct-info-val{font-size:13px;color:var(--muted,#777);font-weight:300;line-height:1.5;word-break:break-word}
+    .ct-info-tag{font-size:10px;color:var(--g);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;display:inline-block}
+
+    .ct-hours{
+      background:var(--gl);border-radius:18px;padding:1.25rem;color:var(--g);
+      display:flex;flex-direction:column;gap:.5rem
+    }
+    .ct-hours-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:.25rem}
+    .ct-hours-row{display:flex;justify-content:space-between;font-size:13px;font-weight:500}
+    .ct-hours-row span:last-child{color:#3a8359;font-weight:400}
+
+    /* ── FAQ strip ── */
+    .ct-faq{margin-top:2.25rem;background:var(--white,#fff);border:1px solid var(--border);border-radius:20px;padding:1.5rem 1.25rem}
+    .ct-faq h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text,#111);margin-bottom:.25rem}
+    .ct-faq-sub{font-size:13px;color:var(--muted,#888);font-weight:300;margin-bottom:1.25rem}
+    .ct-faq-list{display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem}
+    @media(max-width:640px){.ct-faq-list{grid-template-columns:1fr}}
+    .ct-faq-item{background:#fafaf8;border:1px solid var(--border);border-radius:14px;padding:1rem;cursor:pointer;transition:border-color .15s,background .15s}
+    .ct-faq-item:hover{border-color:var(--g);background:var(--gl)}
+    .ct-faq-q{font-size:13px;font-weight:600;color:var(--text,#111);margin-bottom:4px}
+    .ct-faq-a{font-size:12px;color:var(--muted,#777);font-weight:300;line-height:1.6}
+
+    [data-theme="dark"] .ct-card,[data-theme="dark"] .ct-info-card,[data-theme="dark"] .ct-faq{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .ct-inp,[data-theme="dark"] .ct-sel,[data-theme="dark"] .ct-area{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
+    [data-theme="dark"] .ct-faq-item{background:#0f0f0f;border-color:#2a2a2a}
+    [data-theme="dark"] .ct-hours{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .ct-hours-row span:last-child{color:#5fa888}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .ct-card,
+      :root:not([data-theme="light"]) .ct-info-card,
+      :root:not([data-theme="light"]) .ct-faq{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .ct-inp,
+      :root:not([data-theme="light"]) .ct-sel,
+      :root:not([data-theme="light"]) .ct-area{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
+      :root:not([data-theme="light"]) .ct-faq-item{background:#0f0f0f;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .ct-hours{background:#0d2e1e;color:#7ec9a8}
+      :root:not([data-theme="light"]) .ct-hours-row span:last-child{color:#5fa888}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="main-nav"></nav>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<div class="ct-hero">
+  <div class="ct-eyebrow">Get in touch</div>
+  <h1>We'd love to <em>hear</em> from you</h1>
+  <p>Questions about a listing, account help, partnerships or just feedback — we read every message and reply within one working day.</p>
+</div>
+
+<div class="ct-wrap">
+  <div class="ct-grid">
+
+    <!-- Form -->
+    <form class="ct-card" id="ct-form" onsubmit="submitContact(event)">
+      <div class="ct-card-title">Send us a message</div>
+      <div class="ct-card-sub">We'll get back to you on the email you provide.</div>
+
+      <div class="ct-row two">
+        <div>
+          <label class="ct-label" for="ct-name">Your name</label>
+          <input class="ct-inp" id="ct-name" type="text" placeholder="Jane Murphy" required/>
+        </div>
+        <div>
+          <label class="ct-label" for="ct-email">Email</label>
+          <input class="ct-inp" id="ct-email" type="email" placeholder="you@example.ie" required/>
+        </div>
+      </div>
+
+      <div class="ct-row two">
+        <div>
+          <label class="ct-label" for="ct-phone">Phone (optional)</label>
+          <input class="ct-inp" id="ct-phone" type="tel" placeholder="+353 …"/>
+        </div>
+        <div>
+          <label class="ct-label" for="ct-topic">Topic</label>
+          <select class="ct-sel" id="ct-topic" required>
+            <option value="general">General enquiry</option>
+            <option value="listing">Help with a listing</option>
+            <option value="account">My account</option>
+            <option value="payment">Payment / billing</option>
+            <option value="agent">Agent / agency</option>
+            <option value="press">Press &amp; media</option>
+            <option value="bug">Report a bug</option>
+            <option value="other">Something else</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ct-row">
+        <label class="ct-label" for="ct-subject">Subject</label>
+        <input class="ct-inp" id="ct-subject" type="text" placeholder="A short summary" required/>
+      </div>
+
+      <div class="ct-row">
+        <label class="ct-label" for="ct-message">Message</label>
+        <textarea class="ct-area" id="ct-message" placeholder="Tell us what's on your mind…" required></textarea>
+      </div>
+
+      <button class="ct-submit" type="submit">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+        Send message
+      </button>
+      <div class="ct-fineprint">By sending, you agree to our <a href="privacy-policy.html" style="color:var(--g);text-decoration:underline">privacy policy</a>. We never share your details.</div>
+    </form>
+
+    <!-- Side info -->
+    <aside class="ct-info">
+      <a class="ct-info-card" href="mailto:hello@movin.ie">
+        <div class="ct-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+        <div>
+          <div class="ct-info-title">Email us</div>
+          <div class="ct-info-val">hello@movin.ie</div>
+          <span class="ct-info-tag">Replies within 24h</span>
+        </div>
+      </a>
+
+      <a class="ct-info-card" href="tel:+35315550100">
+        <div class="ct-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div>
+          <div class="ct-info-title">Call us</div>
+          <div class="ct-info-val">+353 1 555 0100</div>
+          <span class="ct-info-tag">Mon–Fri, 9–18</span>
+        </div>
+      </a>
+
+      <div class="ct-info-card" style="cursor:default">
+        <div class="ct-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div>
+          <div class="ct-info-title">Office</div>
+          <div class="ct-info-val">Fitzwilliam Square,<br/>Dublin 2, D02 AY09<br/>Ireland</div>
+        </div>
+      </div>
+
+      <div class="ct-hours">
+        <div class="ct-hours-title">Support hours</div>
+        <div class="ct-hours-row"><span>Monday–Friday</span><span>09:00 – 18:00</span></div>
+        <div class="ct-hours-row"><span>Saturday</span><span>10:00 – 14:00</span></div>
+        <div class="ct-hours-row"><span>Sunday</span><span>Closed</span></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Quick FAQ -->
+  <div class="ct-faq">
+    <h3>Maybe we can save you a step</h3>
+    <p class="ct-faq-sub">Common questions answered before you write to us.</p>
+    <div class="ct-faq-list">
+      <a href="list.html" class="ct-faq-item" style="text-decoration:none">
+        <div class="ct-faq-q">How do I list a property?</div>
+        <div class="ct-faq-a">Click "List your property" — your first listing is completely free, no card required.</div>
+      </a>
+      <a href="tools.html#mortgage" class="ct-faq-item" style="text-decoration:none">
+        <div class="ct-faq-q">How much can I borrow?</div>
+        <div class="ct-faq-a">Use our mortgage calculator to estimate monthly repayments and affordability.</div>
+      </a>
+      <a href="dashboard.html" class="ct-faq-item" style="text-decoration:none">
+        <div class="ct-faq-q">Where are my saved listings?</div>
+        <div class="ct-faq-a">Open your dashboard — saved listings, enquiries and your profile all live there.</div>
+      </a>
+      <a href="about.html" class="ct-faq-item" style="text-decoration:none">
+        <div class="ct-faq-q">How is Movin different?</div>
+        <div class="ct-faq-a">Free first listing, then a flat €24.99 fee. No subscriptions, no scraped data.</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav('contact')
+
+  function submitContact(e){
+    e.preventDefault()
+    var name    = document.getElementById('ct-name').value.trim()
+    var email   = document.getElementById('ct-email').value.trim()
+    var phone   = document.getElementById('ct-phone').value.trim()
+    var topic   = document.getElementById('ct-topic').value
+    var subject = document.getElementById('ct-subject').value.trim()
+    var message = document.getElementById('ct-message').value.trim()
+
+    if (!name || !email || !subject || !message) {
+      if (window.toast) toast('Please fill in all required fields', 'err')
+      return false
+    }
+
+    var topicLabel = ({
+      general:'General enquiry', listing:'Help with a listing', account:'My account',
+      payment:'Payment/billing', agent:'Agent/agency', press:'Press & media',
+      bug:'Bug report', other:'Other'
+    })[topic] || topic
+
+    var body = ''
+      + 'From: ' + name + ' <' + email + '>\n'
+      + (phone ? 'Phone: ' + phone + '\n' : '')
+      + 'Topic: ' + topicLabel + '\n\n'
+      + message + '\n'
+    var mailto = 'mailto:hello@movin.ie'
+      + '?subject=' + encodeURIComponent('[' + topicLabel + '] ' + subject)
+      + '&body=' + encodeURIComponent(body)
+
+    // Optimistic UX: open mail client + show success toast
+    window.location.href = mailto
+    if (window.toast) toast('Opening your email app — your message is ready to send.', 'ok')
+    setTimeout(function(){ document.getElementById('ct-form').reset() }, 300)
+    return false
+  }
+</script>
+</body>
+</html>

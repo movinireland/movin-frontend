@@ -4,6 +4,15 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Movin.ie – Find Your Next Home in Ireland</title>
+<script>
+(function(){
+  var t=localStorage.getItem('movin_theme');
+  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+  var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+                   window.navigator.standalone === true;
+  if (standalone) document.documentElement.classList.add('pwa-standalone');
+})()
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
 <link rel="apple-touch-icon" sizes="180x180" href="/icons/favicon-apple-touch-icon-180x180.png"/>
@@ -204,9 +213,29 @@ button,input,select{font-family:inherit}
 .img-c{background:linear-gradient(135deg,#d4e4f5,#e8f0fc)}
 .img-d{background:linear-gradient(135deg,#e8d4f5,#f4eafc)}
 .img-e{background:linear-gradient(135deg,#d4f5d4,#eafcea)}
+
+/* ─── PWA splash screen ─── */
+.pwa-splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;opacity:1;transition:opacity .45s ease,visibility .45s ease;-webkit-user-select:none;user-select:none}
+.pwa-splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.pwa-splash::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.06);top:-180px;left:-160px;pointer-events:none}
+.pwa-splash::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-160px;right:-140px;pointer-events:none}
+.pwa-splash-logo{font-family:'Playfair Display',serif;font-size:54px;font-weight:900;color:#fff;letter-spacing:-1px;animation:splashFade .55s cubic-bezier(.2,.8,.2,1) both;position:relative;z-index:1}
+.pwa-splash-logo span{color:#e07b3f}
+.pwa-splash-tag{font-size:13px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-top:.5rem;animation:splashFade .55s cubic-bezier(.2,.8,.2,1) .15s both;position:relative;z-index:1}
+.pwa-splash-spinner{width:30px;height:30px;border-radius:50%;border:3px solid rgba(255,255,255,.2);border-top-color:#e07b3f;animation:spin .8s linear infinite;margin-top:2.5rem;position:relative;z-index:1}
+@keyframes splashFade{0%{opacity:0;transform:translateY(8px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+/* Show only when launched as installed PWA (avoid flashing for regular web visits) */
+:root:not(.pwa-standalone) .pwa-splash{display:none}
 </style>
 </head>
 <body>
+
+<!-- PWA splash (only renders in installed app mode) -->
+<div class="pwa-splash" id="pwa-splash" aria-hidden="true">
+  <div class="pwa-splash-logo">mov<span>in</span></div>
+  <div class="pwa-splash-tag">Ireland's property platform</div>
+  <div class="pwa-splash-spinner"></div>
+</div>
 
 <nav class="nav">
   <div class="nav-inner">
@@ -214,11 +243,13 @@ button,input,select{font-family:inherit}
     <ul class="nav-links">
       <li onclick="go('pages/search.html?listing_type=sale')">Buy</li>
       <li onclick="go('pages/search.html?listing_type=rent')">Rent</li>
+      <li onclick="go('pages/commercial.html')">Commercial</li>
       <li onclick="go('pages/list.html')">List your property</li>
-      <li onclick="go('pages/map-search.html')">Map search</li>
       <li onclick="go('pages/tools.html')">Tools</li>
+      <li onclick="go('pages/contact.html')">Contact</li>
     </ul>
     <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
       <div id="nav-auth-area">
         <a href="pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
         <a href="pages/register.html" class="btn btn-primary btn-sm">Register</a>
@@ -239,6 +270,7 @@ button,input,select{font-family:inherit}
     <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-house"/></svg></div>Buy a property</div>
     <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
     <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
+    <div class="mm-item" onclick="go('pages/commercial.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Commercial property</div>
     <div class="mm-divider"></div>
     <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
     <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
@@ -246,6 +278,7 @@ button,input,select{font-family:inherit}
     <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-key"/></svg></div>First-time buyer</div>
     <div class="mm-divider"></div>
     <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>List your property</div>
+    <div class="mm-item" onclick="go('pages/contact.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg></div>Contact us</div>
     <div class="mm-item" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
   </div>
   <div class="mobile-menu-footer" id="mobile-menu-footer">
@@ -436,11 +469,13 @@ button,input,select{font-family:inherit}
   <div class="footer-links">
     <a href="pages/search.html">Search</a>
     <a href="pages/map-search.html">Map search</a>
+    <a href="pages/commercial.html">Commercial</a>
     <a href="pages/list.html">List</a>
     <a href="pages/tools.html">Tools</a>
+    <a href="pages/contact.html">Contact</a>
     <a href="pages/admin/">Admin</a>
     <a href="pages/privacy-policy.html">Privacy Policy</a>
-<a href="pages/terms-of-service.html">Terms of Service</a>
+    <a href="pages/terms-of-service.html">Terms of Service</a>
   </div>
   <p class="footer-copy">© 2026 Movin Technologies Ltd · movin.ie</p>
 </footer>
@@ -540,6 +575,19 @@ function updateNav(){
 }
 loadFeatured()
 updateNav()
+
+// Hide PWA splash once page is interactive (and only matters in standalone mode)
+;(function(){
+  var splash = document.getElementById('pwa-splash')
+  if (!splash) return
+  function hide(){ splash.classList.add('hide'); setTimeout(function(){ splash.remove() }, 600) }
+  if (document.documentElement.classList.contains('pwa-standalone')) {
+    if (document.readyState === 'complete') setTimeout(hide, 700)
+    else window.addEventListener('load', function(){ setTimeout(hide, 700) })
+  } else {
+    splash.remove()
+  }
+})()
 </script>
 <footer class="site-footer" id="site-footer"></footer>
 </body>
