@@ -932,3 +932,145 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
   :root:not([data-theme="light"]) .share-drawer { background: #1a1a1a; }
   :root:not([data-theme="light"]) .nearby-item { background: #1e1e1e; border-color: #2a2a2a; }
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Persistent mobile bottom tab bar + fancy back button (auto-injected by app.js)
+   ──────────────────────────────────────────────────────────────────────────── */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: var(--white, #fff);
+  border-top: 1px solid var(--border, #ebebeb);
+  display: flex; align-items: stretch;
+  height: calc(62px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 1000;
+  box-shadow: 0 -6px 22px rgba(0,0,0,.07);
+  font-family: 'DM Sans', sans-serif;
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 3px;
+  cursor: pointer; border: none; background: transparent;
+  color: #b0b0b0; font-size: 10px; font-weight: 500;
+  padding: 9px 4px 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: color .18s;
+  text-decoration: none;
+  font-family: inherit;
+}
+.tab-item.active { color: #1a5c45; }
+.tab-icon-wrap {
+  width: 38px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  transition: background .18s, transform .18s;
+}
+.tab-item.active .tab-icon-wrap { background: #e9f4ef; }
+.tab-item:active .tab-icon-wrap { transform: scale(.92); }
+.tab-icon-wrap svg { width: 22px; height: 22px; stroke: currentColor; fill: none; }
+.tab-list-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  cursor: pointer; border: none; background: transparent;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+.tab-list-circle {
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, #1a5c45 0%, #0e3d2e 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 18px rgba(26,92,69,.42);
+  border: 3px solid var(--white, #fff);
+  margin-top: -18px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.tab-list-circle:active { transform: scale(.92); box-shadow: 0 3px 10px rgba(26,92,69,.45); }
+.tab-list-circle svg { width: 22px; height: 22px; stroke: #fff; fill: none; }
+.tab-list-label { font-size: 10px; font-weight: 500; color: #b0b0b0; margin-top: 6px; }
+
+@media (min-width: 768px) {
+  .tab-bar { display: none; }
+}
+@media (max-width: 767px) {
+  body.has-tab-bar { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  /* Stack page-internal fixed bars ABOVE the global tab bar */
+  body.has-tab-bar .mobile-tabs { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; padding-bottom: 0 !important; }
+  body.has-tab-bar #compare-bar { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
+  /* Map-search: shrink map so tab bar sits below it */
+  body.has-tab-bar #map { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
+  /* Map-search slide-up panel & filter sheet should sit above the tab bar */
+  body.has-tab-bar .card-panel { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+
+[data-theme="dark"] .tab-bar { background: #1a1a1a; border-top-color: #2a2a2a; }
+[data-theme="dark"] .tab-item { color: #666; }
+[data-theme="dark"] .tab-item.active { color: #2ecc8a; }
+[data-theme="dark"] .tab-item.active .tab-icon-wrap { background: #0d2e1e; }
+[data-theme="dark"] .tab-list-circle { border-color: #1a1a1a; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .tab-bar { background: #1a1a1a; border-top-color: #2a2a2a; }
+  :root:not([data-theme="light"]) .tab-item { color: #666; }
+  :root:not([data-theme="light"]) .tab-item.active { color: #2ecc8a; }
+  :root:not([data-theme="light"]) .tab-item.active .tab-icon-wrap { background: #0d2e1e; }
+  :root:not([data-theme="light"]) .tab-list-circle { border-color: #1a1a1a; }
+}
+
+/* ─── Fancy floating back button (used when page has no .nav) ─────────────── */
+.mobile-back-btn {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top, 0px));
+  left: 14px;
+  z-index: 99;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border: 1px solid rgba(0,0,0,.06);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.16);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  color: #1a5c45;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+}
+.mobile-back-btn:hover { background: #fff; transform: translateX(-2px); box-shadow: 0 10px 26px rgba(0,0,0,.2); }
+.mobile-back-btn:active { transform: scale(.92); }
+.mobile-back-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
+[data-theme="dark"] .mobile-back-btn { background: rgba(30,30,30,.92); color: #2ecc8a; border-color: rgba(255,255,255,.08); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mobile-back-btn { background: rgba(30,30,30,.92); color: #2ecc8a; border-color: rgba(255,255,255,.08); }
+}
+@media (min-width: 768px) { .mobile-back-btn { display: none; } }
+
+/* ─── Inline back button injected into existing .nav (mobile only) ────────── */
+.nav-back {
+  display: none;
+  background: #f5f2ec;
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: #1a5c45;
+  transition: background .15s, transform .15s;
+  -webkit-tap-highlight-color: transparent;
+  padding: 0;
+  margin-right: 4px;
+}
+.nav-back:hover { background: #e9f4ef; }
+.nav-back:active { transform: scale(.92); }
+.nav-back svg { width: 18px; height: 18px; stroke: currentColor; fill: none; }
+[data-theme="dark"] .nav-back { background: #2a2a2a; color: #2ecc8a; }
+[data-theme="dark"] .nav-back:hover { background: #0d2e1e; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .nav-back { background: #2a2a2a; color: #2ecc8a; }
+  :root:not([data-theme="light"]) .nav-back:hover { background: #0d2e1e; }
+}
+@media (max-width: 767px) {
+  .nav-back { display: inline-flex; }
+}

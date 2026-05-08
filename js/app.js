@@ -569,3 +569,110 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(initCookieConsent, 500)
 }
+
+// ── Persistent mobile tab bar + fancy back button (auto-injected) ────────────
+;(function() {
+  function isInPagesDir() {
+    return /\/pages\//.test(location.pathname)
+  }
+  function pathPrefix() {
+    return isInPagesDir() ? '../' : ''
+  }
+  function isHome() {
+    var p = location.pathname.toLowerCase()
+    return p === '/' || p === '' || /\/index\.html?$/.test(p) || /\/index$/.test(p)
+  }
+  function activeTab() {
+    var p = location.pathname.toLowerCase()
+    if (isHome()) return 'home'
+    if (/\/map-search\.html$/.test(p)) return 'map'
+    if (/\/list\.html$/.test(p)) return 'list'
+    if (/\/(search|listing|sold|area|neighbourhood|agent|compare)\.html$/.test(p)) return 'search'
+    if (/\/(dashboard|login|register|payment-success)/.test(p) || /\/admin\//.test(p)) return 'account'
+    return ''
+  }
+
+  var BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>'
+
+  function buildTabBarHTML() {
+    var p = pathPrefix()
+    var a = activeTab()
+    function cls(name) { return 'tab-item' + (a === name ? ' active' : '') }
+    return '' +
+      '<nav class="tab-bar" role="navigation" aria-label="Primary">' +
+        '<a class="' + cls('home') + '" href="' + p + 'index.html" aria-label="Home">' +
+          '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-home"/></svg></span>Home' +
+        '</a>' +
+        '<a class="' + cls('search') + '" href="' + p + 'pages/search.html" aria-label="Search">' +
+          '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></span>Search' +
+        '</a>' +
+        '<a class="tab-list-item" href="' + p + 'pages/list.html" aria-label="List your property">' +
+          '<span class="tab-list-circle"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></span>' +
+          '<span class="tab-list-label">List</span>' +
+        '</a>' +
+        '<a class="' + cls('map') + '" href="' + p + 'pages/map-search.html" aria-label="Map">' +
+          '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></span>Map' +
+        '</a>' +
+        '<a class="' + cls('account') + '" href="' + p + 'pages/dashboard.html" aria-label="Account">' +
+          '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></span>Account' +
+        '</a>' +
+      '</nav>'
+  }
+
+  function goBack() {
+    try {
+      var sameOrigin = document.referrer && new URL(document.referrer, location.href).origin === location.origin
+      if (history.length > 1 && sameOrigin) { history.back(); return }
+    } catch(e) {}
+    location.href = pathPrefix() + 'index.html'
+  }
+  window.movinGoBack = goBack
+
+  function injectTabBar() {
+    if (document.querySelector('.tab-bar')) {
+      // Existing tab bar — just mark body so padding-bottom kicks in
+      document.body.classList.add('has-tab-bar')
+      return
+    }
+    document.body.insertAdjacentHTML('beforeend', buildTabBarHTML())
+    document.body.classList.add('has-tab-bar')
+  }
+
+  function injectBackButton() {
+    if (isHome()) return
+    if (document.body.hasAttribute('data-no-back')) return
+    if (document.querySelector('.mobile-back-btn, .nav-back, .back-btn')) return
+
+    var navInner = document.querySelector('.nav .nav-inner')
+    if (navInner) {
+      var b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'nav-back'
+      b.setAttribute('aria-label', 'Back')
+      b.innerHTML = BACK_SVG
+      b.addEventListener('click', goBack)
+      navInner.insertBefore(b, navInner.firstChild)
+      return
+    }
+
+    var floating = document.createElement('button')
+    floating.type = 'button'
+    floating.className = 'mobile-back-btn'
+    floating.setAttribute('aria-label', 'Back')
+    floating.innerHTML = BACK_SVG
+    floating.addEventListener('click', goBack)
+    document.body.appendChild(floating)
+  }
+
+  function init() {
+    injectTabBar()
+    // Defer back-button so any page-level renderNav() in a DOMContentLoaded
+    // handler has a chance to populate .nav-inner first.
+    setTimeout(injectBackButton, 0)
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init)
+  } else {
+    init()
+  }
+})()
