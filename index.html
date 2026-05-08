@@ -430,20 +430,13 @@ body.hero-places-ready .sugg-box{display:none !important}
 
     <div class="adv-panel" id="adv-panel">
       <div class="adv-grid">
-        <div class="adv-field"><label>Min price</label>
-          <select class="adv-sel" id="adv-min">
-            <option value="">No min</option><option value="50000">€50k</option><option value="100000">€100k</option>
-            <option value="150000">€150k</option><option value="200000">€200k</option><option value="250000">€250k</option>
-            <option value="300000">€300k</option><option value="400000">€400k</option><option value="500000">€500k</option>
-          </select>
+        <div class="adv-field">
+          <label><span id="adv-min-label">Min price</span></label>
+          <select class="adv-sel" id="adv-min"></select>
         </div>
-        <div class="adv-field"><label>Max price</label>
-          <select class="adv-sel" id="adv-max">
-            <option value="">No max</option><option value="100000">€100k</option><option value="150000">€150k</option>
-            <option value="200000">€200k</option><option value="250000">€250k</option><option value="300000">€300k</option>
-            <option value="400000">€400k</option><option value="500000">€500k</option><option value="750000">€750k</option>
-            <option value="1000000">€1m+</option>
-          </select>
+        <div class="adv-field">
+          <label><span id="adv-max-label">Max price</span></label>
+          <select class="adv-sel" id="adv-max"></select>
         </div>
         <div class="adv-field"><label>Bedrooms</label>
           <select class="adv-sel" id="adv-beds">
@@ -642,7 +635,132 @@ window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'
 function go(u){window.location.href=u}
 function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
 let searchType='sale',searchCounty='',searchQuery=''
-function selectType(el){searchType=el.dataset.type;document.querySelectorAll('.stt').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
+
+// Daft-style price ranges — Buy uses lump sums, Rent and Sharing use monthly.
+// `min` and `max` arrays are independent so users can pick a sensible range.
+const PRICE_RANGES = {
+  sale: {
+    label: 'price',
+    min: [
+      {v:'',       l:'No min'},
+      {v:'50000',  l:'€50k'},
+      {v:'100000', l:'€100k'},
+      {v:'150000', l:'€150k'},
+      {v:'200000', l:'€200k'},
+      {v:'250000', l:'€250k'},
+      {v:'300000', l:'€300k'},
+      {v:'400000', l:'€400k'},
+      {v:'500000', l:'€500k'},
+      {v:'750000', l:'€750k'},
+      {v:'1000000',l:'€1m'}
+    ],
+    max: [
+      {v:'',       l:'No max'},
+      {v:'100000', l:'€100k'},
+      {v:'150000', l:'€150k'},
+      {v:'200000', l:'€200k'},
+      {v:'250000', l:'€250k'},
+      {v:'300000', l:'€300k'},
+      {v:'400000', l:'€400k'},
+      {v:'500000', l:'€500k'},
+      {v:'750000', l:'€750k'},
+      {v:'1000000',l:'€1m'},
+      {v:'1500000',l:'€1.5m'},
+      {v:'2000000',l:'€2m+'}
+    ]
+  },
+  rent: {
+    label: 'rent /mo',
+    min: [
+      {v:'',     l:'No min'},
+      {v:'500',  l:'€500'},
+      {v:'750',  l:'€750'},
+      {v:'1000', l:'€1,000'},
+      {v:'1250', l:'€1,250'},
+      {v:'1500', l:'€1,500'},
+      {v:'1750', l:'€1,750'},
+      {v:'2000', l:'€2,000'},
+      {v:'2500', l:'€2,500'},
+      {v:'3000', l:'€3,000'}
+    ],
+    max: [
+      {v:'',     l:'No max'},
+      {v:'750',  l:'€750'},
+      {v:'1000', l:'€1,000'},
+      {v:'1250', l:'€1,250'},
+      {v:'1500', l:'€1,500'},
+      {v:'1750', l:'€1,750'},
+      {v:'2000', l:'€2,000'},
+      {v:'2500', l:'€2,500'},
+      {v:'3000', l:'€3,000'},
+      {v:'4000', l:'€4,000'},
+      {v:'5000', l:'€5,000+'}
+    ]
+  },
+  share: {
+    label: 'rent /mo',
+    min: [
+      {v:'',    l:'No min'},
+      {v:'300', l:'€300'},
+      {v:'400', l:'€400'},
+      {v:'500', l:'€500'},
+      {v:'600', l:'€600'},
+      {v:'700', l:'€700'},
+      {v:'800', l:'€800'},
+      {v:'1000',l:'€1,000'}
+    ],
+    max: [
+      {v:'',    l:'No max'},
+      {v:'400', l:'€400'},
+      {v:'500', l:'€500'},
+      {v:'600', l:'€600'},
+      {v:'700', l:'€700'},
+      {v:'800', l:'€800'},
+      {v:'900', l:'€900'},
+      {v:'1000',l:'€1,000'},
+      {v:'1200',l:'€1,200'},
+      {v:'1500',l:'€1,500+'}
+    ]
+  }
+}
+
+function fillPriceSelects(type){
+  const cfg = PRICE_RANGES[type] || PRICE_RANGES.sale
+  const minSel = document.getElementById('adv-min')
+  const maxSel = document.getElementById('adv-max')
+  const minLbl = document.getElementById('adv-min-label')
+  const maxLbl = document.getElementById('adv-max-label')
+
+  // Repopulate the dropdowns and reset the selected value (the price you'd
+  // accept for €500k buy makes no sense as €500k/mo rent)
+  if (minSel) {
+    minSel.innerHTML = cfg.min.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
+    minSel.value = ''
+  }
+  if (maxSel) {
+    maxSel.innerHTML = cfg.max.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
+    maxSel.value = ''
+  }
+  if (minLbl) minLbl.textContent = type === 'sale' ? 'Min price' : 'Min rent /mo'
+  if (maxLbl) maxLbl.textContent = type === 'sale' ? 'Max price' : 'Max rent /mo'
+}
+
+function selectType(el){
+  searchType = el.dataset.type
+  document.querySelectorAll('.stt').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  // Swap the advanced-panel prices to match
+  fillPriceSelects(searchType)
+  // Swap the quick-filter price pill options too
+  if (typeof QF_OPTIONS !== 'undefined' && typeof QF_PRICE_BY_TYPE !== 'undefined') {
+    QF_OPTIONS.price = QF_PRICE_BY_TYPE[searchType] || QF_PRICE_BY_TYPE.sale
+    QF_STATE.price = 0
+    const labelEl = document.getElementById('qf-price-label')
+    const pillEl  = document.getElementById('qf-price-pill')
+    if (labelEl) labelEl.textContent = QF_OPTIONS.price[0].l
+    if (pillEl)  pillEl.classList.remove('on')
+  }
+}
 function toggleAdv(){document.getElementById('adv-panel').classList.toggle('open');document.getElementById('adv-arrow').classList.toggle('open')}
 const DD=[{code:'D1',name:'Dublin 1',area:'City Centre'},{code:'D2',name:'Dublin 2',area:'City Centre South'},{code:'D3',name:'Dublin 3',area:'Clontarf, Fairview'},{code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook'},{code:'D5',name:'Dublin 5',area:'Artane, Coolock'},{code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines'},{code:'D6W',name:'Dublin 6W',area:'Templeogue, Terenure'},{code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough'},{code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham'},{code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin'},{code:'D10',name:'Dublin 10',area:'Ballyfermot'},{code:'D11',name:'Dublin 11',area:'Finglas, Ballymun'},{code:'D12',name:'Dublin 12',area:'Crumlin, Kimmage'},{code:'D13',name:'Dublin 13',area:'Baldoyle, Howth'},{code:'D14',name:'Dublin 14',area:'Dundrum, Rathfarnham'},{code:'D15',name:'Dublin 15',area:'Blanchardstown'},{code:'D16',name:'Dublin 16',area:'Ballinteer, Knocklyon'},{code:'D18',name:'Dublin 18',area:'Foxrock, Sandyford'},{code:'D20',name:'Dublin 20',area:'Chapelizod'},{code:'D22',name:'Dublin 22',area:'Clondalkin'},{code:'D24',name:'Dublin 24',area:'Firhouse, Tallaght'}]
 const COUNTIES=['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan']
@@ -672,9 +790,14 @@ document.addEventListener('click',e=>{if(!e.target.closest('.search-main'))docum
 let searchOrigin = null   // { lat, lng, label } or null
 
 // Quick filter pills — cycle through preset options on tap
+const QF_PRICE_BY_TYPE = {
+  sale:  [{v:'', l:'Price: any'},     {v:'200000',l:'Up to €200k'},   {v:'300000',l:'Up to €300k'},   {v:'500000',l:'Up to €500k'},   {v:'750000',l:'Up to €750k'},   {v:'1000000',l:'Up to €1m'}],
+  rent:  [{v:'', l:'Rent: any'},      {v:'1000',  l:'Up to €1k/mo'},  {v:'1500',  l:'Up to €1.5k/mo'},{v:'2000',  l:'Up to €2k/mo'},  {v:'2500',  l:'Up to €2.5k/mo'},{v:'3000',  l:'Up to €3k/mo'}, {v:'4000',l:'Up to €4k/mo'}],
+  share: [{v:'', l:'Rent: any'},      {v:'500',   l:'Up to €500/mo'}, {v:'700',   l:'Up to €700/mo'}, {v:'900',   l:'Up to €900/mo'}, {v:'1100',  l:'Up to €1.1k/mo'},{v:'1500',  l:'Up to €1.5k/mo'}]
+}
 const QF_OPTIONS = {
   beds:  [{v:'',  l:'Beds: any'},  {v:'1',l:'1+ beds'}, {v:'2',l:'2+ beds'}, {v:'3',l:'3+ beds'}, {v:'4',l:'4+ beds'}, {v:'5',l:'5+ beds'}],
-  price: [{v:'',  l:'Price: any'}, {v:'200000',l:'Up to €200k'}, {v:'300000',l:'Up to €300k'}, {v:'500000',l:'Up to €500k'}, {v:'750000',l:'Up to €750k'}, {v:'1000000',l:'Up to €1m'}],
+  price: QF_PRICE_BY_TYPE.sale.slice(),
   type:  [{v:'',  l:'Any type'},   {v:'house',l:'House'}, {v:'apartment',l:'Apartment'}, {v:'bungalow',l:'Bungalow'}, {v:'site',l:'Site / Land'}]
 }
 const QF_STATE = { beds:0, price:0, type:0 }
@@ -849,6 +972,9 @@ function updateNav(){
   document.getElementById('nav-auth-area').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary btn-sm">${user?.name?.split(' ')[0]||'Account'}</a>`
   document.getElementById('mobile-menu-footer').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center">My dashboard →</a>`
 }
+// Initial price options for Buy (the default selected mode)
+fillPriceSelects('sale')
+
 loadFeatured()
 updateNav()
 

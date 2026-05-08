@@ -1185,3 +1185,330 @@ input:focus, select:focus, textarea:focus,
   z-index: 10000; transition: top .2s;
 }
 .skip-link:focus { top: 8px; }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Global mobile sticky quick-search bar (auto-injected by app.js)
+   ──────────────────────────────────────────────────────────────────────────── */
+.qsearch-strip {
+  position: sticky; top: 0; z-index: 95;
+  background: rgba(255,255,255,.92);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid var(--border, #e8e4dc);
+  padding: 8px 12px;
+  display: none;   /* hidden by default; mobile media query enables it */
+}
+@media (max-width: 767px) { .qsearch-strip { display: block; } }
+.qsearch-trigger {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: #fafaf8;
+  border: 1.5px solid var(--border, #e8e4dc);
+  border-radius: 50px;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px;
+  color: #444; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: border-color .15s, background .15s, transform .15s;
+  text-align: left;
+}
+.qsearch-trigger:active { transform: scale(.98); }
+.qsearch-trigger:hover { border-color: var(--green, #1a5c45); background: #fff; }
+.qsearch-trigger .qs-search-icon {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #1a5c45, #0e3d2e);
+  display: flex; align-items: center; justify-content: center; color: #fff;
+}
+.qsearch-trigger .qs-search-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
+.qsearch-trigger .qs-text {
+  flex: 1; min-width: 0; color: #888; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.qsearch-trigger .qs-mode-pill {
+  flex-shrink: 0; background: var(--green, #1a5c45); color: #fff;
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 50px; text-transform: uppercase; letter-spacing: .4px;
+}
+[data-theme="dark"] .qsearch-strip { background: rgba(20,20,20,.94); border-color: #2a2a2a; }
+[data-theme="dark"] .qsearch-trigger { background: #1a1a1a; border-color: #2a2a2a; color: #aaa; }
+[data-theme="dark"] .qsearch-trigger:hover { background: #0f0f0f; border-color: #2ecc8a; }
+[data-theme="dark"] .qsearch-trigger .qs-text { color: #888; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .qsearch-strip { background: rgba(20,20,20,.94); border-color: #2a2a2a; }
+  :root:not([data-theme="light"]) .qsearch-trigger { background: #1a1a1a; border-color: #2a2a2a; color: #aaa; }
+  :root:not([data-theme="light"]) .qsearch-trigger:hover { background: #0f0f0f; border-color: #2ecc8a; }
+}
+
+/* ─── Quick-search bottom sheet (full-screen on mobile) ─── */
+.qsearch-modal {
+  position: fixed; inset: 0; z-index: 9998;
+  background: rgba(0,0,0,.5);
+  display: flex; align-items: flex-end; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s ease;
+}
+.qsearch-modal.open { opacity: 1; pointer-events: all; }
+.qsearch-sheet {
+  background: var(--white, #fff);
+  border-radius: 24px 24px 0 0;
+  width: 100%; max-width: 560px;
+  max-height: 95vh; overflow-y: auto;
+  padding: .85rem 1.1rem 1.5rem;
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform .28s cubic-bezier(.32,.72,0,1);
+  font-family: 'DM Sans', sans-serif;
+}
+.qsearch-modal.open .qsearch-sheet { transform: translateY(0); }
+.qsearch-handle {
+  width: 40px; height: 4px; background: #ddd; border-radius: 2px;
+  margin: 0 auto .85rem;
+}
+.qsearch-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.qsearch-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--text, #111); }
+.qsearch-close {
+  background: #f0ede6; border: none; width: 34px; height: 34px;
+  border-radius: 50%; cursor: pointer; font-size: 18px; color: #555;
+  display: flex; align-items: center; justify-content: center;
+}
+.qsearch-close:hover { background: #e8e4dc; }
+
+/* Mode tabs */
+.qsearch-tabs {
+  display: flex; background: #f0ede6; border-radius: 50px; padding: 4px; gap: 2px;
+  margin-bottom: 1rem;
+}
+.qsearch-tabs button {
+  flex: 1; background: transparent; border: none;
+  padding: 10px 12px; border-radius: 50px;
+  font-family: inherit; font-size: 13px; font-weight: 600; color: #888;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+.qsearch-tabs button.on {
+  background: var(--green, #1a5c45); color: #fff;
+  box-shadow: 0 4px 12px rgba(26,92,69,.25);
+}
+
+/* Big input */
+.qsearch-input-wrap { position: relative; margin-bottom: .85rem; }
+.qsearch-input-wrap > svg.qs-pin {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; color: var(--green, #1a5c45);
+  stroke: currentColor; fill: none; pointer-events: none;
+}
+.qsearch-input {
+  width: 100%; border: 1.5px solid var(--border, #e8e4dc);
+  border-radius: 14px; padding: 14px 16px 14px 44px;
+  font-family: inherit; font-size: 15px; background: #fafaf8;
+  color: var(--text, #111); outline: none; -webkit-appearance: none;
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.qsearch-input:focus {
+  border-color: var(--green, #1a5c45); background: #fff;
+  box-shadow: 0 0 0 4px rgba(26,92,69,.08);
+}
+
+/* Filter chips row */
+.qsearch-filters {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+  margin-bottom: 1rem;
+}
+.qsearch-filters label {
+  display: block; font-size: 10px; color: #888; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 5px;
+}
+.qsearch-filters select {
+  width: 100%; border: 1.5px solid var(--border, #e8e4dc);
+  border-radius: 12px; padding: 10px 28px 10px 12px;
+  font-family: inherit; font-size: 13px; background: #fafaf8 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23aaa' stroke-width='1.5' fill='none'/%3E%3C/svg%3E") no-repeat right 10px center;
+  color: #444; outline: none; -webkit-appearance: none; cursor: pointer;
+}
+.qsearch-filters select:focus { border-color: var(--green, #1a5c45); }
+
+/* Submit */
+.qsearch-submit {
+  width: 100%; background: var(--green, #1a5c45); color: #fff;
+  border: none; border-radius: 50px; padding: 14px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; box-shadow: 0 6px 18px rgba(26,92,69,.25);
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: background .18s ease, box-shadow .18s ease;
+}
+.qsearch-submit:hover { background: var(--green-dark, #0e3d2e); box-shadow: 0 8px 24px rgba(26,92,69,.3); }
+.qsearch-submit svg { width: 16px; height: 16px; stroke: #fff; fill: none; }
+
+/* Quick-jump shortcuts under the submit button */
+.qsearch-shortcuts {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-top: .85rem; justify-content: center;
+}
+.qsearch-shortcut {
+  background: transparent; border: 1.5px solid var(--border, #e8e4dc);
+  border-radius: 50px; padding: 5px 12px; font-family: inherit;
+  font-size: 12px; font-weight: 500; color: #555; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: all .15s;
+}
+.qsearch-shortcut:hover { background: var(--green-light, #e9f4ef); border-color: var(--green, #1a5c45); color: var(--green, #1a5c45); }
+
+/* Dark mode for the sheet */
+[data-theme="dark"] .qsearch-sheet { background: #1a1a1a; }
+[data-theme="dark"] .qsearch-title { color: #e8e8e8; }
+[data-theme="dark"] .qsearch-close { background: #2a2a2a; color: #aaa; }
+[data-theme="dark"] .qsearch-close:hover { background: #3a3a3a; }
+[data-theme="dark"] .qsearch-tabs { background: #0f0f0f; }
+[data-theme="dark"] .qsearch-tabs button { color: #888; }
+[data-theme="dark"] .qsearch-input { background: #0f0f0f; border-color: #2a2a2a; color: #e8e8e8; }
+[data-theme="dark"] .qsearch-filters select { background-color: #0f0f0f; border-color: #2a2a2a; color: #ccc; }
+[data-theme="dark"] .qsearch-shortcut { border-color: #2a2a2a; color: #aaa; }
+[data-theme="dark"] .qsearch-shortcut:hover { background: #0d2e1e; border-color: #2ecc8a; color: #7ec9a8; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .qsearch-sheet { background: #1a1a1a; }
+  :root:not([data-theme="light"]) .qsearch-title { color: #e8e8e8; }
+  :root:not([data-theme="light"]) .qsearch-input { background: #0f0f0f; border-color: #2a2a2a; color: #e8e8e8; }
+  :root:not([data-theme="light"]) .qsearch-filters select { background-color: #0f0f0f; border-color: #2a2a2a; color: #ccc; }
+}
+
+/* When the sticky qsearch is present, push the floating mobile-back-btn down so they don't collide */
+@media (max-width: 767px) {
+  body.has-qsearch .mobile-back-btn { top: calc(64px + env(safe-area-inset-top, 0px)); }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
+   Polish pass — skeleton loaders, sticky filters, touch targets, glass cards,
+   smooth scroll, fade-in-on-scroll
+   ──────────────────────────────────────────────────────────────────────────── */
+
+/* Smooth scroll everywhere */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .qa-card, .prop-card, .stt, .btn, .tab-bar, .qsearch-modal,
+  .ts-fade-in, .ts-fade-in-up { transition: none !important; animation: none !important; }
+}
+
+/* ─── Skeleton loader card (used in place of spinners on listing grids) ─── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton-card {
+  background: var(--white, #fff);
+  border: 1px solid var(--border, #e8e4dc);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.skeleton-img {
+  height: 175px; width: 100%;
+  background: linear-gradient(90deg, #ede9e1 0%, #f5f2ec 50%, #ede9e1 100%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+.skeleton-body { padding: .9rem 1rem 1rem; }
+.skeleton-line {
+  height: 12px; border-radius: 6px;
+  background: linear-gradient(90deg, #ede9e1 0%, #f5f2ec 50%, #ede9e1 100%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite linear;
+  margin-bottom: 8px;
+}
+.skeleton-line.sm { width: 35%; height: 9px; }
+.skeleton-line.md { width: 80%; }
+.skeleton-line.lg { width: 60%; height: 18px; }
+.skeleton-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem;
+}
+@media (min-width: 640px) { .skeleton-grid { grid-template-columns: repeat(3, 1fr); gap: .9rem; } }
+@media (min-width: 1024px) { .skeleton-grid { grid-template-columns: repeat(4, 1fr); gap: 1rem; } }
+[data-theme="dark"] .skeleton-card { background: #1a1a1a; border-color: #2a2a2a; }
+[data-theme="dark"] .skeleton-img,
+[data-theme="dark"] .skeleton-line {
+  background: linear-gradient(90deg, #1f1f1f 0%, #2a2a2a 50%, #1f1f1f 100%);
+  background-size: 800px 100%;
+}
+
+/* ─── Sticky search/filter toolbar (used by search.html) ─── */
+@supports (backdrop-filter: blur(12px)) {
+  .sr-topbar, .results-header {
+    background: rgba(255,255,255,.92) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
+  }
+  [data-theme="dark"] .sr-topbar,
+  [data-theme="dark"] .results-header {
+    background: rgba(20,20,20,.92) !important;
+  }
+}
+/* On mobile, stick both the search topbar AND the quick-filter row below
+   it so filters travel with the user as they scroll the results. */
+@media (max-width: 767px) {
+  .sr-topbar { position: sticky; top: 0; z-index: 90; }
+}
+
+/* ─── Larger touch targets on mobile (Apple HIG: ≥ 44 × 44 px) ─── */
+@media (max-width: 767px) {
+  .btn, .tab-item, .nav-back, .mobile-back-btn,
+  .pill, .filter-btn, .qf-chip, .qf-pill, .stt,
+  .pg-btn, .qsearch-shortcut, .qsearch-tabs button {
+    min-height: 44px;
+  }
+  .qsearch-trigger { min-height: 48px; }
+  .form-input, .ct-inp, .com-inp, .sr-input, .topbar-search,
+  .qsearch-input, .search-inp {
+    min-height: 46px;
+    font-size: 16px;     /* prevents iOS Safari from zooming on focus */
+  }
+}
+
+/* ─── Glassmorphism quick-action cards on the home page ─── */
+@supports (backdrop-filter: blur(10px)) {
+  .qa-card {
+    background: rgba(255,255,255,.7) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(10px);
+    backdrop-filter: saturate(180%) blur(10px);
+    border: 1px solid rgba(255,255,255,.55) !important;
+    box-shadow: 0 6px 22px rgba(0,0,0,.05);
+  }
+  [data-theme="dark"] .qa-card {
+    background: rgba(26,26,26,.6) !important;
+    border-color: rgba(255,255,255,.06) !important;
+  }
+}
+
+/* ─── Subtle fade-in-on-scroll for sections (added by app.js) ─── */
+.ts-fade-in,
+.ts-fade-in-up {
+  opacity: 0;
+  transition: opacity .55s ease, transform .55s cubic-bezier(.22,.8,.36,1);
+}
+.ts-fade-in-up { transform: translateY(18px); }
+.ts-fade-in.ts-shown,
+.ts-fade-in-up.ts-shown {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Better vertical spacing for content sections ─── */
+@media (max-width: 767px) {
+  .section { padding: 2.25rem 1.1rem; }
+}
+.why-section, .cta-banner { padding-top: 3rem; padding-bottom: 3rem; }
+@media (min-width: 768px) {
+  .why-section, .cta-banner { padding-top: 4rem; padding-bottom: 4rem; }
+}
+
+/* ─── Listing image polish — graceful fade-in when src loads ─── */
+.prop-card-img img {
+  opacity: 0;
+  transition: opacity .35s ease, transform .35s ease !important;
+}
+.prop-card-img img.loaded,
+.prop-card-img img[loading="lazy"]:not([src=""]) {
+  opacity: 1;
+}
+
+/* ─── Scrollbar polish (thin, themed) ─── */
+@media (min-width: 768px) {
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background: rgba(26,92,69,.18); border-radius: 50px; }
+  *::-webkit-scrollbar-thumb:hover { background: rgba(26,92,69,.32); }
+  [data-theme="dark"] *::-webkit-scrollbar-thumb { background: rgba(126,201,168,.18); }
+}
