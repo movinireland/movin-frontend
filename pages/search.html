@@ -200,17 +200,6 @@
   </div>
 
   <!-- Results header -->
-  <div id="ai-banner" style="display:none;background:linear-gradient(135deg,#1a5c45,#0e3d2e);padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem">
-    <div style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-    </div>
-    <div style="flex:1;min-width:0">
-      <div style="font-size:11px;color:rgba(255,255,255,.6);font-weight:600;text-transform:uppercase;letter-spacing:.5px">AI Search results for</div>
-      <div style="font-size:13px;color:#fff;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="ai-query-label"></div>
-    </div>
-    <a href="javascript:history.back()" style="font-size:12px;color:rgba(255,255,255,.6);text-decoration:none;flex-shrink:0">← Edit search</a>
-  </div>
-
   <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border)">
     <div class="results-count" id="result-count" style="font-size:13px;color:#888">Loading…</div>
     <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
@@ -369,20 +358,6 @@
         onSearchCountyChange()
       }
     }
-
-    // Show AI banner
-    if (isAISearch) {
-      var banner = document.getElementById('ai-banner')
-      var label  = document.getElementById('ai-query-label')
-      if (banner) banner.style.display = 'flex'
-      if (label)  label.textContent = '"' + (urlP.get('q') || 'your search') + '"'
-    }
-
-    // Apply AI params to filters
-    if (urlP.get('bedrooms')) { var qfB = document.getElementById('qf-beds'); if(qfB) qfB.value = urlP.get('bedrooms') }
-    if (urlP.get('min_price')) { var qfMi = document.getElementById('qf-min'); if(qfMi) qfMi.value = urlP.get('min_price') }
-    if (urlP.get('max_price')) { var qfMa = document.getElementById('qf-max'); if(qfMa) qfMa.value = urlP.get('max_price') }
-    if (urlP.get('property_type')) { var qfPt = document.getElementById('qf-type'); if(qfPt) qfPt.value = urlP.get('property_type') }
     if (urlP.get('q')) {
       searchQuery = urlP.get('q')
       document.getElementById('search-q').value = searchQuery

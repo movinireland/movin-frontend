@@ -204,35 +204,6 @@ button,input,select{font-family:inherit}
 .img-c{background:linear-gradient(135deg,#d4e4f5,#e8f0fc)}
 .img-d{background:linear-gradient(135deg,#e8d4f5,#f4eafc)}
 .img-e{background:linear-gradient(135deg,#d4f5d4,#eafcea)}
-
-    /* ── AI Search ── */
-    .ai-divider{display:flex;align-items:center;gap:10px;padding:.85rem 1rem .65rem;position:relative;z-index:2}
-    .ai-divider-line{flex:1;height:1px;background:rgba(255,255,255,.15)}
-    .ai-divider-text{font-size:11px;color:rgba(255,255,255,.45);font-weight:500;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
-    .ai-search-card{background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:.85rem 1rem;margin:0 0 1.5rem;position:relative;z-index:2;transition:all .2s}
-    .ai-search-card:focus-within{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.32);box-shadow:0 4px 24px rgba(0,0,0,.15)}
-    .ai-label{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:.55rem}
-    .ai-label-dot{width:6px;height:6px;border-radius:50%;background:#e07b3f;animation:aiPulse 2s infinite;flex-shrink:0}
-    @keyframes aiPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
-    .ai-input-row{display:flex;gap:8px;align-items:flex-end}
-    .ai-inp{flex:1;background:transparent;border:none;outline:none;font-size:14px;color:#fff;font-family:'DM Sans',sans-serif;resize:none;line-height:1.5;min-height:22px;max-height:80px;overflow-y:auto}
-    .ai-inp::placeholder{color:rgba(255,255,255,.32)}
-    .ai-inp::-webkit-scrollbar{display:none}
-    .ai-go{background:#e07b3f;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:background .15s;display:flex;align-items:center;gap:6px}
-    .ai-go:hover{background:#c9642a}
-    .ai-go:disabled{background:rgba(255,255,255,.2);cursor:not-allowed}
-    .ai-examples{display:flex;gap:6px;flex-wrap:wrap;margin-top:.65rem}
-    .ai-eg{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:50px;padding:4px 12px;font-size:11px;color:rgba(255,255,255,.65);cursor:pointer;transition:all .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex-shrink:0}
-    .ai-eg:hover,.ai-eg:active{background:rgba(255,255,255,.2);color:#fff}
-    .ai-thinking{display:none;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.6);margin-top:.65rem}
-    .ai-thinking.show{display:flex}
-    .ai-dot{width:5px;height:5px;border-radius:50%;background:#e07b3f;animation:aiDots .8s infinite}
-    .ai-dot:nth-child(2){animation-delay:.15s}
-    .ai-dot:nth-child(3){animation-delay:.3s}
-    @keyframes aiDots{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
-    .ai-result-chips{display:none;gap:6px;flex-wrap:wrap;margin-top:.65rem}
-    .ai-result-chips.show{display:flex}
-    .ai-chip{background:rgba(46,204,138,.15);border:1px solid rgba(46,204,138,.3);border-radius:50px;padding:3px 10px;font-size:11px;color:#2ecc8a;font-weight:500}
 </style>
 </head>
 <body>
@@ -391,40 +362,6 @@ button,input,select{font-family:inherit}
   </div>
 </div>
 
-  <!-- AI Search -->
-  <div class="ai-divider">
-    <div class="ai-divider-line"></div>
-    <div class="ai-divider-text">or try AI search</div>
-    <div class="ai-divider-line"></div>
-  </div>
-  <div class="ai-search-card" id="ai-search-card">
-    <div class="ai-label">
-      <div class="ai-label-dot"></div>
-      AI-powered search
-    </div>
-    <div class="ai-input-row">
-      <textarea class="ai-inp" id="ai-inp" rows="1"
-        placeholder="e.g. 3 bed house in Cork under €400k with a garden..."
-        oninput="autoResizeAI(this)"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runAISearch()}"></textarea>
-      <button class="ai-go" id="ai-go-btn" onclick="runAISearch()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Search
-      </button>
-    </div>
-    <div class="ai-examples">
-      <div class="ai-eg" onclick="setAIExample(this)">3 bed in Dublin 6 under €500k</div>
-      <div class="ai-eg" onclick="setAIExample(this)">2 bed apartment Cork to rent</div>
-      <div class="ai-eg" onclick="setAIExample(this)">Family home Galway with garden</div>
-      <div class="ai-eg" onclick="setAIExample(this)">1 bed Dublin under €1,500/mo</div>
-    </div>
-    <div class="ai-thinking" id="ai-thinking">
-      <div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div>
-      <span>AI is understanding your search…</span>
-    </div>
-    <div class="ai-result-chips" id="ai-result-chips"></div>
-  </div>
-</div>
 <div class="stats-strip">
   <div class="stat-cell"><div class="stat-n" id="stat-count" style="font-size:22px;font-weight:900">—</div><div class="stat-l">Live listings</div></div>
   <div class="stat-cell"><div class="stat-n">32</div><div class="stat-l">Counties</div></div>
@@ -601,84 +538,6 @@ function updateNav(){
   document.getElementById('nav-auth-area').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary btn-sm">${user?.name?.split(' ')[0]||'Account'}</a>`
   document.getElementById('mobile-menu-footer').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center">My dashboard →</a>`
 }
-  // ── AI Search ──────────────────────────────────────────────────────────────
-  function autoResizeAI(el) {
-    el.style.height = 'auto'
-    el.style.height = Math.min(el.scrollHeight, 80) + 'px'
-  }
-
-  function setAIExample(el) {
-    var inp = document.getElementById('ai-inp')
-    inp.value = el.textContent
-    autoResizeAI(inp)
-    inp.focus()
-  }
-
-  async function runAISearch() {
-    var query = (document.getElementById('ai-inp').value || '').trim()
-    if (!query) { document.getElementById('ai-inp').focus(); return }
-    var btn = document.getElementById('ai-go-btn')
-    var thinking = document.getElementById('ai-thinking')
-    var chips = document.getElementById('ai-result-chips')
-    btn.disabled = true
-    thinking.classList.add('show')
-    chips.classList.remove('show')
-    chips.innerHTML = ''
-    try {
-      var res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 300,
-          system: 'You are a property search parser for an Irish property website. Extract search parameters from natural language. Respond with ONLY valid JSON. Fields: listing_type (sale/rent/share), county (Irish county), address_area (specific area/town), bedrooms (number), bathrooms (number), min_price (euros), max_price (euros), property_type (house/apartment/bungalow/site). For rent max_price = monthly rent. Only include clearly mentioned fields.',
-          messages: [{ role: 'user', content: 'Parse: "' + query + '"' }]
-        })
-      })
-      var data = await res.json()
-      var text = (data.content && data.content[0]) ? data.content[0].text : '{}'
-      var params = {}
-      try { var m = text.match(/\{[\s\S]*\}/); params = m ? JSON.parse(m[0]) : {} } catch(e) {}
-
-      // Show chips of what AI understood
-      var chipHTML = []
-      if (params.listing_type) chipHTML.push(params.listing_type === 'rent' ? 'To Rent' : params.listing_type === 'share' ? 'Sharing' : 'For Sale')
-      if (params.county)        chipHTML.push('📍 ' + params.county)
-      if (params.address_area)  chipHTML.push('🗺 ' + params.address_area)
-      if (params.bedrooms)      chipHTML.push('🛏 ' + params.bedrooms + '+ beds')
-      if (params.bathrooms)     chipHTML.push('🚿 ' + params.bathrooms + '+ baths')
-      if (params.property_type) chipHTML.push('🏗 ' + params.property_type)
-      if (params.max_price)     chipHTML.push('💰 Max €' + parseInt(params.max_price).toLocaleString('en-IE'))
-      if (params.min_price)     chipHTML.push('💰 From €' + parseInt(params.min_price).toLocaleString('en-IE'))
-
-      if (chipHTML.length) {
-        chips.innerHTML = chipHTML.map(function(c) { return '<span class="ai-chip">' + c + '</span>' }).join('')
-        chips.classList.add('show')
-      }
-
-      // Build URL and navigate
-      var p = new URLSearchParams()
-      p.set('ai', '1')
-      p.set('q', query)
-      if (params.listing_type)  p.set('listing_type',  params.listing_type)
-      if (params.county)        p.set('county',         params.county)
-      if (params.address_area)  p.set('q',              params.address_area)
-      if (params.bedrooms)      p.set('bedrooms',       params.bedrooms)
-      if (params.bathrooms)     p.set('bathrooms',      params.bathrooms)
-      if (params.min_price)     p.set('min_price',      params.min_price)
-      if (params.max_price)     p.set('max_price',      params.max_price)
-      if (params.property_type) p.set('property_type',  params.property_type)
-
-      await new Promise(function(r) { setTimeout(r, 700) })
-      window.location.href = 'pages/search.html?' + p.toString()
-    } catch(e) {
-      window.location.href = 'pages/search.html?q=' + encodeURIComponent(query)
-    } finally {
-      btn.disabled = false
-      thinking.classList.remove('show')
-    }
-  }
-
 loadFeatured()
 updateNav()
 </script>
