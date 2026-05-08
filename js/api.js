@@ -127,6 +127,35 @@ const listings = {
 
   async trackView(id) {
     return request('POST', `/api/listings/${id}/view`).catch(() => {})
+  },
+
+  /*
+   * Notify Movin admins (dev@movin.ie) that a new listing needs approval.
+   * Tries the backend's admin-notify endpoint first; falls back to a generic
+   * notification endpoint so the call still has a chance of succeeding even
+   * if the backend evolves. Failure is silent — never block the user flow.
+   *
+   * Backend should email dev@movin.ie with the listing summary + a deep link
+   * to the admin moderation page.
+   */
+  async notifyAdminOfNewListing(listingId, summary = {}) {
+    const payload = {
+      listing_id: listingId,
+      summary,
+      admin_email: 'dev@movin.ie',
+      reason: 'new_listing_pending_approval',
+      submitted_at: new Date().toISOString()
+    }
+    const tries = [
+      ['POST', `/api/listings/${listingId}/notify-admin`],
+      ['POST', '/api/admin/notifications'],
+      ['POST', '/api/notify']
+    ]
+    for (const [method, path] of tries) {
+      try { return await request(method, path, payload) }
+      catch (e) { /* try next */ }
+    }
+    return null
   }
 }
 

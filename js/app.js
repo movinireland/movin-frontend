@@ -388,6 +388,8 @@ function renderFooter() {
         '<div>' +
           '<div class="footer-col-title">Tools</div>' +
           '<div class="footer-links">' +
+            '<a href="' + root + 'pages/drive-time.html">Find by drive time</a>' +
+            '<a href="' + root + 'pages/latest.html">Latest listings</a>' +
             '<a href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
             '<a href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
             '<a href="' + root + 'pages/tools.html#stamp">Stamp duty</a>' +
@@ -600,7 +602,7 @@ if (document.readyState === 'loading') {
     if (isHome()) return 'home'
     if (/\/map-search\.html$/.test(p)) return 'map'
     if (/\/list\.html$/.test(p)) return 'list'
-    if (/\/(search|listing|sold|area|neighbourhood|agent|compare|commercial)\.html$/.test(p)) return 'search'
+    if (/\/(search|listing|sold|area|neighbourhood|agent|compare|commercial|latest|drive-time)\.html$/.test(p)) return 'search'
     if (/\/(dashboard|login|register|payment-success)/.test(p) || /\/admin\//.test(p)) return 'account'
     return ''
   }

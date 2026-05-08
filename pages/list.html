@@ -739,13 +739,34 @@
           }
         }
 
+        // Notify Movin admins (dev@movin.ie) for approval — never blocks UX
+        try {
+          API.listings.notifyAdminOfNewListing(createdListingId, {
+            title:         payload.title,
+            category:      listingCategory,
+            property_type: payload.property_type,
+            listing_type:  payload.listing_type,
+            county:        payload.county,
+            price:         payload.price,
+            owner:         (window.API.getUser && window.API.getUser()) || null
+          })
+        } catch(_) {}
+
         if (res.requires_payment) {
           toast('Redirecting to payment…', 'info')
           var payment = await API.payments.startCheckout(createdListingId)
           window.location.href = payment.checkout_url
         } else {
-          toast('🎉 Listing submitted for review!')
-          window.location.href = 'listing.html?id=' + createdListingId
+          toast(listingCategory === 'commercial'
+            ? '🎉 Commercial listing submitted for review!'
+            : '🎉 Listing submitted for review!')
+
+          // Commercial listings land on commercial.html; residential go to detail
+          if (listingCategory === 'commercial') {
+            window.location.href = 'commercial.html?new=' + createdListingId
+          } else {
+            window.location.href = 'listing.html?id=' + createdListingId
+          }
         }
 
       } catch(err) {

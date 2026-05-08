@@ -238,6 +238,24 @@
 <script>
   renderNav('commercial')
 
+  // Submission success banner (after listing a commercial property)
+  ;(function(){
+    var newId = new URLSearchParams(location.search).get('new')
+    if (!newId) return
+    var b = document.createElement('div')
+    b.style.cssText = 'max-width:1080px;margin:1rem auto -.25rem;padding:0 1rem'
+    b.innerHTML =
+      '<div style="background:linear-gradient(135deg,#1a5c45,#0e3d2e);color:#fff;border-radius:16px;padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:center;box-shadow:0 12px 30px rgba(26,92,69,.25)">' +
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ec9a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-weight:600;font-size:14px">Your commercial listing was submitted</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.75);font-weight:300;margin-top:2px">Our team has been notified and will review it shortly. You\'ll get an email when it\'s live.</div>' +
+      '</div>' +
+      '<button aria-label="Dismiss" onclick="this.closest(\'div[style*=max-width]\').remove()" style="background:rgba(255,255,255,.15);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">×</button>' +
+      '</div>'
+    document.querySelector('.com-stats').insertAdjacentElement('afterend', b)
+  })()
+
   // ── Commercial categories (matches MyHome's commercial taxonomy) ─────────
   var CATS = [
     { key:'all',         label:'All commercial', icon:'icon-house',   types:['commercial','office','retail','industrial','hospitality','healthcare','mixed-use','land','warehouse','leisure','investment','development','agricultural'] },

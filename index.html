@@ -406,7 +406,7 @@ button,input,select{font-family:inherit}
   <div class="qa-grid">
     <div class="qa-card" onclick="go('pages/list.html')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div><div class="qa-title">List your home</div><div class="qa-sub">First listing free</div></div>
     <div class="qa-card" onclick="go('pages/map-search.html')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div><div class="qa-title">Map search</div><div class="qa-sub">Browse by location</div></div>
-    <div class="qa-card" onclick="go('pages/tools.html#valuation')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg></div><div class="qa-title">Value my home</div><div class="qa-sub">Instant estimate</div></div>
+    <div class="qa-card" onclick="go('pages/drive-time.html')"><div class="qa-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="qa-title">Find by drive time</div><div class="qa-sub">Live near places that matter</div></div>
     <div class="qa-card" onclick="go('pages/tools.html#mortgage')"><div class="qa-icon"><svg width="28" height="28" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div><div class="qa-title">Mortgage calc</div><div class="qa-sub">What can I afford?</div></div>
   </div>
 </div>
@@ -414,7 +414,7 @@ button,input,select{font-family:inherit}
 <div class="section">
   <div class="section-hdr">
     <h2 class="section-title">Latest listings</h2>
-    <span class="see-all" onclick="go('pages/search.html')">See all →</span>
+    <span class="see-all" onclick="go('pages/latest.html')">See all →</span>
   </div>
   <div class="listings-grid" id="featured-grid">
     <div class="loading-wrap"><div class="spinner"></div></div>
@@ -468,7 +468,9 @@ button,input,select{font-family:inherit}
   <div class="footer-logo">mov<span>in</span></div>
   <div class="footer-links">
     <a href="pages/search.html">Search</a>
-    <a href="pages/map-search.html">Map search</a>
+    <a href="pages/latest.html">Latest</a>
+    <a href="pages/drive-time.html">Drive time</a>
+    <a href="pages/map-search.html">Map</a>
     <a href="pages/commercial.html">Commercial</a>
     <a href="pages/list.html">List</a>
     <a href="pages/tools.html">Tools</a>
@@ -561,11 +563,42 @@ function quickSearch(county,label){searchCounty=county;document.getElementById('
 async function loadFeatured(){
   const grid=document.getElementById('featured-grid')
   try{
-    const res=await window.API.listings.search({sort:'newest',limit:4})
-    document.getElementById('stat-count').textContent=(res.total||0)>0?(res.total).toLocaleString()+'+':'—'
-    if(!res.listings||!res.listings.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">No listings yet — <a href="pages/list.html" style="color:#1a5c45;font-weight:500">be the first!</a></div>';return}
-    grid.innerHTML=res.listings.map(l=>buildPropertyCard(l)).join('')
-  }catch(e){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">Could not load listings.</div>'}
+    // Pull a wider net so we can mix residential + commercial, then filter to last 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000)
+    const seen = {}
+    let pool = []
+    let total = 0
+
+    async function pull(params){
+      try{
+        const r = await window.API.listings.search(params)
+        if (r && Array.isArray(r.listings)){
+          if (r.total) total = Math.max(total, r.total)
+          r.listings.forEach(l => { if (!seen[l.id]) { seen[l.id]=1; pool.push(l) } })
+        }
+      } catch(_) {}
+    }
+
+    await pull({sort:'newest',limit:60})
+    // Sprinkle in commercial property types that may not surface in the default newest sort
+    await Promise.all(['office','retail','industrial','hospitality','warehouse','land','commercial']
+      .map(t => pull({sort:'newest',limit:20,property_type:t})))
+
+    document.getElementById('stat-count').textContent = total > 0 ? total.toLocaleString()+'+' : (pool.length ? pool.length+'+' : '—')
+
+    const fresh = pool
+      .filter(l => l.created_at && new Date(l.created_at) >= sevenDaysAgo)
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 4)
+
+    if (!fresh.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">No listings yet — <a href="pages/list.html" style="color:#1a5c45;font-weight:500">be the first!</a></div>'
+      return
+    }
+    grid.innerHTML = fresh.map(l => buildPropertyCard(l)).join('')
+  }catch(e){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">Could not load listings.</div>'
+  }
 }
 function updateNav(){
   if(!window.API||!window.API.auth.isLoggedIn())return

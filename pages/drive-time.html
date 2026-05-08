@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){
+  var t=localStorage.getItem('movin_theme');
+  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Find homes by drive time – Movin.ie</title>
+  <meta name="description" content="Live near places that matter most to you. Find Irish homes within your ideal commute or drive-time radius."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Movin"/>
+  <style>
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'DM Sans',sans-serif;background:#f7f5f0;color:#1a1a1a;overflow-x:hidden}
+
+    /* ── Top filter bar ── */
+    .dt-bar{
+      position:sticky;top:0;z-index:90;background:rgba(255,255,255,.96);
+      -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px);
+      border-bottom:1px solid var(--border);padding:.75rem 1rem
+    }
+    .dt-bar-inner{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+    .dt-toolbar-row1{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;width:100%}
+
+    .dt-back{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:38px;height:38px;border-radius:50%;
+      background:var(--gl);border:1px solid rgba(26,92,69,.18);
+      color:var(--g);cursor:pointer;flex-shrink:0;
+      transition:all .18s ease;-webkit-tap-highlight-color:transparent;padding:0
+    }
+    .dt-back:hover{background:var(--g);color:#fff;transform:translateX(-2px);box-shadow:0 6px 18px rgba(26,92,69,.25)}
+    .dt-back svg{width:18px;height:18px}
+
+    .dt-buy-pill{
+      display:inline-flex;align-items:center;gap:6px;background:#fafaf8;border:1.5px solid var(--border);
+      border-radius:50px;padding:9px 14px;font-size:13px;font-weight:500;color:#444;cursor:pointer;
+      font-family:inherit;-webkit-tap-highlight-color:transparent
+    }
+    .dt-buy-pill svg{width:12px;height:12px}
+
+    .dt-loc{
+      flex:1;min-width:200px;display:flex;align-items:center;gap:8px;
+      background:#fafaf8;border:1.5px solid var(--border);border-radius:50px;
+      padding:6px 8px 6px 14px;transition:border-color .15s
+    }
+    .dt-loc:focus-within{border-color:var(--g);background:#fff}
+    .dt-loc-tag{
+      width:24px;height:24px;border-radius:50%;background:var(--g);color:#fff;
+      display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0
+    }
+    .dt-loc.b .dt-loc-tag{background:var(--o)}
+    .dt-loc input{
+      flex:1;min-width:0;border:none;background:transparent;font-family:inherit;font-size:13px;
+      outline:none;padding:6px 0;color:var(--text,#111)
+    }
+    .dt-loc-clear{
+      background:transparent;border:none;color:#aaa;cursor:pointer;font-size:16px;
+      width:24px;height:24px;display:none;align-items:center;justify-content:center;border-radius:50%
+    }
+    .dt-loc-clear:hover{background:#f0ede6;color:#666}
+    .dt-loc.has-value .dt-loc-clear{display:inline-flex}
+
+    .dt-pill,.dt-time{
+      display:inline-flex;align-items:center;gap:5px;background:#fafaf8;border:1.5px solid var(--border);
+      border-radius:50px;padding:9px 14px;font-size:13px;font-weight:500;color:#444;cursor:pointer;
+      font-family:inherit;-webkit-tap-highlight-color:transparent;white-space:nowrap
+    }
+    .dt-pill svg,.dt-time svg{width:12px;height:12px}
+    .dt-time.on{background:var(--gl);border-color:var(--g);color:var(--g)}
+
+    .dt-toolbar-row2{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;width:100%}
+    .dt-time-label{font-size:11px;color:#888;font-weight:500;text-transform:uppercase;letter-spacing:.5px;margin-right:.25rem}
+    .dt-mode{display:flex;background:#f0ede6;border-radius:50px;padding:3px;gap:2px}
+    .dt-mode button{
+      background:transparent;border:none;padding:6px 11px;border-radius:50px;
+      font-size:12px;font-weight:500;color:#888;cursor:pointer;font-family:inherit;
+      display:inline-flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent
+    }
+    .dt-mode button.on{background:#fff;color:var(--g);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+    .dt-mode button svg{width:13px;height:13px}
+
+    .dt-times{display:flex;gap:5px;flex-wrap:wrap}
+
+    /* ── Layout ── */
+    .dt-shell{
+      display:grid;grid-template-columns:minmax(360px,420px) 1fr;
+      height:calc(100vh - var(--nav-h, 64px) - 70px);min-height:560px
+    }
+    @media(max-width:900px){
+      .dt-shell{grid-template-columns:1fr;height:auto}
+      .dt-side{order:2;max-height:none}
+      .dt-map-wrap{order:1;height:46vh;min-height:360px}
+    }
+
+    /* ── Side panel ── */
+    .dt-side{
+      background:#fff;border-right:1px solid var(--border);overflow-y:auto;
+      display:flex;flex-direction:column;gap:0
+    }
+    .dt-empty-state{padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1rem}
+    .dt-empty-arrow{display:flex;align-items:flex-start;gap:10px;color:var(--g);font-size:13px;line-height:1.5}
+    .dt-empty-arrow svg{flex-shrink:0;margin-top:2px}
+    .dt-empty-arrow .dt-arrow-tip{
+      flex:1;border:1.5px dashed rgba(26,92,69,.5);border-radius:14px;padding:.6rem .85rem;
+      font-size:12px;color:var(--g);background:rgba(26,92,69,.04);font-weight:500
+    }
+    .dt-empty-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:#111;line-height:1.2;margin-top:1rem}
+    .dt-empty-sub{font-size:13px;color:#888;font-weight:300}
+
+    .dt-steps{display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+    .dt-step{display:flex;gap:12px;align-items:center;padding:1rem;background:#fafaf8;border:1px solid var(--border);border-radius:14px}
+    .dt-step-icon{
+      width:36px;height:36px;border-radius:10px;background:var(--gl);color:var(--g);
+      display:flex;align-items:center;justify-content:center;flex-shrink:0
+    }
+    .dt-step-icon svg{width:18px;height:18px}
+    .dt-step-text{font-size:13px;color:#555;font-weight:300;line-height:1.5}
+    .dt-step-text strong{color:#111;font-weight:600}
+    .dt-step:nth-child(2) .dt-step-icon{background:#fdf0e6;color:var(--o)}
+
+    .dt-cta{
+      margin:1rem 1.5rem 2rem;padding:1rem;background:linear-gradient(135deg,#1a5c45,#0e3d2e);
+      color:#fff;border-radius:14px;font-size:12px;font-weight:300;line-height:1.5;
+      display:flex;gap:10px;align-items:flex-start
+    }
+    .dt-cta svg{width:20px;height:20px;flex-shrink:0;margin-top:2px;color:#7ec9a8}
+
+    /* ── Result list ── */
+    .dt-results-hdr{
+      padding:.75rem 1.25rem;border-bottom:1px solid var(--border);background:#fafaf8;
+      display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#555;position:sticky;top:0;z-index:1
+    }
+    .dt-results-hdr strong{color:#111;font-weight:700}
+    .dt-results-hdr .dt-clear{font-size:12px;color:var(--g);cursor:pointer;font-weight:500;background:none;border:none;font-family:inherit}
+    .dt-results-hdr .dt-clear:hover{text-decoration:underline}
+
+    .dt-result{
+      display:flex;gap:.85rem;padding:.85rem 1.25rem;border-bottom:1px solid #f5f2ec;
+      cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s
+    }
+    .dt-result:hover{background:#fafaf8}
+    .dt-result-img{
+      width:84px;height:64px;border-radius:10px;flex-shrink:0;overflow:hidden;background:var(--gl);
+      display:flex;align-items:center;justify-content:center;font-size:22px
+    }
+    .dt-result-img img{width:100%;height:100%;object-fit:cover}
+    .dt-result-info{flex:1;min-width:0}
+    .dt-result-price{font-size:15px;font-weight:600;color:var(--g);margin-bottom:1px}
+    .dt-result-title{font-size:13px;font-weight:500;color:#111;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dt-result-meta{font-size:11px;color:#888;display:flex;gap:8px;flex-wrap:wrap}
+
+    .dt-result-loading,.dt-result-empty{padding:2rem 1.5rem;text-align:center;font-size:13px;color:#888}
+
+    /* ── Map ── */
+    .dt-map-wrap{position:relative}
+    #dt-map{position:absolute;inset:0;width:100%;height:100%}
+    .dt-map-status{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      background:#fff;padding:1.25rem 1.75rem;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.15);
+      text-align:center;z-index:5
+    }
+    .dt-map-status .spinner{margin:0 auto .5rem}
+    .dt-map-help{
+      position:absolute;left:50%;bottom:1rem;transform:translateX(-50%);
+      background:#1a1a1a;color:#fff;padding:.65rem 1rem;border-radius:12px;font-size:12px;
+      box-shadow:0 8px 22px rgba(0,0,0,.25);max-width:90%;text-align:center;z-index:6
+    }
+    .dt-map-help kbd{background:rgba(255,255,255,.15);padding:1px 6px;border-radius:4px;font-family:inherit;font-weight:600}
+
+    .dt-circle-info{
+      position:absolute;top:1rem;left:1rem;background:#fff;padding:.5rem .85rem;border-radius:50px;
+      box-shadow:0 4px 16px rgba(0,0,0,.15);font-size:12px;color:#444;z-index:6;display:none;align-items:center;gap:8px;font-weight:500
+    }
+    .dt-circle-info.on{display:inline-flex}
+    .dt-circle-info .dot{width:10px;height:10px;border-radius:50%;background:var(--g)}
+    .dt-circle-info .dot.b{background:var(--o)}
+
+    /* ── Suggestion dropdown ── */
+    .dt-sugg{
+      position:absolute;background:#fff;border:1px solid var(--border);
+      border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.14);z-index:200;
+      max-height:280px;overflow-y:auto;display:none;min-width:280px
+    }
+    .dt-sugg.open{display:block}
+    .dt-sugg-item{
+      padding:.7rem 1rem;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;
+      border-bottom:1px solid #f5f2ec;-webkit-tap-highlight-color:transparent
+    }
+    .dt-sugg-item:hover,.dt-sugg-item:active{background:var(--gl)}
+    .dt-sugg-item:last-child{border-bottom:none}
+    .dt-sugg-icon{color:var(--g);font-size:14px;display:inline-flex}
+    .dt-sugg-main{font-weight:500;color:#111}
+    .dt-sugg-sub{font-size:11px;color:#aaa}
+    .dt-sugg-tag{font-size:10px;padding:2px 7px;border-radius:20px;background:var(--gl);color:var(--g);font-weight:500;margin-left:auto;flex-shrink:0}
+
+    /* Dark mode */
+    [data-theme="dark"] body{background:#0f0f0f;color:#e8e8e8}
+    [data-theme="dark"] .dt-bar{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+    [data-theme="dark"] .dt-buy-pill,[data-theme="dark"] .dt-loc,[data-theme="dark"] .dt-pill,[data-theme="dark"] .dt-time{background:#1a1a1a;border-color:#2a2a2a;color:#ccc}
+    [data-theme="dark"] .dt-loc input{color:#e8e8e8}
+    [data-theme="dark"] .dt-time.on{background:#0d2e1e;border-color:#2ecc8a;color:#7ec9a8}
+    [data-theme="dark"] .dt-mode{background:#0f0f0f}
+    [data-theme="dark"] .dt-mode button.on{background:#1a1a1a;color:#7ec9a8}
+    [data-theme="dark"] .dt-side{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .dt-step{background:#0f0f0f;border-color:#2a2a2a}
+    [data-theme="dark"] .dt-empty-title{color:#fff}
+    [data-theme="dark"] .dt-results-hdr{background:#0f0f0f;border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .dt-results-hdr strong{color:#fff}
+    [data-theme="dark"] .dt-result{border-color:#2a2a2a}
+    [data-theme="dark"] .dt-result:hover{background:#0f0f0f}
+    [data-theme="dark"] .dt-result-title{color:#e8e8e8}
+    [data-theme="dark"] .dt-sugg{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .dt-sugg-item{border-color:#2a2a2a}
+    [data-theme="dark"] .dt-sugg-main{color:#e8e8e8}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) body{background:#0f0f0f;color:#e8e8e8}
+      :root:not([data-theme="light"]) .dt-bar{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .dt-side{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .dt-result-title{color:#e8e8e8}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="main-nav"></nav>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Top filter bar -->
+<div class="dt-bar">
+  <div class="dt-bar-inner">
+
+    <div class="dt-toolbar-row1">
+      <button class="dt-back" aria-label="Back" onclick="window.movinGoBack ? movinGoBack() : history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      <select class="dt-buy-pill" id="dt-listing-type" style="padding-right:30px">
+        <option value="sale">Buy</option>
+        <option value="rent">Rent</option>
+        <option value="share">Sharing</option>
+      </select>
+
+      <div class="dt-loc" id="loc-a-wrap">
+        <span class="dt-loc-tag">A</span>
+        <input type="text" id="loc-a" placeholder="Enter first point of interest" autocomplete="off"/>
+        <button type="button" class="dt-loc-clear" onclick="clearPoint('a')" aria-label="Clear">×</button>
+      </div>
+
+      <div class="dt-loc b" id="loc-b-wrap">
+        <span class="dt-loc-tag">B</span>
+        <input type="text" id="loc-b" placeholder="Enter second point of interest (optional)" autocomplete="off"/>
+        <button type="button" class="dt-loc-clear" onclick="clearPoint('b')" aria-label="Clear">×</button>
+      </div>
+    </div>
+
+    <div class="dt-toolbar-row2">
+      <select class="dt-pill" id="dt-cat">
+        <option value="">Residential &amp; commercial</option>
+        <option value="residential">Residential only</option>
+        <option value="commercial">Commercial only</option>
+      </select>
+
+      <select class="dt-pill" id="dt-beds">
+        <option value="">Beds &amp; Baths</option>
+        <option value="1">1+ bed</option>
+        <option value="2">2+ beds</option>
+        <option value="3">3+ beds</option>
+        <option value="4">4+ beds</option>
+        <option value="5">5+ beds</option>
+      </select>
+
+      <select class="dt-pill" id="dt-price">
+        <option value="">Price (€)</option>
+        <option value="0-200000">Up to €200k</option>
+        <option value="200000-300000">€200k – €300k</option>
+        <option value="300000-500000">€300k – €500k</option>
+        <option value="500000-750000">€500k – €750k</option>
+        <option value="750000-1000000">€750k – €1m</option>
+        <option value="1000000-99000000">€1m+</option>
+      </select>
+
+      <span class="dt-time-label">Drive time</span>
+      <div class="dt-mode" role="tablist" aria-label="Travel mode">
+        <button class="on" data-mode="driving" onclick="setMode('driving',this)" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l2-7h14l2 7"/><path d="M3 13v6h2v-2h14v2h2v-6"/><circle cx="7" cy="16" r="1.5"/><circle cx="17" cy="16" r="1.5"/></svg>
+          Driving
+        </button>
+        <button data-mode="cycling" onclick="setMode('cycling',this)" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M6 17l4-7h4l3 7"/><circle cx="14" cy="6" r="1.5"/></svg>
+          Cycling
+        </button>
+        <button data-mode="walking" onclick="setMode('walking',this)" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="4" r="1.6"/><path d="M11 9l-3 7 4 1 1 4"/><path d="M14 12l3 1-1 4"/></svg>
+          Walking
+        </button>
+      </div>
+
+      <div class="dt-times" id="dt-times"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sugg lists (positioned via JS) -->
+<div class="dt-sugg" id="sugg-a"></div>
+<div class="dt-sugg" id="sugg-b"></div>
+
+<!-- Body -->
+<div class="dt-shell">
+
+  <aside class="dt-side" id="dt-side">
+    <div class="dt-empty-state" id="dt-empty">
+      <div class="dt-empty-arrow">
+        <svg width="50" height="40" viewBox="0 0 50 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <path d="M48 6c-16-2-30 4-38 18" stroke-dasharray="3 3"/>
+          <path d="M14 22l-4 2 2-4"/>
+        </svg>
+        <div class="dt-arrow-tip">Enter the first location to start searching</div>
+      </div>
+
+      <div>
+        <div class="dt-empty-title">Live near places that<br/>matter the most to you</div>
+        <p class="dt-empty-sub" style="margin-top:.5rem">All you need to do is tell us:</p>
+      </div>
+
+      <div class="dt-steps">
+        <div class="dt-step">
+          <div class="dt-step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="dt-step-text">The <strong>place you'd like to be near</strong> — work, school, family — and how long a commute you'll accept.</div>
+        </div>
+        <div class="dt-step">
+          <div class="dt-step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </div>
+          <div class="dt-step-text">Your <strong>budget and other property criteria</strong> — beds, price, type — and we'll do the rest.</div>
+        </div>
+      </div>
+
+      <div class="dt-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <div>You can add a <strong>second point of interest</strong> to find homes within drive time of <em>both</em> places — perfect for two commuters in one household.</div>
+      </div>
+    </div>
+
+    <div id="dt-list" style="display:none">
+      <div class="dt-results-hdr">
+        <span><strong id="dt-result-count">0</strong> homes match your drive-time</span>
+        <button type="button" class="dt-clear" onclick="resetSearch()">Reset</button>
+      </div>
+      <div id="dt-result-rows"></div>
+    </div>
+  </aside>
+
+  <div class="dt-map-wrap">
+    <div id="dt-map"></div>
+    <div class="dt-circle-info" id="dt-circle-info"></div>
+    <div class="dt-map-status" id="dt-map-status">
+      <div class="spinner"></div>
+      <div style="font-size:13px;color:#888">Loading map…</div>
+    </div>
+    <div class="dt-map-help" id="dt-map-help">
+      <strong>Tip:</strong> right-click the map to drop a pin and use it as your point of interest.
+    </div>
+  </div>
+
+</div>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav('drive-time')
+  document.body.setAttribute('data-no-back','')   // we already have a styled back button
+
+  // ── Drive-time state ─────────────────────────────────────────────────────
+  var pointA = null   // { name, lat, lng }
+  var pointB = null
+  var driveMins = 30
+  var travelMode = 'driving' // driving | cycling | walking
+  var ALL_LISTINGS = []   // last fetched
+  var SAVED = []
+  var map, circleA, circleB, markerA, markerB, listingMarkers = []
+
+  var TIME_OPTIONS = [10, 15, 20, 30, 45, 60]
+  // Approx mean speed in km/h used to convert mins → radius
+  var MODE_SPEEDS = { driving: 50, cycling: 18, walking: 5 }
+
+  // ── Counties + Dublin districts (location dictionary) ────────────────────
+  var DUBLIN = [
+    {code:'D1',name:'Dublin 1',area:'City Centre',lat:53.353,lng:-6.260},
+    {code:'D2',name:'Dublin 2',area:'City Centre South',lat:53.336,lng:-6.249},
+    {code:'D3',name:'Dublin 3',area:'Clontarf, Fairview',lat:53.367,lng:-6.215},
+    {code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook',lat:53.328,lng:-6.224},
+    {code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines',lat:53.319,lng:-6.260},
+    {code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough',lat:53.358,lng:-6.281},
+    {code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham',lat:53.339,lng:-6.292},
+    {code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin',lat:53.376,lng:-6.262},
+    {code:'D14',name:'Dublin 14',area:'Dundrum, Rathfarnham',lat:53.288,lng:-6.241},
+    {code:'D15',name:'Dublin 15',area:'Blanchardstown',lat:53.388,lng:-6.385},
+    {code:'D18',name:'Dublin 18',area:'Sandyford, Foxrock',lat:53.247,lng:-6.226},
+    {code:'D24',name:'Dublin 24',area:'Tallaght',lat:53.286,lng:-6.371}
+  ]
+  var COUNTIES = [
+    {name:'Dublin',     lat:53.349, lng:-6.260},
+    {name:'Cork',       lat:51.898, lng:-8.475},
+    {name:'Galway',     lat:53.270, lng:-9.057},
+    {name:'Limerick',   lat:52.668, lng:-8.630},
+    {name:'Waterford',  lat:52.259, lng:-7.110},
+    {name:'Kerry',      lat:52.155, lng:-9.567},
+    {name:'Meath',      lat:53.605, lng:-6.656},
+    {name:'Kildare',    lat:53.156, lng:-6.910},
+    {name:'Wicklow',    lat:52.980, lng:-6.044},
+    {name:'Wexford',    lat:52.336, lng:-6.464},
+    {name:'Kilkenny',   lat:52.654, lng:-7.244},
+    {name:'Clare',      lat:52.906, lng:-9.000},
+    {name:'Tipperary',  lat:52.473, lng:-8.161},
+    {name:'Donegal',    lat:54.654, lng:-8.110},
+    {name:'Mayo',       lat:53.853, lng:-9.299},
+    {name:'Sligo',      lat:54.276, lng:-8.476},
+    {name:'Leitrim',    lat:54.124, lng:-8.000},
+    {name:'Roscommon',  lat:53.627, lng:-8.190},
+    {name:'Longford',   lat:53.726, lng:-7.794},
+    {name:'Westmeath',  lat:53.535, lng:-7.337},
+    {name:'Offaly',     lat:53.235, lng:-7.713},
+    {name:'Laois',      lat:52.994, lng:-7.331},
+    {name:'Carlow',     lat:52.836, lng:-6.926},
+    {name:'Louth',      lat:53.918, lng:-6.539},
+    {name:'Monaghan',   lat:54.249, lng:-6.968},
+    {name:'Cavan',      lat:53.990, lng:-7.360}
+  ]
+
+  // ── Time-pill row ────────────────────────────────────────────────────────
+  function renderTimes(){
+    var el = document.getElementById('dt-times')
+    el.innerHTML = TIME_OPTIONS.map(function(m){
+      return '<button type="button" class="dt-time' + (m===driveMins?' on':'') + '" onclick="setTime(' + m + ', this)">' + m + ' min</button>'
+    }).join('')
+  }
+  window.setTime = function(m, el){
+    driveMins = m
+    document.querySelectorAll('.dt-time').forEach(function(b){b.classList.remove('on')})
+    if (el) el.classList.add('on')
+    drawCircles(); runSearch()
+  }
+  window.setMode = function(mode, el){
+    travelMode = mode
+    document.querySelectorAll('.dt-mode button').forEach(function(b){b.classList.remove('on')})
+    if (el) el.classList.add('on')
+    drawCircles(); runSearch()
+  }
+  renderTimes()
+
+  // ── Init Google Maps ─────────────────────────────────────────────────────
+  window.initMap = function(){
+    map = new google.maps.Map(document.getElementById('dt-map'), {
+      center: { lat: 53.42, lng: -7.95 },
+      zoom: 7,
+      disableDefaultUI: false,
+      zoomControl: true,
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: false,
+      gestureHandling: 'greedy',
+      styles: [
+        { featureType: 'poi', stylers: [{visibility:'simplified'}] },
+        { featureType: 'transit', stylers: [{visibility:'off'}] }
+      ]
+    })
+
+    var hideStatus = function(){ document.getElementById('dt-map-status').style.display = 'none' }
+    google.maps.event.addListenerOnce(map, 'idle', hideStatus)
+    setTimeout(hideStatus, 1500)
+
+    // Right-click to drop pin on map and use as point
+    map.addListener('rightclick', function(ev){
+      var p = { name: 'Custom location', lat: ev.latLng.lat(), lng: ev.latLng.lng() }
+      // Choose A if empty, else B
+      if (!pointA) setPoint('a', p)
+      else         setPoint('b', p)
+    })
+
+    // Auto-hide help banner after a few seconds
+    setTimeout(function(){
+      var h = document.getElementById('dt-map-help')
+      if (h) { h.style.transition = 'opacity .4s'; h.style.opacity = '0'; setTimeout(function(){ h.remove() }, 500) }
+    }, 6500)
+  }
+
+  // ── Suggestion typeahead ─────────────────────────────────────────────────
+  function buildSuggestions(q){
+    var Q = (q||'').toUpperCase().trim()
+    if (!Q) return []
+    var out = []
+    DUBLIN.forEach(function(d){
+      if (d.code.indexOf(Q) === 0 || d.name.toUpperCase().indexOf(Q) !== -1)
+        out.push({type:'district', label:d.name, sub:d.area, lat:d.lat, lng:d.lng})
+    })
+    COUNTIES.forEach(function(c){
+      if (c.name.toUpperCase().indexOf(Q) === 0 || c.name.toUpperCase().indexOf(Q) !== -1)
+        out.push({type:'county', label:c.name, sub:'County', lat:c.lat, lng:c.lng})
+    })
+    // Optional Eircode-ish entry
+    if (/^[A-Z][0-9]/.test(Q)){
+      out.unshift({type:'eircode', label:'Eircode: '+Q, sub:'Search by Eircode (approx.)', lat:53.349, lng:-6.260})
+    }
+    return out.slice(0, 7)
+  }
+
+  function attachSugg(inputId, suggId, slot){
+    var inp  = document.getElementById(inputId)
+    var box  = document.getElementById(suggId)
+    var wrap = document.getElementById('loc-' + slot + '-wrap')
+
+    function position(){
+      var r = wrap.getBoundingClientRect()
+      box.style.top = (r.bottom + 4 + window.scrollY) + 'px'
+      box.style.left = r.left + 'px'
+      box.style.width = r.width + 'px'
+    }
+
+    inp.addEventListener('input', function(){
+      var q = inp.value
+      wrap.classList.toggle('has-value', !!q.trim())
+      var items = buildSuggestions(q)
+      if (!items.length){ box.classList.remove('open'); return }
+      box.innerHTML = items.map(function(it){
+        var tag = it.type === 'district' ? 'Dublin' : it.type === 'eircode' ? 'Eircode' : 'County'
+        return '<div class="dt-sugg-item" data-payload=\'' + JSON.stringify(it).replace(/'/g,'&apos;').replace(/"/g,'&quot;') + '\'>'
+          + '<span class="dt-sugg-icon">'
+          +   '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'
+          + '</span>'
+          + '<div><div class="dt-sugg-main">' + it.label + '</div><div class="dt-sugg-sub">' + it.sub + '</div></div>'
+          + '<span class="dt-sugg-tag">' + tag + '</span>'
+          + '</div>'
+      }).join('')
+      box.querySelectorAll('.dt-sugg-item').forEach(function(it){
+        it.addEventListener('click', function(){
+          var payload = JSON.parse(it.getAttribute('data-payload').replace(/&apos;/g,"'").replace(/&quot;/g,'"'))
+          setPoint(slot, { name: payload.label, lat: payload.lat, lng: payload.lng })
+          box.classList.remove('open')
+        })
+      })
+      position(); box.classList.add('open')
+    })
+
+    inp.addEventListener('focus', function(){ if (box.innerHTML) { position(); box.classList.add('open') } })
+    document.addEventListener('click', function(e){
+      if (!wrap.contains(e.target) && !box.contains(e.target)) box.classList.remove('open')
+    })
+    window.addEventListener('resize', position)
+    window.addEventListener('scroll', position, true)
+  }
+  attachSugg('loc-a','sugg-a','a')
+  attachSugg('loc-b','sugg-b','b')
+
+  // ── Point management ─────────────────────────────────────────────────────
+  function setPoint(slot, p){
+    if (slot === 'a') pointA = p; else pointB = p
+    var inp = document.getElementById('loc-' + slot)
+    inp.value = p.name
+    document.getElementById('loc-' + slot + '-wrap').classList.add('has-value')
+    drawCircles()
+    runSearch()
+  }
+  window.clearPoint = function(slot){
+    if (slot === 'a') pointA = null; else pointB = null
+    var inp = document.getElementById('loc-' + slot); inp.value = ''
+    document.getElementById('loc-' + slot + '-wrap').classList.remove('has-value')
+    drawCircles()
+    runSearch()
+  }
+  window.resetSearch = function(){
+    clearPoint('a'); clearPoint('b')
+    document.getElementById('dt-empty').style.display = ''
+    document.getElementById('dt-list').style.display = 'none'
+  }
+
+  // ── Drawing circles + markers ────────────────────────────────────────────
+  function drawCircles(){
+    if (!map) return
+    if (markerA){ markerA.setMap(null); markerA = null }
+    if (markerB){ markerB.setMap(null); markerB = null }
+    if (circleA){ circleA.setMap(null); circleA = null }
+    if (circleB){ circleB.setMap(null); circleB = null }
+
+    var radiusKm = (MODE_SPEEDS[travelMode] || 50) * (driveMins / 60)
+    var radiusM  = radiusKm * 1000
+
+    var bounds = new google.maps.LatLngBounds()
+    var info = document.getElementById('dt-circle-info')
+
+    if (pointA){
+      circleA = new google.maps.Circle({
+        map, center: { lat: pointA.lat, lng: pointA.lng }, radius: radiusM,
+        strokeColor:'#1a5c45', strokeOpacity:.9, strokeWeight:2,
+        fillColor:'#1a5c45', fillOpacity:.10
+      })
+      markerA = new google.maps.Marker({
+        map, position:{ lat: pointA.lat, lng: pointA.lng }, label:{ text:'A', color:'#fff', fontWeight:'700' },
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor:'#1a5c45', fillOpacity:1, strokeColor:'#fff', strokeWeight:2.5 }
+      })
+      bounds.union(circleA.getBounds())
+    }
+    if (pointB){
+      circleB = new google.maps.Circle({
+        map, center: { lat: pointB.lat, lng: pointB.lng }, radius: radiusM,
+        strokeColor:'#e07b3f', strokeOpacity:.9, strokeWeight:2,
+        fillColor:'#e07b3f', fillOpacity:.10
+      })
+      markerB = new google.maps.Marker({
+        map, position:{ lat: pointB.lat, lng: pointB.lng }, label:{ text:'B', color:'#fff', fontWeight:'700' },
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 14, fillColor:'#e07b3f', fillOpacity:1, strokeColor:'#fff', strokeWeight:2.5 }
+      })
+      bounds.union(circleB.getBounds())
+    }
+
+    // Update info chip
+    if (pointA || pointB){
+      info.classList.add('on')
+      info.innerHTML =
+        (pointA ? '<span class="dot"></span><span>'+driveMins+' min ' + travelMode + ' · ' + pointA.name + '</span>' : '') +
+        (pointA && pointB ? '<span style="color:#ddd">·</span>' : '') +
+        (pointB ? '<span class="dot b"></span><span>' + pointB.name + '</span>' : '')
+      if (!bounds.isEmpty()) map.fitBounds(bounds, 80)
+    } else {
+      info.classList.remove('on')
+    }
+  }
+
+  // ── Distance helpers ─────────────────────────────────────────────────────
+  function haversineKm(lat1, lng1, lat2, lng2){
+    var R = 6371, dLat = (lat2-lat1)*Math.PI/180, dLng = (lng2-lng1)*Math.PI/180
+    var a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2
+    return 2*R*Math.asin(Math.sqrt(a))
+  }
+  function withinDriveTime(lat, lng){
+    var radiusKm = (MODE_SPEEDS[travelMode] || 50) * (driveMins / 60)
+    if (pointA && haversineKm(pointA.lat, pointA.lng, lat, lng) > radiusKm) return false
+    if (pointB && haversineKm(pointB.lat, pointB.lng, lat, lng) > radiusKm) return false
+    return true
+  }
+  function listingCoords(l){
+    if (l.latitude  && l.longitude)  return [parseFloat(l.latitude), parseFloat(l.longitude)]
+    if (l.lat && l.lng)              return [parseFloat(l.lat), parseFloat(l.lng)]
+    // Fallback — county centroid (so a listing without lat/lng still ranks roughly)
+    var c = COUNTIES.find(function(x){ return x.name === l.county })
+    return c ? [c.lat, c.lng] : null
+  }
+
+  // ── Run search whenever inputs change ────────────────────────────────────
+  function readFilterPayload(){
+    var lt = document.getElementById('dt-listing-type').value
+    var cat = document.getElementById('dt-cat').value
+    var beds = document.getElementById('dt-beds').value
+    var price = document.getElementById('dt-price').value
+    var min = '', max = ''
+    if (price && price.indexOf('-') !== -1){
+      var parts = price.split('-'); min = parts[0]; max = parts[1]
+    }
+    return { listing_type: lt, cat: cat, beds: beds, min: min, max: max }
+  }
+
+  function clearListingMarkers(){
+    listingMarkers.forEach(function(m){ m.setMap(null) })
+    listingMarkers = []
+  }
+  function paintListingMarkers(rows){
+    clearListingMarkers()
+    rows.slice(0, 80).forEach(function(l){
+      var c = listingCoords(l); if (!c) return
+      var m = new google.maps.Marker({
+        map, position:{ lat: c[0], lng: c[1] },
+        icon:{
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8, fillColor:'#1a5c45', fillOpacity:.9, strokeColor:'#fff', strokeWeight:2
+        },
+        title: l.title
+      })
+      m.addListener('click', function(){ window.location.href = 'listing.html?id='+l.id })
+      listingMarkers.push(m)
+    })
+  }
+
+  function fmtPrice(p, type){
+    if (!p) return '—'
+    return '€' + Number(p).toLocaleString() + (type === 'rent' || type === 'share' ? '/mo' : '')
+  }
+
+  function paintList(rows){
+    var listEl = document.getElementById('dt-list')
+    var emptyEl = document.getElementById('dt-empty')
+    var rowsEl = document.getElementById('dt-result-rows')
+    document.getElementById('dt-result-count').textContent = rows.length
+
+    if (!pointA && !pointB){ emptyEl.style.display = ''; listEl.style.display = 'none'; return }
+    emptyEl.style.display = 'none'; listEl.style.display = ''
+
+    if (!rows.length){
+      rowsEl.innerHTML = '<div class="dt-result-empty">No homes within ' + driveMins + ' min ' + travelMode + ' yet — try widening the time or another location.</div>'
+      return
+    }
+    rowsEl.innerHTML = rows.slice(0, 60).map(function(l){
+      var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
+      var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+      return ''
+        + '<div class="dt-result" onclick="window.location.href=\'listing.html?id=' + l.id + '\'">'
+        +   '<div class="dt-result-img">' + (imgSrc ? '<img src="'+imgSrc+'" alt=""/>' : '🏡') + '</div>'
+        +   '<div class="dt-result-info">'
+        +     '<div class="dt-result-price">' + fmtPrice(l.price, l.listing_type) + '</div>'
+        +     '<div class="dt-result-title">' + (l.title || '—') + '</div>'
+        +     '<div class="dt-result-meta">'
+        +       (l.bedrooms ? '<span>' + l.bedrooms + ' bed</span>' : '')
+        +       (l.bathrooms ? '<span>' + l.bathrooms + ' bath</span>' : '')
+        +       (l.address_area || l.county ? '<span>📍 ' + (l.address_area || l.county) + '</span>' : '')
+        +     '</div>'
+        +   '</div>'
+        + '</div>'
+    }).join('')
+  }
+
+  // Debounced runner so typing/sliding doesn't spam the API
+  var runTimer = null
+  function runSearch(){
+    clearTimeout(runTimer)
+    runTimer = setTimeout(_runSearch, 220)
+  }
+  async function _runSearch(){
+    if (!pointA && !pointB){ paintList([]); clearListingMarkers(); return }
+
+    var f = readFilterPayload()
+    var seen = {}, pool = []
+
+    async function pull(p){
+      try{
+        var r = await window.API.listings.search(p)
+        if (r && Array.isArray(r.listings)){
+          r.listings.forEach(function(l){ if (!seen[l.id]){ seen[l.id]=1; pool.push(l) } })
+        }
+      } catch(_){}
+    }
+
+    var basics = { sort:'newest', limit:120, listing_type: f.listing_type }
+    if (f.beds) basics.bedrooms = f.beds
+    if (f.min)  basics.min_price = f.min
+    if (f.max)  basics.max_price = f.max
+
+    // Residential-only: stick with default. Commercial-only: hit each commercial type.
+    if (f.cat === 'commercial'){
+      var TYPES = ['office','retail','industrial','hospitality','warehouse','land','commercial','healthcare','mixed-use','investment']
+      await Promise.all(TYPES.map(function(t){ var p = Object.assign({}, basics, { property_type: t }); return pull(p) }))
+    } else if (f.cat === 'residential'){
+      await pull(Object.assign({}, basics, { property_type: 'house' }))
+      await pull(Object.assign({}, basics, { property_type: 'apartment' }))
+      await pull(Object.assign({}, basics, { property_type: 'bungalow' }))
+      await pull(Object.assign({}, basics, { property_type: 'site' }))
+    } else {
+      await pull(basics)
+      // Also pick up commercial in mixed mode
+      await Promise.all(['office','retail','industrial','hospitality'].map(function(t){
+        return pull(Object.assign({}, basics, { property_type: t }))
+      }))
+    }
+
+    var inRange = pool.filter(function(l){
+      var c = listingCoords(l); if (!c) return false
+      return withinDriveTime(c[0], c[1])
+    })
+
+    inRange.sort(function(a,b){ return new Date(b.created_at||0) - new Date(a.created_at||0) })
+    ALL_LISTINGS = inRange
+    paintList(inRange)
+    paintListingMarkers(inRange)
+  }
+
+  // Re-run on filter changes
+  ;['dt-listing-type','dt-cat','dt-beds','dt-price'].forEach(function(id){
+    document.getElementById(id).addEventListener('change', runSearch)
+  })
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&callback=initMap&v=weekly"
+  async defer>
+</script>
+
+</body>
+</html>
