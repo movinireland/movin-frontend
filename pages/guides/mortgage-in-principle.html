@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Mortgage in Principle (AIP) – Ireland | Movin.ie</title>
+  <meta name="description" content="What Approval in Principle is, why every Irish buyer should have it before viewing, the documents you need, how long it takes and what the soft search does to your credit file."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('buy')
+    renderGuide({
+      eyebrow:  'Mortgage guide',
+      h1:       'Mortgage in Principle <em>(AIP)</em>',
+      intro:    "What it is, why every Irish buyer should have one before they go to viewings, the documents you'll need and exactly how to get it.",
+      updated:  '2026-05-09',
+      readTime: '6 min read',
+      sections: [
+        { id:'what', title:'1. What is Approval in Principle?', html:
+          '<p><strong>Approval in Principle (AIP)</strong>, sometimes called <em>Mortgage in Principle</em> or <em>Decision in Principle</em>, is a written confirmation from a lender that — based on the financial information you\'ve provided — they would be willing to lend you a specific amount towards a property purchase.</p>'+
+          '<p>It\'s not a binding loan offer. It\'s a strong indication of what you\'ll qualify for once you find the right property.</p>'+
+          '<ul>'+
+          '<li><strong>Validity:</strong> typically 6 months.</li>'+
+          '<li><strong>Cost:</strong> free.</li>'+
+          '<li><strong>Credit impact:</strong> a soft search initially; the hard search is at full loan offer stage.</li>'+
+          '</ul>'
+        },
+        { id:'why', title:'2. Why every buyer needs one', html:
+          '<p>Without AIP, you\'re not really shopping — you\'re window-shopping.</p>'+
+          '<ul>'+
+          '<li><strong>Sellers take you seriously.</strong> Most estate agents won\'t accept an offer without seeing AIP.</li>'+
+          '<li><strong>You know your real budget.</strong> No more guessing whether you can afford a place — the lender has confirmed it.</li>'+
+          '<li><strong>You can move fast.</strong> When you find the right home, you can put in an offer immediately rather than spending weeks scrambling for finance.</li>'+
+          '<li><strong>It costs you nothing.</strong> AIP is free. There\'s no reason not to have it.</li>'+
+          '</ul>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div>In hot markets like Dublin and the major commuter belt, sellers often pick the buyer with AIP over a higher offer with no AIP. Certainty wins.</div></div>'
+        },
+        { id:'documents', title:'3. The documents you\'ll need', html:
+          '<p>Have these ready before you apply — most rejections are due to missing or out-of-date paperwork:</p>'+
+          '<ul>'+
+          '<li><strong>Photo ID</strong> — passport or driving licence.</li>'+
+          '<li><strong>Proof of address</strong> — utility bill or bank statement under 3 months old.</li>'+
+          '<li><strong>Last 3 months of payslips</strong>.</li>'+
+          '<li><strong>Most recent P60</strong> (or equivalent end-of-year statement).</li>'+
+          '<li><strong>Last 6 months of current account statements</strong> from every account you use regularly.</li>'+
+          '<li><strong>6 months of savings/credit card statements</strong> showing your savings habit and any other debt.</li>'+
+          '<li><strong>Salary certificate</strong> (your employer fills it in — most banks have a template) confirming basic, bonus and overtime.</li>'+
+          '<li><strong>Loan / credit card statements</strong> for any debt you currently hold.</li>'+
+          '<li><strong>If self-employed:</strong> 2–3 years of certified accounts + tax returns + Form 11 acknowledgement letters.</li>'+
+          '<li><strong>If a couple:</strong> all of the above for each applicant.</li>'+
+          '</ul>'
+        },
+        { id:'apply', title:'4. How to apply', html:
+          '<ol class="gd-steps">'+
+          '<li><strong>Decide: bank direct or broker?</strong> A bank assesses you against their own products only. A broker compares all the lenders for you, often free of charge to you.</li>'+
+          '<li><strong>Compile your documents</strong> — see <a href="#documents">section 3</a>.</li>'+
+          '<li><strong>Apply online</strong> or in person. Most lenders now have full online AIP flows.</li>'+
+          '<li><strong>Initial credit check</strong> — soft search on the Central Credit Register.</li>'+
+          '<li><strong>Underwriter review</strong> — typically 5–10 working days.</li>'+
+          '<li><strong>AIP letter issued</strong> — for the agreed amount, valid 6 months.</li>'+
+          '</ol>'
+        },
+        { id:'how-much', title:'5. How much will the lender approve?', html:
+          '<p>The Central Bank rules apply (see our <a href="mortgage.html#rules">mortgage guide</a>):</p>'+
+          '<ul>'+
+          '<li><strong>First-time buyer:</strong> up to <strong>4× gross household income</strong> at <strong>90% LTV</strong> (10% deposit).</li>'+
+          '<li><strong>Second-time:</strong> up to <strong>3.5× income</strong>, typically 80% LTV.</li>'+
+          '<li><strong>Buy-to-let:</strong> typically 70% LTV, with rental income stress-tested at higher rates.</li>'+
+          '</ul>'+
+          '<p>The actual figure also depends on your <strong>monthly outgoings</strong> (loans, credit card balances, childcare, school fees), your <strong>savings record</strong>, and your <strong>credit history</strong>. Use our <a href="../tools.html#mortgage">mortgage calculator</a> for a quick what-if.</p>'
+        },
+        { id:'after', title:'6. After you have AIP', html:
+          '<ul>'+
+          '<li><strong>Don\'t take on new debt</strong> — a new loan or large credit-card balance can wreck your application before drawdown.</li>'+
+          '<li><strong>Keep saving</strong> — lenders re-check your savings habit before issuing the full loan offer.</li>'+
+          '<li><strong>Don\'t change jobs</strong> if avoidable, especially mid-application. Probation is a red flag.</li>'+
+          '<li><strong>Tell your solicitor</strong> as soon as you have AIP — they can start the conveyancing process the moment you go sale agreed.</li>'+
+          '<li><strong>If your AIP expires</strong>, ask the lender for a re-issue — they\'ll re-check finances briefly. Easier than starting over.</li>'+
+          '</ul>'+
+          '<div class="gd-warn"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div>AIP is conditional. The full loan offer requires a property valuation, mortgage protection insurance, and the property meeting the lender\'s standards (no major structural defects). Don\'t pay the booking deposit until your AIP says you\'re safe to.</div></div>'
+        }
+      ],
+      related: [
+        { eyebrow:'Mortgages',label:'Full mortgage guide',     href:'mortgage.html' },
+        { eyebrow:'For buyers',label:"Buyer's guide",          href:'buying.html' },
+        { eyebrow:'Tools',    label:'Mortgage calculator',    href:'../tools.html#mortgage' },
+        { eyebrow:'Tools',    label:'Stamp duty calculator',  href:'../tools.html#stamp' },
+        { eyebrow:'Reference',label:'Help & FAQ',             href:'../faq.html' }
+      ],
+      cta: {
+        h:     'See what you can afford',
+        p:     'Use our mortgage calculator to estimate the price range your AIP will likely cover.',
+        label: 'Open the mortgage calculator',
+        href:  '../tools.html#mortgage'
+      },
+      breadcrumbs: [
+        { name:'Home',                  url:'/' },
+        { name:'Resources',             url:'/pages/faq.html' },
+        { name:'Mortgage in Principle', url:'/pages/guides/mortgage-in-principle.html' }
+      ]
+    })
+  </script>
+</body>
+</html>

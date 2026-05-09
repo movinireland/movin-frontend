@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Seller's Guide to Irish Property – Movin.ie</title>
+  <meta name="description" content="A practical guide to selling your home in Ireland — preparing the property, BER cert, choosing an agent or going private, marketing, contracts, CGT and closing."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('list')
+    renderGuide({
+      eyebrow:  'Seller guide',
+      h1:       'How to <em>sell</em> a home in Ireland',
+      intro:    "From getting the property ready to handing over the keys — a step-by-step seller's guide tailored to the Irish market, with realistic timelines and costs.",
+      updated:  '2026-05-09',
+      readTime: '10 min read',
+      sections: [
+        { id:'prepare', title:'1. Get the property ready', html:
+          '<p>Most homes sell faster (and for more) after a small amount of prep. Spend a weekend on:</p>'+
+          '<ul>'+
+          '<li><strong>Decluttering</strong> — remove personal items, half-empty rooms photograph terribly.</li>'+
+          '<li><strong>Deep clean</strong> — windows, kitchen, bathroom — buyers notice grime first.</li>'+
+          '<li><strong>Touch-ups</strong> — fill nail holes, repaint scuffed walls in neutrals (off-white, light grey).</li>'+
+          '<li><strong>Kerb appeal</strong> — clean front door, mow the garden, tidy the bin area, polish the brass.</li>'+
+          '<li><strong>Replace what\'s broken</strong> — silicone in the bathroom, cracked tiles, missing handles.</li>'+
+          '</ul>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div><strong>Photos sell homes.</strong> Listings with proper, well-lit photos get up to <strong>5× more enquiries</strong>. Take them on a bright day, lights on, curtains open. If you\'re going private, consider hiring a property photographer (~€150–€300).</div></div>'
+        },
+        { id:'ber', title:'2. Get a BER cert (mandatory)', html:
+          '<p>You cannot legally market a property for sale (or rent) in Ireland without a valid <strong>Building Energy Rating</strong> certificate. The cert is issued by an SEAI-registered assessor.</p>'+
+          '<ul>'+
+          '<li><strong>Cost:</strong> typically €150–€250 for a 3-bed home.</li>'+
+          '<li><strong>Validity:</strong> 10 years.</li>'+
+          '<li><strong>Process:</strong> the assessor visits, measures, files with SEAI; you get a cert + advisory report within ~5 working days.</li>'+
+          '</ul>'+
+          '<p>The advisory report is gold for sellers — it lists exactly what would improve the rating, which you can either do or pass to the buyer.</p>'+
+          '<p>Read our <a href="energy-efficiency.html">energy efficiency guide</a> for what each rating means and what SEAI grants are available to improve the score.</p>'
+        },
+        { id:'agent-vs-private', title:'3. Estate agent or private sale?', html:
+          '<h3>With an estate agent</h3>'+
+          '<ul>'+
+          '<li><strong>Cost:</strong> typically <strong>1–1.5% of the sale price + VAT</strong>, with VAT at 23%.</li>'+
+          '<li><strong>You get:</strong> photography, marketing, viewings, vetting, offer negotiation, listings on Daft, MyHome and increasingly Movin.</li>'+
+          '<li><strong>Best for:</strong> sellers who don\'t have time, or properties expected to attract many bids.</li>'+
+          '</ul>'+
+          '<h3>Selling privately on Movin.ie</h3>'+
+          '<ul>'+
+          '<li><strong>Cost:</strong> first listing free, then <strong>flat €24.99</strong> — no commission ever.</li>'+
+          '<li><strong>You handle:</strong> photos, description, viewings, offer negotiation directly.</li>'+
+          '<li><strong>Best for:</strong> motivated sellers happy to do the work and keep the agency fee in their pocket. On a €400,000 sale that\'s €4,000–€7,000 saved.</li>'+
+          '</ul>'+
+          '<div class="gd-note"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><div>You still need a <strong>solicitor</strong> either way — they handle the legal transfer (conveyancing). Allow €1,500–€2,500 + VAT.</div></div>'
+        },
+        { id:'pricing', title:'4. Setting the asking price', html:
+          '<p>Pricing is the single biggest decision. Too high and the listing goes stale; too low and you leave money on the table.</p>'+
+          '<ul>'+
+          '<li>Look at <strong>recent sold prices</strong> nearby — see Movin\'s <a href="../sold.html">Sold &amp; let prices</a> page.</li>'+
+          '<li>Look at <strong>currently asking prices</strong> for comparable homes within 1–2 km.</li>'+
+          '<li>Get one or two <strong>free valuations</strong> from local estate agents (most do this for free hoping to win the listing).</li>'+
+          '<li>Check the <strong>CSO Residential Property Price Index</strong> for regional trends — see our <a href="../house-price-index.html">House Price Index page</a>.</li>'+
+          '</ul>'+
+          '<p>A common strategy: price slightly under the market expectation to attract more viewings and trigger competing bids. Pricing exactly at the market often results in one polite offer and slow sale.</p>'
+        },
+        { id:'list', title:'5. Marketing your listing', html:
+          '<p>If you\'re using an agent they\'ll handle this. If you\'re going private:</p>'+
+          '<ol class="gd-steps">'+
+          '<li><strong>List on Movin.ie</strong> — <a href="../list.html">first listing is free</a>. The wizard takes 5 minutes.</li>'+
+          '<li><strong>Write the description</strong> — lead with the strongest feature (south-facing garden, BER A2, walking distance to LUAS). Keep paragraphs short.</li>'+
+          '<li><strong>Upload 12–20 photos</strong> in landscape orientation, full daylight. Wide-angle but not distorted.</li>'+
+          '<li><strong>Pin the property exactly</strong> with your Eircode (you can hide the full Eircode on the public listing if you prefer — Movin still uses it for the map).</li>'+
+          '<li><strong>Share the link</strong> on WhatsApp / social — friends-of-friends often surface buyers.</li>'+
+          '</ol>'
+        },
+        { id:'viewings', title:'6. Handling viewings & offers', html:
+          '<p>Most Irish viewings happen at weekends. Group them into 1-hour open-house slots if multiple buyers are interested — it creates competitive pressure.</p>'+
+          '<p>Ask viewers if they have <strong>mortgage approval in principle</strong> and if their purchase is dependent on selling another home. \"Cash buyers\" or AIP-confirmed buyers are far more reliable.</p>'+
+          '<p>Offers come in by phone or email. Reply quickly, even if just to acknowledge. Once you accept an offer the property goes <strong>sale agreed</strong> and the buyer typically pays a <strong>booking deposit (€5,000–€10,000)</strong> via the agent or solicitor.</p>'+
+          '<div class="gd-warn"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div>Until contracts are signed by both parties, the deal isn\'t legally binding. <strong>Don\'t pay for major work or commit to a new property based on a verbal offer alone.</strong></div></div>'
+        },
+        { id:'contracts', title:'7. Contracts, closing & costs', html:
+          '<p>Once an offer is accepted, your solicitor:</p>'+
+          '<ul>'+
+          '<li>Drafts the contract for sale and sends it to the buyer\'s solicitor.</li>'+
+          '<li>Replies to queries (boundaries, planning, title).</li>'+
+          '<li>Coordinates the closing date — typically <strong>8–12 weeks</strong> from sale agreed.</li>'+
+          '</ul>'+
+          '<h3>Costs to expect as a seller</h3>'+
+          '<ul>'+
+          '<li>Estate agent (if used): 1–1.5% + VAT</li>'+
+          '<li>Solicitor: €1,500–€2,500 + VAT + outlays</li>'+
+          '<li>BER cert: €150–€250</li>'+
+          '<li>Marketing photos (if private): optional, ~€150–€300</li>'+
+          '<li>Movin listing fee: €0 (first) / €24.99 standard</li>'+
+          '</ul>'
+        },
+        { id:'cgt', title:'8. Capital Gains Tax (CGT)', html:
+          '<p>If you\'re selling your <strong>principal private residence</strong> (PPR) — the home you actually live in — the gain is generally exempt from CGT.</p>'+
+          '<p>If you\'re selling a <strong>second home, holiday home or investment property</strong>, CGT applies at <strong>33%</strong> on the gain (sale price minus original purchase price minus allowable costs and the annual €1,270 personal exemption).</p>'+
+          '<p>The full PPR exemption only applies if you lived in the home for all the years you owned it. If you let it out for some years there\'s a partial exemption — get an accountant\'s advice before signing contracts.</p>'+
+          '<div class="gd-note"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><div>This is a simplified summary. CGT, especially on inherited or once-let homes, can get complex. Always run your numbers past an Irish accountant before closing.</div></div>'
+        }
+      ],
+      related: [
+        { eyebrow:'For buyers',label:"Buyer's guide",          href:'buying.html' },
+        { eyebrow:'For sellers',label:'Energy efficiency & BER', href:'energy-efficiency.html' },
+        { eyebrow:'Insight',   label:'House Price Index',     href:'../house-price-index.html' },
+        { eyebrow:'Tools',     label:'Home valuation',        href:'../tools.html#valuation' },
+        { eyebrow:'Tools',     label:'Stamp duty calculator', href:'../tools.html#stamp' },
+        { eyebrow:'Removals',  label:'Moving day & removals', href:'removals.html' }
+      ],
+      cta: {
+        h:     "Ready to list?",
+        p:     "Your first listing on Movin.ie is completely free, no card required. Reach buyers across Ireland in under 5 minutes.",
+        label: 'List your property',
+        href:  '../list.html'
+      },
+      breadcrumbs: [
+        { name:'Home',          url:'/' },
+        { name:'Resources',     url:'/pages/faq.html' },
+        { name:"Seller's guide", url:'/pages/guides/selling.html' }
+      ]
+    })
+  </script>
+</body>
+</html>

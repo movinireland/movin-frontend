@@ -45,6 +45,18 @@
   <url><loc>https://movin.ie/pages/about.html</loc>            <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/contact.html</loc>          <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/faq.html</loc>              <changefreq>monthly</changefreq><priority>0.7</priority> <lastmod>2026-05-09</lastmod></url>
+
+  <!-- Resources & guides -->
+  <url><loc>https://movin.ie/pages/house-price-index.html</loc>         <changefreq>weekly</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/property-news.html</loc>      <changefreq>weekly</changefreq>  <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/buying.html</loc>             <changefreq>monthly</changefreq> <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/selling.html</loc>            <changefreq>monthly</changefreq> <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/renting.html</loc>            <changefreq>monthly</changefreq> <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/landlords.html</loc>          <changefreq>monthly</changefreq> <priority>0.75</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/mortgage.html</loc>           <changefreq>monthly</changefreq> <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/mortgage-in-principle.html</loc><changefreq>monthly</changefreq><priority>0.75</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/energy-efficiency.html</loc>  <changefreq>monthly</changefreq> <priority>0.75</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/guides/removals.html</loc>           <changefreq>monthly</changefreq> <priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/privacy-policy.html</loc>   <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/terms-of-service.html</loc> <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
 

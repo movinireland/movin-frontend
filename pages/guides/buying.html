@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Buyer's Guide to Irish Property – Movin.ie</title>
+  <meta name="description" content="A complete, step-by-step guide to buying a home in Ireland — deposits, mortgages, Help to Buy, First Home Scheme, stamp duty, BER, conveyancing and the day of closing."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('buy')
+    renderGuide({
+      eyebrow:  'Buyer guide',
+      h1:       "The complete buyer's guide to <em>Irish property</em>",
+      intro:    "Everything you need to know about buying a home in Ireland — from the deposit you'll need to the keys in your hand. Written for first-time buyers and movers alike.",
+      updated:  '2026-05-09',
+      readTime: '12 min read',
+      sections: [
+        { id:'deposit', title:'1. How much deposit do I need?', html:
+          '<p>The Central Bank of Ireland sets the rules every regulated lender must follow:</p>'+
+          '<ul>'+
+          '<li><strong>First-time buyers:</strong> minimum <strong>10% deposit</strong> (lender can lend up to 90% of the value).</li>'+
+          '<li><strong>Second + subsequent buyers:</strong> minimum <strong>20% deposit</strong> (LTV cap of 90%, but most lenders apply 80% in practice).</li>'+
+          '<li><strong>Buy-to-let / investors:</strong> minimum <strong>30% deposit</strong>.</li>'+
+          '</ul>'+
+          '<p>Lenders also apply a <strong>loan-to-income (LTI) cap</strong> of <code>4×</code> gross household income for first-time buyers and <code>3.5×</code> for second-time and beyond. A small percentage of mortgages can exceed these limits each calendar year (\"exemptions\"), but you should plan around the standard rules.</p>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div><strong>Tip:</strong> The deposit is just one part. Budget another 1–3% of the purchase price for stamp duty, solicitor, surveyor and registration fees on top.</div></div>'
+        },
+        { id:'htb', title:'2. Help to Buy & First Home Scheme', html:
+          '<h3>Help to Buy (HTB)</h3>'+
+          '<p>A tax refund of up to <strong>€30,000 (or 10% of the property value, whichever is lower)</strong> for first-time buyers of <em>new-build</em> homes only. The property must be your principal residence and cost no more than €500,000. You apply via Revenue\'s myAccount before drawing down your mortgage.</p>'+
+          '<h3>First Home Scheme (FHS)</h3>'+
+          '<p>A shared-equity scheme where the State takes up to a <strong>30%</strong> stake in your new home (20% if you also use HTB) so you can borrow less. You can buy that share back at any time, and pay no \"service charge\" for the first 5 years.</p>'+
+          '<p>Both schemes apply to <strong>new builds only</strong>. Combine them and you can substantially reduce the deposit and mortgage you need on a new home.</p>'
+        },
+        { id:'mortgage', title:'3. Get your mortgage approval', html:
+          '<p>You don\'t need a full mortgage to start house-hunting — you need <a href="mortgage-in-principle.html">Approval in Principle (AIP)</a>. It tells you how much a lender is willing to give you, lasts <strong>6 months</strong>, and is free.</p>'+
+          '<ol class="gd-steps">'+
+          '<li>Pull together your last <strong>6 months of bank statements</strong>, last <strong>3 months of payslips</strong>, your latest <strong>P60</strong>, and proof of savings.</li>'+
+          '<li>Apply directly to a bank or — usually faster — through a <strong>mortgage broker</strong> who can compare lenders for you.</li>'+
+          '<li>Once approved in principle, you can confidently make offers up to that amount.</li>'+
+          '<li>After your offer is accepted, you submit the property details to your lender to upgrade AIP into a <strong>full loan offer</strong>.</li>'+
+          '</ol>'+
+          '<p>See our dedicated <a href="mortgage.html">mortgage guide</a> for a deeper dive on fixed vs variable rates, term length and lender comparison.</p>'
+        },
+        { id:'search', title:'4. Find your home', html:
+          '<p>Use Movin\'s tools the way real Irish buyers do:</p>'+
+          '<ul>'+
+          '<li><a href="../search.html?listing_type=sale">Search by area or county</a> — filter by beds, price, BER and more.</li>'+
+          '<li><a href="../map-search.html">Map search</a> — pan and zoom Ireland to find homes by location.</li>'+
+          '<li><a href="../drive-time.html">Drive-time search</a> — set a commute to work or school and see only homes within it.</li>'+
+          '<li><strong>Saved Places</strong> — pin work, school and family on any listing\'s detail page and see distance + commute on every property you view.</li>'+
+          '</ul>'+
+          '<p>Save searches as <strong>Alerts</strong> so we email you when a new property matches.</p>'
+        },
+        { id:'viewings', title:'5. Viewings & due diligence', html:
+          '<p>Always view in person before offering. Bring a torch and check:</p>'+
+          '<ul>'+
+          '<li><strong>BER cert</strong> — listed and the actual cert visible. A C or better is the comfortable standard; D and below means meaningful retrofit work ahead.</li>'+
+          '<li><strong>Damp + mould</strong> on walls, behind curtains, under sinks, in attic.</li>'+
+          '<li><strong>Windows</strong> — double or triple-glazed? Drafty?</li>'+
+          '<li><strong>Plumbing + electrics</strong> — when were they last updated?</li>'+
+          '<li><strong>Roof age</strong> and any signs of sagging or moss.</li>'+
+          '<li><strong>Boundary walls</strong> and access — are they shared?</li>'+
+          '</ul>'+
+          '<p>Once you\'re seriously interested, get a chartered surveyor to do a <strong>structural survey</strong> (typically €400–€700). It often pays for itself many times over.</p>'
+        },
+        { id:'offer', title:'6. Make an offer & sale agreed', html:
+          '<p>Offers in Ireland are <strong>not legally binding</strong> until contracts are signed. Most negotiation happens by phone or email through the seller\'s estate agent.</p>'+
+          '<p>When the seller accepts your offer, the property goes <strong>\"sale agreed\"</strong>. You\'ll typically pay a <strong>booking deposit of €5,000–€10,000</strong> to the agent, fully refundable until contracts are signed.</p>'+
+          '<div class="gd-warn"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div><strong>Watch for gazumping:</strong> until contracts are signed, a higher offer can still bump yours. Once the seller has signed contracts you\'re protected.</div></div>'
+        },
+        { id:'conveyancing', title:'7. Conveyancing & contracts', html:
+          '<p>You\'ll need a solicitor to handle the legal transfer (<strong>conveyancing</strong>). Typical fee is <strong>€1,500–€2,500 + VAT + outlays</strong>. Your solicitor will:</p>'+
+          '<ul>'+
+          '<li>Receive contracts from the seller\'s solicitor.</li>'+
+          '<li>Raise queries (planning permission, boundaries, title).</li>'+
+          '<li>Run searches (Land Registry, planning, judgment debt).</li>'+
+          '<li>Sign contracts on your behalf — you pay the <strong>balance of the 10% deposit</strong> at this stage.</li>'+
+          '<li>Coordinate the closing date and the transfer of funds.</li>'+
+          '</ul>'+
+          '<p>Allow <strong>8–12 weeks</strong> from sale agreed to closing. Sometimes longer if the property has a complicated title or chain.</p>'
+        },
+        { id:'stamp-duty', title:'8. Stamp duty & costs at closing', html:
+          '<p>Stamp duty is the government tax you pay on the purchase price.</p>'+
+          '<table>'+
+            '<thead><tr><th>Property type</th><th>Rate</th></tr></thead>'+
+            '<tbody>'+
+              '<tr><td>Residential, up to €1m</td><td>1%</td></tr>'+
+              '<tr><td>Residential, balance over €1m</td><td>2%</td></tr>'+
+              '<tr><td>Bulk-buy (10+ houses) penalty rate</td><td>10%</td></tr>'+
+              '<tr><td>Non-residential / commercial</td><td>7.5%</td></tr>'+
+            '</tbody>'+
+          '</table>'+
+          '<p>Use our <a href="../tools.html#stamp">stamp duty calculator</a> to get an exact figure for your purchase.</p>'+
+          '<h3>Other closing costs to budget</h3>'+
+          '<ul>'+
+          '<li>Solicitor: ~€1,500–€2,500 + VAT</li>'+
+          '<li>Surveyor / structural: ~€400–€700</li>'+
+          '<li>Valuation (for the lender): ~€150</li>'+
+          '<li>Land Registry / Property Registration Authority fees: ~€700–€800</li>'+
+          '<li>Bank life-cover (mortgage protection insurance): varies, mandatory unless you have an exemption</li>'+
+          '</ul>'
+        },
+        { id:'closing', title:'9. Closing day & after', html:
+          '<p>On closing day:</p>'+
+          '<ol class="gd-steps">'+
+          '<li>Your lender transfers the loan amount to your solicitor.</li>'+
+          '<li>Your solicitor wires the full price (loan + your deposit + booking deposit) to the seller\'s solicitor.</li>'+
+          '<li>The seller\'s solicitor confirms receipt and the keys are released.</li>'+
+          '<li>You collect the keys, usually from the estate agent.</li>'+
+          '</ol>'+
+          '<h3>After closing — don\'t forget:</h3>'+
+          '<ul>'+
+          '<li>Set up <strong>home insurance</strong> from day one (your lender will require it before drawdown).</li>'+
+          '<li>Switch your address with the Revenue, banks, GP, electoral register.</li>'+
+          '<li>Register for <strong>Local Property Tax (LPT)</strong> if not already done by the seller.</li>'+
+          '<li>Take meter readings on day one for ESB / Bord Gáis / etc.</li>'+
+          '</ul>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div><div>Once the property is yours, our <a href="energy-efficiency.html">energy efficiency guide</a> shows what SEAI grants you can claim if it needs retrofitting (insulation, heat pump, solar PV).</div></div>'
+        }
+      ],
+      related: [
+        { eyebrow:'Mortgages', label:'How Irish mortgages work', href:'mortgage.html' },
+        { eyebrow:'Mortgages', label:'Mortgage in Principle (AIP)', href:'mortgage-in-principle.html' },
+        { eyebrow:'For sellers', label:"Seller's guide",            href:'selling.html' },
+        { eyebrow:'Energy',    label:'BER & energy efficiency',    href:'energy-efficiency.html' },
+        { eyebrow:'Tools',     label:'Stamp duty calculator',      href:'../tools.html#stamp' },
+        { eyebrow:'Tools',     label:'Mortgage calculator',        href:'../tools.html#mortgage' }
+      ],
+      cta: {
+        h:     'Ready to start your search?',
+        p:     "Browse every house, apartment, bungalow and site for sale across Ireland — filter by area, beds, price and more.",
+        label: 'Browse homes for sale',
+        href:  '../search.html?listing_type=sale'
+      },
+      breadcrumbs: [
+        { name:'Home',         url:'/' },
+        { name:'Resources',    url:'/pages/faq.html' },
+        { name:"Buyer's guide", url:'/pages/guides/buying.html' }
+      ]
+    })
+  </script>
+</body>
+</html>

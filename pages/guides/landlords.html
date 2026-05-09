@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Landlord's Guide to Renting in Ireland – Movin.ie</title>
+  <meta name="description" content="The Irish landlord's guide — RTB registration, BER cert, RPZ rent caps, taxes, allowable deductions, lease types, evictions and your legal duties as a landlord."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('list')
+    renderGuide({
+      eyebrow:  'Landlord guide',
+      h1:       "The Irish <em>landlord's</em> guide",
+      intro:    'Everything an Irish landlord needs to stay legal, compliant and profitable — RTB registration, BER cert, RPZ caps, your tax obligations and how to handle rent reviews and evictions.',
+      updated:  '2026-05-09',
+      readTime: '12 min read',
+      sections: [
+        { id:'before', title:'1. Before you let — pre-tenancy checklist', html:
+          '<ul>'+
+          '<li><strong>Valid BER cert</strong> — required by law before advertising. €150–€250 from an SEAI assessor.</li>'+
+          '<li><strong>Property meets minimum standards</strong> — see <a href="https://www.citizensinformation.ie/en/housing/renting-a-home/repairs-maintenance-and-minimum-physical-standards/" target="_blank">Citizens Information</a>. Includes hot/cold water, heating in every habitable room, working appliances, fire detection, ventilation.</li>'+
+          '<li><strong>Building insurance</strong> in place; landlord-specific policy preferred.</li>'+
+          '<li><strong>Mortgage permission</strong> if applicable — most owner-occupier mortgages require lender consent before letting.</li>'+
+          '<li><strong>Tax registration</strong> — register as a landlord with Revenue if you haven\'t already (Form TR1 / online).</li>'+
+          '</ul>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div>List on Movin.ie — first listing is free. Set your asking rent (RPZ-compliant if applicable), upload 12+ photos, write a clear description and you\'re live within hours after our review.</div></div>'
+        },
+        { id:'rtb', title:'2. RTB registration (mandatory)', html:
+          '<p>Most private tenancies must be registered with the <strong>Residential Tenancies Board (RTB)</strong> within <strong>one month of the start date</strong>.</p>'+
+          '<ul>'+
+          '<li><strong>Cost:</strong> €40 per tenancy, paid annually under the new annual registration rules (since April 2022).</li>'+
+          '<li><strong>Penalties</strong> for non-registration: up to €4,000 fine and 6 months imprisonment.</li>'+
+          '<li><strong>Tax allowable</strong> — RTB fees are deductible.</li>'+
+          '<li>Register online at <a href="https://www.rtb.ie/" target="_blank">RTB.ie</a>.</li>'+
+          '</ul>'+
+          '<p>Rent-a-room (live-in) lets are exempt — see our <a href="renting.html#rent-a-room">renter guide</a> on the rent-a-room scheme.</p>'
+        },
+        { id:'rpz', title:'3. Rent caps in RPZ areas', html:
+          '<p>If your property is in a <strong>Rent Pressure Zone</strong> (most cities and major commuter belts), you can:</p>'+
+          '<ul>'+
+          '<li>Increase rent only <strong>once every 12 months</strong>.</li>'+
+          '<li>Cap each increase at <strong>2% per annum or HICP inflation, whichever is lower</strong>.</li>'+
+          '<li>Serve <strong>90 days written notice</strong> using the official RTB form.</li>'+
+          '</ul>'+
+          '<p>For new tenancies, the <strong>opening rent</strong> for an existing property in an RPZ is also capped — you can\'t reset to market rate just because the previous tenant left.</p>'+
+          '<p>Check whether your property is in an RPZ at <a href="https://onestopshop.rtb.ie/" target="_blank">RTB One Stop Shop</a>.</p>'+
+          '<div class="gd-warn"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div>Breaching the RPZ rules can lead to RTB sanctions and orders to refund overcharged rent. Use the official RTB rent calculator before reviewing.</div></div>'
+        },
+        { id:'tenancy', title:'4. Tenancy types & lease terms', html:
+          '<p>Since June 2022, all new private tenancies are <strong>tenancies of unlimited duration</strong> (Part 4+). There\'s no fixed end date — the tenancy continues indefinitely until the tenant leaves or the landlord ends it on a legal ground.</p>'+
+          '<p>You can still offer a <strong>fixed-term lease</strong> on top (often 12 months), which adds mutual commitment for that period.</p>'+
+          '<p>Always provide a <strong>written tenancy agreement</strong>. The RTB has a sample one. Cover at minimum:</p>'+
+          '<ul>'+
+          '<li>Names of all tenants and the landlord.</li>'+
+          '<li>Address and Eircode of the property.</li>'+
+          '<li>Rent amount, payment date, payment method.</li>'+
+          '<li>Deposit amount (max one month\'s rent).</li>'+
+          '<li>Start date.</li>'+
+          '<li>Inventory of furnishings and condition (with photos).</li>'+
+          '<li>Whether smoking / pets are allowed.</li>'+
+          '</ul>'
+        },
+        { id:'deposit', title:'5. The deposit cap', html:
+          '<p>Since August 2021, the security deposit you can request is capped at <strong>one month\'s rent</strong>. Plus rent in advance, that\'s a maximum of <strong>two months\' worth</strong> upfront from the tenant.</p>'+
+          '<p>Deposit must be returned in full at the end of the tenancy minus only:</p>'+
+          '<ul>'+
+          '<li>Legitimate damage beyond fair wear and tear.</li>'+
+          '<li>Unpaid rent or bills the tenant is liable for.</li>'+
+          '</ul>'+
+          '<p>Deposit disputes go through the RTB\'s free <a href="https://www.rtb.ie/dispute-resolution/" target="_blank">dispute resolution service</a>.</p>'
+        },
+        { id:'tax', title:'6. Tax — what you owe and what\'s deductible', html:
+          '<p>Rental income is taxed at your <strong>marginal rate</strong> (20% or 40%) plus <strong>USC</strong> and <strong>PRSI</strong>. You file annually under Form 11 (self-employed) or Form 12 (PAYE), depending on your overall situation.</p>'+
+          '<h3>Allowable expenses (deduct before tax)</h3>'+
+          '<ul>'+
+          '<li><strong>Mortgage interest</strong> on the borrowing used to buy / improve the rental (now 100% deductible after the phased restoration).</li>'+
+          '<li><strong>RTB registration fees</strong>.</li>'+
+          '<li><strong>Insurance premiums</strong>.</li>'+
+          '<li><strong>Maintenance & repairs</strong> (not improvements — those are capital).</li>'+
+          '<li><strong>Letting agent / accountant fees</strong>.</li>'+
+          '<li><strong>Capital allowances</strong> on furnishings (12.5% per year over 8 years).</li>'+
+          '<li><strong>Local Property Tax (LPT)</strong> (only deductible since 2024).</li>'+
+          '</ul>'+
+          '<h3>Residential Premises Rental Income Relief (RPRIR)</h3>'+
+          '<p>Introduced in Budget 2024, this relief reduces tax on a portion of qualifying rental income (€3,000 in 2024, €4,000 in 2025, €5,000 in 2026/27) at the <strong>20% standard rate</strong>, even if you\'re a higher-rate taxpayer. Conditions apply (RTB-compliant, property let throughout the year, etc.).</p>'+
+          '<div class="gd-note"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div><div>Tax for landlords is genuinely complex and Budget rules change yearly. <strong>Use an accountant</strong> at least for your first full year of letting — they typically save you more than they cost.</div></div>'
+        },
+        { id:'duties', title:'7. Your legal duties as a landlord', html:
+          '<ul>'+
+          '<li><strong>Keep the property in good repair</strong> — structure, heating, plumbing, electrics.</li>'+
+          '<li><strong>Don\'t enter without reasonable notice</strong> (24h typical, except emergencies).</li>'+
+          '<li><strong>Insure the building</strong>.</li>'+
+          '<li><strong>Issue receipts</strong> for any cash rent.</li>'+
+          '<li><strong>Pay LPT</strong> (you, not the tenant — you can\'t pass it on contractually).</li>'+
+          '<li><strong>Pay the RTB registration fee</strong>.</li>'+
+          '<li><strong>Comply with RPZ rules</strong> on rent reviews if applicable.</li>'+
+          '<li><strong>Use the proper RTB notice forms</strong> for any rent review or termination.</li>'+
+          '</ul>'
+        },
+        { id:'eviction', title:'8. Ending a tenancy — notice periods', html:
+          '<p>You can only end a tenancy on one of the legal grounds:</p>'+
+          '<ul>'+
+          '<li>You intend to <strong>sell</strong> within 9 months (with statutory declaration).</li>'+
+          '<li>You or a <strong>family member</strong> need the property to live in.</li>'+
+          '<li><strong>Substantial refurbishment</strong> is needed (planning permission or evidence of works required).</li>'+
+          '<li>Property is no longer suited to the tenant\'s accommodation needs.</li>'+
+          '<li>Tenant breach (rent arrears, anti-social behaviour) — different shorter notice rules apply.</li>'+
+          '</ul>'+
+          '<p>Use the <strong>official RTB notice form</strong> and serve in writing. Notice periods scale with how long the tenant has been in place — see the table in our <a href="renting.html#eviction">renter guide</a>.</p>'+
+          '<p>Tenants have <strong>90 days</strong> to challenge an invalid notice via the RTB.</p>'
+        }
+      ],
+      related: [
+        { eyebrow:'For owners',label:'List your property',     href:'../list.html' },
+        { eyebrow:'For owners',label:'Energy efficiency & BER',href:'energy-efficiency.html' },
+        { eyebrow:'For tenants',label:"Renter's guide",        href:'renting.html' },
+        { eyebrow:'Reference',label:'RTB official site',       href:'https://www.rtb.ie/' },
+        { eyebrow:'Tools',    label:'Mortgage calculator',     href:'../tools.html#mortgage' },
+        { eyebrow:'Reference',label:'Help & FAQ',              href:'../faq.html' }
+      ],
+      cta: {
+        h:     'List your rental on Movin',
+        p:     'First listing free, then a flat €24.99 — no commission, no monthly contract. Reach renters across Ireland in minutes.',
+        label: 'List a rental',
+        href:  '../list.html'
+      },
+      breadcrumbs: [
+        { name:'Home',           url:'/' },
+        { name:'Resources',      url:'/pages/faq.html' },
+        { name:"Landlord's guide", url:'/pages/guides/landlords.html' }
+      ]
+    })
+  </script>
+</body>
+</html>

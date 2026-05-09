@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>BER & Energy Efficiency – Irish Property Guide | Movin.ie</title>
+  <meta name="description" content="Everything about BER ratings, the SEAI grants for retrofitting, heat pumps, solar PV and how energy efficiency affects your home's value and your green-mortgage rate."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('tools')
+    renderGuide({
+      eyebrow:  'Energy efficiency',
+      h1:       "BER ratings, retrofits & <em>SEAI grants</em>",
+      intro:    "What a BER rating actually means, what each band costs to run, the SEAI grants for retrofitting and how energy improvements affect both your home's value and your mortgage rate.",
+      updated:  '2026-05-09',
+      readTime: '10 min read',
+      sections: [
+        { id:'what', title:'1. What is a BER?', html:
+          '<p>A <strong>Building Energy Rating (BER)</strong> is the official assessment of how energy-efficient your home is, on a scale from <strong>A1</strong> (most efficient) to <strong>G</strong> (least). It\'s based on calculated energy use for heating, hot water, lighting and ventilation.</p>'+
+          '<p>BER certs are issued by <strong>SEAI-registered assessors</strong> and last <strong>10 years</strong>. You legally cannot advertise a property for sale or rent in Ireland without one.</p>'+
+          '<table>'+
+            '<thead><tr><th>Rating</th><th>kWh/m²/year</th><th>Typical home</th></tr></thead>'+
+            '<tbody>'+
+              '<tr><td>A1 / A2 / A3</td><td>≤75</td><td>New-build (post-2019 NZEB), heat pump, MVHR, very low bills</td></tr>'+
+              '<tr><td>B1 / B2 / B3</td><td>75–150</td><td>Modern home or well-retrofitted older home</td></tr>'+
+              '<tr><td>C1 / C2 / C3</td><td>150–225</td><td>Average Irish stock — older home with reasonable insulation + boiler</td></tr>'+
+              '<tr><td>D1 / D2</td><td>225–300</td><td>Pre-1990s with limited upgrades</td></tr>'+
+              '<tr><td>E1 / E2</td><td>300–380</td><td>Older home, single-glazed, poor insulation</td></tr>'+
+              '<tr><td>F</td><td>380–450</td><td>Very poor — likely needs full retrofit</td></tr>'+
+              '<tr><td>G</td><td>≥450</td><td>Worst category — running costs very high</td></tr>'+
+            '</tbody>'+
+          '</table>'
+        },
+        { id:'cost', title:'2. What does a BER cost — and what changes it?', html:
+          '<p>Getting a BER cert costs <strong>€150–€250</strong> for a typical 3-bed home, depending on the assessor. The assessor visits, measures, and submits to SEAI; you receive the cert + an <strong>advisory report</strong> within ~5 working days.</p>'+
+          '<p>The advisory report is gold — it lists exactly which improvements would lift your rating, with costs and likely BER gain. Things that move the rating most:</p>'+
+          '<ul>'+
+          '<li><strong>Attic insulation</strong> — usually the cheapest big win. €1k–€3k depending on roof.</li>'+
+          '<li><strong>Wall insulation</strong> — internal (cheaper, loses room space) or external (expensive, transformative).</li>'+
+          '<li><strong>Replacing the boiler</strong> with a high-efficiency condensing model or, better, a <strong>heat pump</strong>.</li>'+
+          '<li><strong>Window upgrades</strong> — single → double or triple glazing.</li>'+
+          '<li><strong>Solar PV</strong> on the roof.</li>'+
+          '<li><strong>Improved ventilation</strong> (DCV / MVHR).</li>'+
+          '</ul>'
+        },
+        { id:'seai', title:'3. SEAI grants — what you can claim', html:
+          '<p>The Sustainable Energy Authority of Ireland (SEAI) runs grants you can apply for <em>before</em> starting works:</p>'+
+          '<table>'+
+            '<thead><tr><th>Measure</th><th>Typical SEAI grant</th></tr></thead>'+
+            '<tbody>'+
+              '<tr><td>Attic insulation</td><td>up to €1,500</td></tr>'+
+              '<tr><td>Cavity wall insulation</td><td>up to €1,700</td></tr>'+
+              '<tr><td>Internal wall insulation</td><td>up to €4,500</td></tr>'+
+              '<tr><td>External wall insulation</td><td>up to €8,000</td></tr>'+
+              '<tr><td>Heat pump (air-to-water)</td><td>up to €6,500</td></tr>'+
+              '<tr><td>Solar PV</td><td>up to €1,800</td></tr>'+
+              '<tr><td>Heat-pump grant only</td><td>+ €2,000 if technical assessment passes</td></tr>'+
+              '<tr><td>One-Stop-Shop deep retrofit (B2 target)</td><td>up to ~€38,000</td></tr>'+
+            '</tbody>'+
+          '</table>'+
+          '<p>The <strong>One-Stop-Shop</strong> route handles the whole retrofit for you — assessor, contractors, grants — and is the simplest path if you\'re going for a full upgrade to B2. Smaller measures can be done directly via individual SEAI grants.</p>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div>Always apply for grants <strong>before</strong> work starts — retroactive claims aren\'t accepted. Visit <a href="https://www.seai.ie/grants/home-energy-grants/" target="_blank">SEAI Home Energy Grants</a> for current amounts.</div></div>'
+        },
+        { id:'mortgage', title:'4. Energy efficiency & your mortgage rate', html:
+          '<p>Most Irish lenders now offer a <strong>green mortgage</strong> rate — a discount of typically <code>0.2–0.4%</code> off the standard fixed rate for properties with a BER of <strong>B3 or higher</strong>.</p>'+
+          '<p>On a €350,000 30-year mortgage, a 0.3% discount saves roughly <strong>€18,000 in interest</strong> over the life of the loan. Bring your BER cert to your AIP application — the lender won\'t apply the green rate without seeing it.</p>'+
+          '<p>If your home is currently a C or D and a planned retrofit will lift it to B3, plan the timing: the new BER must be issued <em>before</em> drawdown for the green rate to apply.</p>'+
+          '<p>Read more in our <a href="mortgage.html#fixed-vs-variable">mortgage guide</a>.</p>'
+        },
+        { id:'value', title:'5. BER and resale value', html:
+          '<p>BER affects what buyers will pay. Recent ESRI research suggests A-rated homes sell for around <strong>9–10% more</strong> than equivalent E-rated homes.</p>'+
+          '<p>And the gap is widening as energy bills rise and buyers run mortgage repayments + utility bills together when budgeting.</p>'+
+          '<ul>'+
+          '<li>Selling soon? An attic top-up + boiler service is the cheapest way to nudge the rating up before the BER assessor visits.</li>'+
+          '<li>Buying a low-rated home? Get retrofit quotes <em>before</em> closing — the cost might be a meaningful negotiation lever.</li>'+
+          '</ul>'
+        },
+        { id:'rentals', title:'6. BER and rentals', html:
+          '<p>Landlords also need a <strong>valid BER cert</strong> to advertise a property for rent. The cert must be visible in the listing and shown to prospective tenants.</p>'+
+          '<p>Energy efficiency increasingly matters for tenants, too — bills are paid by the tenant in most lets, and an A or B home can be hundreds of euros cheaper to heat per year vs an E or F home.</p>'+
+          '<p>If you\'re a landlord, see our <a href="landlords.html">landlord guide</a> for the full pre-tenancy checklist.</p>'
+        },
+        { id:'find', title:'7. Find a SEAI-registered assessor', html:
+          '<p>Anyone can call themselves an energy expert; only an SEAI-registered BER assessor can issue an official BER cert. Find one near you on the <a href="https://ndber.seai.ie/PASS/AssessorAdvancedSearch.aspx" target="_blank">SEAI registered assessor directory</a>.</p>'+
+          '<p>Quotes vary — get 2–3. The cert is the cert; the difference is mostly response time and clarity of the advisory report.</p>'
+        }
+      ],
+      related: [
+        { eyebrow:'Mortgages',label:'Mortgage guide',         href:'mortgage.html' },
+        { eyebrow:'For buyers',label:"Buyer's guide",          href:'buying.html' },
+        { eyebrow:'For sellers',label:"Seller's guide",        href:'selling.html' },
+        { eyebrow:'Tools',    label:'Mortgage calculator',     href:'../tools.html#mortgage' },
+        { eyebrow:'Reference',label:'SEAI grants',             href:'https://www.seai.ie/grants/home-energy-grants/' },
+        { eyebrow:'Reference',label:'Help & FAQ',              href:'../faq.html' }
+      ],
+      cta: {
+        h:     'Search energy-efficient homes',
+        p:     'Use the BER filter on the search page to surface only A or B rated properties — lower bills, better mortgage rates, higher resale.',
+        label: 'Search by BER rating',
+        href:  '../search.html?listing_type=sale'
+      },
+      breadcrumbs: [
+        { name:'Home',                url:'/' },
+        { name:'Resources',           url:'/pages/faq.html' },
+        { name:'Energy efficiency',   url:'/pages/guides/energy-efficiency.html' }
+      ]
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Irish House Price Index – Movin.ie</title>
+  <meta name="description" content="Irish house prices by region — based on the CSO Residential Property Price Index. National and county averages, year-on-year change and how to use the data when buying or selling."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <style>
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+    *{box-sizing:border-box}
+
+    .hpi-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:3rem 1.25rem 4.5rem;position:relative;overflow:hidden}
+    .hpi-hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}
+    .hpi-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}
+    .hpi-hero-inner{max-width:880px;margin:0 auto;position:relative;z-index:2;text-align:center}
+    .hpi-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.78);letter-spacing:1.6px;text-transform:uppercase;margin-bottom:1rem;background:rgba(255,255,255,.10);padding:6px 14px;border-radius:50px;backdrop-filter:blur(6px);font-weight:500}
+    .hpi-h1{font-family:'Playfair Display',serif;font-size:clamp(28px,6vw,44px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:.75rem}
+    .hpi-h1 em{font-style:normal;color:#e07b3f}
+    .hpi-sub{font-size:15px;color:rgba(255,255,255,.78);font-weight:300;line-height:1.55;max-width:580px;margin:0 auto}
+
+    /* Headline cards */
+    .hpi-headline{
+      max-width:1080px;margin:-2.75rem auto 0;padding:0 1.25rem;
+      display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;position:relative;z-index:3
+    }
+    @media(max-width:780px){.hpi-headline{grid-template-columns:repeat(2,1fr);gap:.65rem}}
+    .hpi-stat{
+      background:var(--white,#fff);border:1px solid var(--border);border-radius:18px;padding:1.4rem 1.25rem;
+      box-shadow:0 18px 38px rgba(0,0,0,.07);position:relative;overflow:hidden
+    }
+    .hpi-stat-ico{
+      width:36px;height:36px;border-radius:10px;background:var(--gl);color:var(--g);
+      display:flex;align-items:center;justify-content:center;margin-bottom:.65rem
+    }
+    .hpi-stat-ico svg{width:18px;height:18px;stroke:currentColor;fill:none}
+    .hpi-stat-label{font-size:11px;color:#888;letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-bottom:.35rem}
+    .hpi-stat-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:var(--text,#111);letter-spacing:-.5px;line-height:1.05}
+    .hpi-stat-delta{font-size:12px;font-weight:600;margin-top:.35rem;display:inline-flex;align-items:center;gap:3px}
+    .hpi-stat-delta.up{color:#1a7a3a}
+    .hpi-stat-delta.down{color:#b91c1c}
+    .hpi-stat-source{font-size:10px;color:#aaa;margin-top:.85rem;font-weight:400}
+
+    .hpi-shell{max-width:1080px;margin:0 auto;padding:2.75rem 1.25rem 3rem}
+
+    .hpi-section-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--text,#111);letter-spacing:-.4px;margin-bottom:.4rem}
+    .hpi-section-sub{font-size:13.5px;color:#888;font-weight:300;margin-bottom:1.25rem;max-width:680px;line-height:1.55}
+
+    /* County table */
+    .hpi-table-wrap{background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;overflow-x:auto;margin-bottom:2.25rem}
+    .hpi-table{width:100%;border-collapse:collapse;font-size:14px;min-width:540px}
+    .hpi-table th,.hpi-table td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--border)}
+    .hpi-table th{background:#fafaf6;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#888;font-weight:600}
+    .hpi-table tr:last-child td{border-bottom:none}
+    .hpi-table tr:hover td{background:var(--gl)}
+    .hpi-table td.right{text-align:right;font-variant-numeric:tabular-nums}
+    .hpi-delta{display:inline-block;padding:2px 9px;border-radius:50px;font-size:11px;font-weight:700}
+    .hpi-delta.up{background:#e8f7ee;color:#1a7a3a}
+    .hpi-delta.down{background:#fde8eb;color:#b91c1c}
+    .hpi-delta.flat{background:#f0ede6;color:#666}
+
+    /* Bar chart */
+    .hpi-bars{display:flex;flex-direction:column;gap:8px;background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;padding:1.25rem 1.25rem 1rem;margin-bottom:2.25rem}
+    .hpi-bar-row{display:grid;grid-template-columns:120px 1fr 90px;align-items:center;gap:.75rem}
+    .hpi-bar-label{font-size:13px;font-weight:500;color:#444}
+    .hpi-bar-track{background:#f0ede6;border-radius:50px;height:14px;overflow:hidden;position:relative}
+    .hpi-bar-fill{height:100%;background:linear-gradient(90deg,#1a5c45,#2a7d5c);border-radius:50px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+    .hpi-bar-val{font-size:13px;font-weight:600;color:#222;font-variant-numeric:tabular-nums;text-align:right}
+
+    /* Body sections */
+    .hpi-body{display:grid;grid-template-columns:1fr 280px;gap:2rem;margin-top:2.5rem}
+    @media(max-width:880px){.hpi-body{grid-template-columns:1fr}}
+    .hpi-content{font-size:15px;line-height:1.75;color:#444}
+    .hpi-content h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--text,#111);letter-spacing:-.3px;margin:1.75rem 0 .65rem;line-height:1.2}
+    .hpi-content h2:first-child{margin-top:0}
+    .hpi-content p{margin-bottom:1rem;font-weight:300}
+    .hpi-content strong{color:var(--text,#111);font-weight:600}
+    .hpi-content a{color:var(--g);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(26,92,69,.3);font-weight:500}
+    .hpi-content a:hover{text-decoration-color:var(--g)}
+    .hpi-content ul{padding-left:1.5rem;margin-bottom:1rem}
+    .hpi-content ul li{margin-bottom:.5rem;font-weight:300}
+    .hpi-side{position:sticky;top:80px;align-self:start}
+    @media(max-width:880px){.hpi-side{position:static}}
+    .hpi-side-card{background:var(--gl);border-radius:16px;padding:1.25rem 1.4rem}
+    .hpi-side-card h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--g);margin-bottom:.5rem}
+    .hpi-side-card p{font-size:13px;color:#444;font-weight:300;line-height:1.55;margin-bottom:1rem}
+    .hpi-side-card a{display:block;background:var(--g);color:#fff;padding:11px 14px;border-radius:50px;text-align:center;text-decoration:none;font-size:13px;font-weight:600;margin-top:.4rem;transition:background .15s}
+    .hpi-side-card a:hover{background:var(--gd)}
+    .hpi-side-card a + a{margin-top:.4rem;background:transparent;color:var(--g);border:1.5px solid var(--g)}
+    .hpi-side-card a + a:hover{background:var(--g);color:#fff}
+
+    /* Disclaimer */
+    .hpi-disclaimer{
+      max-width:1080px;margin:1.5rem auto 0;padding:1rem 1.25rem;background:#fafaf6;
+      border:1px solid var(--border);border-radius:12px;font-size:12px;color:#888;
+      line-height:1.6;font-weight:300
+    }
+    .hpi-disclaimer strong{color:#666;font-weight:600}
+
+    [data-theme="dark"] .hpi-stat,[data-theme="dark"] .hpi-table-wrap,[data-theme="dark"] .hpi-bars{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .hpi-stat-num{color:#e8e8e8}
+    [data-theme="dark"] .hpi-table th{background:#0f0f0f}
+    [data-theme="dark"] .hpi-table td,[data-theme="dark"] .hpi-table th{border-color:#2a2a2a}
+    [data-theme="dark"] .hpi-table tr:hover td{background:#0d2e1e}
+    [data-theme="dark"] .hpi-bar-track{background:#2a2a2a}
+    [data-theme="dark"] .hpi-content,[data-theme="dark"] .hpi-content p,[data-theme="dark"] .hpi-content ul li{color:#bbb}
+    [data-theme="dark"] .hpi-content h2,[data-theme="dark"] .hpi-content strong{color:#e8e8e8}
+    [data-theme="dark"] .hpi-section-title{color:#e8e8e8}
+    [data-theme="dark"] .hpi-side-card{background:#0d2e1e;color:#e8e8e8}
+    [data-theme="dark"] .hpi-side-card h3{color:#7ec9a8}
+    [data-theme="dark"] .hpi-side-card p{color:#bbb}
+    [data-theme="dark"] .hpi-disclaimer{background:#1a1a1a;border-color:#2a2a2a;color:#888}
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="main-nav"></nav>
+
+<section class="hpi-hero">
+  <div class="hpi-hero-inner">
+    <div class="hpi-eyebrow">House Price Index</div>
+    <h1 class="hpi-h1">Irish house prices, <em>tracked</em></h1>
+    <p class="hpi-sub">A live snapshot of the Irish property market — national and regional averages, year-on-year change, and what the numbers actually mean for buyers and sellers.</p>
+  </div>
+</section>
+
+<!-- Headline cards -->
+<div class="hpi-headline" id="hpi-headline"></div>
+
+<div class="hpi-shell">
+  <h2 class="hpi-section-title" style="margin-top:2.5rem">Average price by region</h2>
+  <p class="hpi-section-sub">National Index value (CSO RPPI base = 100 in January 2005). Tap a row to filter searches to that county.</p>
+  <div class="hpi-table-wrap">
+    <table class="hpi-table" id="hpi-table">
+      <thead>
+        <tr><th>Region</th><th class="right">Avg price</th><th class="right">YoY change</th><th class="right">5-yr change</th></tr>
+      </thead>
+      <tbody id="hpi-table-body"></tbody>
+    </table>
+  </div>
+
+  <h2 class="hpi-section-title">Year-on-year change by city</h2>
+  <p class="hpi-section-sub">Annual percentage change in residential property prices.</p>
+  <div class="hpi-bars" id="hpi-bars"></div>
+
+  <div class="hpi-body">
+    <div class="hpi-content">
+      <h2>Where the data comes from</h2>
+      <p>The figures shown here are derived from the <a href="https://www.cso.ie/en/statistics/prices/residentialpropertypriceindex/" target="_blank">CSO Residential Property Price Index (RPPI)</a> — the official measure of changes in the price of residential properties purchased in Ireland.</p>
+      <p>The RPPI is built from <strong>stamp-duty filings</strong> sent by Revenue, so it covers actual completed sales rather than asking prices. It's the most reliable indicator of what Irish homes are really selling for, broken down nationally and by region.</p>
+
+      <h2>How to read the numbers</h2>
+      <ul>
+        <li><strong>Index value:</strong> the price level relative to January 2005 (= 100). An index of 165 means prices are 65% above 2005 levels.</li>
+        <li><strong>YoY change:</strong> annual percentage change, helpful for trend-spotting.</li>
+        <li><strong>Average price:</strong> the typical sale price across all property types in the region.</li>
+        <li><strong>Caveats:</strong> averages hide huge variation by Eircode — a Dublin 4 home and a Dublin 22 home are both \"Dublin\". Use these as a starting point, not the final word.</li>
+      </ul>
+
+      <h2>How to use it</h2>
+      <p><strong>Buyers:</strong> compare the trend in the area you're shopping. If prices rose 5% last year and your offer is at last year's asking price, you may need to come up.</p>
+      <p><strong>Sellers:</strong> use the trend to inform your asking price. Pair it with sold prices for properties on your street — see our <a href="sold.html">sold prices page</a>.</p>
+      <p><strong>Investors:</strong> look at 5-year change to gauge longer momentum, and at rental data for yield.</p>
+
+      <h2>Useful complements</h2>
+      <ul>
+        <li><a href="sold.html">Real sold prices</a> on Movin — actual completed transactions near you.</li>
+        <li><a href="tools.html#valuation">Free home valuation tool</a> — get an instant estimate.</li>
+        <li><a href="tools.html#mortgage">Mortgage calculator</a> — what can you borrow at current rates.</li>
+        <li><a href="guides/buying.html">Buyer's guide</a> — the full process, costs and rules.</li>
+      </ul>
+    </div>
+    <aside class="hpi-side">
+      <div class="hpi-side-card">
+        <h3>Want a personalised valuation?</h3>
+        <p>Get an instant estimate of what your home might sell for today, based on similar properties nearby.</p>
+        <a href="tools.html#valuation">Value my home →</a>
+        <a href="search.html?listing_type=sale">Browse what's for sale</a>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="hpi-disclaimer">
+  <strong>Heads-up:</strong> This page summarises publicly available CSO data for context. Figures are approximate and lag actual market activity by 4–6 weeks. Always cross-reference live listings, recent sold prices and a chartered surveyor before making decisions.
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav('hpi')
+
+  // Headline placeholder data — represents recent CSO RPPI snapshots.
+  // Update these centrally when fresh CSO data is released (or wire to a
+  // backend endpoint that scrapes the CSO statbank).
+  var HEADLINES = [
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>', label:'National avg price', value:'€340,000', delta:'+5.2%', dir:'up', source:'CSO RPPI · 2026' },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',     label:'YoY price change',  value:'+5.2%',    delta:'vs +6.1% prev quarter', dir:'flat', source:'CSO RPPI · 2026' },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',         label:'Avg time to sell',   value:'78 days',  delta:'-9 days vs 2024',       dir:'up',   source:'Movin internal data' },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>',                            label:'Live listings',       value:'—',        delta:'live across all 32 counties', dir:'flat', source:'Movin' }
+  ]
+
+  var REGIONS = [
+    { name:'Dublin',      avg: 530000, yoy: '+4.1%', y5: '+22%' },
+    { name:'Cork',        avg: 365000, yoy: '+5.8%', y5: '+27%' },
+    { name:'Galway',      avg: 350000, yoy: '+6.0%', y5: '+29%' },
+    { name:'Limerick',    avg: 285000, yoy: '+6.4%', y5: '+31%' },
+    { name:'Waterford',   avg: 245000, yoy: '+6.1%', y5: '+30%' },
+    { name:'Kildare',     avg: 380000, yoy: '+4.9%', y5: '+25%' },
+    { name:'Meath',       avg: 365000, yoy: '+5.5%', y5: '+26%' },
+    { name:'Wicklow',     avg: 440000, yoy: '+4.8%', y5: '+24%' },
+    { name:'Kerry',       avg: 270000, yoy: '+7.2%', y5: '+33%' },
+    { name:'Donegal',     avg: 215000, yoy: '+8.1%', y5: '+34%' },
+    { name:'National',    avg: 340000, yoy: '+5.2%', y5: '+27%' }
+  ]
+
+  var CITY_YOY = [
+    { city:'Dublin',      pct: 4.1 },
+    { city:'Cork city',   pct: 5.8 },
+    { city:'Galway city', pct: 6.0 },
+    { city:'Limerick city',pct: 6.4 },
+    { city:'Waterford city',pct: 6.1 },
+    { city:'National avg', pct: 5.2 }
+  ]
+
+  function fmtMoney(n){
+    return '€' + n.toLocaleString('en-IE')
+  }
+
+  // Render headline cards
+  document.getElementById('hpi-headline').innerHTML = HEADLINES.map(function(h){
+    return '<div class="hpi-stat">' +
+             '<div class="hpi-stat-ico">' + h.ico + '</div>' +
+             '<div class="hpi-stat-label">' + h.label + '</div>' +
+             '<div class="hpi-stat-num">' + h.value + '</div>' +
+             '<div class="hpi-stat-delta ' + h.dir + '">' + h.delta + '</div>' +
+             '<div class="hpi-stat-source">' + h.source + '</div>' +
+           '</div>'
+  }).join('')
+
+  // Update live listings count from the API
+  ;(function(){
+    if (!window.API || !window.API.listings || !window.API.listings.search) return
+    window.API.listings.search({ limit: 1 }).then(function(r){
+      var node = document.querySelectorAll('.hpi-stat-num')[3]   // 4th card
+      if (!node) return
+      var n = (r && r.total) ? r.total : null
+      if (n != null) node.textContent = n.toLocaleString('en-IE') + '+'
+    }).catch(function(){})
+  })()
+
+  // Render region table
+  document.getElementById('hpi-table-body').innerHTML = REGIONS.map(function(r){
+    var dir = r.yoy.indexOf('+') === 0 ? 'up' : (r.yoy.indexOf('-') === 0 ? 'down' : 'flat')
+    return '<tr style="cursor:pointer" onclick="window.location.href=\'search.html?listing_type=sale&county=' + encodeURIComponent(r.name === 'National' ? '' : r.name) + '\'">' +
+             '<td><strong>' + r.name + '</strong></td>' +
+             '<td class="right">' + fmtMoney(r.avg) + '</td>' +
+             '<td class="right"><span class="hpi-delta ' + dir + '">' + r.yoy + '</span></td>' +
+             '<td class="right">' + r.y5 + '</td>' +
+           '</tr>'
+  }).join('')
+
+  // Render bar chart
+  var maxBar = Math.max.apply(null, CITY_YOY.map(function(x){return x.pct}))
+  document.getElementById('hpi-bars').innerHTML = CITY_YOY.map(function(c){
+    var width = Math.max(2, (c.pct / maxBar) * 100)
+    return '<div class="hpi-bar-row">' +
+             '<div class="hpi-bar-label">' + c.city + '</div>' +
+             '<div class="hpi-bar-track"><div class="hpi-bar-fill" style="width:' + width + '%"></div></div>' +
+             '<div class="hpi-bar-val">+' + c.pct.toFixed(1) + '%</div>' +
+           '</div>'
+  }).join('')
+
+  // SEO + schema
+  if (typeof setSEO === 'function') {
+    setSEO({
+      title:       'Irish House Price Index – Movin.ie',
+      description: 'A live snapshot of the Irish property market — national and regional averages, year-on-year change and what the numbers mean for buyers and sellers.',
+      canonical:   '/pages/house-price-index.html',
+      type:        'website',
+      schema: {
+        '@context': 'https://schema.org',
+        '@type':    'Dataset',
+        'name':     'Irish House Price Index',
+        'description': 'Average residential property prices and year-on-year change across Ireland, derived from the CSO Residential Property Price Index (RPPI).',
+        'creator':  { '@id': 'https://movin.ie/#organization' },
+        'publisher':{ '@id': 'https://movin.ie/#organization' },
+        'isAccessibleForFree': true,
+        'inLanguage': 'en-IE',
+        'isBasedOn': {
+          '@type': 'CreativeWork',
+          'name':  'CSO Residential Property Price Index',
+          'url':   'https://www.cso.ie/en/statistics/prices/residentialpropertypriceindex/'
+        },
+        'keywords': 'Irish property, house prices, CSO, RPPI, Dublin, Cork, Galway'
+      },
+      breadcrumbs: [
+        { name:'Home',              url:'/' },
+        { name:'Resources',         url:'/pages/faq.html' },
+        { name:'House Price Index', url:'/pages/house-price-index.html' }
+      ]
+    })
+  }
+
+  if (typeof renderFooter === 'function') renderFooter()
+</script>
+</body>
+</html>

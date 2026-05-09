@@ -845,6 +845,244 @@ function renderTypeLanding(opts){
 }
 window.renderTypeLanding = renderTypeLanding
 
+// ────────────────────────────────────────────────────────────────────────────
+//   Guide pages (Buyer guide, Seller guide, Mortgage guide, BER, etc.)
+//   Each guide page calls renderGuide({...}) once with its config:
+//
+//     {
+//       eyebrow:    'For buyers',
+//       h1:         'The complete buyer\'s guide to Irish property',
+//       intro:      '…short summary…',
+//       updated:    '2026-05-09',
+//       sections:   [{ id, title, html }, …]   // one per H2 section
+//       related:    [{ label, href, eyebrow }, …]
+//       cta:        { h, p, label, href }
+//       schema:     extra JSON-LD merged with the default Article schema
+//     }
+//
+//   Renders: hero, TOC (sticky on desktop), article body with green/orange
+//   callouts, related-guides grid, bottom CTA, full SEO + Article schema +
+//   Breadcrumbs.
+// ────────────────────────────────────────────────────────────────────────────
+function ensureGuideStyles(){
+  if (document.getElementById('guide-inline-styles')) return
+  var s = document.createElement('style')
+  s.id = 'guide-inline-styles'
+  s.textContent = ''
+    + ':root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}'
+    /* Hero */
+    + '.gd-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:3rem 1.25rem 4.25rem;position:relative;overflow:hidden}'
+    + '.gd-hero::before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}'
+    + '.gd-hero::after{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}'
+    + '.gd-hero-inner{max-width:780px;margin:0 auto;position:relative;z-index:2}'
+    + '.gd-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.78);letter-spacing:1.6px;text-transform:uppercase;margin-bottom:1rem;background:rgba(255,255,255,.10);padding:6px 14px;border-radius:50px;backdrop-filter:blur(6px);font-weight:500}'
+    + '.gd-h1{font-family:"Playfair Display",serif;font-size:clamp(28px,6vw,44px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:.75rem}'
+    + '.gd-h1 em{font-style:normal;color:#e07b3f}'
+    + '.gd-intro{font-size:16px;color:rgba(255,255,255,.78);font-weight:300;line-height:1.55;max-width:640px}'
+    + '.gd-meta{display:flex;gap:.65rem;flex-wrap:wrap;align-items:center;margin-top:1.25rem;font-size:12px;color:rgba(255,255,255,.55)}'
+    + '.gd-meta-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);padding:5px 11px;border-radius:50px;backdrop-filter:blur(8px)}'
+    /* Two-column shell */
+    + '.gd-shell{max-width:1080px;margin:0 auto;padding:2.25rem 1.25rem 3rem;display:grid;grid-template-columns:240px 1fr;gap:2.5rem}'
+    + '@media(max-width:880px){.gd-shell{grid-template-columns:1fr;gap:0;padding:1.75rem 1rem}}'
+    /* Side TOC */
+    + '.gd-toc{position:sticky;top:80px;align-self:start}'
+    + '@media(max-width:880px){.gd-toc{display:none}}'
+    + '.gd-toc-title{font-size:11px;color:#888;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-bottom:.85rem}'
+    + '.gd-toc a{display:block;padding:.55rem .75rem;border-radius:10px;font-size:13px;color:#555;text-decoration:none;font-weight:500;transition:all .15s;border-left:3px solid transparent;margin-left:-3px;line-height:1.4}'
+    + '.gd-toc a:hover{color:var(--g);background:var(--gl)}'
+    + '.gd-toc a.on{color:var(--g);background:var(--gl);border-left-color:var(--g);font-weight:600}'
+    /* Article */
+    + '.gd-article{font-family:"DM Sans",sans-serif;color:#333;font-size:16px;line-height:1.75;max-width:720px}'
+    + '.gd-article > section{margin-bottom:2.5rem;scroll-margin-top:80px}'
+    + '.gd-article h2{font-family:"Playfair Display",serif;font-size:clamp(22px,3.2vw,28px);font-weight:900;color:var(--text,#111);letter-spacing:-.4px;margin-bottom:.85rem;line-height:1.2}'
+    + '.gd-article h3{font-family:"Playfair Display",serif;font-size:18px;font-weight:700;color:var(--text,#111);margin:1.5rem 0 .5rem;line-height:1.25}'
+    + '.gd-article p{margin-bottom:1.1rem;color:#444;font-weight:300}'
+    + '.gd-article strong{color:var(--text,#111);font-weight:600}'
+    + '.gd-article a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(26,92,69,.3);text-underline-offset:3px;font-weight:500}'
+    + '.gd-article a:hover{text-decoration-color:var(--g)}'
+    + '.gd-article ul,.gd-article ol{margin:0 0 1.1rem;padding-left:1.5rem}'
+    + '.gd-article ul li,.gd-article ol li{margin-bottom:.55rem;color:#444;font-weight:300}'
+    + '.gd-article ul li::marker{color:var(--g)}'
+    + '.gd-article code{background:#f5f2ec;padding:1px 6px;border-radius:4px;font-size:.92em;color:#5a4a2c}'
+    + '.gd-article hr{border:none;border-top:1px solid var(--border);margin:1.75rem 0}'
+    /* Callouts */
+    + '.gd-tip,.gd-note,.gd-warn{margin:1.25rem 0;padding:1rem 1.25rem;border-radius:14px;display:flex;gap:.85rem;align-items:flex-start;font-size:14.5px;line-height:1.6;font-weight:300}'
+    + '.gd-tip{background:var(--gl);border-left:4px solid var(--g)}'
+    + '.gd-tip strong,.gd-note strong,.gd-warn strong{font-weight:700}'
+    + '.gd-note{background:#e8f0fd;border-left:4px solid #1d62cf;color:#163d6e}'
+    + '.gd-note strong{color:#0d2960}'
+    + '.gd-warn{background:#fdf0e6;border-left:4px solid var(--o);color:#8a3d10}'
+    + '.gd-warn strong{color:#5e2705}'
+    + '.gd-callout-ico{width:24px;height:24px;flex-shrink:0;margin-top:1px}'
+    + '.gd-callout-ico svg{width:24px;height:24px;stroke:currentColor;fill:none}'
+    /* Numbered/big list (e.g. step-by-step) */
+    + '.gd-steps{counter-reset:gd 0;padding:0;margin:1.25rem 0;list-style:none}'
+    + '.gd-steps > li{counter-increment:gd;position:relative;padding:.85rem 1.15rem .85rem 3rem;background:#fafaf6;border:1px solid var(--border);border-radius:12px;margin-bottom:.55rem;font-weight:300;color:#444}'
+    + '.gd-steps > li::before{content:counter(gd);position:absolute;left:.85rem;top:.95rem;width:26px;height:26px;border-radius:50%;background:var(--g);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:"DM Sans",sans-serif}'
+    /* Tables */
+    + '.gd-article table{width:100%;border-collapse:collapse;margin:1.25rem 0;font-size:14px}'
+    + '.gd-article table th,.gd-article table td{padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--border)}'
+    + '.gd-article table th{background:#fafaf6;font-weight:600;color:var(--text,#111);font-size:12px;text-transform:uppercase;letter-spacing:.4px}'
+    + '.gd-article table tr:hover td{background:var(--gl)}'
+    /* Related grid */
+    + '.gd-related{margin-top:3rem}'
+    + '.gd-related h2{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;color:var(--text,#111);margin-bottom:1rem}'
+    + '.gd-related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem}'
+    + '.gd-related-card{display:block;background:var(--white,#fff);border:1px solid var(--border);border-radius:14px;padding:1rem 1.15rem;text-decoration:none;color:inherit;transition:all .18s}'
+    + '.gd-related-card:hover{border-color:var(--g);transform:translateY(-2px);box-shadow:0 10px 24px rgba(26,92,69,.10)}'
+    + '.gd-related-eyebrow{font-size:10px;color:var(--g);letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-bottom:5px}'
+    + '.gd-related-card-title{font-family:"Playfair Display",serif;font-size:15px;font-weight:700;color:var(--text,#111);line-height:1.25}'
+    /* Bottom CTA */
+    + '.gd-cta{background:linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%);color:#fff;border-radius:20px;padding:2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;box-shadow:0 12px 30px rgba(26,92,69,.18);position:relative;overflow:hidden;margin-top:3rem}'
+    + '.gd-cta::before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.06);top:-100px;right:-80px;pointer-events:none}'
+    + '.gd-cta h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;margin-bottom:.35rem;line-height:1.15}'
+    + '.gd-cta p{font-size:13.5px;color:rgba(255,255,255,.78);font-weight:300;line-height:1.55;max-width:460px}'
+    + '.gd-cta a{flex-shrink:0;background:#fff;color:var(--g);padding:13px 24px;font-size:14px;font-weight:600;border-radius:50px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:transform .18s,box-shadow .18s;position:relative;z-index:1}'
+    + '.gd-cta a:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18)}'
+    /* Disclaimer */
+    + '.gd-disclaimer{max-width:720px;margin:2rem 0 0;padding:1rem 1.15rem;background:#fafaf6;border:1px solid var(--border);border-radius:12px;font-size:12px;color:#888;line-height:1.6;font-weight:300}'
+    + '.gd-disclaimer strong{color:#666;font-weight:600}'
+    /* Dark mode */
+    + '[data-theme="dark"] .gd-article{color:#ccc}'
+    + '[data-theme="dark"] .gd-article p,[data-theme="dark"] .gd-article ul li,[data-theme="dark"] .gd-article ol li{color:#bbb}'
+    + '[data-theme="dark"] .gd-article h2,[data-theme="dark"] .gd-article h3{color:#e8e8e8}'
+    + '[data-theme="dark"] .gd-article strong{color:#fff}'
+    + '[data-theme="dark"] .gd-article code{background:#252525;color:#f0d9a4}'
+    + '[data-theme="dark"] .gd-article hr{border-color:#2a2a2a}'
+    + '[data-theme="dark"] .gd-tip{background:#0d2e1e}'
+    + '[data-theme="dark"] .gd-note{background:#0c1a30;color:#7eaeed}'
+    + '[data-theme="dark"] .gd-warn{background:#2e1a0d;color:#f0a06d}'
+    + '[data-theme="dark"] .gd-toc a{color:#aaa}'
+    + '[data-theme="dark"] .gd-toc a:hover,[data-theme="dark"] .gd-toc a.on{background:#0d2e1e;color:#7ec9a8}'
+    + '[data-theme="dark"] .gd-steps > li{background:#1a1a1a;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .gd-article table th{background:#1a1a1a;color:#e8e8e8}'
+    + '[data-theme="dark"] .gd-article table td{border-color:#2a2a2a}'
+    + '[data-theme="dark"] .gd-article table tr:hover td{background:#0d2e1e}'
+    + '[data-theme="dark"] .gd-related-card{background:#1a1a1a;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .gd-related-card-title{color:#e8e8e8}'
+    + '[data-theme="dark"] .gd-disclaimer{background:#1a1a1a;border-color:#2a2a2a;color:#888}'
+  document.head.appendChild(s)
+}
+
+function renderGuide(opts){
+  ensureGuideStyles()
+  opts = opts || {}
+  var sections = opts.sections || []
+  var related  = opts.related  || []
+  var cta      = opts.cta      || null
+
+  var root = window.location.pathname.includes('/pages/') ? '../' : 'pages/'
+  // For pages inside /pages/guides/, root climbs up one extra level
+  if (window.location.pathname.includes('/pages/guides/')) root = '../'
+
+  // Hero
+  var heroHTML =
+    '<section class="gd-hero">' +
+      '<div class="gd-hero-inner">' +
+        (opts.eyebrow ? '<div class="gd-eyebrow">' + opts.eyebrow + '</div>' : '') +
+        '<h1 class="gd-h1">' + (opts.h1 || '') + '</h1>' +
+        (opts.intro ? '<p class="gd-intro">' + opts.intro + '</p>' : '') +
+        '<div class="gd-meta">' +
+          (opts.updated ? '<span class="gd-meta-pill">📅 Updated ' + opts.updated + '</span>' : '') +
+          (opts.readTime ? '<span class="gd-meta-pill">⏱ ' + opts.readTime + '</span>' : '') +
+          '<span class="gd-meta-pill">🇮🇪 For Ireland</span>' +
+        '</div>' +
+      '</div>' +
+    '</section>'
+
+  // TOC
+  var tocHTML =
+    '<aside class="gd-toc">' +
+      '<div class="gd-toc-title">In this guide</div>' +
+      sections.map(function(s, i){
+        return '<a href="#' + s.id + '" data-toc="' + s.id + '"' + (i===0 ? ' class="on"' : '') + '>' + s.title + '</a>'
+      }).join('') +
+    '</aside>'
+
+  // Article
+  var articleHTML =
+    '<article class="gd-article">' +
+      sections.map(function(s){
+        return '<section id="' + s.id + '"><h2>' + s.title + '</h2>' + s.html + '</section>'
+      }).join('') +
+      (related.length
+        ? '<section class="gd-related"><h2>Related guides</h2><div class="gd-related-grid">' +
+            related.map(function(r){
+              return '<a class="gd-related-card" href="' + r.href + '">' +
+                       (r.eyebrow ? '<div class="gd-related-eyebrow">' + r.eyebrow + '</div>' : '') +
+                       '<div class="gd-related-card-title">' + r.label + '</div>' +
+                     '</a>'
+            }).join('') +
+          '</div></section>'
+        : '') +
+      (cta
+        ? '<div class="gd-cta">' +
+            '<div><h3>' + cta.h + '</h3><p>' + cta.p + '</p></div>' +
+            '<a href="' + cta.href + '">' + cta.label + ' →</a>' +
+          '</div>'
+        : '') +
+      '<div class="gd-disclaimer"><strong>Heads-up:</strong> This guide is for general information only and is not legal, financial or tax advice. Irish property law and lender criteria can change. Always confirm specifics with a qualified solicitor, mortgage broker, accountant or the relevant authority before making decisions.</div>' +
+    '</article>'
+
+  // Mount
+  var host = document.getElementById('guide-page')
+  if (!host) {
+    host = document.createElement('div')
+    host.id = 'guide-page'
+    document.body.appendChild(host)
+  }
+  host.innerHTML = heroHTML + '<div class="gd-shell">' + tocHTML + articleHTML + '</div>'
+
+  if (typeof renderFooter === 'function') setTimeout(renderFooter, 0)
+
+  // Active TOC item on scroll
+  var headings = sections.map(function(s){ return document.getElementById(s.id) })
+  function setActiveToc(id){
+    document.querySelectorAll('.gd-toc a').forEach(function(a){ a.classList.toggle('on', a.dataset.toc === id) })
+  }
+  function onScroll(){
+    var fromTop = window.scrollY + 120
+    for (var i = headings.length - 1; i >= 0; i--){
+      var el = headings[i]
+      if (el && el.offsetTop <= fromTop) { setActiveToc(el.id); return }
+    }
+    if (sections[0]) setActiveToc(sections[0].id)
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+
+  // SEO + schema
+  var articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    'headline': opts.h1,
+    'description': opts.intro,
+    'datePublished': opts.published || opts.updated,
+    'dateModified': opts.updated,
+    'author': { '@type': 'Organization', '@id': 'https://movin.ie/#organization' },
+    'publisher': { '@id': 'https://movin.ie/#organization' },
+    'inLanguage': 'en-IE',
+    'about': { '@id': 'https://movin.ie/#organization' }
+  }
+  if (opts.schema) {
+    Object.keys(opts.schema).forEach(function(k){ articleSchema[k] = opts.schema[k] })
+  }
+  if (typeof setSEO === 'function') {
+    setSEO({
+      title:       opts.h1 + ' – Movin.ie',
+      description: opts.intro,
+      type:        'article',
+      schema:      articleSchema,
+      breadcrumbs: opts.breadcrumbs || [
+        { name: 'Home',      url: '/' },
+        { name: 'Resources', url: '/pages/faq.html' },
+        { name: opts.h1,     url: location.pathname }
+      ]
+    })
+  }
+}
+window.renderGuide = renderGuide
+
 function bindNavDropdowns(){
   var closeTimer = null
   document.querySelectorAll('.nav-has-dropdown').forEach(function(li){
@@ -1018,8 +1256,24 @@ function renderFooter() {
             '<a href="' + root + 'pages/latest.html">Latest listings</a>' +
             '<a href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
             '<a href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
-            '<a href="' + root + 'pages/tools.html#stamp">Stamp duty</a>' +
+            '<a href="' + root + 'pages/tools.html#stamp">Stamp duty calculator</a>' +
             '<a href="' + root + 'pages/tools.html#ftb">First-time buyer</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Resources</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/guides/buying.html">Buyer guides</a>' +
+            '<a href="' + root + 'pages/guides/selling.html">Seller guides</a>' +
+            '<a href="' + root + 'pages/guides/renting.html">Renter guides</a>' +
+            '<a href="' + root + 'pages/guides/landlords.html">Landlord guides</a>' +
+            '<a href="' + root + 'pages/guides/mortgage.html">Mortgage guides</a>' +
+            '<a href="' + root + 'pages/guides/mortgage-in-principle.html">Mortgage in Principle</a>' +
+            '<a href="' + root + 'pages/guides/energy-efficiency.html">Energy efficiency &amp; BER</a>' +
+            '<a href="' + root + 'pages/guides/removals.html">Removals</a>' +
+            '<a href="' + root + 'pages/house-price-index.html">House Price Index</a>' +
+            '<a href="' + root + 'pages/guides/property-news.html">Property news</a>' +
+            '<a href="' + root + 'pages/faq.html">Help &amp; FAQ</a>' +
           '</div>' +
         '</div>' +
         '<div>' +

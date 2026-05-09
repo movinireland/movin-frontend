@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Removals & Moving Day in Ireland – Movin.ie</title>
+  <meta name="description" content="A practical removals guide for moving home in Ireland — costs, timing, professional movers vs DIY, packing tips, change-of-address checklist and the day-of plan."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="guide-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../../js/icons.js"></script>
+  <script src="../../js/api.js"></script>
+  <script src="../../js/app.js"></script>
+  <script>
+    renderNav('list')
+    renderGuide({
+      eyebrow:  'Removals',
+      h1:       'Moving home in <em>Ireland</em>',
+      intro:    'A practical, week-by-week guide to moving day — typical costs, how to pick a removals company, packing tips, change-of-address checklist and the day-of plan.',
+      updated:  '2026-05-09',
+      readTime: '8 min read',
+      sections: [
+        { id:'timeline', title:'1. Six-week moving timeline', html:
+          '<h3>6 weeks before</h3>'+
+          '<ul>'+
+          '<li>Get <strong>3 quotes</strong> from removals companies. Most do free in-home or video surveys.</li>'+
+          '<li>Book your <strong>preferred date</strong> — Fridays and end-of-month are busiest. Booking early often saves money.</li>'+
+          '<li>Start <strong>decluttering</strong>: bin, donate or sell anything you don\'t want to pay to move.</li>'+
+          '</ul>'+
+          '<h3>4 weeks before</h3>'+
+          '<ul>'+
+          '<li>Buy or order <strong>boxes, tape and bubble wrap</strong>. Most removals companies sell or rent them.</li>'+
+          '<li>Notify your <strong>broadband / TV provider</strong> — installation slots fill up fast.</li>'+
+          '<li>Book <strong>parking suspension</strong> if needed (Dublin City Council, etc.) for the moving van.</li>'+
+          '</ul>'+
+          '<h3>2 weeks before</h3>'+
+          '<ul>'+
+          '<li>Start <strong>packing non-essentials</strong> — books, off-season clothes, decorative items.</li>'+
+          '<li>Confirm the <strong>exact moving time</strong> with the removals company.</li>'+
+          '<li>Order takeaway-meal vouchers or a few prepared meals for moving day.</li>'+
+          '</ul>'+
+          '<h3>Week of move</h3>'+
+          '<ul>'+
+          '<li>Pack a <strong>"first night box"</strong>: bedding, kettle, mugs, tea/coffee, toilet paper, phone chargers, basic tools.</li>'+
+          '<li>Take <strong>meter readings</strong> at your old place on the morning you leave.</li>'+
+          '<li>Confirm <strong>keys handover</strong> via your solicitor / agent.</li>'+
+          '</ul>'
+        },
+        { id:'costs', title:'2. What does a move cost in Ireland?', html:
+          '<table>'+
+            '<thead><tr><th>Move type</th><th>Typical price (€)</th><th>What\'s included</th></tr></thead>'+
+            '<tbody>'+
+              '<tr><td>1-bed apartment, local</td><td>€350 – €600</td><td>2 movers, van, half-day</td></tr>'+
+              '<tr><td>2-bed house, local</td><td>€600 – €900</td><td>2–3 movers, full day</td></tr>'+
+              '<tr><td>3-bed house, local</td><td>€800 – €1,400</td><td>3 movers, full day</td></tr>'+
+              '<tr><td>4-bed house, local</td><td>€1,200 – €2,000</td><td>3–4 movers, possibly 2 days</td></tr>'+
+              '<tr><td>Cross-country (e.g. Dublin → Cork)</td><td>+€300 – €700</td><td>fuel + labour surcharge</td></tr>'+
+              '<tr><td>Packing service (per room)</td><td>+€80 – €150</td><td>they pack everything for you</td></tr>'+
+              '<tr><td>Storage (per month)</td><td>€100 – €300</td><td>palletised, climate-controlled</td></tr>'+
+            '</tbody>'+
+          '</table>'+
+          '<p>Quotes vary widely — get at least three. Always ask whether <strong>insurance / "transit cover"</strong> is included and the <strong>excess</strong> if something is damaged.</p>'
+        },
+        { id:'pro-vs-diy', title:'3. Professional movers vs DIY van hire', html:
+          '<h3>Professional removals — when it\'s worth it</h3>'+
+          '<ul>'+
+          '<li>You\'re moving more than a small flat\'s worth of stuff.</li>'+
+          '<li>You have heavy items (sofa, fridge, washer, piano).</li>'+
+          '<li>You\'re moving stairs, narrow corridors or apartments without a lift.</li>'+
+          '<li>You don\'t want to spend 12 hours of a single day shifting boxes.</li>'+
+          '</ul>'+
+          '<h3>DIY van hire — when it makes sense</h3>'+
+          '<ul>'+
+          '<li>One-bed flat or studio with light contents.</li>'+
+          '<li>You have 2–3 friends willing to help (and you can return the favour).</li>'+
+          '<li>You\'re local — DIY costs spiral on long drives once fuel + your time is added.</li>'+
+          '</ul>'+
+          '<p>Typical DIY cost: <strong>€80–€150 per day</strong> for a Luton van + your fuel. Add the cost of feeding your friends and any damage to your stuff if it\'s not packed properly.</p>'
+        },
+        { id:'choosing', title:'4. How to pick a removals company', html:
+          '<ul>'+
+          '<li><strong>Check they\'re a member of an industry body</strong> — IAM, BAR or FIDI for international moves.</li>'+
+          '<li><strong>Ask about insurance</strong> — basic transit cover is common; full replacement insurance is extra.</li>'+
+          '<li><strong>Ask for references</strong> or read independent reviews (Google, Trustpilot).</li>'+
+          '<li><strong>Get the quote in writing</strong> with all extras (stairs, distance, packing, parking permit, fuel).</li>'+
+          '<li><strong>Pay by card or bank transfer</strong>, not cash — protects you if something goes wrong.</li>'+
+          '</ul>'+
+          '<div class="gd-warn"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg></div><div>Be cautious of suspiciously cheap quotes (<em>significantly</em> below the market). Some operators inflate the price on the day or hold goods until extra fees are paid.</div></div>'
+        },
+        { id:'packing', title:'5. Packing tips that actually save time', html:
+          '<ul>'+
+          '<li><strong>One room, one set of boxes.</strong> Don\'t mix kitchen with garage — unpacking becomes a nightmare.</li>'+
+          '<li><strong>Label every box</strong> on the top AND on a side. Movers stack them — top labels disappear.</li>'+
+          '<li><strong>Heavy items in small boxes</strong>, light bulky items in big boxes. Books in giant boxes will tear and break your back.</li>'+
+          '<li><strong>Photograph cable setups</strong> behind the TV / desktop before disconnecting.</li>'+
+          '<li><strong>Roll clothes in bin bags</strong> straight from the wardrobe — fastest move ever.</li>'+
+          '<li><strong>Pack a clearly-marked "first night box"</strong>: kettle, mugs, tea bags, sugar, toilet paper, phone chargers, basic tools, bedding for everyone.</li>'+
+          '<li><strong>Defrost the freezer 24h before</strong> if it\'s going with you — or eat down the contents the week before.</li>'+
+          '</ul>'
+        },
+        { id:'address', title:'6. Change-of-address checklist', html:
+          '<p>The 30 minutes you spend updating addresses saves you weeks of misdirected post:</p>'+
+          '<h3>Government & utilities</h3>'+
+          '<ul>'+
+          '<li>Revenue (myAccount) — for LPT, tax credit certs, Help to Buy</li>'+
+          '<li>Department of Social Protection (if applicable)</li>'+
+          '<li>Driving licence + Vehicle registration (NDLS / motortax.ie)</li>'+
+          '<li>Electoral register (<a href="https://www.checktheregister.ie/" target="_blank">checktheregister.ie</a>)</li>'+
+          '<li>Electricity (ESB / Bord Gáis / etc.) — close your old account, open the new</li>'+
+          '<li>Bin / waste collection</li>'+
+          '<li>Broadband</li>'+
+          '</ul>'+
+          '<h3>Personal</h3>'+
+          '<ul>'+
+          '<li>GP, dentist (transfer records to local practice)</li>'+
+          '<li>Bank, credit cards, savings, pension</li>'+
+          '<li>Insurance (home, car, life, health)</li>'+
+          '<li>Employer / payroll</li>'+
+          '<li>Subscription deliveries (Amazon, online groceries, magazines)</li>'+
+          '<li>Loyalty schemes</li>'+
+          '<li>An Post mail redirection — €60 for 6 months, often worth it as a safety net</li>'+
+          '</ul>'+
+          '<div class="gd-tip"><div class="gd-callout-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div><div>An Post\'s <strong>mail redirection</strong> service forwards everything posted to your old address to the new one for 3 / 6 / 12 months. It\'s the simplest backup if you forget anyone.</div></div>'
+        },
+        { id:'day', title:'7. The moving day plan', html:
+          '<ol class="gd-steps">'+
+          '<li><strong>7am</strong> — last items into boxes (toiletries, bedding, chargers).</li>'+
+          '<li><strong>8am</strong> — final meter readings at the old place. Photograph them.</li>'+
+          '<li><strong>9am–1pm</strong> — movers load. Stay out of their way unless they ask. Pay any agreed cash extras (parking permit, etc.) up front.</li>'+
+          '<li><strong>1–2pm</strong> — pick up keys for the new place (your solicitor / agent will confirm).</li>'+
+          '<li><strong>2–6pm</strong> — movers unload. Direct them to which room each box goes in (your labelling pays off here).</li>'+
+          '<li><strong>Evening</strong> — make the bed, plug in the kettle, order takeaway. Unpacking can wait till tomorrow.</li>'+
+          '</ol>'
+        }
+      ],
+      related: [
+        { eyebrow:'For buyers', label:"Buyer's guide",  href:'buying.html' },
+        { eyebrow:'For sellers',label:"Seller's guide", href:'selling.html' },
+        { eyebrow:'For tenants',label:"Renter's guide", href:'renting.html' },
+        { eyebrow:'Energy',     label:'BER & energy efficiency', href:'energy-efficiency.html' },
+        { eyebrow:'Reference', label:'Help & FAQ', href:'../faq.html' }
+      ],
+      cta: {
+        h:     'Browse properties on Movin',
+        p:     "Once you've moved, save searches for the next chapter — or list your old place if you haven't yet.",
+        label: 'Search homes',
+        href:  '../search.html'
+      },
+      breadcrumbs: [
+        { name:'Home',           url:'/' },
+        { name:'Resources',      url:'/pages/faq.html' },
+        { name:'Removals guide', url:'/pages/guides/removals.html' }
+      ]
+    })
+  </script>
+</body>
+</html>
