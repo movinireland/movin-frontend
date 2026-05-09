@@ -1034,6 +1034,185 @@
     // - If the seller chose to show it, print the Eircode in bold.
     // - If they chose to hide it (eircode_visible === false), print "Eircode —"
     //   so visitors know the property has one but the owner kept it private.
+    // ── Map preview card (right under the gallery) ────────────────
+    // Uses Google Static Maps for the thumbnail when we have lat/lng,
+    // falls back to a styled gradient + pin so the card never looks broken.
+    function buildMapPreview(L){
+      var addr = (L.address_line1 || '') + (L.address_area ? ', ' + L.address_area : '') + (L.county ? ', ' + L.county : '')
+      var area = (L.address_area || L.county || '') + (L.eircode_visible !== false && L.eircode ? '  ·  ' + L.eircode : '')
+      var lat  = L.latitude  != null ? L.latitude  : null
+      var lng  = L.longitude != null ? L.longitude : null
+
+      // Static map thumbnail — the pretty map preview baked into a single PNG.
+      // We hide POI labels and tone things down so the card looks editorial.
+      var thumb = ''
+      if (lat != null && lng != null) {
+        var sty = '&style=feature:poi|element:labels|visibility:off' +
+                  '&style=feature:road|element:labels|visibility:simplified' +
+                  '&style=feature:transit|visibility:off' +
+                  '&style=feature:water|element:geometry|color:0xc8dfd4' +
+                  '&style=feature:landscape|element:geometry|color:0xf7f5f0'
+        var url = 'https://maps.googleapis.com/maps/api/staticmap'
+                + '?center=' + lat + ',' + lng
+                + '&zoom=15&size=320x200&scale=2&maptype=roadmap'
+                + sty
+                + '&key=' + window.GOOGLE_MAPS_KEY
+        thumb = '<img src="' + url + '" alt="Map of ' + escAttr(addr) + '" loading="lazy"/>'
+      }
+
+      var pinSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 C7 2 4 6 4 10 C4 14 12 22 12 22 C12 22 20 14 20 10 C20 6 17 2 12 2"/><circle cx="12" cy="10" r="2.5"/></svg>'
+
+      return ''
+        + '<button type="button" class="map-preview" onclick="openFullMap()" aria-label="Open full map">'
+        +   '<div class="map-preview-thumb">'
+        +     thumb
+        +     '<div class="mp-pin" aria-hidden="true">'
+        +       '<svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/></svg>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="map-preview-body">'
+        +     '<div class="mp-eyebrow">' + pinSvg + 'Where you\'ll live</div>'
+        +     '<div class="mp-addr">' + escAttr(addr) + '</div>'
+        +     '<div class="mp-area">' + escAttr(area) + '</div>'
+        +     '<span class="mp-cta">Open full map'
+        +       '<svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>'
+        +     '</span>'
+        +   '</div>'
+        +   '<span class="mp-corner-arrow" aria-hidden="true">'
+        +     '<svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg>'
+        +   '</span>'
+        + '</button>'
+    }
+
+    // ── Fullscreen map overlay ───────────────────────────────────
+    var fsmapInstance = null
+    var fsmapMarker   = null
+    var fsmapStreetView = null
+    var fsmapHasState = false
+
+    function listingPosition(L){
+      if (L.latitude != null && L.longitude != null) {
+        return { lat: parseFloat(L.latitude), lng: parseFloat(L.longitude) }
+      }
+      if (locationInstance && typeof locationInstance.lat === 'function') {
+        return { lat: locationInstance.lat(), lng: locationInstance.lng() }
+      }
+      return null
+    }
+
+    async function openFullMap(){
+      var L = window.__listing; if (!L) return
+      var addr = (L.address_line1 || '') + (L.address_area ? ', ' + L.address_area : '') + (L.county ? ', ' + L.county : '')
+      var addrText = addr + (L.eircode_visible !== false && L.eircode ? ', ' + L.eircode : '') + ', Ireland'
+
+      document.getElementById('fsmap-addr').textContent = addr
+      document.getElementById('fsmap-extlink').href     = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addrText)
+      document.getElementById('fsmap-directions').href  = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(addrText)
+
+      var fs = document.getElementById('fsmap')
+      fs.classList.add('open')
+      document.documentElement.style.overflow = 'hidden'
+
+      // Push a history state so the browser/system Back button closes the overlay
+      // instead of navigating away from the listing.
+      if (!fsmapHasState) {
+        try { history.pushState({ fsmap: true }, '', '#map') } catch(e){}
+        fsmapHasState = true
+      }
+
+      // Lazy-load Google Maps the first time
+      if (!window.google || !google.maps) {
+        try { await loadGoogleMaps() } catch(e){}
+      }
+
+      var pos = listingPosition(L)
+      if (!pos) {
+        // Last-ditch: geocode the address
+        try {
+          var loc = await geocodeAddress(addr + (L.eircode ? ' ' + L.eircode : ''))
+          pos = { lat: loc.lat(), lng: loc.lng() }
+        } catch(e) {
+          pos = { lat: 53.349, lng: -6.260 }   // Dublin fallback
+        }
+      }
+
+      if (!fsmapInstance) {
+        fsmapInstance = new google.maps.Map(document.getElementById('fsmap-canvas'), {
+          center: pos, zoom: 16,
+          mapTypeControl: true,
+          streetViewControl: false,    // we expose our own action pill instead
+          fullscreenControl: false,
+          zoomControl: true,
+          zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_CENTER },
+          gestureHandling: 'greedy',
+          styles: [{ featureType:'poi', elementType:'labels', stylers:[{ visibility:'off' }] }]
+        })
+        fsmapMarker = new google.maps.Marker({
+          map: fsmapInstance, position: pos,
+          title: addr,
+          icon: { path: google.maps.SymbolPath.CIRCLE, scale: 11, fillColor: '#1a5c45', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 3 },
+          animation: google.maps.Animation.DROP
+        })
+      } else {
+        // Already initialised — just re-center and force a resize since the
+        // overlay was hidden when we last showed it.
+        fsmapInstance.setCenter(pos)
+        fsmapMarker.setPosition(pos)
+        setTimeout(function(){
+          google.maps.event.trigger(fsmapInstance, 'resize')
+          fsmapInstance.setCenter(pos)
+        }, 320)
+      }
+    }
+
+    function closeFullMap(){
+      var fs = document.getElementById('fsmap')
+      fs.classList.remove('open')
+      document.documentElement.style.overflow = ''
+      // Drop out of street view too
+      if (fsmapStreetView && fsmapStreetView.getVisible && fsmapStreetView.getVisible()) {
+        fsmapStreetView.setVisible(false)
+      }
+      // Pop our history state if we pushed one (so the URL hash is clean)
+      if (fsmapHasState) {
+        fsmapHasState = false
+        if (location.hash === '#map') {
+          try { history.back() } catch(e){}
+        }
+      }
+    }
+    window.openFullMap  = openFullMap
+    window.closeFullMap = closeFullMap
+
+    function toggleStreetView(){
+      if (!fsmapInstance) return
+      if (!fsmapStreetView) {
+        fsmapStreetView = fsmapInstance.getStreetView()
+        var c = fsmapInstance.getCenter()
+        fsmapStreetView.setPosition(c)
+        fsmapStreetView.setPov({ heading: 165, pitch: 0 })
+      }
+      fsmapStreetView.setVisible(!fsmapStreetView.getVisible())
+    }
+    window.toggleStreetView = toggleStreetView
+
+    // ESC closes the overlay
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        var fs = document.getElementById('fsmap')
+        if (fs && fs.classList.contains('open')) closeFullMap()
+      }
+    })
+    // Browser Back button closes the overlay (we pushed a history state on open)
+    window.addEventListener('popstate', function(){
+      var fs = document.getElementById('fsmap')
+      if (fs && fs.classList.contains('open')) {
+        fs.classList.remove('open')
+        document.documentElement.style.overflow = ''
+        fsmapHasState = false
+      }
+    })
+
     function eircodeDisplay(L, color) {
       var c = color || '#111'
       var visible = (L.eircode_visible === undefined || L.eircode_visible === null)
@@ -1148,6 +1327,7 @@
       if (!listingId) { window.location.href = 'search.html'; return }
       try {
         var L = await API.listings.get(listingId)
+        window.__listing = L
         API.listings.trackView(listingId).catch(function(){})
 
         document.title = L.title + ' – Movin.ie'
@@ -1270,6 +1450,7 @@
           '<div class="listing-page-wrap">' +
           '<div class="listing-col-left">' +
           galleryHTML +
+          buildMapPreview(L) +
 
           '<div class="detail-header">' +
             '<div class="d-tag-row">' +
@@ -1576,6 +1757,39 @@
     <button class="lightbox-nav lightbox-prev" onclick="slideLightbox(-1)">&#8249;</button>
     <button class="lightbox-nav lightbox-next" onclick="slideLightbox(1)">&#8250;</button>
     <div class="lightbox-counter" id="lb-counter">1 / 1</div>
+  </div>
+
+  <!-- Fullscreen map overlay (opened from the .map-preview card under the gallery) -->
+  <div class="fsmap" id="fsmap" aria-hidden="true">
+    <div class="fsmap-bar">
+      <button class="fsmap-back" type="button" aria-label="Back" onclick="closeFullMap()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="fsmap-title">
+        <div class="fsmap-title-eyebrow">Property location</div>
+        <div class="fsmap-title-addr" id="fsmap-addr">—</div>
+      </div>
+      <a class="fsmap-share" id="fsmap-extlink" href="#" target="_blank" rel="noopener" aria-label="Open in Google Maps">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14L21 3"/></svg>
+      </a>
+    </div>
+    <div class="fsmap-body">
+      <div id="fsmap-canvas"></div>
+      <div class="fsmap-actions">
+        <button class="fsmap-action" type="button" onclick="toggleStreetView()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="3"/><path d="M5 19c0-3.3 3.1-6 7-6s7 2.7 7 6"/></svg>
+          Street view
+        </button>
+        <a class="fsmap-action" id="fsmap-directions" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          Directions
+        </a>
+        <button class="fsmap-action" type="button" onclick="closeFullMap()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+          Close
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Add Place bottom sheet (used by Saved Places tab) -->
