@@ -153,8 +153,11 @@ function requireLogin() {
 function renderNav(activePage = '') {
   const user = window.API ? window.API.getUser() : null
   const isLoggedIn = window.API ? window.API.auth.isLoggedIn() : false
-  const root = window.location.pathname.includes('/pages/') ? '../' : './'
- 
+  // Absolute root — works from any depth (e.g. /pages/guides/buying.html)
+  // so the logo, dropdowns and account links never produce wrong URLs like
+  // /pages/index.html or /pages/pages/guides/buying.html.
+  const root = '/'
+
   const nav = document.getElementById('main-nav')
   if (!nav) return
  
@@ -588,7 +591,10 @@ function renderTypeLanding(opts){
 
   if (typeof renderNav === 'function') renderNav(navActive)
 
-  var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+  // Absolute path so links resolve correctly from /pages/ AND /pages/guides/.
+  // Every renderTypeLanding link points at a file inside /pages/, so this
+  // root prefix simplifies the rest of the function.
+  var root = '/pages/'
 
   // Skeleton card — matches the prop-card aspect ratio so layout doesn't jump
   var skel = '<div class="tlp-skel"><div class="tlp-skel-img"></div><div class="tlp-skel-body"><div class="tlp-skel-line sm"></div><div class="tlp-skel-line lg"></div><div class="tlp-skel-line md"></div></div></div>'
@@ -971,9 +977,8 @@ function renderGuide(opts){
   var related  = opts.related  || []
   var cta      = opts.cta      || null
 
-  var root = window.location.pathname.includes('/pages/') ? '../' : 'pages/'
-  // For pages inside /pages/guides/, root climbs up one extra level
-  if (window.location.pathname.includes('/pages/guides/')) root = '../'
+  // Absolute path so links resolve correctly from /pages/ AND /pages/guides/.
+  var root = '/pages/'
 
   // Hero
   var heroHTML =
@@ -1137,7 +1142,8 @@ document.addEventListener('click', e => {
 })
 // ── Property card HTML builder ────────────────────────────────────────────────
 function buildPropertyCard(listing, savedIds = []) {
-  const root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+  // Absolute path — listing.html and neighbourhood.html always live under /pages/
+  const root = '/pages/'
   const isSaved = savedIds.includes(listing.id)
   const photo = listing.primary_photo || listing.photos?.[0]?.url || null
   const imgSrc = photo ? (photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo) : null
@@ -1214,7 +1220,9 @@ window.toggleSave = toggleSave
 
 // ── Render footer ─────────────────────────────────────────────────────────────
 function renderFooter() {
-  var root = window.location.pathname.includes('/pages/') ? '../' : './'
+  // Absolute root — works from any depth (e.g. /pages/guides/buying.html) so
+  // every footer link resolves correctly without `../../` gymnastics.
+  var root = '/'
   var footer = document.getElementById('site-footer')
   if (!footer) return
   footer.innerHTML =
@@ -1339,7 +1347,7 @@ function renderRecentlyViewed(containerId, excludeId) {
     el.innerHTML = rv.map(function(x) {
       var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
       var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
-      var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+      var root = '/pages/'   // absolute — listing.html lives under /pages/
       return '<div onclick="window.location.href=\'' + root + 'listing.html?id=' + x.id + '\'" style="flex:0 0 140px;background:var(--white,#fff);border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
         '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
         '<div style="padding:.6rem">' +
@@ -1363,7 +1371,7 @@ function renderRecentlyViewed(containerId, excludeId) {
     el.innerHTML = rv.map(function(x) {
       var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
       var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
-      var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+      var root = '/pages/'   // absolute — listing.html lives under /pages/
       return '<div onclick="window.location.href=\'' + root + 'listing.html?id=' + x.id + '\'" style="flex:0 0 140px;background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
         '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
         '<div style="padding:.6rem">' +
