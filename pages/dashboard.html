@@ -214,13 +214,7 @@
     <main class="db-main">
       <!-- Push notification banner -->
     <div id="push-banner" style="display:none;padding:.75rem 1rem 0">
-      <div class="push-banner">
-        <div class="push-banner-text">
-          <strong>🔔 Enable notifications</strong>
-          Get instant alerts for new enquiries & listing approvals
-        </div>
-        <button class="push-enable-btn" onclick="requestPushPermission()">Enable</button>
-      </div>
+      <!-- Filled in by renderPushBanner() based on current state -->
     </div>
 
     <div id="tab-listings">
@@ -564,6 +558,194 @@
     btn.disabled = false; btn.textContent = 'Save changes'
   }
 
+  // ── Push notification helpers (global so banner buttons can call them) ──
+  var _pushVapidKey = null
+
+  function urlBase64ToUint8Array(base64) {
+    var padding = '='.repeat((4 - base64.length % 4) % 4)
+    var b = (base64 + padding).replace(/-/g, '+').replace(/_/g, '/')
+    var raw = window.atob(b)
+    var out = new Uint8Array(raw.length)
+    for (var i = 0; i < raw.length; ++i) out[i] = raw.charCodeAt(i)
+    return out
+  }
+
+  function pushSupported() {
+    return ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window)
+  }
+
+  async function getPushSubscription() {
+    if (!pushSupported()) return null
+    try {
+      var reg = await navigator.serviceWorker.getRegistration('/sw.js')
+      if (!reg) return null
+      return await reg.pushManager.getSubscription()
+    } catch(e) { return null }
+  }
+
+  function setBannerHTML(html) {
+    var b = document.getElementById('push-banner')
+    if (!b) return
+    b.innerHTML = html
+    b.style.display = 'block'
+  }
+
+  async function renderPushBanner() {
+    var b = document.getElementById('push-banner')
+    if (!b) return
+
+    if (!pushSupported()) {
+      setBannerHTML(
+        '<div class="push-banner"><div class="push-banner-text">' +
+        '<strong>Notifications not supported</strong>' +
+        'Your browser doesn’t support push notifications. Try Chrome, Edge, or Firefox.' +
+        '</div></div>'
+      )
+      return
+    }
+
+    if (Notification.permission === 'denied') {
+      setBannerHTML(
+        '<div class="push-banner"><div class="push-banner-text">' +
+        '<strong>🔕 Notifications blocked</strong>' +
+        'You blocked notifications. Re-enable them in your browser’s site settings, then reload.' +
+        '</div></div>'
+      )
+      return
+    }
+
+    var sub = await getPushSubscription()
+    if (Notification.permission === 'granted' && sub) {
+      setBannerHTML(
+        '<div class="push-banner">' +
+          '<div class="push-banner-text">' +
+            '<strong>✅ Notifications enabled</strong>' +
+            'You’ll get instant alerts for new enquiries & listing approvals.' +
+          '</div>' +
+          '<button class="push-enable-btn" id="push-disable-btn" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,.55)">Disable</button>' +
+        '</div>'
+      )
+      var d = document.getElementById('push-disable-btn')
+      if (d) d.addEventListener('click', disablePushNotifications)
+      return
+    }
+
+    setBannerHTML(
+      '<div class="push-banner">' +
+        '<div class="push-banner-text">' +
+          '<strong>🔔 Enable notifications</strong>' +
+          'Get instant alerts for new enquiries & listing approvals' +
+        '</div>' +
+        '<button class="push-enable-btn" id="push-enable-btn">Enable</button>' +
+      '</div>'
+    )
+    var e = document.getElementById('push-enable-btn')
+    if (e) e.addEventListener('click', enablePushNotifications)
+  }
+
+  async function enablePushNotifications() {
+    var btn = document.getElementById('push-enable-btn')
+    if (btn) { btn.disabled = true; btn.textContent = 'Enabling…' }
+
+    if (!pushSupported()) {
+      toast('Notifications aren’t supported on this browser', 'error')
+      if (btn) { btn.disabled = false; btn.textContent = 'Enable' }
+      return
+    }
+
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      toast('Notifications need HTTPS — open the live site to enable.', 'error')
+      if (btn) { btn.disabled = false; btn.textContent = 'Enable' }
+      return
+    }
+
+    try {
+      var reg = await navigator.serviceWorker.register('/sw.js')
+      await navigator.serviceWorker.ready
+
+      var permission = await Notification.requestPermission()
+      if (permission !== 'granted') {
+        toast('You declined the notification prompt. Click Enable again to retry.', 'info')
+        if (btn) { btn.disabled = false; btn.textContent = 'Enable' }
+        renderPushBanner()
+        return
+      }
+
+      // Best-effort: subscribe to web push so the server can deliver alerts
+      // even when this tab is closed. If the backend or VAPID key is missing,
+      // we still keep permission granted so the SW can fire local notifs.
+      var serverOk = false
+      try {
+        if (!_pushVapidKey) {
+          var r = await fetch(window.MOVIN_API_URL + '/api/push/vapid-key')
+          if (r.ok) {
+            var d = await r.json()
+            _pushVapidKey = d.publicKey
+          }
+        }
+        if (_pushVapidKey) {
+          var sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(_pushVapidKey)
+          })
+          var token = localStorage.getItem('movin_token')
+          var sr = await fetch(window.MOVIN_API_URL + '/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ subscription: sub })
+          })
+          serverOk = sr.ok
+        }
+      } catch(err) {
+        console.warn('Server push subscribe failed:', err)
+      }
+
+      // Show a confirmation notification so the user actually sees something
+      try {
+        await reg.showNotification('🔔 Notifications enabled', {
+          body: serverOk
+            ? 'You’ll get instant alerts on Movin.ie.'
+            : 'Browser notifications are on. Server push will activate shortly.',
+          icon:  '/favicon.svg',
+          badge: '/favicon.svg',
+          tag:   'movin-push-welcome'
+        })
+      } catch(e) { console.warn('Test notification failed:', e) }
+
+      toast('🔔 Notifications enabled!', 'success')
+      renderPushBanner()
+    } catch (err) {
+      console.error('Push enable failed:', err)
+      toast('Could not enable notifications: ' + (err.message || err), 'error')
+      if (btn) { btn.disabled = false; btn.textContent = 'Enable' }
+    }
+  }
+
+  async function disablePushNotifications() {
+    var btn = document.getElementById('push-disable-btn')
+    if (btn) { btn.disabled = true; btn.textContent = 'Disabling…' }
+    try {
+      var sub = await getPushSubscription()
+      if (sub) {
+        try {
+          var token = localStorage.getItem('movin_token')
+          await fetch(window.MOVIN_API_URL + '/api/push/unsubscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+            body: JSON.stringify({ endpoint: sub.endpoint })
+          })
+        } catch(e) { console.warn('Server unsubscribe failed:', e) }
+        await sub.unsubscribe()
+      }
+      toast('Notifications disabled.', 'info')
+      renderPushBanner()
+    } catch (err) {
+      console.error('Push disable failed:', err)
+      toast('Could not disable: ' + (err.message || err), 'error')
+      if (btn) { btn.disabled = false; btn.textContent = 'Disable' }
+    }
+  }
+
   // ── Init ──────────────────────────────────────────────────
   function initDashboard() {
     // Check login
@@ -577,89 +759,7 @@
     if (typeof renderNav === 'function') renderNav()
 
     // ── Push Notifications ─────────────────────────────────────────────────
-    var pushPublicKey = null
-
-    async function initPush() {
-      if (!('serviceWorker' in navigator) || !('PushManager' in window)) return
-      var permission = Notification.permission
-      if (permission === 'granted') {
-        // Already enabled — check banner
-        document.getElementById('push-banner').style.display = 'none'
-        return
-      }
-      if (permission === 'denied') return // User blocked it
-      // Show banner if not yet decided
-      document.getElementById('push-banner').style.display = 'block'
-      // Fetch VAPID key
-      try {
-        var res = await fetch(window.MOVIN_API_URL + '/api/push/vapid-key')
-        var data = await res.json()
-        pushPublicKey = data.publicKey
-      } catch(e) { console.warn('Could not get VAPID key') }
-    }
-
-    async function requestPushPermission() {
-      if (!('serviceWorker' in navigator)) {
-        toast('Push notifications not supported on this browser', 'info')
-        return
-      }
-      try {
-        // Register service worker
-        var reg = await navigator.serviceWorker.register('/sw.js')
-        await navigator.serviceWorker.ready
-
-        // Request permission
-        var permission = await Notification.requestPermission()
-        if (permission !== 'granted') {
-          toast('Notifications blocked. Enable them in browser settings.', 'info')
-          return
-        }
-
-        if (!pushPublicKey) {
-          var res = await fetch(window.MOVIN_API_URL + '/api/push/vapid-key')
-          var data = await res.json()
-          pushPublicKey = data.publicKey
-        }
-
-        // Subscribe
-        var sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(pushPublicKey)
-        })
-
-        // Save to server
-        var token = localStorage.getItem('movin_token')
-        await fetch(window.MOVIN_API_URL + '/api/push/subscribe', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-          body: JSON.stringify({ subscription: sub })
-        })
-
-        // Update UI
-        var banner = document.getElementById('push-banner')
-        if (banner) {
-          banner.innerHTML = '<div class="push-banner"><div class="push-banner-text"><strong>✅ Notifications enabled!</strong>You will be notified of new enquiries instantly.</div><div class="push-enabled-tag">🔔 Active</div></div>'
-          setTimeout(function() { banner.style.display = 'none' }, 4000)
-        }
-        toast('🔔 Notifications enabled!', 'success')
-
-      } catch(e) {
-        console.error('Push subscription error:', e)
-        toast('Could not enable notifications: ' + e.message, 'error')
-      }
-    }
-
-    function urlBase64ToUint8Array(base64String) {
-      var padding = '='.repeat((4 - base64String.length % 4) % 4)
-      var base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
-      var rawData = window.atob(base64)
-      var outputArray = new Uint8Array(rawData.length)
-      for (var i = 0; i < rawData.length; ++i) outputArray[i] = rawData.charCodeAt(i)
-      return outputArray
-    }
-
-    // Init push after login check
-    setTimeout(initPush, 1000)
+    setTimeout(renderPushBanner, 400)
 
     // ── Search Alerts ──────────────────────────────────────────────────────
     async function loadAlerts() {

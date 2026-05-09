@@ -20,8 +20,8 @@ self.addEventListener('push', function(e) {
   var title   = data.title || 'Movin.ie'
   var options = {
     body:    data.body || 'You have a new notification',
-    icon:    '/icons/favicon-192x192.png',
-    badge:   '/icons/favicon-48x48.png',
+    icon:    '/favicon.svg',
+    badge:   '/favicon.svg',
     vibrate: [200, 100, 200],
     tag:     data.tag || 'movin-notification',
     data:    { url: data.url || '/pages/dashboard.html' },
