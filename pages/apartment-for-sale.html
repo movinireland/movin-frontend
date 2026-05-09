@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Apartments for Sale in Ireland – Movin.ie</title>
+  <meta name="description" content="Find apartments for sale across Ireland — city-centre, suburban and new-build units in every county. Updated daily on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'sale', propertyType:'apartment', navActive:'buy',
+      eyebrow:'Buy a home',
+      h1:'Apartments for sale in Ireland',
+      intro:'City-centre, suburban and new-build apartments listed for sale on Movin.ie — from studios to penthouses, all over Ireland.',
+      siblings:[
+        { label:'Houses for sale',     href:'house-for-sale.html',     icon:'icon-house'     },
+        { label:'Bungalows for sale',  href:'bungalow-for-sale.html',  icon:'icon-bungalow'  },
+        { label:'Sites & Land',        href:'site-for-sale.html',      icon:'icon-site'      },
+        { label:'Apartments to rent',  href:'apartment-for-rent.html', icon:'icon-apartment' }
+      ],
+      faq:[
+        { q:'Are management fees included in the price?', a:'No — apartment listings show the asking price only. Annual service / management fees vary by development, so check with the seller or our listing detail page for the published amount.' },
+        { q:'Can I view new-build apartments?', a:'Yes — toggle the New Homes filter on the search page to see only newly built developments.' },
+        { q:'How do I know if an apartment has parking?', a:'Look for the parking icon on the listing card, or use the Parking facility filter inside the advanced search.' }
+      ]
+    })
+  </script>
+</body>
+</html>

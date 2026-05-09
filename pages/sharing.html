@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Rooms to Rent &amp; House Sharing in Ireland – Movin.ie</title>
+  <meta name="description" content="Find single rooms and house shares across Ireland — perfect for students, young professionals and anyone splitting rent. Updated daily on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'share', propertyType:'', navActive:'rent',
+      eyebrow:'Share a home',
+      h1:'Rooms to rent in Ireland',
+      intro:'Single rooms in shared homes — ideal for students, young professionals and anyone splitting the rent. Browse by city, county or budget.',
+      siblings:[
+        { label:'Houses to rent',     href:'house-for-rent.html',     icon:'icon-house'     },
+        { label:'Apartments to rent', href:'apartment-for-rent.html', icon:'icon-apartment' },
+        { label:'Bungalows to rent',  href:'bungalow-for-rent.html',  icon:'icon-bungalow'  }
+      ],
+      faq:[
+        { q:'How is sharing different from renting?', a:'Sharing means you rent a single room in a property where other people already live (the "house share"). You\'ll usually share kitchen, bathroom and living spaces with the other tenants.' },
+        { q:'Do I need to register the tenancy?', a:'Most live-in landlord rooms (rent-a-room scheme) don\'t need RTB registration. House-share tenancies where the landlord doesn\'t live there usually do — ask before signing.' },
+        { q:'Are bills shared?', a:'Almost always — utilities are split between the housemates, with one person typically managing payments. Listings note this in the description.' }
+      ]
+    })
+  </script>
+</body>
+</html>

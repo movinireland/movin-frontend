@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Bungalows to Rent in Ireland – Movin.ie</title>
+  <meta name="description" content="Find single-storey bungalows to rent across Ireland — coastal, suburban and rural. Filter by county, beds and monthly budget on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'rent', propertyType:'bungalow', navActive:'rent',
+      eyebrow:'Rent a home',
+      h1:'Bungalows to rent in Ireland',
+      intro:'Single-storey homes available to rent across Ireland — coastal cottages, suburban dormers and country bungalows on one floor.',
+      siblings:[
+        { label:'Houses to rent',     href:'house-for-rent.html',     icon:'icon-house'     },
+        { label:'Apartments to rent', href:'apartment-for-rent.html', icon:'icon-apartment' },
+        { label:'Sharing & rooms',    href:'sharing.html',            icon:'icon-user'      },
+        { label:'Bungalows for sale', href:'bungalow-for-sale.html',  icon:'icon-bungalow'  }
+      ],
+      faq:[
+        { q:'Why are bungalows good for renters?', a:'No stairs makes them ideal for older tenants, families with very young kids or anyone with mobility considerations. They\'re also typically warmer to heat being on one level.' },
+        { q:'Are bungalow rentals usually furnished?', a:'It varies — listings note "furnished", "part-furnished" or "unfurnished" in the description. Use the Furnished filter on the search page to narrow it down.' }
+      ]
+    })
+  </script>
+</body>
+</html>

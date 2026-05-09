@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Sites &amp; Land for Sale in Ireland – Movin.ie</title>
+  <meta name="description" content="Find building sites and residential land for sale across Ireland — perfect for self-builds, farm sites and one-off homes. Updated daily on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'sale', propertyType:'site', navActive:'buy',
+      eyebrow:'Buy land',
+      h1:'Sites & land for sale in Ireland',
+      intro:'Building sites and residential land listed on Movin.ie — ideal for self-builds, family sites and one-off rural homes.',
+      siblings:[
+        { label:'Houses for sale',     href:'house-for-sale.html',     icon:'icon-house'     },
+        { label:'Apartments for sale', href:'apartment-for-sale.html', icon:'icon-apartment' },
+        { label:'Bungalows for sale',  href:'bungalow-for-sale.html',  icon:'icon-bungalow'  },
+        { label:'Commercial land',     href:'commercial.html?cat=land', icon:'icon-site'     }
+      ],
+      faq:[
+        { q:'Does the site come with planning permission?', a:'Some do, some don\'t — listings note "with planning" or "no planning" in the description. Always confirm with the seller and check the planning reference on the local authority\'s website.' },
+        { q:'How big are typical sites?', a:'One-off rural sites in Ireland are commonly 0.5 – 1 acre to satisfy planning rules; suburban infill sites can be smaller. Use the floor-size filter or read the listing for the exact area in m².' }
+      ]
+    })
+  </script>
+</body>
+</html>

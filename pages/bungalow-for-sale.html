@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Bungalows for Sale in Ireland – Movin.ie</title>
+  <meta name="description" content="Browse single-storey bungalows for sale across Ireland — from coastal cottages to suburban dormers. Updated daily on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'sale', propertyType:'bungalow', navActive:'buy',
+      eyebrow:'Buy a home',
+      h1:'Bungalows for sale in Ireland',
+      intro:'Single-storey homes for sale across all 32 counties — coastal cottages, suburban dormers and country bungalows on one floor.',
+      siblings:[
+        { label:'Houses for sale',     href:'house-for-sale.html',     icon:'icon-house'     },
+        { label:'Apartments for sale', href:'apartment-for-sale.html', icon:'icon-apartment' },
+        { label:'Sites & Land',        href:'site-for-sale.html',      icon:'icon-site'      },
+        { label:'Bungalows to rent',   href:'bungalow-for-rent.html',  icon:'icon-bungalow'  }
+      ],
+      faq:[
+        { q:'What\'s the difference between a bungalow and a dormer?', a:'A bungalow is a single-storey home; a dormer adds rooms in the roof space (often bedrooms with sloped ceilings). Many Irish "bungalows" are technically dormers — listings will note which.' },
+        { q:'Are bungalows easier to maintain?', a:'Often yes — single-storey access makes future-proofing easier (no stairs), but maintenance still depends on age and condition. Check the BER and any photos of the roof and exterior.' }
+      ]
+    })
+  </script>
+</body>
+</html>

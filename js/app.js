@@ -163,67 +163,49 @@ function renderNav(activePage = '') {
       <a href="${root}index.html" class="nav-logo">mov<span>in</span></a>
  
       <ul class="nav-links">
-        <!-- Buy dropdown -->
-        <li class="nav-has-dropdown ${activePage === 'buy' ? 'active' : ''}"
-            onclick="window.location.href='${root}pages/search.html?listing_type=sale'">
-          Buy <span class="ntd-caret">▾</span>
+        <!-- Buy dropdown — residential only, each item links to a dedicated page -->
+        <li class="nav-has-dropdown ${activePage === 'buy' ? 'active' : ''}">
+          <span>Buy <span class="ntd-caret">▾</span></span>
           <div class="nav-tools-dropdown">
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale'">
+            <a class="ntd-item" href="${root}pages/house-for-sale.html">
               <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">All homes for sale</div><div class="ntd-sub">Every type, all over Ireland</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=house'">
-              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">Houses</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=apartment'">
+              <div><div class="ntd-title">Houses for sale</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
+            </a>
+            <a class="ntd-item" href="${root}pages/apartment-for-sale.html">
               <span class="ntd-icon">${icon('apartment', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">Apartments</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=bungalow'">
+              <div><div class="ntd-title">Apartments for sale</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
+            </a>
+            <a class="ntd-item" href="${root}pages/bungalow-for-sale.html">
               <span class="ntd-icon">${icon('bungalow', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">Bungalows</div><div class="ntd-sub">Single-storey homes</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=site'">
+              <div><div class="ntd-title">Bungalows for sale</div><div class="ntd-sub">Single-storey homes</div></div>
+            </a>
+            <a class="ntd-item" href="${root}pages/site-for-sale.html">
               <span class="ntd-icon">${icon('site', 20, '#1a5c45')}</span>
               <div><div class="ntd-title">Sites &amp; Land</div><div class="ntd-sub">Build your own</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&new_dev=1'">
-              <span class="ntd-icon">${icon('new-dev', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">New homes</div><div class="ntd-sub">Brand-new developments</div></div>
-            </div>
+            </a>
           </div>
         </li>
 
-        <!-- Rent dropdown -->
-        <li class="nav-has-dropdown ${activePage === 'rent' ? 'active' : ''}"
-            onclick="window.location.href='${root}pages/search.html?listing_type=rent'">
-          Rent <span class="ntd-caret">▾</span>
+        <!-- Rent dropdown — residential only, each item links to a dedicated page -->
+        <li class="nav-has-dropdown ${activePage === 'rent' ? 'active' : ''}">
+          <span>Rent <span class="ntd-caret">▾</span></span>
           <div class="nav-tools-dropdown">
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent'">
-              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">All rentals</div><div class="ntd-sub">Whole properties to rent</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=house'">
+            <a class="ntd-item" href="${root}pages/house-for-rent.html">
               <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
               <div><div class="ntd-title">Houses to rent</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=apartment'">
+            </a>
+            <a class="ntd-item" href="${root}pages/apartment-for-rent.html">
               <span class="ntd-icon">${icon('apartment', 20, '#1a5c45')}</span>
               <div><div class="ntd-title">Apartments to rent</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=bungalow'">
+            </a>
+            <a class="ntd-item" href="${root}pages/bungalow-for-rent.html">
               <span class="ntd-icon">${icon('bungalow', 20, '#1a5c45')}</span>
               <div><div class="ntd-title">Bungalows to rent</div><div class="ntd-sub">Single-storey rentals</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=share'">
+            </a>
+            <a class="ntd-item" href="${root}pages/sharing.html">
               <span class="ntd-icon">${icon('user', 20, '#1a5c45')}</span>
               <div><div class="ntd-title">Sharing &amp; rooms</div><div class="ntd-sub">Single rooms in shared homes</div></div>
-            </div>
-            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&new_dev=1'">
-              <span class="ntd-icon">${icon('new-dev', 20, '#1a5c45')}</span>
-              <div><div class="ntd-title">New rental developments</div><div class="ntd-sub">Build-to-rent &amp; PRS</div></div>
-            </div>
+            </a>
           </div>
         </li>
 
@@ -313,8 +295,218 @@ function renderNav(activePage = '') {
     }, 100)
   }
 setTimeout(function() { if (typeof renderFooter === 'function') renderFooter() }, 0)
+  // Bind hover open/close on all dropdown triggers — JS is more reliable here
+  // than pure :hover, which can be flaky once an LI also has an onclick.
+  setTimeout(bindNavDropdowns, 0)
 }
- 
+
+// ── Hover-open dropdown menus on .nav-has-dropdown items ─────────────────
+// Used by Buy / Rent dropdowns on every page. Re-runs after renderNav()
+// rebuilds the nav, and also fires on first DOMContentLoaded so the inline
+// nav on index.html gets it too.
+// ── Property-type landing pages ──────────────────────────────────────────
+// Each dedicated page (house-for-sale.html, apartment-for-rent.html, …) calls
+// this with its config. We render a shared layout: hero + sibling pills +
+// quick filters + listing grid + advanced-search CTA.
+function renderTypeLanding(opts){
+  var listingType  = opts.listingType    // 'sale' | 'rent' | 'share'
+  var propertyType = opts.propertyType   // 'house' | 'apartment' | 'bungalow' | 'site' | ''
+  var h1           = opts.h1
+  var intro        = opts.intro
+  var eyebrow      = opts.eyebrow || (listingType === 'sale' ? 'Buy' : (listingType === 'rent' ? 'Rent' : 'Share'))
+  var siblings     = opts.siblings || []
+  var navActive    = opts.navActive
+  var seoFaq       = opts.faq || null
+
+  // Header / footer
+  if (typeof renderNav === 'function') renderNav(navActive)
+
+  var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
+
+  // Hero
+  var heroHTML =
+    '<section class="tlp-hero">' +
+      '<div class="tlp-inner">' +
+        '<div class="tlp-eyebrow">' + eyebrow + '</div>' +
+        '<h1 class="tlp-h1">' + h1 + '</h1>' +
+        '<p class="tlp-sub">' + intro + '</p>' +
+        '<form class="tlp-filters" onsubmit="event.preventDefault();tlpSubmit()">' +
+          '<select id="tlp-county" class="tlp-sel"><option value="">Any county</option></select>' +
+          '<select id="tlp-beds"   class="tlp-sel"><option value="">Beds</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option></select>' +
+          '<select id="tlp-max"    class="tlp-sel"></select>' +
+          '<button type="submit" class="tlp-go">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+            'Search' +
+          '</button>' +
+        '</form>' +
+      '</div>' +
+    '</section>'
+
+  // Sibling pills
+  var sibHTML = ''
+  if (siblings.length){
+    sibHTML =
+      '<div class="tlp-siblings">' +
+        '<span class="tlp-sib-label">' + (listingType === 'rent' ? 'Or rent' : (listingType === 'share' ? 'Or buy / rent' : 'Or look at')) + ':</span>' +
+        siblings.map(function(s){
+          return '<a class="tlp-sib" href="' + s.href + '">' + (s.icon ? '<svg width="14" height="14"><use href="/icons.svg#' + s.icon + '"/></svg>' : '') + s.label + '</a>'
+        }).join('') +
+      '</div>'
+  }
+
+  // Results shell
+  var resultsHTML =
+    '<section class="tlp-results">' +
+      '<div class="tlp-results-hdr">' +
+        '<h2 id="tlp-count">Loading…</h2>' +
+        '<select class="tlp-sort" id="tlp-sort" onchange="tlpRender()">' +
+          '<option value="newest">Newest first</option>' +
+          '<option value="price_asc">Price low → high</option>' +
+          '<option value="price_desc">Price high → low</option>' +
+        '</select>' +
+      '</div>' +
+      '<div id="tlp-grid" class="listings-grid">' +
+        Array(8).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line sm"></div><div class="skeleton-line lg"></div><div class="skeleton-line md"></div></div></div>').join('') +
+      '</div>' +
+      '<div class="tlp-cta-row">' +
+        '<a class="btn btn-primary" id="tlp-see-all">Open advanced search →</a>' +
+      '</div>' +
+    '</section>'
+
+  // FAQ block (optional)
+  var faqHTML = ''
+  if (seoFaq && seoFaq.length){
+    faqHTML =
+      '<section class="tlp-faq">' +
+        '<h2>Frequently asked</h2>' +
+        seoFaq.map(function(q){
+          return '<details class="tlp-faq-item"><summary>' + q.q + '</summary><div class="tlp-faq-a">' + q.a + '</div></details>'
+        }).join('') +
+      '</section>'
+  }
+
+  // Mount
+  var host = document.getElementById('type-page')
+  if (!host) {
+    host = document.createElement('div')
+    host.id = 'type-page'
+    document.body.appendChild(host)
+  }
+  host.innerHTML = heroHTML + sibHTML + resultsHTML + faqHTML
+
+  // Footer
+  if (typeof renderFooter === 'function') setTimeout(renderFooter, 0)
+
+  // Hydrate counties + max-price options
+  var COUNTIES = ['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan']
+  var cSel = document.getElementById('tlp-county')
+  COUNTIES.forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; cSel.appendChild(o) })
+
+  var maxOpts = listingType === 'sale'
+    ? [['',''],['200000','Up to €200k'],['300000','Up to €300k'],['500000','Up to €500k'],['750000','Up to €750k'],['1000000','Up to €1m'],['1500000','Up to €1.5m']]
+    : [['',''],['1000','Up to €1k/mo'],['1500','Up to €1.5k/mo'],['2000','Up to €2k/mo'],['2500','Up to €2.5k/mo'],['3000','Up to €3k/mo'],['4000','Up to €4k/mo']]
+  var mSel = document.getElementById('tlp-max')
+  mSel.innerHTML = ''
+  maxOpts.forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1] || (listingType === 'sale' ? 'Max price' : 'Max rent'); mSel.appendChild(op) })
+
+  // Pre-fill from URL if any
+  var u = new URLSearchParams(location.search)
+  if (u.get('county')) cSel.value = u.get('county')
+  if (u.get('bedrooms')) document.getElementById('tlp-beds').value = u.get('bedrooms')
+  if (u.get('max_price')) mSel.value = u.get('max_price')
+
+  // ── Cached state + render fn ────────────────────────────────────────────
+  var ALL = []
+  function tlpFetch(){
+    var p = { listing_type: listingType, sort:'newest', limit: 60 }
+    if (propertyType) p.property_type = propertyType
+    var county = cSel.value, beds = document.getElementById('tlp-beds').value, max = mSel.value
+    if (county) p.county = county
+    if (beds)   p.bedrooms = beds
+    if (max)    p.max_price = max
+    document.getElementById('tlp-count').textContent = 'Loading ' + h1.toLowerCase().replace(/^[a-z]/, function(c){return c.toUpperCase()}) + '…'
+    var grid = document.getElementById('tlp-grid')
+    grid.innerHTML = Array(8).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line sm"></div><div class="skeleton-line lg"></div><div class="skeleton-line md"></div></div></div>').join('')
+
+    return window.API.listings.search(p).then(function(res){
+      ALL = (res && res.listings) || []
+      tlpRender()
+      // Update advanced-search CTA URL with current filters
+      var urlP = new URLSearchParams()
+      urlP.set('listing_type', listingType)
+      if (propertyType) urlP.set('property_type', propertyType)
+      if (county) urlP.set('county', county)
+      if (beds)   urlP.set('bedrooms', beds)
+      if (max)    urlP.set('max_price', max)
+      document.getElementById('tlp-see-all').href = root + 'search.html?' + urlP.toString()
+    }).catch(function(){
+      document.getElementById('tlp-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#aaa;font-size:14px">Could not load listings — please try again.</div>'
+      document.getElementById('tlp-count').textContent = 'Could not load'
+    })
+  }
+  function tlpRender(){
+    var sort = document.getElementById('tlp-sort').value
+    var rows = ALL.slice()
+    if (sort === 'price_asc')  rows.sort(function(a,b){return (a.price||0)-(b.price||0)})
+    if (sort === 'price_desc') rows.sort(function(a,b){return (b.price||0)-(a.price||0)})
+    if (sort === 'newest')     rows.sort(function(a,b){return new Date(b.created_at||0) - new Date(a.created_at||0)})
+
+    var grid = document.getElementById('tlp-grid')
+    var hdr  = document.getElementById('tlp-count')
+    if (!rows.length) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;background:#fff;border:1px dashed #e8e4dc;border-radius:16px"><div style="font-family:Playfair Display,serif;font-size:18px;color:#111;margin-bottom:.5rem">No matches yet</div><p style="font-size:13px;color:#888;margin-bottom:1rem">Be the first to list — your first listing on Movin is free.</p><a class="btn btn-primary" href="' + root + 'list.html">List a property →</a></div>'
+      hdr.textContent = 'No ' + h1.toLowerCase() + ' yet'
+      return
+    }
+    hdr.innerHTML = '<strong>' + rows.length + '</strong> ' + h1.toLowerCase()
+    grid.innerHTML = rows.map(function(l){
+      try { return window.buildPropertyCard(l, []) } catch(e){ return '' }
+    }).join('')
+  }
+  window.tlpRender = tlpRender
+  window.tlpSubmit = tlpFetch
+  ;[cSel, document.getElementById('tlp-beds'), mSel].forEach(function(el){
+    if (el) el.addEventListener('change', tlpFetch)
+  })
+
+  // SEO: rewrite document title + meta description from the H1/intro
+  document.title = h1 + ' – Movin.ie'
+  var md = document.querySelector('meta[name="description"]')
+  if (md && intro) md.setAttribute('content', intro)
+
+  tlpFetch()
+}
+window.renderTypeLanding = renderTypeLanding
+
+function bindNavDropdowns(){
+  var closeTimer = null
+  document.querySelectorAll('.nav-has-dropdown').forEach(function(li){
+    if (li.dataset.ddBound) return
+    li.dataset.ddBound = '1'
+    var dd = li.querySelector('.nav-tools-dropdown')
+    if (!dd) return
+    li.addEventListener('mouseenter', function(){
+      clearTimeout(closeTimer)
+      // Close any other dropdown that's still open
+      document.querySelectorAll('.nav-tools-dropdown.open').forEach(function(o){
+        if (o !== dd) o.classList.remove('open')
+      })
+      dd.classList.add('open')
+    })
+    li.addEventListener('mouseleave', function(){
+      closeTimer = setTimeout(function(){ dd.classList.remove('open') }, 120)
+    })
+    // Keep the menu open while the cursor is over the menu itself
+    dd.addEventListener('mouseenter', function(){ clearTimeout(closeTimer) })
+    dd.addEventListener('mouseleave', function(){
+      closeTimer = setTimeout(function(){ dd.classList.remove('open') }, 120)
+    })
+  })
+}
+window.bindNavDropdowns = bindNavDropdowns
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bindNavDropdowns)
+else bindNavDropdowns()
+
 function toggleToolsDropdown(e) {
   e.stopPropagation()
   const dd = document.getElementById('tools-dropdown')

@@ -317,61 +317,49 @@ body.hero-places-ready .sugg-box{display:none !important}
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">mov<span>in</span></a>
     <ul class="nav-links">
-      <!-- Buy dropdown -->
-      <li class="nav-has-dropdown" onclick="go('pages/search.html?listing_type=sale')">
-        Buy <span class="ntd-caret">▾</span>
+      <!-- Buy dropdown — residential only, each links to a dedicated page -->
+      <li class="nav-has-dropdown">
+        <span>Buy <span class="ntd-caret">▾</span></span>
         <div class="nav-tools-dropdown">
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale')">
+          <a class="ntd-item" href="pages/house-for-sale.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
-            <div><div class="ntd-title">All homes for sale</div><div class="ntd-sub">Every type, all over Ireland</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale&property_type=house')">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
-            <div><div class="ntd-title">Houses</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale&property_type=apartment')">
+            <div><div class="ntd-title">Houses for sale</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
+          </a>
+          <a class="ntd-item" href="pages/apartment-for-sale.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-apartment"/></svg></span>
-            <div><div class="ntd-title">Apartments</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale&property_type=bungalow')">
+            <div><div class="ntd-title">Apartments for sale</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
+          </a>
+          <a class="ntd-item" href="pages/bungalow-for-sale.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-bungalow"/></svg></span>
-            <div><div class="ntd-title">Bungalows</div><div class="ntd-sub">Single-storey homes</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale&property_type=site')">
+            <div><div class="ntd-title">Bungalows for sale</div><div class="ntd-sub">Single-storey homes</div></div>
+          </a>
+          <a class="ntd-item" href="pages/site-for-sale.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-site"/></svg></span>
             <div><div class="ntd-title">Sites &amp; Land</div><div class="ntd-sub">Build your own</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=sale&new_dev=1')">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-new-dev"/></svg></span>
-            <div><div class="ntd-title">New homes</div><div class="ntd-sub">Brand-new developments</div></div>
-          </div>
+          </a>
         </div>
       </li>
 
-      <!-- Rent dropdown -->
-      <li class="nav-has-dropdown" onclick="go('pages/search.html?listing_type=rent')">
-        Rent <span class="ntd-caret">▾</span>
+      <!-- Rent dropdown — residential only, each links to a dedicated page -->
+      <li class="nav-has-dropdown">
+        <span>Rent <span class="ntd-caret">▾</span></span>
         <div class="nav-tools-dropdown">
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=rent')">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
-            <div><div class="ntd-title">All rentals</div><div class="ntd-sub">Whole properties to rent</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=rent&property_type=house')">
+          <a class="ntd-item" href="pages/house-for-rent.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
             <div><div class="ntd-title">Houses to rent</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=rent&property_type=apartment')">
+          </a>
+          <a class="ntd-item" href="pages/apartment-for-rent.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-apartment"/></svg></span>
             <div><div class="ntd-title">Apartments to rent</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=rent&property_type=bungalow')">
+          </a>
+          <a class="ntd-item" href="pages/bungalow-for-rent.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-bungalow"/></svg></span>
             <div><div class="ntd-title">Bungalows to rent</div><div class="ntd-sub">Single-storey rentals</div></div>
-          </div>
-          <div class="ntd-item" onclick="event.stopPropagation();go('pages/search.html?listing_type=share')">
+          </a>
+          <a class="ntd-item" href="pages/sharing.html">
             <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-user"/></svg></span>
             <div><div class="ntd-title">Sharing &amp; rooms</div><div class="ntd-sub">Single rooms in shared homes</div></div>
-          </div>
+          </a>
         </div>
       </li>
 

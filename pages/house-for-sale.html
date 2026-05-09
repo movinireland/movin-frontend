@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Houses for Sale in Ireland – Movin.ie</title>
+  <meta name="description" content="Browse houses for sale across Ireland — detached, semi-detached, terrace and end-of-terrace homes from every county. Updated daily on Movin.ie."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+  <div id="type-page"></div>
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script>window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderTypeLanding({
+      listingType:'sale', propertyType:'house', navActive:'buy',
+      eyebrow:'Buy a home',
+      h1:'Houses for sale in Ireland',
+      intro:'Detached, semi-detached, terrace and end-of-terrace — every house listed for sale on Movin.ie, all 32 counties.',
+      siblings:[
+        { label:'Apartments for sale', href:'apartment-for-sale.html', icon:'icon-apartment' },
+        { label:'Bungalows for sale',  href:'bungalow-for-sale.html',  icon:'icon-bungalow'  },
+        { label:'Sites & Land',        href:'site-for-sale.html',      icon:'icon-site'      },
+        { label:'Houses to rent',      href:'house-for-rent.html',     icon:'icon-house'     }
+      ],
+      faq:[
+        { q:'How much does the average house cost in Ireland?', a:'Prices vary widely by county — Dublin averages around €450k, while rural counties can be much lower. Use our filters to narrow by county and bedrooms to see real listings in your range.' },
+        { q:'Do these listings include new-build homes?', a:'Yes — both new-build developments and resale homes appear here. Use the New Homes filter on the search page to see only new-builds.' },
+        { q:'Can I save searches?', a:'Yes — sign in and save filters as alerts. We\'ll email you when a new house matching your criteria is listed.' }
+      ]
+    })
+  </script>
+</body>
+</html>
