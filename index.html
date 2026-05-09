@@ -1127,8 +1127,12 @@ fillPriceSelects('sale')
 
 loadFeatured()
 updateNav()
-// Render the shared rich multi-column footer (Buy / Rent / Tools / Company / Neighbourhoods / Counties)
-if (typeof renderFooter === 'function') renderFooter()
+// Render the shared rich multi-column footer (Buy / Rent / Tools / Company / Neighbourhoods / Counties).
+// Defer until DOMContentLoaded so the <footer id="site-footer"> element below
+// has actually been parsed before we try to populate it.
+function _renderFooterNow(){ if (typeof renderFooter === 'function') renderFooter() }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _renderFooterNow)
+else _renderFooterNow()
 
 // Hide PWA splash once page is interactive (and only matters in standalone mode)
 ;(function(){
