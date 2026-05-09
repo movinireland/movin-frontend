@@ -304,6 +304,164 @@ setTimeout(function() { if (typeof renderFooter === 'function') renderFooter() }
 // Used by Buy / Rent dropdowns on every page. Re-runs after renderNav()
 // rebuilds the nav, and also fires on first DOMContentLoaded so the inline
 // nav on index.html gets it too.
+
+// ────────────────────────────────────────────────────────────────────────────
+//   SEO helpers
+//   Every page should call setSEO({...}) once. It writes (or updates):
+//     - <title>
+//     - <meta name="description">
+//     - <link rel="canonical">
+//     - Open Graph + Twitter card meta tags
+//     - JSON-LD blocks (Organization, WebSite, page-specific schema, breadcrumbs)
+//   Idempotent — calling it twice replaces the existing tags rather than
+//   appending duplicates.
+// ────────────────────────────────────────────────────────────────────────────
+window.MOVIN_ORIGIN = 'https://movin.ie'
+
+function _seoUpsertMeta(attr, value, content){
+  if (!content) return
+  var el = document.head.querySelector('meta[' + attr + '="' + value + '"]')
+  if (!el) {
+    el = document.createElement('meta')
+    el.setAttribute(attr, value)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('content', content)
+}
+function _seoUpsertLink(rel, href){
+  if (!href) return
+  var el = document.head.querySelector('link[rel="' + rel + '"]')
+  if (!el) {
+    el = document.createElement('link')
+    el.setAttribute('rel', rel)
+    document.head.appendChild(el)
+  }
+  el.setAttribute('href', href)
+}
+function _seoUpsertJsonLd(id, data){
+  if (!data) return
+  var el = document.getElementById(id)
+  if (!el) {
+    el = document.createElement('script')
+    el.type = 'application/ld+json'
+    el.id = id
+    document.head.appendChild(el)
+  }
+  try { el.textContent = JSON.stringify(data) } catch(e){}
+}
+
+// Movin Organization JSON-LD — included on every page
+function movinOrgSchema(){
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    '@id': window.MOVIN_ORIGIN + '/#organization',
+    'name': 'Movin.ie',
+    'url': window.MOVIN_ORIGIN + '/',
+    'logo': window.MOVIN_ORIGIN + '/favicon.svg',
+    'description': "Ireland's modern property marketplace. Buy, rent, share and list — your first listing is free.",
+    'areaServed': { '@type': 'Country', 'name': 'Ireland' },
+    'address': {
+      '@type': 'PostalAddress',
+      'addressCountry': 'IE',
+      'addressLocality': 'Dublin'
+    },
+    'sameAs': [
+      'https://www.facebook.com/movin.ie',
+      'https://www.instagram.com/movin.ie'
+    ],
+    'email': 'hello@movin.ie'
+  }
+}
+// Movin WebSite JSON-LD — surfaces the search box in Google sitelinks
+function movinWebsiteSchema(){
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': window.MOVIN_ORIGIN + '/#website',
+    'url': window.MOVIN_ORIGIN + '/',
+    'name': 'Movin.ie',
+    'publisher': { '@id': window.MOVIN_ORIGIN + '/#organization' },
+    'inLanguage': 'en-IE',
+    'potentialAction': {
+      '@type': 'SearchAction',
+      'target': window.MOVIN_ORIGIN + '/pages/search.html?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  }
+}
+
+/**
+ * setSEO({ title, description, canonical, image, type, schema, breadcrumbs })
+ *
+ * - title:        full <title> tag content (defaults to existing if omitted)
+ * - description:  meta description and OG/Twitter description
+ * - canonical:    canonical URL (defaults to current page URL minus query/hash)
+ * - image:        absolute URL of the social-share image
+ * - type:         OG type — 'website' | 'article' | 'product'
+ * - schema:       additional page-specific JSON-LD object (e.g. FAQPage,
+ *                 ItemList, ContactPage, RealEstateListing)
+ * - breadcrumbs:  array of { name, url } items for BreadcrumbList
+ */
+function setSEO(opts){
+  opts = opts || {}
+  var origin = window.MOVIN_ORIGIN
+
+  // Canonical defaults to current pathname (strip query + hash)
+  var canon = opts.canonical
+  if (!canon) {
+    canon = origin + location.pathname.replace(/\/index\.html$/, '/')
+  } else if (canon.indexOf('http') !== 0) {
+    canon = origin + (canon.charAt(0) === '/' ? '' : '/') + canon
+  }
+
+  if (opts.title) document.title = opts.title
+
+  _seoUpsertMeta('name',     'description',         opts.description || '')
+  _seoUpsertLink('canonical', canon)
+
+  // Open Graph
+  var ogType = opts.type || 'website'
+  var ogTitle = opts.title || document.title
+  var ogDesc  = opts.description || ''
+  var ogImg   = opts.image || (origin + '/favicon.svg')
+  _seoUpsertMeta('property', 'og:type',         ogType)
+  _seoUpsertMeta('property', 'og:title',        ogTitle)
+  _seoUpsertMeta('property', 'og:description',  ogDesc)
+  _seoUpsertMeta('property', 'og:url',          canon)
+  _seoUpsertMeta('property', 'og:image',        ogImg)
+  _seoUpsertMeta('property', 'og:site_name',    'Movin.ie')
+  _seoUpsertMeta('property', 'og:locale',       'en_IE')
+
+  // Twitter
+  _seoUpsertMeta('name', 'twitter:card',        ogImg ? 'summary_large_image' : 'summary')
+  _seoUpsertMeta('name', 'twitter:title',       ogTitle)
+  _seoUpsertMeta('name', 'twitter:description', ogDesc)
+  _seoUpsertMeta('name', 'twitter:image',       ogImg)
+
+  // JSON-LD: Organization + WebSite always; page-specific schema; breadcrumbs
+  _seoUpsertJsonLd('schema-org-org',     movinOrgSchema())
+  _seoUpsertJsonLd('schema-org-website', movinWebsiteSchema())
+  if (opts.schema)      _seoUpsertJsonLd('schema-org-page',        opts.schema)
+  if (opts.breadcrumbs && opts.breadcrumbs.length) {
+    _seoUpsertJsonLd('schema-org-breadcrumb', {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': opts.breadcrumbs.map(function(b, i){
+        return {
+          '@type': 'ListItem',
+          'position': i + 1,
+          'name': b.name,
+          'item': b.url.indexOf('http') === 0 ? b.url : (origin + (b.url.charAt(0) === '/' ? '' : '/') + b.url)
+        }
+      })
+    })
+  }
+}
+window.setSEO = setSEO
+window.movinOrgSchema = movinOrgSchema
+window.movinWebsiteSchema = movinWebsiteSchema
+
 // Inject the search-page styles inline so type-landing pages don't depend on
 // the deployed main.css being up-to-date. Idempotent — only runs once per page.
 function ensureTlpStyles(){
@@ -638,10 +796,50 @@ function renderTypeLanding(opts){
     if (el) el.addEventListener('change', tlpFetch)
   })
 
-  // SEO: rewrite document title + meta description from the H1/intro
-  document.title = h1 + ' – Movin.ie'
-  var md = document.querySelector('meta[name="description"]')
-  if (md && intro) md.setAttribute('content', intro)
+  // ── SEO + Schema ─────────────────────────────────────────────────────────
+  // FAQPage schema if the page has FAQ entries
+  var pageSchema = null
+  if (seoFaq && seoFaq.length) {
+    pageSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      'mainEntity': seoFaq.map(function(q){
+        return {
+          '@type': 'Question',
+          'name': q.q,
+          'acceptedAnswer': { '@type': 'Answer', 'text': q.a }
+        }
+      })
+    }
+  }
+  // Breadcrumb: Home → Buy/Rent → This page
+  var modeLabel = listingType === 'sale' ? 'Buy'
+                : listingType === 'rent' ? 'Rent'
+                : 'Sharing'
+  var modeUrl   = listingType === 'sale' ? '/pages/search.html?listing_type=sale'
+                : listingType === 'rent' ? '/pages/search.html?listing_type=rent'
+                : '/pages/sharing.html'
+  var thisFile = location.pathname.split('/').pop() || ''
+  var breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: modeLabel, url: modeUrl },
+    { name: h1, url: '/pages/' + thisFile }
+  ]
+
+  if (typeof setSEO === 'function') {
+    setSEO({
+      title:       h1 + ' – Movin.ie',
+      description: intro,
+      type:        'website',
+      schema:      pageSchema,
+      breadcrumbs: breadcrumbs
+    })
+  } else {
+    // Fallback if setSEO isn't loaded yet (shouldn't happen, but be safe)
+    document.title = h1 + ' – Movin.ie'
+    var md = document.querySelector('meta[name="description"]')
+    if (md && intro) md.setAttribute('content', intro)
+  }
 
   tlpFetch()
 }

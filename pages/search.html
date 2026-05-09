@@ -299,6 +299,24 @@
   <script src="../js/app.js"></script>
   <script>
     renderNav('search')
+    if (typeof setSEO === 'function') setSEO({
+      title:       'Search Properties for Sale & Rent in Ireland | Movin.ie',
+      description: 'Search homes for sale, to rent or to share across Ireland — filter by area, county, Eircode, beds, price and more. Map and drive-time search included.',
+      canonical:   '/pages/search.html',
+      type:        'website',
+      schema: {
+        '@context': 'https://schema.org',
+        '@type':    'CollectionPage',
+        'name':     'Property search on Movin.ie',
+        'description': 'Search every live listing on Movin.ie — buy, rent or share — with filters for area, beds, price, BER and more.',
+        'isPartOf': { '@id': 'https://movin.ie/#website' },
+        'inLanguage': 'en-IE'
+      },
+      breadcrumbs: [
+        { name: 'Home',   url: '/' },
+        { name: 'Search', url: '/pages/search.html' }
+      ]
+    })
 
     // ── Dublin district & Eircode data ──────────────────────────────────────
     const DUBLIN_DISTRICTS = [

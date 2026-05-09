@@ -436,6 +436,24 @@
 <script src="../js/app.js"></script>
 <script>
   renderNav('drive-time')
+  setSEO({
+    title:       'Find Homes by Drive Time in Ireland – Live Near What Matters | Movin.ie',
+    description: 'Set a commute and we\'ll show you homes inside it. Type any address, university, hospital or Eircode and see live distance + drive time on every property.',
+    canonical:   '/pages/drive-time.html',
+    type:        'website',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type':    'WebPage',
+      'name':     'Find homes by drive time',
+      'description': "Live near work, school, family — set a commute time, get listings inside it, see exact distance + drive time on every property.",
+      'isPartOf': { '@id': 'https://movin.ie/#website' },
+      'inLanguage': 'en-IE'
+    },
+    breadcrumbs: [
+      { name: 'Home',            url: '/' },
+      { name: 'Find by drive time', url: '/pages/drive-time.html' }
+    ]
+  })
   document.body.setAttribute('data-no-back','')   // we already have a styled back button
 
   // ── Drive-time state ─────────────────────────────────────────────────────

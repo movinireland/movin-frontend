@@ -448,6 +448,24 @@
 <script src="../js/api.js"></script>
 <script src="../js/app.js"></script>
 <script>
+  if (typeof setSEO === 'function') setSEO({
+    title:       'Map Search – Find Properties on a Live Map of Ireland | Movin.ie',
+    description: 'Search Irish properties on an interactive map. Listings on the left, property pins on the right, hover-to-highlight. Filter by area, price, beds and more.',
+    canonical:   '/pages/map-search.html',
+    type:        'website',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type':    'WebPage',
+      'name':     'Map search of Irish properties',
+      'description': 'Browse Irish properties on a live, interactive Google map. Listings synchronise with the map as you pan and zoom.',
+      'isPartOf': { '@id': 'https://movin.ie/#website' },
+      'inLanguage': 'en-IE'
+    },
+    breadcrumbs: [
+      { name: 'Home',       url: '/' },
+      { name: 'Map search', url: '/pages/map-search.html' }
+    ]
+  })
   document.body.setAttribute('data-no-back','')   // we already have our own back button
   // Default view: 'split' on tablets/desktop, 'list' on phones (cleaner first impression)
   ;(function(){

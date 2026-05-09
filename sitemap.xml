@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://movin.ie/</loc><priority>1.0</priority></url>
-  <url><loc>https://movin.ie/pages/search.html</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/list.html</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/tools.html</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/map-search.html</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/about.html</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/privacy-policy.html</loc><priority>0.3</priority></url>
-  <url><loc>https://movin.ie/pages/terms-of-service.html</loc><priority>0.3</priority></url>
-  <!-- All 26 counties -->
-  <url><loc>https://movin.ie/pages/area.html?county=Dublin</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Cork</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Galway</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Limerick</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Waterford</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Kerry</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Meath</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Kildare</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Wicklow</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Wexford</loc><priority>0.8</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Kilkenny</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Clare</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Tipperary</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Donegal</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Mayo</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Sligo</loc><priority>0.7</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Leitrim</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Roscommon</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Longford</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Westmeath</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Offaly</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Laois</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Carlow</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Louth</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Monaghan</loc><priority>0.6</priority></url>
-  <url><loc>https://movin.ie/pages/area.html?county=Cavan</loc><priority>0.6</priority></url>
+
+  <!-- Home -->
+  <url>
+    <loc>https://movin.ie/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <lastmod>2026-05-09</lastmod>
+  </url>
+
+  <!-- Core search experiences -->
+  <url><loc>https://movin.ie/pages/search.html</loc>          <changefreq>daily</changefreq>  <priority>0.95</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/map-search.html</loc>      <changefreq>daily</changefreq>  <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/drive-time.html</loc>      <changefreq>weekly</changefreq> <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/latest.html</loc>          <changefreq>daily</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/commercial.html</loc>      <changefreq>daily</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+
+  <!-- Buy: dedicated property-type landing pages -->
+  <url><loc>https://movin.ie/pages/house-for-sale.html</loc>     <changefreq>daily</changefreq>  <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/apartment-for-sale.html</loc> <changefreq>daily</changefreq>  <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/bungalow-for-sale.html</loc>  <changefreq>daily</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/site-for-sale.html</loc>      <changefreq>daily</changefreq>  <priority>0.8</priority> <lastmod>2026-05-09</lastmod></url>
+
+  <!-- Rent: dedicated property-type landing pages -->
+  <url><loc>https://movin.ie/pages/house-for-rent.html</loc>     <changefreq>daily</changefreq>  <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/apartment-for-rent.html</loc> <changefreq>daily</changefreq>  <priority>0.9</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/bungalow-for-rent.html</loc>  <changefreq>daily</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/sharing.html</loc>            <changefreq>daily</changefreq>  <priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+
+  <!-- Tools -->
+  <url><loc>https://movin.ie/pages/tools.html</loc>            <changefreq>monthly</changefreq><priority>0.7</priority> <lastmod>2026-05-09</lastmod></url>
+
+  <!-- Listing flow + supporting pages -->
+  <url><loc>https://movin.ie/pages/list.html</loc>             <changefreq>monthly</changefreq><priority>0.85</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/sold.html</loc>             <changefreq>weekly</changefreq> <priority>0.7</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/compare.html</loc>          <changefreq>weekly</changefreq> <priority>0.5</priority> <lastmod>2026-05-09</lastmod></url>
+
+  <!-- Editorial / area / agent (these auto-generate per query) -->
+  <url><loc>https://movin.ie/pages/neighbourhood.html</loc>    <changefreq>weekly</changefreq> <priority>0.7</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/area.html</loc>             <changefreq>weekly</changefreq> <priority>0.65</priority><lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/agent.html</loc>            <changefreq>monthly</changefreq><priority>0.55</priority><lastmod>2026-05-09</lastmod></url>
+
+  <!-- Company -->
+  <url><loc>https://movin.ie/pages/about.html</loc>            <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/contact.html</loc>          <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/privacy-policy.html</loc>   <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/terms-of-service.html</loc> <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
+
 </urlset>

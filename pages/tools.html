@@ -710,6 +710,30 @@
 <script src="../js/app.js"></script>
 <script>
 renderNav()
+if (typeof setSEO === 'function') setSEO({
+  title:       'Property Tools – Mortgage Calculator, Stamp Duty & Home Valuation | Movin.ie',
+  description: 'Free Irish property calculators: mortgage repayments, stamp duty, home valuation and the first-time buyer guide. Built for Ireland.',
+  canonical:   '/pages/tools.html',
+  type:        'website',
+  schema: {
+    '@context': 'https://schema.org',
+    '@type':    'WebPage',
+    'name':     'Property tools and calculators',
+    'description': "Free, Ireland-specific tools for buyers and sellers — mortgage calculator, stamp duty calculator, home valuation, first-time buyer guide.",
+    'isPartOf': { '@id': 'https://movin.ie/#website' },
+    'inLanguage': 'en-IE',
+    'hasPart': [
+      { '@type': 'WebPageElement', 'name': 'Mortgage calculator',  'url': 'https://movin.ie/pages/tools.html#mortgage' },
+      { '@type': 'WebPageElement', 'name': 'Home valuation',       'url': 'https://movin.ie/pages/tools.html#valuation' },
+      { '@type': 'WebPageElement', 'name': 'Stamp duty calculator','url': 'https://movin.ie/pages/tools.html#stamp' },
+      { '@type': 'WebPageElement', 'name': 'First-time buyer guide','url': 'https://movin.ie/pages/tools.html#ftb' }
+    ]
+  },
+  breadcrumbs: [
+    { name: 'Home',  url: '/' },
+    { name: 'Tools', url: '/pages/tools.html' }
+  ]
+})
 
 // ── Tab switching ────────────────────────────────────────────────────────────
 function switchTab(id, el) {

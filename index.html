@@ -3,7 +3,75 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>Movin.ie – Find Your Next Home in Ireland</title>
+<title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
+<meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Your first listing is free."/>
+<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, daft alternative, myhome alternative, Eircode property search"/>
+<meta name="author" content="Movin Technologies Ltd"/>
+<meta name="robots" content="index, follow, max-image-preview:large"/>
+<link rel="canonical" href="https://movin.ie/"/>
+<!-- Open Graph -->
+<meta property="og:type"        content="website"/>
+<meta property="og:site_name"   content="Movin.ie"/>
+<meta property="og:title"       content="Movin.ie – Find Your Next Home in Ireland"/>
+<meta property="og:description" content="Smarter search, transparent pricing, and a first listing that's always free. Buy, rent, share or list across all 32 counties."/>
+<meta property="og:url"         content="https://movin.ie/"/>
+<meta property="og:image"       content="https://movin.ie/favicon.svg"/>
+<meta property="og:locale"      content="en_IE"/>
+<!-- Twitter -->
+<meta name="twitter:card"        content="summary_large_image"/>
+<meta name="twitter:title"       content="Movin.ie – Ireland's Modern Property Marketplace"/>
+<meta name="twitter:description" content="Buy, rent or list — always free to start across all 32 counties."/>
+<meta name="twitter:image"       content="https://movin.ie/favicon.svg"/>
+
+<!-- JSON-LD: Organization + WebSite (with sitelinks SearchAction) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "RealEstateAgent",
+      "@id": "https://movin.ie/#organization",
+      "name": "Movin.ie",
+      "url": "https://movin.ie/",
+      "logo": "https://movin.ie/favicon.svg",
+      "description": "Ireland's modern property marketplace. Buy, rent, share and list — your first listing is free.",
+      "areaServed": { "@type": "Country", "name": "Ireland" },
+      "address": { "@type": "PostalAddress", "addressCountry": "IE", "addressLocality": "Dublin" },
+      "sameAs": [
+        "https://www.facebook.com/movin.ie",
+        "https://www.instagram.com/movin.ie"
+      ],
+      "email": "hello@movin.ie"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://movin.ie/#website",
+      "url": "https://movin.ie/",
+      "name": "Movin.ie",
+      "publisher": { "@id": "https://movin.ie/#organization" },
+      "inLanguage": "en-IE",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": { "@type": "EntryPoint", "urlTemplate": "https://movin.ie/pages/search.html?q={search_term_string}" },
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://movin.ie/#webpage",
+      "url": "https://movin.ie/",
+      "name": "Movin.ie – Find Your Next Home in Ireland",
+      "description": "Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties.",
+      "isPartOf": { "@id": "https://movin.ie/#website" },
+      "about": { "@id": "https://movin.ie/#organization" },
+      "inLanguage": "en-IE"
+    }
+  ]
+}
+</script>
+<!-- Hreflang (single locale today, but declares the canonical mapping) -->
+<link rel="alternate" hreflang="en-IE" href="https://movin.ie/"/>
+<link rel="alternate" hreflang="x-default" href="https://movin.ie/"/>
 <script>
 (function(){
   var t=localStorage.getItem('movin_theme');

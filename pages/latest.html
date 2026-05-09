@@ -138,6 +138,24 @@
 <script src="../js/app.js"></script>
 <script>
   renderNav('latest')
+  setSEO({
+    title:       'Latest Property Listings in Ireland – Last 7 Days | Movin.ie',
+    description: 'The freshest residential and commercial properties listed on Movin.ie in the past 7 days — every county, all categories, in one place.',
+    canonical:   '/pages/latest.html',
+    type:        'website',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type':    'CollectionPage',
+      'name':     'Latest property listings on Movin.ie',
+      'description': 'Every property — residential and commercial — listed on Movin.ie in the past 7 days, all 32 counties.',
+      'isPartOf': { '@id': 'https://movin.ie/#website' },
+      'inLanguage': 'en-IE'
+    },
+    breadcrumbs: [
+      { name: 'Home',            url: '/' },
+      { name: 'Latest listings', url: '/pages/latest.html' }
+    ]
+  })
 
   // ── State ────────────────────────────────────────────────────────────────
   var ALL = []         // raw listings (≤7 days old)

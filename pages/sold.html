@@ -96,6 +96,24 @@
 <script src="../js/app.js"></script>
 <script>
   renderNav()
+  if (typeof setSEO === 'function') setSEO({
+    title:       'Sold &amp; Let Property Prices in Ireland – Movin.ie',
+    description: 'Real-world sold and let prices for Irish properties. See what homes actually sold for — by county, area or Eircode. Updated as data is published.',
+    canonical:   '/pages/sold.html',
+    type:        'website',
+    schema: {
+      '@context': 'https://schema.org',
+      '@type':    'CollectionPage',
+      'name':     'Sold & let property prices in Ireland',
+      'description': 'Browse the actual sold and let prices of properties across Ireland — useful for valuing your own home or benchmarking an offer.',
+      'isPartOf': { '@id': 'https://movin.ie/#website' },
+      'inLanguage': 'en-IE'
+    },
+    breadcrumbs: [
+      { name: 'Home',         url: '/' },
+      { name: 'Sold & let prices', url: '/pages/sold.html' }
+    ]
+  })
   var activeType = ''
   var currentPage = 1
 
