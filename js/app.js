@@ -1532,22 +1532,23 @@ if (document.readyState === 'loading') {
     var s = document.createElement('style')
     s.id = 'tab-bar-inline-styles'
     s.textContent = ''
-      // ── Floating "App Store"–style pill ─────────────────────────────────
+      // ── Floating "App Store" liquid-glass pill (very translucent) ────────
       + '.tab-bar{'
       +   'position:fixed !important;'
       +   'left:10px;right:10px;'
       +   'bottom:calc(10px + env(safe-area-inset-bottom,0px));'
       +   'height:64px;'
       +   'border-radius:999px;'
-      +   'background:rgba(255,255,255,.72);'
-      +   '-webkit-backdrop-filter:blur(30px) saturate(180%);'
-      +   'backdrop-filter:blur(30px) saturate(180%);'
+      +   'background:rgba(255,255,255,.42);'
+      +   '-webkit-backdrop-filter:blur(42px) saturate(220%);'
+      +   'backdrop-filter:blur(42px) saturate(220%);'
       +   'display:flex !important;align-items:center;'
       +   'padding:6px;gap:2px;'
       +   'z-index:1000;'
-      +   'box-shadow:0 14px 40px rgba(0,0,0,.18), 0 2px 8px rgba(0,0,0,.06), inset 0 0 0 1px rgba(255,255,255,.55);'
+      +   'box-shadow:0 12px 36px rgba(0,0,0,.14), 0 1px 4px rgba(0,0,0,.04), inset 0 0 0 1px rgba(255,255,255,.55), inset 0 1px 0 rgba(255,255,255,.6);'
       +   'font-family:"DM Sans",sans-serif;'
       + '}'
+      + '@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.tab-bar{background:rgba(255,255,255,.92)}}'
       // Each tab: icon + label, full pill background when active
       + '.tab-item,.tab-list-item{'
       +   'flex:1;height:52px;display:flex;flex-direction:column;'
@@ -1583,16 +1584,16 @@ if (document.readyState === 'loading') {
       +   'body.has-tab-bar .card-panel{bottom:calc(82px + env(safe-area-inset-bottom,0px)) !important}'
       +   'body.has-tab-bar .scroll-top-btn{bottom:calc(96px + env(safe-area-inset-bottom,0px)) !important}'
       + '}'
-      // Dark mode
+      // Dark mode (translucent + heavy blur, like iOS App Store dark)
       + '[data-theme="dark"] .tab-bar{'
-      +   'background:rgba(28,28,30,.72);'
-      +   'box-shadow:0 14px 40px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08)'
+      +   'background:rgba(28,28,30,.45);'
+      +   'box-shadow:0 14px 40px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 rgba(255,255,255,.06)'
       + '}'
       + '[data-theme="dark"] .tab-item{color:#ebebf5}'
       + '[data-theme="dark"] .tab-item.active{background:rgba(255,255,255,.08);color:#2ecc8a}'
       + '[data-theme="dark"] .tab-list-item .tab-list-label{color:#ebebf5}'
       + '@media(prefers-color-scheme:dark){'
-      +   ':root:not([data-theme="light"]) .tab-bar{background:rgba(28,28,30,.72);box-shadow:0 14px 40px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.08)}'
+      +   ':root:not([data-theme="light"]) .tab-bar{background:rgba(28,28,30,.45);box-shadow:0 14px 40px rgba(0,0,0,.55), 0 2px 8px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 rgba(255,255,255,.06)}'
       +   ':root:not([data-theme="light"]) .tab-item{color:#ebebf5}'
       +   ':root:not([data-theme="light"]) .tab-item.active{background:rgba(255,255,255,.08);color:#2ecc8a}'
       +   ':root:not([data-theme="light"]) .tab-list-item .tab-list-label{color:#ebebf5}'
@@ -1605,10 +1606,35 @@ if (document.readyState === 'loading') {
     if (document.querySelector('.tab-bar')) {
       // Existing tab bar — just mark body so padding-bottom kicks in
       document.body.classList.add('has-tab-bar')
+      bindActiveTabScrollToTop()
       return
     }
     document.body.insertAdjacentHTML('beforeend', buildTabBarHTML())
     document.body.classList.add('has-tab-bar')
+    bindActiveTabScrollToTop()
+  }
+
+  // iOS-style: tapping the already-active tab smooth-scrolls back to top.
+  // (App Store does this on every tab.) For inactive tabs the link follows
+  // its href as normal.
+  function bindActiveTabScrollToTop() {
+    var bar = document.querySelector('.tab-bar')
+    if (!bar) return
+    bar.querySelectorAll('.tab-item.active').forEach(function(el){
+      if (el.dataset.scrollTopBound === '1') return
+      el.dataset.scrollTopBound = '1'
+      el.addEventListener('click', function(e){
+        // Only intercept if this tab points to the page we're already on
+        var href = el.getAttribute('href') || ''
+        var hrefPath = href.split('?')[0].split('#')[0]
+        var here = location.pathname
+        var samePage = (hrefPath === here) ||
+                       (hrefPath === '/index.html' && (here === '/' || here === ''))
+        if (!samePage) return
+        e.preventDefault()
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      })
+    })
   }
 
   function injectBackButton() {

@@ -948,24 +948,29 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 /* ────────────────────────────────────────────────────────────────────────────
    Persistent mobile bottom tab bar + fancy back button (auto-injected by app.js)
    ──────────────────────────────────────────────────────────────────────────── */
-/* App Store-style floating frosted-glass pill */
+/* App Store-style floating "liquid glass" pill — heavy blur, very translucent */
 .tab-bar {
   position: fixed;
   left: 10px; right: 10px;
   bottom: calc(10px + env(safe-area-inset-bottom, 0px));
   height: 64px;
   border-radius: 999px;
-  background: rgba(255,255,255,.72);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  backdrop-filter: blur(30px) saturate(180%);
+  background: rgba(255,255,255,.42);
+  -webkit-backdrop-filter: blur(42px) saturate(220%);
+  backdrop-filter: blur(42px) saturate(220%);
   display: flex; align-items: center;
   padding: 6px; gap: 2px;
   z-index: 1000;
   box-shadow:
-    0 14px 40px rgba(0,0,0,.18),
-    0 2px 8px rgba(0,0,0,.06),
-    inset 0 0 0 1px rgba(255,255,255,.55);
+    0 12px 36px rgba(0,0,0,.14),
+    0 1px 4px rgba(0,0,0,.04),
+    inset 0 0 0 1px rgba(255,255,255,.55),
+    inset 0 1px 0 rgba(255,255,255,.6);
   font-family: 'DM Sans', sans-serif;
+}
+/* Fallback for browsers that don't support backdrop-filter — keep it readable */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .tab-bar { background: rgba(255,255,255,.92); }
 }
 .tab-item, .tab-list-item {
   flex: 1; height: 52px;
@@ -1012,22 +1017,24 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 }
 
 [data-theme="dark"] .tab-bar {
-  background: rgba(28,28,30,.72);
+  background: rgba(28,28,30,.45);
   box-shadow:
     0 14px 40px rgba(0,0,0,.55),
     0 2px 8px rgba(0,0,0,.35),
-    inset 0 0 0 1px rgba(255,255,255,.08);
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.06);
 }
 [data-theme="dark"] .tab-item { color: #ebebf5; }
 [data-theme="dark"] .tab-item.active { background: rgba(255,255,255,.08); color: #2ecc8a; }
 [data-theme="dark"] .tab-list-item .tab-list-label { color: #ebebf5; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .tab-bar {
-    background: rgba(28,28,30,.72);
+    background: rgba(28,28,30,.45);
     box-shadow:
       0 14px 40px rgba(0,0,0,.55),
       0 2px 8px rgba(0,0,0,.35),
-      inset 0 0 0 1px rgba(255,255,255,.08);
+      inset 0 0 0 1px rgba(255,255,255,.10),
+      inset 0 1px 0 rgba(255,255,255,.06);
   }
   :root:not([data-theme="light"]) .tab-item { color: #ebebf5; }
   :root:not([data-theme="light"]) .tab-item.active { background: rgba(255,255,255,.08); color: #2ecc8a; }
