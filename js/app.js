@@ -793,19 +793,30 @@ function renderFooter() {
           '</div>' +
         '</div>' +
         '<div>' +
-          '<div class="footer-col-title">Search</div>' +
+          '<div class="footer-col-title">Buy</div>' +
           '<div class="footer-links">' +
-            '<a href="' + root + 'pages/search.html?listing_type=sale">Properties for sale</a>' +
-            '<a href="' + root + 'pages/search.html?listing_type=rent">Properties to rent</a>' +
-            '<a href="' + root + 'pages/search.html?listing_type=share">Sharing</a>' +
-            '<a href="' + root + 'pages/map-search.html">Map search</a>' +
-            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
+            '<a href="' + root + 'pages/house-for-sale.html">Houses for sale</a>' +
+            '<a href="' + root + 'pages/apartment-for-sale.html">Apartments for sale</a>' +
+            '<a href="' + root + 'pages/bungalow-for-sale.html">Bungalows for sale</a>' +
+            '<a href="' + root + 'pages/site-for-sale.html">Sites &amp; Land</a>' +
+            '<a href="' + root + 'pages/search.html?listing_type=sale">All properties for sale</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<div class="footer-col-title">Rent</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/house-for-rent.html">Houses to rent</a>' +
+            '<a href="' + root + 'pages/apartment-for-rent.html">Apartments to rent</a>' +
+            '<a href="' + root + 'pages/bungalow-for-rent.html">Bungalows to rent</a>' +
+            '<a href="' + root + 'pages/sharing.html">Sharing &amp; rooms</a>' +
+            '<a href="' + root + 'pages/search.html?listing_type=rent">All rentals</a>' +
           '</div>' +
         '</div>' +
         '<div>' +
           '<div class="footer-col-title">Tools</div>' +
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/drive-time.html">Find by drive time</a>' +
+            '<a href="' + root + 'pages/map-search.html">Map search</a>' +
             '<a href="' + root + 'pages/latest.html">Latest listings</a>' +
             '<a href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
             '<a href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
@@ -1060,7 +1071,50 @@ if (document.readyState === 'loading') {
   }
   window.movinGoBack = goBack
 
+  // Inject the tab bar styles inline so the bar always works, even if the
+  // deployed main.css is stale or aggressively cached. Idempotent.
+  function ensureTabBarStyles(){
+    if (document.getElementById('tab-bar-inline-styles')) return
+    var s = document.createElement('style')
+    s.id = 'tab-bar-inline-styles'
+    s.textContent = ''
+      + '.tab-bar{position:fixed !important;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ebebeb;display:flex !important;align-items:stretch;height:calc(62px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);z-index:1000;box-shadow:0 -6px 22px rgba(0,0,0,.07);font-family:"DM Sans",sans-serif}'
+      + '.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:transparent;color:#b0b0b0;font-size:10px;font-weight:500;padding:9px 4px 0;-webkit-tap-highlight-color:transparent;transition:color .18s;text-decoration:none;font-family:inherit}'
+      + '.tab-item.active{color:#1a5c45}'
+      + '.tab-icon-wrap{width:38px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:12px;transition:background .18s,transform .18s}'
+      + '.tab-item.active .tab-icon-wrap{background:#e9f4ef}'
+      + '.tab-item:active .tab-icon-wrap{transform:scale(.92)}'
+      + '.tab-icon-wrap svg{width:22px;height:22px;stroke:currentColor;fill:none}'
+      + '.tab-list-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;padding:0;-webkit-tap-highlight-color:transparent;text-decoration:none}'
+      + '.tab-list-circle{width:52px;height:52px;background:linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(26,92,69,.42);border:3px solid #fff;margin-top:-18px;transition:transform .2s ease,box-shadow .2s ease}'
+      + '.tab-list-circle:active{transform:scale(.92);box-shadow:0 3px 10px rgba(26,92,69,.45)}'
+      + '.tab-list-circle svg{width:22px;height:22px;stroke:#fff;fill:none}'
+      + '.tab-list-label{font-size:10px;font-weight:500;color:#b0b0b0;margin-top:6px}'
+      + '@media(min-width:768px){.tab-bar{display:none !important}}'
+      + '@media(max-width:767px){'
+      +   'body.has-tab-bar{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}'
+      +   'body.has-tab-bar .mobile-tabs{bottom:calc(62px + env(safe-area-inset-bottom,0px)) !important;padding-bottom:0 !important}'
+      +   'body.has-tab-bar #compare-bar{bottom:calc(62px + env(safe-area-inset-bottom,0px)) !important}'
+      +   'body.has-tab-bar #map{bottom:calc(62px + env(safe-area-inset-bottom,0px)) !important}'
+      +   'body.has-tab-bar .card-panel{bottom:calc(62px + env(safe-area-inset-bottom,0px)) !important}'
+      + '}'
+      + '[data-theme="dark"] .tab-bar{background:#1a1a1a;border-top-color:#2a2a2a}'
+      + '[data-theme="dark"] .tab-item{color:#666}'
+      + '[data-theme="dark"] .tab-item.active{color:#2ecc8a}'
+      + '[data-theme="dark"] .tab-item.active .tab-icon-wrap{background:#0d2e1e}'
+      + '[data-theme="dark"] .tab-list-circle{border-color:#1a1a1a}'
+      + '@media(prefers-color-scheme:dark){'
+      +   ':root:not([data-theme="light"]) .tab-bar{background:#1a1a1a;border-top-color:#2a2a2a}'
+      +   ':root:not([data-theme="light"]) .tab-item{color:#666}'
+      +   ':root:not([data-theme="light"]) .tab-item.active{color:#2ecc8a}'
+      +   ':root:not([data-theme="light"]) .tab-item.active .tab-icon-wrap{background:#0d2e1e}'
+      +   ':root:not([data-theme="light"]) .tab-list-circle{border-color:#1a1a1a}'
+      + '}'
+    document.head.appendChild(s)
+  }
+
   function injectTabBar() {
+    ensureTabBarStyles()
     if (document.querySelector('.tab-bar')) {
       // Existing tab bar — just mark body so padding-bottom kicks in
       document.body.classList.add('has-tab-bar')
