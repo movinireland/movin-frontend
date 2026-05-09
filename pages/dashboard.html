@@ -538,23 +538,21 @@
     btn.disabled = true; btn.textContent = 'Saving…'
     alertEl.innerHTML = ''
     try {
-      var token = localStorage.getItem('movin_token')
-      var res = await fetch(window.MOVIN_API_URL + '/api/auth/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({
-          name:            document.getElementById('p-name').value,
-          phone:           document.getElementById('p-phone').value,
-          currentPassword: document.getElementById('p-current-pw').value || undefined,
-          newPassword:     newPw || undefined
-        })
+      // Route through the shared API helper so we always hit the canonical
+      // backend route (PUT /api/auth/me). The old hard-coded
+      // /api/auth/profile path didn't exist on the server.
+      var data = await API.auth.updateProfile({
+        name:            document.getElementById('p-name').value,
+        phone:           document.getElementById('p-phone').value,
+        currentPassword: document.getElementById('p-current-pw').value || undefined,
+        newPassword:     newPw || undefined
       })
-      var data = await res.json()
-      if (!res.ok) throw new Error(data.error)
       alertEl.innerHTML = '<div class="alert-success">✓ Profile updated.</div>'
       document.getElementById('p-current-pw').value = ''
       document.getElementById('p-new-pw').value = ''
       document.getElementById('p-confirm-pw').value = ''
+      // Backend may return either the user object directly or { user: {...} }
+      if (data && !data.user && data.id) data = { user: data }
       // Update nav name
       if (data.user) {
         document.getElementById('db-uname').textContent = data.user.name || ''

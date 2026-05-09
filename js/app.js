@@ -1476,12 +1476,6 @@ if (document.readyState === 'loading') {
 
 // ── Persistent mobile tab bar + fancy back button (auto-injected) ────────────
 ;(function() {
-  function isInPagesDir() {
-    return /\/pages\//.test(location.pathname)
-  }
-  function pathPrefix() {
-    return isInPagesDir() ? '../' : ''
-  }
   function isHome() {
     var p = location.pathname.toLowerCase()
     return p === '/' || p === '' || /\/index\.html?$/.test(p) || /\/index$/.test(p)
@@ -1499,25 +1493,24 @@ if (document.readyState === 'loading') {
   var BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>'
 
   function buildTabBarHTML() {
-    var p = pathPrefix()
     var a = activeTab()
     function cls(name) { return 'tab-item' + (a === name ? ' active' : '') }
     return '' +
       '<nav class="tab-bar" role="navigation" aria-label="Primary">' +
-        '<a class="' + cls('home') + '" href="' + p + 'index.html" aria-label="Home">' +
+        '<a class="' + cls('home') + '" href="/index.html" aria-label="Home">' +
           '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-home"/></svg></span>Home' +
         '</a>' +
-        '<a class="' + cls('search') + '" href="' + p + 'pages/search.html" aria-label="Search">' +
+        '<a class="' + cls('search') + '" href="/pages/search.html" aria-label="Search">' +
           '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></span>Search' +
         '</a>' +
-        '<a class="tab-list-item" href="' + p + 'pages/list.html" aria-label="List your property">' +
+        '<a class="tab-list-item" href="/pages/list.html" aria-label="List your property">' +
           '<span class="tab-list-circle"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></span>' +
           '<span class="tab-list-label">List</span>' +
         '</a>' +
-        '<a class="' + cls('map') + '" href="' + p + 'pages/map-search.html" aria-label="Map">' +
+        '<a class="' + cls('map') + '" href="/pages/map-search.html" aria-label="Map">' +
           '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></span>Map' +
         '</a>' +
-        '<a class="' + cls('account') + '" href="' + p + 'pages/dashboard.html" aria-label="Account">' +
+        '<a class="' + cls('account') + '" href="/pages/dashboard.html" aria-label="Account">' +
           '<span class="tab-icon-wrap"><svg width="22" height="22" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></span>Account' +
         '</a>' +
       '</nav>'
@@ -1528,7 +1521,7 @@ if (document.readyState === 'loading') {
       var sameOrigin = document.referrer && new URL(document.referrer, location.href).origin === location.origin
       if (history.length > 1 && sameOrigin) { history.back(); return }
     } catch(e) {}
-    location.href = pathPrefix() + 'index.html'
+    location.href = '/index.html'
   }
   window.movinGoBack = goBack
 
@@ -1634,8 +1627,6 @@ if (document.readyState === 'loading') {
     if (/\/(search|map-search|drive-time|commercial|latest)\.html$/.test(p)) return true
     return false
   }
-  function pathPrefix() { return /\/pages\//.test(location.pathname) ? '../' : '' }
-
   var googleMapsLoading = false
   function ensureGoogleMaps(cb) {
     if (window.google && google.maps && google.maps.places) { cb && cb(); return }
@@ -1833,7 +1824,7 @@ if (document.readyState === 'loading') {
       if (beds) p.set('bedrooms', beds)
       if (min)  p.set('min_price', min)
       if (max)  p.set('max_price', max)
-      window.location.href = pathPrefix() + 'pages/search.html?' + p.toString()
+      window.location.href = '/pages/search.html?' + p.toString()
     }
 
     setMode('sale')
