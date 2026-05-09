@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<link rel="apple-touch-icon" href="/favicon.svg"/>
+<link rel="manifest" href="/manifest.json"/>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Property – Movin.ie</title>
   <meta id="og-title" property="og:title" content="Property on Movin.ie"/>
@@ -15,7 +18,6 @@
   <meta name="twitter:card" content="summary_large_image"/>
   <link id="canonical" rel="canonical" href=""/>
   <link rel="stylesheet" href="../css/main.css"/>
-  <link rel="manifest" href="/manifest.json"/>
   <meta name="theme-color" content="#1a5c45"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
@@ -1062,6 +1064,17 @@
 
       var pinSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 C7 2 4 6 4 10 C4 14 12 22 12 22 C12 22 20 14 20 10 C20 6 17 2 12 2"/><circle cx="12" cy="10" r="2.5"/></svg>'
 
+      // Category-aware eyebrow — "Where you'll live" only makes sense for
+      // residential. Commercial / sharing get more appropriate copy.
+      var COMMERCIAL_TYPES = ['commercial','office','offices','retail','shop','restaurant','industrial','warehouse','factory','hospitality','hotel','pub','leisure','healthcare','medical','clinic','mixed-use','mixeduse','investment','development','agricultural','land']
+      var ptype = String(L.property_type || '').toLowerCase()
+      var isCommercial = (L.category && String(L.category).toLowerCase() === 'commercial') || COMMERCIAL_TYPES.indexOf(ptype) !== -1
+      var eyebrow
+      if (isCommercial)                       eyebrow = 'Property location'
+      else if (L.listing_type === 'share')    eyebrow = 'Where you\'ll be sharing'
+      else if (L.listing_type === 'rent')     eyebrow = 'Where you\'ll rent'
+      else                                    eyebrow = 'Where you\'ll live'
+
       return ''
         + '<button type="button" class="map-preview" onclick="openFullMap()" aria-label="Open full map">'
         +   '<div class="map-preview-thumb">'
@@ -1071,7 +1084,7 @@
         +     '</div>'
         +   '</div>'
         +   '<div class="map-preview-body">'
-        +     '<div class="mp-eyebrow">' + pinSvg + 'Where you\'ll live</div>'
+        +     '<div class="mp-eyebrow">' + pinSvg + eyebrow + '</div>'
         +     '<div class="mp-addr">' + escAttr(addr) + '</div>'
         +     '<div class="mp-area">' + escAttr(area) + '</div>'
         +     '<span class="mp-cta">Open full map'

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Movin "M" mark — green roof with orange accent, on a rounded green tile -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#1a5c45"/>
+  <!-- Subtle inner highlight for depth -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#g)"/>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#000000" stop-opacity=".10"/>
+    </linearGradient>
+  </defs>
+  <!-- House silhouette in white -->
+  <path
+    d="M14 30 L32 16 L50 30 L50 48 L40 48 L40 36 L24 36 L24 48 L14 48 Z"
+    fill="#ffffff"
+    stroke="#ffffff"
+    stroke-width="1.5"
+    stroke-linejoin="round"/>
+  <!-- Orange chimney detail (the "in" accent of the brand) -->
+  <rect x="40" y="18" width="5" height="6" rx="1" fill="#e07b3f"/>
+</svg>

@@ -14,8 +14,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="../css/main.css"/>
   <link rel="manifest" href="/manifest.json"/>
-  <link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
   <meta name="theme-color" content="#1a5c45"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
@@ -23,7 +23,6 @@
     :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
     *{box-sizing:border-box}
 
-    /* ── Hero ── */
     .com-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:2.75rem 1.25rem 5rem;position:relative;overflow:hidden}
     .com-hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}
     .com-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}
@@ -33,11 +32,7 @@
     .com-h1 em{font-style:normal;color:#e07b3f}
     .com-sub{font-size:13px;color:rgba(255,255,255,.7);font-weight:300;max-width:520px;line-height:1.6}
 
-    /* ── Search card ── */
-    .com-search{
-      background:var(--white,#fff);border-radius:20px;padding:1rem;margin-top:1.5rem;
-      box-shadow:0 12px 36px rgba(0,0,0,.12);position:relative;z-index:3
-    }
+    .com-search{background:var(--white,#fff);border-radius:20px;padding:1rem;margin-top:1.5rem;box-shadow:0 12px 36px rgba(0,0,0,.12);position:relative;z-index:3}
     .com-tabs{display:flex;border-bottom:1px solid var(--border);margin:-1rem -1rem 1rem}
     .com-tab{flex:1;padding:.85rem .5rem;font-size:14px;font-weight:500;color:#888;cursor:pointer;text-align:center;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .15s;-webkit-tap-highlight-color:transparent;font-family:inherit;background:none;border-top:none;border-left:none;border-right:none}
     .com-tab.active{color:var(--g);border-bottom-color:var(--g)}
@@ -45,21 +40,13 @@
     .com-inp{flex:1;min-width:0;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:15px;background:#fafaf8;color:var(--text,#111);outline:none;transition:border-color .15s;-webkit-appearance:none;font-family:inherit}
     .com-inp:focus{border-color:var(--g);background:var(--white,#fff)}
     .com-go{background:var(--g);color:#fff;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;flex-shrink:0;font-family:inherit;-webkit-tap-highlight-color:transparent}
-    .com-go:active{background:var(--gd)}
 
-    /* ── Category pills ── */
     .com-cat-row{display:flex;gap:6px;overflow-x:auto;padding:.85rem 0 0;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .com-cat-row::-webkit-scrollbar{display:none}
-    .com-cat{
-      display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border);
-      border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;color:#666;
-      background:#fafaf8;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;
-      transition:all .15s;-webkit-tap-highlight-color:transparent
-    }
+    .com-cat{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border);border-radius:50px;padding:7px 14px;font-size:13px;font-weight:500;color:#666;background:#fafaf8;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;transition:all .15s;-webkit-tap-highlight-color:transparent}
     .com-cat svg{width:14px;height:14px}
     .com-cat.active{background:var(--g);color:#fff;border-color:var(--g)}
 
-    /* ── Stats strip (under hero) ── */
     .com-stats{background:var(--gd);display:flex;overflow-x:auto;scrollbar-width:none}
     .com-stats::-webkit-scrollbar{display:none}
     .com-stat{flex:1;min-width:130px;padding:1.1rem .75rem;text-align:center;border-right:1px solid rgba(255,255,255,.08)}
@@ -67,27 +54,21 @@
     .com-stat-n{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff}
     .com-stat-l{font-size:10px;color:rgba(255,255,255,.55);margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
 
-    /* ── Categories grid ── */
     .com-types{padding:2rem 1rem 1rem;max-width:1080px;margin:0 auto}
     .com-types-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--text,#111);margin-bottom:.3rem}
     .com-types-sub{font-size:13px;color:var(--muted,#888);margin-bottom:1.25rem;font-weight:300}
     .com-types-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
     @media(min-width:640px){.com-types-grid{grid-template-columns:repeat(3,1fr);gap:1rem}}
     @media(min-width:960px){.com-types-grid{grid-template-columns:repeat(4,1fr)}}
-    .com-type-card{
-      background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;
-      padding:1.15rem 1rem;cursor:pointer;transition:all .18s;text-align:left;
-      -webkit-tap-highlight-color:transparent;text-decoration:none;color:inherit;display:block
-    }
+    .com-type-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;padding:1.15rem 1rem;cursor:pointer;transition:all .18s;text-align:left;-webkit-tap-highlight-color:transparent;text-decoration:none;color:inherit;display:block}
     .com-type-card:hover{border-color:var(--g);transform:translateY(-3px);box-shadow:0 12px 24px rgba(26,92,69,.10)}
     .com-type-icon{width:44px;height:44px;border-radius:12px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--g);margin-bottom:.85rem}
     .com-type-icon svg{width:22px;height:22px}
     .com-type-name{font-size:15px;font-weight:600;color:var(--text,#111);margin-bottom:2px}
     .com-type-desc{font-size:12px;color:var(--muted,#888);font-weight:300;line-height:1.5}
 
-    /* ── Results section ── */
     .com-results{padding:0 0 2rem;max-width:1080px;margin:0 auto}
-    .com-res-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#f5f2ec;border-radius:0;font-family:inherit;flex-wrap:wrap;gap:.5rem}
+    .com-res-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem;background:#f5f2ec;flex-wrap:wrap;gap:.5rem}
     .com-res-count{font-size:13px;font-weight:500;color:#555}
     .com-res-count strong{color:#111;font-size:14px}
     .com-sort{border:1.5px solid var(--border);border-radius:20px;padding:6px 12px;font-size:12px;background:#fff;outline:none;font-family:inherit;-webkit-appearance:none;cursor:pointer;color:#555;font-weight:500}
@@ -96,16 +77,11 @@
     @media(min-width:600px){.listings-grid{grid-template-columns:repeat(3,1fr);gap:.85rem}}
     @media(min-width:960px){.listings-grid{grid-template-columns:repeat(4,1fr);gap:1rem}}
 
-    /* ── Empty / loading ── */
-    .com-empty{
-      grid-column:1/-1;text-align:center;padding:3rem 1rem;background:var(--white,#fff);
-      border:1px dashed var(--border);border-radius:16px;color:var(--muted,#888)
-    }
+    .com-empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;background:var(--white,#fff);border:1px dashed var(--border);border-radius:16px;color:var(--muted,#888)}
     .com-empty h4{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text,#111);margin-bottom:.5rem}
     .com-empty p{font-size:13px;font-weight:300;margin-bottom:1rem}
     .com-empty .btn{background:var(--g);color:#fff;padding:10px 20px;font-size:13px}
 
-    /* ── Why list with Movin (commercial CTA) ── */
     .com-cta{background:#fff;padding:2rem 1rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:1rem}
     .com-cta-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:1.5rem;align-items:center}
     @media(max-width:780px){.com-cta-inner{grid-template-columns:1fr}}
@@ -117,30 +93,16 @@
     .com-cta .feat-row li::before{content:'✓';color:var(--g);font-weight:600}
     .com-cta-cta-btns{display:flex;gap:.5rem;flex-wrap:wrap}
     .com-cta-cta-btns .btn{padding:11px 20px;font-size:13px}
-    .com-cta-img{
-      background:linear-gradient(135deg,#1a5c45,#0e3d2e);border-radius:18px;padding:2.5rem 1.5rem;
-      color:#fff;text-align:center;position:relative;overflow:hidden
-    }
-    .com-cta-img::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06);top:-90px;right:-80px}
+    .com-cta-img{background:linear-gradient(135deg,#1a5c45,#0e3d2e);border-radius:18px;padding:2.5rem 1.5rem;color:#fff;text-align:center;position:relative;overflow:hidden}
     .com-cta-num{font-family:'Playfair Display',serif;font-size:54px;font-weight:900;color:#e07b3f;line-height:1;position:relative;z-index:1}
     .com-cta-num span{font-size:24px;color:#fff;margin-left:4px}
     .com-cta-line{font-size:13px;color:rgba(255,255,255,.78);font-weight:300;margin-top:.5rem;position:relative;z-index:1}
 
-    /* Dark mode */
     [data-theme="dark"] .com-search,[data-theme="dark"] .com-type-card,[data-theme="dark"] .com-cta{background:#1a1a1a;border-color:#2a2a2a}
     [data-theme="dark"] .com-inp{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
     [data-theme="dark"] .com-cat{background:#1e1e1e;border-color:#2a2a2a;color:#aaa}
     [data-theme="dark"] .com-empty{background:#1a1a1a;border-color:#2a2a2a}
     [data-theme="dark"] .com-res-bar{background:#141414;color:#aaa}
-    @media(prefers-color-scheme:dark){
-      :root:not([data-theme="light"]) .com-search,
-      :root:not([data-theme="light"]) .com-type-card,
-      :root:not([data-theme="light"]) .com-cta{background:#1a1a1a;border-color:#2a2a2a}
-      :root:not([data-theme="light"]) .com-inp{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
-      :root:not([data-theme="light"]) .com-cat{background:#1e1e1e;border-color:#2a2a2a;color:#aaa}
-      :root:not([data-theme="light"]) .com-empty{background:#1a1a1a;border-color:#2a2a2a}
-      :root:not([data-theme="light"]) .com-res-bar{background:#141414;color:#aaa}
-    }
   </style>
 </head>
 <body>
@@ -148,7 +110,6 @@
 <nav class="nav" id="main-nav"></nav>
 <div class="toast-wrap" id="toast-wrap"></div>
 
-<!-- Hero with search -->
 <div class="com-hero">
   <div class="com-hero-inner">
     <div class="com-eyebrow">Movin · Commercial</div>
@@ -161,20 +122,15 @@
         <button class="com-tab" data-mode="rent" onclick="setMode('rent',this)">To rent / lease</button>
         <button class="com-tab" data-mode="any" onclick="setMode('any',this)">All</button>
       </div>
-
       <div class="com-search-row">
         <input class="com-inp" id="com-q" type="text" placeholder="Town, county, Eircode (e.g. Dublin 2, D02)…" autocomplete="off" onkeydown="if(event.key==='Enter')doSearch()"/>
-        <button class="com-go" onclick="doSearch()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:middle;margin-right:4px"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>Search
-        </button>
+        <button class="com-go" onclick="doSearch()">Search</button>
       </div>
-
       <div class="com-cat-row" id="com-cats"></div>
     </div>
   </div>
 </div>
 
-<!-- Live stats strip -->
 <div class="com-stats">
   <div class="com-stat"><div class="com-stat-n" id="stat-total">—</div><div class="com-stat-l">Live commercial</div></div>
   <div class="com-stat"><div class="com-stat-n" id="stat-sale">—</div><div class="com-stat-l">For sale</div></div>
@@ -182,14 +138,12 @@
   <div class="com-stat"><div class="com-stat-n">32</div><div class="com-stat-l">Counties</div></div>
 </div>
 
-<!-- Category cards -->
 <div class="com-types">
   <h2 class="com-types-title">Browse by category</h2>
   <p class="com-types-sub">Pick the kind of commercial space that fits your business.</p>
   <div class="com-types-grid" id="com-type-cards"></div>
 </div>
 
-<!-- Results -->
 <div class="com-results">
   <div class="com-res-bar">
     <div class="com-res-count" id="res-count">Loading commercial listings…</div>
@@ -205,7 +159,6 @@
   </div>
 </div>
 
-<!-- List your commercial property CTA -->
 <div class="com-cta">
   <div class="com-cta-inner">
     <div>
@@ -238,7 +191,6 @@
 <script>
   renderNav('commercial')
 
-  // Submission success banner (after listing a commercial property)
   ;(function(){
     var newId = new URLSearchParams(location.search).get('new')
     if (!newId) return
@@ -246,7 +198,7 @@
     b.style.cssText = 'max-width:1080px;margin:1rem auto -.25rem;padding:0 1rem'
     b.innerHTML =
       '<div style="background:linear-gradient(135deg,#1a5c45,#0e3d2e);color:#fff;border-radius:16px;padding:1rem 1.25rem;display:flex;gap:.75rem;align-items:center;box-shadow:0 12px 30px rgba(26,92,69,.25)">' +
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ec9a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>' +
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7ec9a8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>' +
       '<div style="flex:1;min-width:0">' +
         '<div style="font-weight:600;font-size:14px">Your commercial listing was submitted</div>' +
         '<div style="font-size:12px;color:rgba(255,255,255,.75);font-weight:300;margin-top:2px">Our team has been notified and will review it shortly. You\'ll get an email when it\'s live.</div>' +
@@ -256,20 +208,17 @@
     document.querySelector('.com-stats').insertAdjacentElement('afterend', b)
   })()
 
-  // ── Commercial categories (matches MyHome's commercial taxonomy) ─────────
   var CATS = [
-    { key:'all',         label:'All commercial', icon:'icon-house',   types:['commercial','office','retail','industrial','hospitality','healthcare','mixed-use','land','warehouse','leisure','investment','development','agricultural'] },
-    { key:'office',      label:'Office',         icon:'icon-house',   types:['office','offices'] },
-    { key:'retail',      label:'Retail',         icon:'icon-house',   types:['retail','shop','restaurant'] },
-    { key:'industrial',  label:'Industrial',     icon:'icon-garage',  types:['industrial','warehouse','factory'] },
-    { key:'hospitality', label:'Hospitality',    icon:'icon-key',     types:['hospitality','hotel','pub','restaurant','leisure'] },
-    { key:'healthcare',  label:'Healthcare',     icon:'icon-house',   types:['healthcare','medical','clinic'] },
+    { key:'all',         label:'All commercial', icon:'icon-house',     types:['commercial','office','offices','retail','shop','industrial','warehouse','factory','hospitality','hotel','pub','leisure','healthcare','medical','clinic','mixed-use','mixeduse','investment','development','agricultural','land','site'] },
+    { key:'office',      label:'Office',         icon:'icon-house',     types:['office','offices'] },
+    { key:'retail',      label:'Retail',         icon:'icon-house',     types:['retail','shop','restaurant'] },
+    { key:'industrial',  label:'Industrial',     icon:'icon-garage',    types:['industrial','warehouse','factory'] },
+    { key:'hospitality', label:'Hospitality',    icon:'icon-key',       types:['hospitality','hotel','pub','restaurant','leisure'] },
+    { key:'healthcare',  label:'Healthcare',     icon:'icon-house',     types:['healthcare','medical','clinic'] },
     { key:'mixed',       label:'Mixed-use',      icon:'icon-apartment', types:['mixed-use','mixeduse'] },
-    { key:'investment',  label:'Investment',     icon:'icon-euro',    types:['investment'] },
-    { key:'land',        label:'Commercial land',icon:'icon-site',    types:['land','site','development','agricultural'] }
+    { key:'investment',  label:'Investment',     icon:'icon-euro',      types:['investment'] },
+    { key:'land',        label:'Commercial land',icon:'icon-site',      types:['land','site','development','agricultural'] }
   ]
-
-  // ── Category card descriptions for the grid ──────────────────────────────
   var CAT_DESCS = {
     office:'HQs, co-working, suites & whole buildings',
     retail:'High-street shops, units & restaurants',
@@ -280,75 +229,6 @@
     investment:'Income-producing commercial assets',
     land:'Sites & land zoned for commercial use'
   }
-
-  // ── State ────────────────────────────────────────────────────────────────
-  var state = {
-    mode:    'sale',          // sale | rent | any
-    cat:     'all',
-    q:       '',
-    sort:    'newest',
-    page:    1,
-    perPage: 24
-  }
-
-  // Read initial query string
-  ;(function initFromQuery(){
-    var p = new URLSearchParams(location.search)
-    if (p.get('mode')) state.mode = p.get('mode')
-    if (p.get('cat'))  state.cat  = p.get('cat')
-    if (p.get('q'))    state.q    = p.get('q')
-    if (state.q) document.getElementById('com-q').value = state.q
-    document.querySelectorAll('.com-tab').forEach(function(t){
-      t.classList.toggle('active', t.dataset.mode === state.mode)
-    })
-  })()
-
-  // ── Render category pills ────────────────────────────────────────────────
-  function iconSvg(name){
-    return '<svg aria-hidden="true"><use href="/icons.svg#'+name+'"/></svg>'
-  }
-  function renderCats(){
-    var row = document.getElementById('com-cats')
-    row.innerHTML = CATS.map(function(c){
-      return '<button class="com-cat'+(state.cat===c.key?' active':'')+'" data-cat="'+c.key+'" onclick="setCat(\''+c.key+'\')">' + iconSvg(c.icon) + c.label + '</button>'
-    }).join('')
-  }
-  renderCats()
-
-  // ── Render category card grid ────────────────────────────────────────────
-  function renderTypeCards(){
-    var grid = document.getElementById('com-type-cards')
-    grid.innerHTML = CATS.filter(function(c){return c.key!=='all'}).map(function(c){
-      return ''
-        + '<a class="com-type-card" href="commercial.html?cat=' + c.key + '">'
-        +   '<div class="com-type-icon">' + iconSvg(c.icon) + '</div>'
-        +   '<div class="com-type-name">' + c.label + '</div>'
-        +   '<div class="com-type-desc">' + (CAT_DESCS[c.key] || '') + '</div>'
-        + '</a>'
-    }).join('')
-  }
-  renderTypeCards()
-
-  // ── Mode + cat handlers ──────────────────────────────────────────────────
-  window.setMode = function(mode, el){
-    state.mode = mode
-    document.querySelectorAll('.com-tab').forEach(function(t){t.classList.remove('active')})
-    if (el) el.classList.add('active')
-    loadResults()
-  }
-  window.setCat = function(key){
-    state.cat = key
-    renderCats()
-    loadResults()
-  }
-  window.doSearch = function(){
-    state.q = document.getElementById('com-q').value.trim()
-    loadResults()
-  }
-
-  // ── Results ──────────────────────────────────────────────────────────────
-  // Master list of property_type values that count as commercial. Used to
-  // tag listings client-side regardless of how the backend stores them.
   var COMMERCIAL_PROPERTY_TYPES = [
     'commercial','office','offices','retail','shop','restaurant',
     'industrial','warehouse','factory','hospitality','hotel','pub','leisure',
@@ -376,40 +256,70 @@
     return hay.indexOf(q.toLowerCase()) !== -1
   }
 
+  var state = { mode:'sale', cat:'all', q:'', sort:'newest', page:1, perPage:24 }
+  ;(function(){
+    var p = new URLSearchParams(location.search)
+    if (p.get('mode')) state.mode = p.get('mode')
+    if (p.get('cat'))  state.cat  = p.get('cat')
+    if (p.get('q'))    state.q    = p.get('q')
+    if (state.q) document.getElementById('com-q').value = state.q
+    document.querySelectorAll('.com-tab').forEach(function(t){
+      t.classList.toggle('active', t.dataset.mode === state.mode)
+    })
+  })()
+
+  function iconSvg(name){ return '<svg aria-hidden="true"><use href="/icons.svg#'+name+'"/></svg>' }
+  function renderCats(){
+    var row = document.getElementById('com-cats')
+    row.innerHTML = CATS.map(function(c){
+      return '<button class="com-cat'+(state.cat===c.key?' active':'')+'" data-cat="'+c.key+'" onclick="setCat(\''+c.key+'\')">' + iconSvg(c.icon) + c.label + '</button>'
+    }).join('')
+  }
+  renderCats()
+  function renderTypeCards(){
+    var grid = document.getElementById('com-type-cards')
+    grid.innerHTML = CATS.filter(function(c){return c.key!=='all'}).map(function(c){
+      return ''
+        + '<a class="com-type-card" href="commercial.html?cat=' + c.key + '">'
+        +   '<div class="com-type-icon">' + iconSvg(c.icon) + '</div>'
+        +   '<div class="com-type-name">' + c.label + '</div>'
+        +   '<div class="com-type-desc">' + (CAT_DESCS[c.key] || '') + '</div>'
+        + '</a>'
+    }).join('')
+  }
+  renderTypeCards()
+
+  window.setMode = function(mode, el){
+    state.mode = mode
+    document.querySelectorAll('.com-tab').forEach(function(t){t.classList.remove('active')})
+    if (el) el.classList.add('active')
+    loadResults()
+  }
+  window.setCat = function(key){ state.cat = key; renderCats(); loadResults() }
+  window.doSearch = function(){ state.q = document.getElementById('com-q').value.trim(); loadResults() }
+
   async function loadResults(){
     var grid = document.getElementById('results-grid')
     grid.innerHTML = '<div class="loading-wrap"><div class="spinner"></div></div>'
     document.getElementById('res-count').textContent = 'Loading commercial listings…'
-
     var sort = document.getElementById('sort-sel').value
     state.sort = sort
 
-    var seen = {}
-    var pool = []
-
+    var seen = {}, pool = []
     async function pull(params){
       try {
         var r = await window.API.listings.search(params)
         if (r && Array.isArray(r.listings)){
-          r.listings.forEach(function(l){
-            if (!seen[l.id]) { seen[l.id] = 1; pool.push(l) }
-          })
+          r.listings.forEach(function(l){ if (!seen[l.id]){ seen[l.id]=1; pool.push(l) }})
         }
       } catch(_){}
     }
-
-    // Pull a wide net so we can tag commercial client-side even if the
-    // backend doesn't recognise the new property_type values yet.
     var broad = [
       { sort:'newest', limit:200 },
       { sort:'newest', limit:200, listing_type:'sale' },
       { sort:'newest', limit:200, listing_type:'rent' }
     ]
-    // Plus each known commercial type as a fallback (in case the backend
-    // only returns matching types when explicitly filtered).
-    COMMERCIAL_PROPERTY_TYPES.forEach(function(t){
-      broad.push({ sort:'newest', limit:50, property_type: t })
-    })
+    COMMERCIAL_PROPERTY_TYPES.forEach(function(t){ broad.push({ sort:'newest', limit:50, property_type: t }) })
 
     try { await Promise.all(broad.map(pull)) }
     catch(err){
@@ -418,24 +328,20 @@
       return
     }
 
-    // Keep only commercial listings, then apply mode + category + query
     var commercial = pool.filter(isCommercialListing)
     var filtered = commercial.filter(function(l){
       if (state.mode !== 'any' && l.listing_type !== state.mode &&
-          // sharing isn't a concept in commercial — never strict-match it
           !(state.mode === 'rent' && l.listing_type === 'share')) return false
       if (!listingMatchesCategory(l, state.cat)) return false
       if (!listingMatchesQuery(l, state.q)) return false
       return true
     })
 
-    // Sort
     if (sort === 'price_asc')  filtered.sort(function(a,b){return (a.price||0) - (b.price||0)})
     if (sort === 'price_desc') filtered.sort(function(a,b){return (b.price||0) - (a.price||0)})
     if (sort === 'size_desc')  filtered.sort(function(a,b){return (b.floor_size_m2||0) - (a.floor_size_m2||0)})
     if (sort === 'newest')     filtered.sort(function(a,b){return new Date(b.created_at||0) - new Date(a.created_at||0)})
 
-    // Stats reflect the entire commercial pool (not the active sub-filter)
     var saleCount = commercial.filter(function(l){return l.listing_type==='sale'}).length
     var rentCount = commercial.filter(function(l){return l.listing_type==='rent'}).length
     document.getElementById('stat-total').textContent = commercial.length ? commercial.length + '+' : '—'
@@ -443,18 +349,16 @@
     document.getElementById('stat-rent').textContent  = rentCount  ? rentCount  : '—'
 
     if (!filtered.length){
-      var msg = !commercial.length
-        ? 'No commercial listings yet'
-        : 'No commercial listings match these filters'
+      var msg = !commercial.length ? 'No commercial listings yet' : 'No commercial listings match these filters'
       var sub = !commercial.length
         ? 'Be the first to list a commercial property — your first listing is free.'
         : 'Try widening the filters above, or switch to All commercial / All modes.'
-      grid.innerHTML = ''
-        + '<div class="com-empty">'
-        +   '<h4>' + msg + '</h4>'
-        +   '<p>' + sub + '</p>'
-        +   '<a class="btn btn-primary" href="list.html?category=commercial">List a commercial property →</a>'
-        + '</div>'
+      grid.innerHTML =
+        '<div class="com-empty">' +
+          '<h4>' + msg + '</h4>' +
+          '<p>' + sub + '</p>' +
+          '<a class="btn btn-primary" href="list.html?category=commercial">List a commercial property →</a>' +
+        '</div>'
       document.getElementById('res-count').textContent = '0 listings'
       return
     }

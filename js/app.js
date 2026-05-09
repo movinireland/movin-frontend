@@ -163,19 +163,75 @@ function renderNav(activePage = '') {
       <a href="${root}index.html" class="nav-logo">mov<span>in</span></a>
  
       <ul class="nav-links">
-        <li class="${activePage === 'buy' ? 'active' : ''}"
-            onclick="window.location.href='${root}pages/search.html?listing_type=sale'">Buy</li>
- 
-        <li class="${activePage === 'rent' ? 'active' : ''}"
-            onclick="window.location.href='${root}pages/search.html?listing_type=rent'">Rent</li>
+        <!-- Buy dropdown -->
+        <li class="nav-has-dropdown ${activePage === 'buy' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/search.html?listing_type=sale'">
+          Buy <span class="ntd-caret">▾</span>
+          <div class="nav-tools-dropdown">
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale'">
+              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">All homes for sale</div><div class="ntd-sub">Every type, all over Ireland</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=house'">
+              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Houses</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=apartment'">
+              <span class="ntd-icon">${icon('apartment', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Apartments</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=bungalow'">
+              <span class="ntd-icon">${icon('bungalow', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Bungalows</div><div class="ntd-sub">Single-storey homes</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&property_type=site'">
+              <span class="ntd-icon">${icon('site', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Sites &amp; Land</div><div class="ntd-sub">Build your own</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=sale&new_dev=1'">
+              <span class="ntd-icon">${icon('new-dev', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">New homes</div><div class="ntd-sub">Brand-new developments</div></div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Rent dropdown -->
+        <li class="nav-has-dropdown ${activePage === 'rent' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/search.html?listing_type=rent'">
+          Rent <span class="ntd-caret">▾</span>
+          <div class="nav-tools-dropdown">
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent'">
+              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">All rentals</div><div class="ntd-sub">Whole properties to rent</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=house'">
+              <span class="ntd-icon">${icon('house', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Houses to rent</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=apartment'">
+              <span class="ntd-icon">${icon('apartment', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Apartments to rent</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&property_type=bungalow'">
+              <span class="ntd-icon">${icon('bungalow', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Bungalows to rent</div><div class="ntd-sub">Single-storey rentals</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=share'">
+              <span class="ntd-icon">${icon('user', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">Sharing &amp; rooms</div><div class="ntd-sub">Single rooms in shared homes</div></div>
+            </div>
+            <div class="ntd-item" onclick="event.stopPropagation();window.location.href='${root}pages/search.html?listing_type=rent&new_dev=1'">
+              <span class="ntd-icon">${icon('new-dev', 20, '#1a5c45')}</span>
+              <div><div class="ntd-title">New rental developments</div><div class="ntd-sub">Build-to-rent &amp; PRS</div></div>
+            </div>
+          </div>
+        </li>
 
         <li class="${activePage === 'commercial' ? 'active' : ''}"
             onclick="window.location.href='${root}pages/commercial.html'">Commercial</li>
 
         <li class="${activePage === 'list' ? 'active' : ''}"
             onclick="window.location.href='${root}pages/list.html'">List your property</li>
-
-        <li onclick="window.location.href='${root}pages/search.html?new_dev=1'">New homes</li>
  
         <!-- Tools dropdown -->
         <li class="nav-has-dropdown ${activePage === 'tools' ? 'active' : ''}"
