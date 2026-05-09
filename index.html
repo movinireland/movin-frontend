@@ -572,6 +572,117 @@ body.hero-places-ready .sugg-box{display:none !important}
   .pwa-splash::before,.pwa-splash::after,.pwa-splash-mark::after,
   .pwa-splash-logo .pwa-l,.pwa-splash-dots span,.pwa-splash-tag .pwa-dot{animation:none}
 }
+
+/* ── Scroll reveal — opt-in via .reveal class on a section ─────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)}
+.reveal.revealed{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+}
+
+/* ── Counties showcase ─────────────────────────────────────────────────── */
+.counties-section{padding:3rem 1.25rem;max-width:1180px;margin:0 auto}
+@media(min-width:768px){.counties-section{padding:4rem 1.5rem}}
+.counties-eyebrow{font-size:11px;color:var(--g);letter-spacing:1.6px;text-transform:uppercase;font-weight:600;margin-bottom:.4rem}
+.counties-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin-top:1.25rem
+}
+@media(min-width:560px){.counties-grid{grid-template-columns:repeat(3,1fr);gap:1rem}}
+@media(min-width:900px){.counties-grid{grid-template-columns:repeat(4,1fr)}}
+.county-tile{
+  position:relative;height:170px;border-radius:18px;overflow:hidden;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:1.1rem;color:#fff;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+  box-shadow:0 4px 14px rgba(0,0,0,.08);
+  -webkit-tap-highlight-color:transparent;isolation:isolate
+}
+.county-tile::before{
+  content:'';position:absolute;inset:0;z-index:-2;
+  background:var(--tile-grad, linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%));
+  transition:transform .6s cubic-bezier(.2,.7,.2,1)
+}
+.county-tile::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(to top, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,.18) 100%),
+             radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 60%);
+  pointer-events:none
+}
+.county-tile:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(0,0,0,.18)}
+.county-tile:hover::before{transform:scale(1.08)}
+.county-tile:active{transform:translateY(-1px) scale(.99)}
+.county-tile-name{
+  font-family:'Playfair Display',serif;font-size:22px;font-weight:900;line-height:1.05;
+  text-shadow:0 2px 14px rgba(0,0,0,.3);letter-spacing:-.3px
+}
+.county-tile-meta{
+  font-size:11.5px;color:rgba(255,255,255,.85);margin-top:5px;font-weight:400;
+  display:flex;align-items:center;gap:5px
+}
+.county-tile-pin{
+  position:absolute;top:.85rem;right:.85rem;width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.25);transition:transform .35s ease,background .35s ease
+}
+.county-tile:hover .county-tile-pin{transform:rotate(-8deg) scale(1.1);background:rgba(255,255,255,.28)}
+.county-tile-pin svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5}
+.county-tile-arrow{
+  position:absolute;bottom:1.1rem;right:1.1rem;width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.95);color:#1a5c45;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateX(-6px);transition:all .3s ease
+}
+.county-tile:hover .county-tile-arrow{opacity:1;transform:translateX(0)}
+.county-tile-arrow svg{width:13px;height:13px;stroke:#1a5c45;stroke-width:2.6;fill:none}
+/* Per-county palettes — pulled from a curated list so each tile feels unique */
+.county-tile.t-dublin   {--tile-grad:linear-gradient(135deg,#1a5c45 0%,#3a8bd4 100%)}
+.county-tile.t-cork     {--tile-grad:linear-gradient(135deg,#e07b3f 0%,#b3471c 100%)}
+.county-tile.t-galway   {--tile-grad:linear-gradient(135deg,#3a8bd4 0%,#15405b 100%)}
+.county-tile.t-meath    {--tile-grad:linear-gradient(135deg,#7ec9a8 0%,#1a5c45 100%)}
+.county-tile.t-kildare  {--tile-grad:linear-gradient(135deg,#9b6cd1 0%,#3e1d6f 100%)}
+.county-tile.t-wicklow  {--tile-grad:linear-gradient(135deg,#0e6b78 0%,#063a44 100%)}
+.county-tile.t-limerick {--tile-grad:linear-gradient(135deg,#c8504c 0%,#6b1e1c 100%)}
+.county-tile.t-waterford{--tile-grad:linear-gradient(135deg,#3aa67a 0%,#0e5238 100%)}
+.county-tile.t-kerry    {--tile-grad:linear-gradient(135deg,#e0a83f 0%,#7a4f0c 100%)}
+
+/* ── Stats: count-up styling polish ────────────────────────────────────── */
+.stat-cell{transition:background .35s ease}
+.stat-cell:hover{background:rgba(255,255,255,.04)}
+.stat-n{font-size:24px !important;display:inline-flex;align-items:baseline}
+.stat-n .stat-prefix,.stat-n .stat-suffix{font-size:.65em;opacity:.8;margin:0 1px;font-weight:500}
+
+/* ── Scroll-to-top button ──────────────────────────────────────────────── */
+.scroll-top-btn{
+  position:fixed;right:18px;bottom:84px;width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e);color:#fff;border:none;cursor:pointer;
+  box-shadow:0 8px 22px rgba(26,92,69,.32);
+  display:flex;align-items:center;justify-content:center;z-index:900;
+  opacity:0;transform:translateY(8px);pointer-events:none;
+  transition:opacity .3s ease,transform .3s ease;
+  font-family:inherit
+}
+.scroll-top-btn.show{opacity:1;transform:translateY(0);pointer-events:auto}
+.scroll-top-btn:hover{transform:translateY(-3px) scale(1.05)}
+.scroll-top-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+@media(min-width:768px){.scroll-top-btn{right:28px;bottom:28px}}
+
+/* ── Hero polish: subtle parallax-y backdrop accent ────────────────────── */
+.hero{position:relative}
+.hero .hero-noise{
+  position:absolute;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1, 0 0 0 0 1, 0 0 0 0 1, 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E")
+}
+
+/* ── Section header eyebrow polish ─────────────────────────────────────── */
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--g);letter-spacing:1.6px;text-transform:uppercase;
+  font-weight:600;margin-bottom:.5rem
+}
+.section-eyebrow::before{
+  content:'';width:18px;height:1.5px;background:var(--g);border-radius:1px
+}
+
 </style>
 </head>
 <body>
@@ -692,6 +803,7 @@ body.hero-places-ready .sugg-box{display:none !important}
 
 <div class="page-body">
 <div class="hero">
+  <div class="hero-noise"></div>
   <div class="hero-inner">
     <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
     <h1 class="hero-h1">Find your next<br>home in <em>Ireland</em></h1>
@@ -853,15 +965,72 @@ body.hero-places-ready .sugg-box{display:none !important}
 </div>
 
 <div class="stats-strip">
-  <div class="stat-cell"><div class="stat-n" id="stat-count" style="font-size:22px;font-weight:900">—</div><div class="stat-l">Live listings</div></div>
-  <div class="stat-cell"><div class="stat-n">32</div><div class="stat-l">Counties</div></div>
-  <div class="stat-cell"><div class="stat-n">Free</div><div class="stat-l">First listing</div></div>
-  <div class="stat-cell"><div class="stat-n">€24.99</div><div class="stat-l">After that</div></div>
+  <div class="stat-cell"><div class="stat-n" data-count-target="0" id="stat-count">0</div><div class="stat-l">Live listings</div></div>
+  <div class="stat-cell"><div class="stat-n" data-count-target="32">0</div><div class="stat-l">Counties</div></div>
+  <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="0">0</span></div><div class="stat-l">First listing — free</div></div>
+  <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="24.99">0</span></div><div class="stat-l">After that</div></div>
 </div>
 
-<div class="section" style="background:#fff">
+<!-- ── Browse by county ────────────────────────────────────────────────── -->
+<section class="counties-section reveal" id="counties-showcase">
+  <div class="counties-eyebrow">Discover Ireland</div>
+  <h2 class="section-title">Browse by county</h2>
+  <p class="section-sub">From Dublin's Georgian streets to Kerry's coastal hideaways — explore live homes in every corner of Ireland.</p>
+  <div class="counties-grid">
+    <div class="county-tile t-dublin"    onclick="quickSearch('Dublin','Dublin')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Dublin</div>
+      <div class="county-tile-meta"><span data-county-count="Dublin">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-cork"      onclick="quickSearch('Cork','Cork')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Cork</div>
+      <div class="county-tile-meta"><span data-county-count="Cork">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-galway"    onclick="quickSearch('Galway','Galway')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Galway</div>
+      <div class="county-tile-meta"><span data-county-count="Galway">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-meath"     onclick="quickSearch('Meath','Meath')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Meath</div>
+      <div class="county-tile-meta"><span data-county-count="Meath">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-kildare"   onclick="quickSearch('Kildare','Kildare')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Kildare</div>
+      <div class="county-tile-meta"><span data-county-count="Kildare">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-wicklow"   onclick="quickSearch('Wicklow','Wicklow')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Wicklow</div>
+      <div class="county-tile-meta"><span data-county-count="Wicklow">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-limerick"  onclick="quickSearch('Limerick','Limerick')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Limerick</div>
+      <div class="county-tile-meta"><span data-county-count="Limerick">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+    <div class="county-tile t-kerry"     onclick="quickSearch('Kerry','Kerry')">
+      <span class="county-tile-pin"><svg viewBox="0 0 24 24"><path d="M12 22s8-7 8-13a8 8 0 1 0-16 0c0 6 8 13 8 13z"/><circle cx="12" cy="9" r="3"/></svg></span>
+      <div class="county-tile-name">Kerry</div>
+      <div class="county-tile-meta"><span data-county-count="Kerry">— homes</span></div>
+      <span class="county-tile-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+    </div>
+  </div>
+</section>
+
+<div class="section reveal" style="background:#fff">
   <div style="margin-bottom:1.75rem">
-    <div style="font-size:11px;color:var(--g);letter-spacing:1.6px;text-transform:uppercase;font-weight:600;margin-bottom:.4rem">Where to next?</div>
+    <div class="section-eyebrow">Where to next</div>
     <h2 class="section-title">Smarter ways to find a home</h2>
     <p class="section-sub">Tools that go beyond a basic search — built for how Irish people actually browse property today.</p>
   </div>
@@ -893,7 +1062,8 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="section">
+<div class="section reveal">
+  <div class="section-eyebrow">Just listed</div>
   <div class="section-hdr">
     <h2 class="section-title">Latest listings</h2>
     <span class="see-all" onclick="go('pages/latest.html')">See all →</span>
@@ -903,7 +1073,8 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="why-section">
+<div class="why-section reveal">
+  <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">The Movin difference</div>
   <h2 class="section-title">Why Movin.ie?</h2>
   <p class="section-sub">What Ireland's property market needed</p>
   <div class="why-grid">
@@ -913,7 +1084,8 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="section" style="background:#fff">
+<div class="section reveal" style="background:#fff">
+  <div class="section-eyebrow">Pricing</div>
   <h2 class="section-title">Simple pricing</h2>
   <p class="section-sub">No monthly fees. No hidden costs.</p>
   <div class="pricing-grid">
@@ -930,7 +1102,8 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="section">
+<div class="section reveal">
+  <div class="section-eyebrow">Real stories</div>
   <h2 class="section-title">What people say</h2>
   <p class="section-sub">Thousands trust Movin across Ireland</p>
   <div class="test-scroll">
@@ -1358,7 +1531,22 @@ async function loadFeatured(){
     await Promise.all(['office','retail','industrial','hospitality','warehouse','land','commercial']
       .map(t => pull({sort:'newest',limit:20,property_type:t})))
 
-    document.getElementById('stat-count').textContent = total > 0 ? total.toLocaleString()+'+' : (pool.length ? pool.length+'+' : '—')
+    var statCountEl = document.getElementById('stat-count')
+    var statTotal   = total > 0 ? total : pool.length
+    statCountEl.dataset.countTarget = statTotal
+    statCountEl.dataset.countSuffix = '+'
+    if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
+
+    // Tally per-county counts so the Browse-by-county tiles can show real numbers
+    var countyTotals = {}
+    pool.forEach(function(l){
+      if (l && l.county) countyTotals[l.county] = (countyTotals[l.county] || 0) + 1
+    })
+    document.querySelectorAll('[data-county-count]').forEach(function(el){
+      var c = el.getAttribute('data-county-count')
+      var n = countyTotals[c] || 0
+      el.textContent = n > 0 ? (n + ' home' + (n === 1 ? '' : 's')) : 'Browse all'
+    })
 
     const fresh = pool
       .filter(l => l.created_at && new Date(l.created_at) >= sevenDaysAgo)
@@ -1474,6 +1662,96 @@ function updateNav(){
 
 // Initial price options for Buy (the default selected mode)
 fillPriceSelects('sale')
+
+// ── Count-up animator ───────────────────────────────────────────────────
+// Animates any element with data-count-target from 0 to its target when it
+// scrolls into view. Honors prefers-reduced-motion.
+function startCountUpFor(el){
+  if (!el || el.dataset.countDone === '1') return
+  var target = parseFloat(el.dataset.countTarget || '0')
+  if (!Number.isFinite(target)) return
+  var suffix = el.dataset.countSuffix || ''
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var isFloat = String(target).indexOf('.') >= 0
+  var format = function(n){
+    if (isFloat) return n.toFixed(2)
+    return Math.round(n).toLocaleString('en-IE')
+  }
+  if (prefersReduced || target === 0){
+    el.textContent = format(target) + suffix
+    el.dataset.countDone = '1'
+    return
+  }
+  el.dataset.countDone = '1'
+  var duration = 1300
+  var start = null
+  var ease = function(t){ return 1 - Math.pow(1 - t, 3) }
+  function step(ts){
+    if (start === null) start = ts
+    var p = Math.min((ts - start) / duration, 1)
+    el.textContent = format(target * ease(p)) + suffix
+    if (p < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
+;(function setupCountUp(){
+  var els = document.querySelectorAll('[data-count-target]')
+  if (!els.length) return
+  if (!('IntersectionObserver' in window)){
+    els.forEach(startCountUpFor); return
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        startCountUpFor(e.target)
+        io.unobserve(e.target)
+      }
+    })
+  }, { threshold: 0.4 })
+  els.forEach(function(el){ io.observe(el) })
+})()
+
+// ── Scroll reveal: fade-up sections as they enter the viewport ─────────
+;(function setupScrollReveal(){
+  var els = document.querySelectorAll('.reveal')
+  if (!els.length) return
+  if (!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('revealed') }); return
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        e.target.classList.add('revealed')
+        io.unobserve(e.target)
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+  els.forEach(function(el){ io.observe(el) })
+})()
+
+// ── Floating scroll-to-top button ──────────────────────────────────────
+;(function scrollTopBtn(){
+  var btn = document.createElement('button')
+  btn.type = 'button'
+  btn.className = 'scroll-top-btn'
+  btn.setAttribute('aria-label', 'Back to top')
+  btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'
+  btn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+  document.body.appendChild(btn)
+  var visible = false
+  function onScroll(){
+    var should = window.scrollY > 600
+    if (should !== visible){
+      visible = should
+      btn.classList.toggle('show', should)
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+})()
 
 loadFeatured()
 updateNav()
