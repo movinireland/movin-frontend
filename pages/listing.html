@@ -189,6 +189,83 @@
     [data-theme="dark"] .lag-card{background:#1a1a1a;border-color:#2a2a2a}
     [data-theme="dark"] .lag-card-name{color:#e8e8e8}
     [data-theme="dark"] .lag-skel,[data-theme="dark"] .lag-empty{background:#1a1a1a;border-color:#2a2a2a}
+
+    /* ── Saved Places (custom locations) ─────────────────────────── */
+    .lag-add-card{display:flex;align-items:center;gap:.85rem;padding:.85rem;background:linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%);border:none;border-radius:14px;cursor:pointer;color:#fff;transition:transform .18s ease,box-shadow .18s ease;-webkit-tap-highlight-color:transparent;font-family:inherit;text-align:left;width:100%;box-shadow:0 6px 18px rgba(26,92,69,.22)}
+    .lag-add-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(26,92,69,.32)}
+    .lag-add-card .lag-add-ico{width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff}
+    .lag-add-card .lag-add-ico svg{width:20px;height:20px;stroke:currentColor;fill:none}
+    .lag-add-card .lag-add-body{flex:1;min-width:0}
+    .lag-add-card .lag-add-title{font-size:14px;font-weight:600;margin-bottom:2px}
+    .lag-add-card .lag-add-sub{font-size:11.5px;color:rgba(255,255,255,.75);font-weight:300}
+    .lag-add-card .lag-add-arrow{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .18s ease}
+    .lag-add-card:hover .lag-add-arrow{transform:translateX(3px)}
+    .lag-add-card .lag-add-arrow svg{width:14px;height:14px;stroke:#fff;fill:none}
+
+    /* Remove (×) button on saved-place cards */
+    .lag-card-remove{
+      background:transparent;border:none;color:#aaa;cursor:pointer;padding:6px;
+      border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      transition:background .15s ease,color .15s ease;font-family:inherit
+    }
+    .lag-card-remove:hover{background:#fde8eb;color:#c93f4e}
+    .lag-card-remove svg{width:14px;height:14px;stroke:currentColor;fill:none}
+
+    /* Empty / welcome state for the Saved Places tab */
+    .lag-saved-welcome{padding:1.75rem 1.25rem;text-align:center;background:linear-gradient(135deg,#fafaf6 0%,#f7f5ee 100%);border:1px dashed var(--border);border-radius:14px}
+    .lag-saved-welcome h4{font-family:'Playfair Display',serif;font-size:17px;color:#111;margin-bottom:.45rem;font-weight:700}
+    .lag-saved-welcome p{font-size:12.5px;color:#888;font-weight:300;line-height:1.5;margin-bottom:1rem;max-width:340px;margin-left:auto;margin-right:auto}
+    [data-theme="dark"] .lag-saved-welcome{background:linear-gradient(135deg,#1a1a1a 0%,#1f1f1d 100%);border-color:#2a2a2a}
+    [data-theme="dark"] .lag-saved-welcome h4{color:#e8e8e8}
+
+    /* ── Add Place bottom sheet ── */
+    .sp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9990;opacity:0;pointer-events:none;transition:opacity .22s ease}
+    .sp-overlay.open{opacity:1;pointer-events:all}
+    .sp-sheet{
+      position:fixed;left:0;right:0;bottom:0;z-index:9991;background:#fff;
+      border-radius:24px 24px 0 0;padding:.85rem 1.25rem 1.5rem;
+      padding-bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));
+      max-width:560px;margin:0 auto;
+      transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);
+      max-height:85vh;overflow-y:auto;font-family:'DM Sans',sans-serif
+    }
+    .sp-overlay.open .sp-sheet{transform:translateY(0)}
+    .sp-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto .85rem}
+    .sp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+    .sp-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#111}
+    .sp-close{background:#f0ede6;border:none;width:32px;height:32px;border-radius:50%;color:#555;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+    .sp-form-row{margin-bottom:.85rem}
+    .sp-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:block}
+    .sp-input{
+      width:100%;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;
+      font-size:15px;background:#fafaf8;color:#111;outline:none;font-family:inherit;-webkit-appearance:none;
+      transition:border-color .15s,background .15s,box-shadow .15s
+    }
+    .sp-input:focus{border-color:var(--g,#1a5c45);background:#fff;box-shadow:0 0 0 4px rgba(26,92,69,.08)}
+    .sp-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+    .sp-preset{
+      display:inline-flex;align-items:center;gap:5px;background:#f7f5f0;border:1.5px solid var(--border);
+      border-radius:50px;padding:6px 12px;font-size:12px;font-weight:500;color:#555;cursor:pointer;
+      font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s
+    }
+    .sp-preset:hover,.sp-preset.on{background:var(--gl,#e9f4ef);border-color:var(--g,#1a5c45);color:var(--g,#1a5c45)}
+    .sp-preset svg{width:13px;height:13px;stroke:currentColor;fill:none}
+    .sp-save{
+      width:100%;background:var(--g,#1a5c45);color:#fff;border:none;border-radius:50px;padding:14px;
+      font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;
+      box-shadow:0 6px 18px rgba(26,92,69,.25);transition:all .18s ease;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px
+    }
+    .sp-save:hover{background:#0e3d2e;box-shadow:0 8px 24px rgba(26,92,69,.32)}
+    .sp-save:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+    .sp-save svg{width:16px;height:16px;stroke:currentColor;fill:none}
+    .sp-fineprint{font-size:11px;color:#aaa;text-align:center;margin-top:.75rem;line-height:1.5}
+    [data-theme="dark"] .sp-sheet{background:#1a1a1a}
+    [data-theme="dark"] .sp-title{color:#e8e8e8}
+    [data-theme="dark"] .sp-close{background:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .sp-input{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
+    [data-theme="dark"] .sp-preset{background:#1f1f1f;border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .sp-preset:hover,[data-theme="dark"] .sp-preset.on{background:#0d2e1e;color:#7ec9a8;border-color:#2ecc8a}
     /* Right panel */
     .rp-card{background:var(--white,#fff);border:1.5px solid var(--border);border-radius:16px;padding:1.25rem;margin-bottom:.85rem}
     .rp-price{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--text,#111);margin-bottom:.2rem}
@@ -322,7 +399,21 @@
       park:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M5 12c0-3 3-7 7-7s7 4 7 7-3 4-7 4-7-1-7-4z"/></svg>',
     }
 
+    // Bookmark + extra icons used by Saved Places
+    LAG_ICONS.bookmark = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'
+    LAG_ICONS.work     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>'
+    LAG_ICONS.heart    = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    LAG_ICONS.dumbbell = LAG_ICONS.gym
+    LAG_ICONS.plus     = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>'
+    LAG_ICONS.x        = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>'
+    LAG_ICONS.arrow    = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>'
+
     var LAG_CATEGORIES = [
+      {
+        id: 'saved', label: 'Saved Places', accent: '#0e3d2e', tint: '#e9f4ef',
+        icon: LAG_ICONS.bookmark,
+        subs: [{ id: 'mine', label: 'Mine', icon: LAG_ICONS.bookmark, custom: true }]
+      },
       {
         id: 'transport', label: 'Transport', accent: '#1d62cf', tint: '#e8f0fd',
         icon: LAG_ICONS.bus,
@@ -470,7 +561,8 @@
     function lagRenderSubs() {
       var el = document.getElementById('lag-subs'); if (!el) return
       var cat = lagFindCat(lagCurrentCat); if (!cat) return
-      if (cat.subs.length <= 1) { el.innerHTML = ''; el.style.display = 'none'; return }
+      // Saved Places never shows the sub-row (its only sub is a synthetic placeholder)
+      if (cat.id === 'saved' || cat.subs.length <= 1) { el.innerHTML = ''; el.style.display = 'none'; return }
       el.style.display = 'flex'
       el.innerHTML = cat.subs.map(function(s) {
         var act = s.id === lagCurrentSub ? ' active' : ''
@@ -529,6 +621,11 @@
     }
 
     async function lagLoadCurrent() {
+      // Saved Places is custom — read from localStorage and render with
+      // distance from THIS listing.
+      if (lagCurrentCat === 'saved') {
+        return lagRenderSaved()
+      }
       var sub = lagFindSub(lagCurrentCat, lagCurrentSub); if (!sub) return
       var listEl = document.getElementById('lag-list')
       if (!mapInstance || !locationInstance) {
@@ -541,6 +638,204 @@
       var places = await lagSearch(sub)
       lagRenderList(sub, places)
     }
+
+    // ── Saved Places (custom user pins, persisted in localStorage) ─────
+    var SAVED_KEY = 'movin_saved_places_v1'
+    function lagSavedRead(){
+      try {
+        var raw = localStorage.getItem(SAVED_KEY)
+        var arr = raw ? JSON.parse(raw) : []
+        return Array.isArray(arr) ? arr : []
+      } catch(e) { return [] }
+    }
+    function lagSavedWrite(arr){
+      try { localStorage.setItem(SAVED_KEY, JSON.stringify(arr)) } catch(e){}
+    }
+
+    function lagRenderSaved(){
+      var listEl = document.getElementById('lag-list'); if (!listEl) return
+      var subEl = document.getElementById('lag-subs'); if (subEl) subEl.style.display = 'none'
+      var places = lagSavedRead()
+      var addCard =
+        '<button type="button" class="lag-add-card" onclick="lagOpenAddPlace()">' +
+          '<span class="lag-add-ico">' + LAG_ICONS.plus + '</span>' +
+          '<span class="lag-add-body">' +
+            '<span class="lag-add-title">Add a place</span>' +
+            '<span class="lag-add-sub">Work, school, gym, family — see distance + commute on every listing.</span>' +
+          '</span>' +
+          '<span class="lag-add-arrow">' + LAG_ICONS.arrow + '</span>' +
+        '</button>'
+
+      if (!places.length){
+        listEl.innerHTML =
+          addCard +
+          '<div class="lag-saved-welcome" style="margin-top:.65rem">' +
+            '<h4>Live near what matters</h4>' +
+            '<p>Pin the places you go often — your office, the kids\' school, your favourite gym. We\'ll show you how far this property is from each.</p>' +
+          '</div>'
+        return
+      }
+
+      var rows = places.map(function(p, i){
+        var distM = null
+        try {
+          if (window.google && google.maps && google.maps.geometry && locationInstance) {
+            distM = google.maps.geometry.spherical.computeDistanceBetween(
+              locationInstance,
+              new google.maps.LatLng(p.lat, p.lng)
+            )
+          }
+        } catch(e){}
+        var distCls = lagDistClass(distM)
+        var ico = (p.kind && LAG_ICONS[p.kind]) || LAG_ICONS.bookmark
+        return '<div class="lag-card" data-saved-idx="' + i + '" onclick="lagFocusSaved(' + i + ')" style="animation-delay:' + (i*40) + 'ms">' +
+          '<div class="lag-card-ico" style="background:#e9f4ef;color:#0e3d2e">' + ico + '</div>' +
+          '<div class="lag-card-body">' +
+            '<div class="lag-card-name">' + escAttr(p.name || 'Saved place') + '</div>' +
+            '<div class="lag-card-sub">' + escAttr(p.label || '') + '</div>' +
+          '</div>' +
+          '<div class="lag-card-meta">' +
+            '<span class="lag-card-dist ' + distCls + '">' + (distM != null ? lagFmtDist(distM) : '—') + '</span>' +
+            '<span class="lag-card-walk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="4" r="2"/><path d="M9 22l3-7 3 7M9 13l3-3 3 3-1 4-2-1"/></svg>' + (distM != null ? lagFmtWalk(distM) : '—') + '</span>' +
+          '</div>' +
+          '<button class="lag-card-remove" type="button" aria-label="Remove" onclick="event.stopPropagation();lagRemoveSaved(' + i + ')">' + LAG_ICONS.x + '</button>' +
+        '</div>'
+      }).join('')
+      listEl.innerHTML = addCard + rows
+    }
+
+    function escAttr(s){ return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;') }
+
+    function lagFocusSaved(idx){
+      var places = lagSavedRead()
+      var p = places[idx]
+      if (!p || !mapInstance) return
+      document.querySelectorAll('.lag-card').forEach(function(c){ c.classList.remove('is-active') })
+      var el = document.querySelector('.lag-card[data-saved-idx="' + idx + '"]')
+      if (el) el.classList.add('is-active')
+      if (lagHighlightMarker) lagHighlightMarker.setMap(null)
+      lagHighlightMarker = new google.maps.Marker({
+        position: { lat: p.lat, lng: p.lng },
+        map: mapInstance,
+        title: p.name,
+        icon: { path: google.maps.SymbolPath.CIRCLE, scale: 9, fillColor: '#e07b3f', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2.5 },
+        animation: google.maps.Animation.DROP
+      })
+      var bounds = new google.maps.LatLngBounds()
+      bounds.extend(locationInstance)
+      bounds.extend(new google.maps.LatLng(p.lat, p.lng))
+      mapInstance.fitBounds(bounds, { top: 60, right: 60, bottom: 60, left: 60 })
+    }
+    window.lagFocusSaved = lagFocusSaved
+
+    function lagRemoveSaved(idx){
+      var arr = lagSavedRead()
+      if (idx < 0 || idx >= arr.length) return
+      arr.splice(idx, 1)
+      lagSavedWrite(arr)
+      if (lagHighlightMarker) { lagHighlightMarker.setMap(null); lagHighlightMarker = null }
+      lagRenderSaved()
+      if (typeof toast === 'function') toast('Removed', 'ok')
+    }
+    window.lagRemoveSaved = lagRemoveSaved
+
+    // ── Add Place sheet ─────────────────────────────────────────────────
+    var spPicked = null   // last picked place from autocomplete
+    var spKind   = ''     // 'work' / 'school' / 'gym' / 'family' / 'heart' / 'bookmark'
+    function lagOpenAddPlace(){
+      spPicked = null
+      spKind = ''
+      var sheet = document.getElementById('sp-overlay')
+      var nameInp = document.getElementById('sp-name')
+      var addrInp = document.getElementById('sp-addr')
+      nameInp.value = ''
+      addrInp.value = ''
+      document.querySelectorAll('.sp-preset').forEach(function(p){ p.classList.remove('on') })
+      document.getElementById('sp-save').disabled = true
+      sheet.classList.add('open')
+      document.documentElement.style.overflow = 'hidden'
+
+      // Lazy-attach Places autocomplete the first time
+      if (window.google && google.maps && google.maps.places && !addrInp.dataset.acBound) {
+        addrInp.dataset.acBound = '1'
+        var ac = new google.maps.places.Autocomplete(addrInp, {
+          componentRestrictions: { country: 'ie' },
+          fields: ['geometry','name','formatted_address']
+        })
+        ac.addListener('place_changed', function(){
+          var place = ac.getPlace()
+          if (!place || !place.geometry || !place.geometry.location) return
+          var loc = place.geometry.location
+          spPicked = {
+            label: place.formatted_address || place.name || addrInp.value,
+            lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
+            lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng
+          }
+          // Auto-fill the name with the place name if the user hasn't typed one
+          if (!nameInp.value && place.name) nameInp.value = place.name
+          updateSaveButton()
+        })
+        addrInp.addEventListener('input', function(){
+          // If they edit after picking, invalidate the cached pick until they pick again
+          spPicked = null
+          updateSaveButton()
+        })
+        nameInp.addEventListener('input', updateSaveButton)
+      }
+      setTimeout(function(){ addrInp.focus() }, 200)
+    }
+    function lagCloseAddPlace(){
+      var sheet = document.getElementById('sp-overlay')
+      sheet.classList.remove('open')
+      document.documentElement.style.overflow = ''
+    }
+    window.lagOpenAddPlace  = lagOpenAddPlace
+    window.lagCloseAddPlace = lagCloseAddPlace
+
+    function updateSaveButton(){
+      var ok = !!(spPicked && document.getElementById('sp-name').value.trim())
+      document.getElementById('sp-save').disabled = !ok
+    }
+    window.updateSaveButton = updateSaveButton
+
+    function lagPickPreset(kind, label){
+      spKind = kind
+      document.querySelectorAll('.sp-preset').forEach(function(p){ p.classList.toggle('on', p.dataset.kind === kind) })
+      var nameInp = document.getElementById('sp-name')
+      if (!nameInp.value || nameInp.dataset.fromPreset === '1') {
+        nameInp.value = label
+        nameInp.dataset.fromPreset = '1'
+      }
+      updateSaveButton()
+    }
+    window.lagPickPreset = lagPickPreset
+
+    function lagSaveNewPlace(){
+      var nameInp = document.getElementById('sp-name')
+      if (!spPicked) {
+        if (typeof toast === 'function') toast('Pick a location from the dropdown', 'err')
+        return
+      }
+      var name = (nameInp.value || '').trim() || spPicked.label.split(',')[0]
+      var arr = lagSavedRead()
+      arr.push({
+        id:    Date.now(),
+        name:  name,
+        kind:  spKind || 'bookmark',
+        label: spPicked.label,
+        lat:   spPicked.lat,
+        lng:   spPicked.lng
+      })
+      lagSavedWrite(arr)
+      lagCloseAddPlace()
+      // Make sure we're on the Saved tab and re-render
+      lagCurrentCat = 'saved'
+      lagRenderCategories()
+      lagRenderSubs()
+      lagRenderSaved()
+      if (typeof toast === 'function') toast('Added · ' + name, 'ok')
+    }
+    window.lagSaveNewPlace = lagSaveNewPlace
 
     function lagPickCat(catId) {
       var cat = lagFindCat(catId); if (!cat) return
@@ -1148,6 +1443,56 @@
     <button class="lightbox-nav lightbox-prev" onclick="slideLightbox(-1)">&#8249;</button>
     <button class="lightbox-nav lightbox-next" onclick="slideLightbox(1)">&#8250;</button>
     <div class="lightbox-counter" id="lb-counter">1 / 1</div>
+  </div>
+
+  <!-- Add Place bottom sheet (used by Saved Places tab) -->
+  <div class="sp-overlay" id="sp-overlay" onclick="if(event.target===this)lagCloseAddPlace()" aria-hidden="true">
+    <div class="sp-sheet" role="dialog" aria-modal="true" aria-labelledby="sp-title">
+      <div class="sp-handle"></div>
+      <div class="sp-head">
+        <div class="sp-title" id="sp-title">Add a saved place</div>
+        <button class="sp-close" type="button" aria-label="Close" onclick="lagCloseAddPlace()">×</button>
+      </div>
+
+      <div class="sp-form-row">
+        <label class="sp-label" for="sp-addr">Address or place name</label>
+        <input class="sp-input" id="sp-addr" type="text" autocomplete="off" placeholder="Address, university, business, town, Eircode…"/>
+      </div>
+
+      <div class="sp-form-row">
+        <label class="sp-label" for="sp-name">Label</label>
+        <input class="sp-input" id="sp-name" type="text" placeholder="e.g. Work, Mam &amp; Dad, Gym" maxlength="40"/>
+      </div>
+
+      <div class="sp-presets" role="group" aria-label="Quick label">
+        <button type="button" class="sp-preset" data-kind="work"     onclick="lagPickPreset('work','Work')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Work
+        </button>
+        <button type="button" class="sp-preset" data-kind="school"   onclick="lagPickPreset('school','School')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 2.5 9 2.5 12 0v-5"/></svg>
+          School
+        </button>
+        <button type="button" class="sp-preset" data-kind="dumbbell" onclick="lagPickPreset('dumbbell','Gym')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2M20 12h2M6 7v10M18 7v10M9 9v6M15 9v6M6 12h12"/></svg>
+          Gym
+        </button>
+        <button type="button" class="sp-preset" data-kind="heart"    onclick="lagPickPreset('heart','Family')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Family
+        </button>
+        <button type="button" class="sp-preset" data-kind="bookmark" onclick="lagPickPreset('bookmark','Saved')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          Other
+        </button>
+      </div>
+
+      <button class="sp-save" id="sp-save" type="button" disabled onclick="lagSaveNewPlace()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        Save place
+      </button>
+      <div class="sp-fineprint">Pick from the dropdown so we have an exact location. Saved places stay on this device.</div>
+    </div>
   </div>
 
 </body>
