@@ -92,24 +92,28 @@ button,input,select{font-family:inherit}
 .stt:hover:not(.active){color:#444;background:rgba(0,0,0,.03)}
 .stt.active{color:#fff;background:linear-gradient(135deg,#1a5c45,#0e3d2e);box-shadow:0 6px 16px rgba(26,92,69,.28)}
 .stt svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none}
-.search-main{padding:1.1rem 1.1rem .25rem;display:flex;gap:8px;position:relative}
-.search-ico-abs{position:absolute;left:28px;top:50%;transform:translateY(-50%);color:var(--g);pointer-events:none;display:flex;align-items:center;z-index:2}
+.search-main{padding:1.1rem 1.1rem .25rem;display:flex;gap:8px;position:relative;align-items:stretch}
+
+/* New wrapper around the input — gives the typer a bounded box to live in
+   so it can never overflow into the Search button on narrow screens. */
+.search-input-wrap{position:relative;flex:1;min-width:0;display:flex}
+.search-input-wrap .search-inp{flex:1;min-width:0;width:100%}
+
+.search-ico-abs{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--g);pointer-events:none;display:flex;align-items:center;z-index:2}
 .search-ico-abs svg{width:18px;height:18px}
 
-/* ─── Animated typewriter placeholder ─── */
+/* ─── Animated typewriter placeholder (constrained to the input box) ─── */
 .hero-loc-typer{
   position:absolute;
-  left:calc(1.1rem + 44px);
-  right:calc(1.1rem + 110px);     /* leave room for the Search button */
+  left:44px;             /* matches input padding-left */
+  right:14px;            /* matches input padding-right */
   top:50%;transform:translateY(-50%);
   display:flex;align-items:center;
   font-family:'DM Sans',sans-serif;font-size:15px;font-weight:400;
   color:#9aa19c;
-  white-space:nowrap;overflow:hidden;
-  pointer-events:none;
-  user-select:none;
-  z-index:1;
-  opacity:1;transition:opacity .18s ease
+  white-space:nowrap;overflow:hidden;        /* never spills out */
+  pointer-events:none;user-select:none;
+  z-index:1;opacity:1;transition:opacity .18s ease
 }
 .hero-loc-typer.hide{opacity:0}
 .typer-prefix{flex-shrink:0}
@@ -117,7 +121,8 @@ button,input,select{font-family:inherit}
   color:var(--g);font-weight:600;margin-left:5px;
   background:linear-gradient(135deg,#1a5c45,#2a7d5c);
   -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent
+  -webkit-text-fill-color:transparent;
+  min-width:0;overflow:hidden;text-overflow:ellipsis
 }
 .typer-cursor{
   display:inline-block;width:2px;height:18px;
@@ -126,8 +131,19 @@ button,input,select{font-family:inherit}
   vertical-align:middle;flex-shrink:0
 }
 @keyframes typerBlink{50%{opacity:0}}
-@media(max-width:480px){
-  .hero-loc-typer{font-size:14px;right:calc(1.1rem + 96px)}
+
+/* Mid screens: shrink fonts a touch */
+@media(max-width:560px){
+  .hero-loc-typer{font-size:14px}
+}
+/* Tightest phones: collapse the Search button to icon-only so the input
+   has room to breathe. The typer keeps fitting because its box is bounded
+   by the input wrapper. */
+@media(max-width:420px){
+  .search-go{padding:15px 14px}
+  .search-go .search-go-label{display:none}
+  .search-go svg{width:18px;height:18px}
+  .hero-loc-typer{font-size:13.5px}
 }
 .search-inp{
   flex:1;min-width:0;border:1.5px solid var(--border);border-radius:14px;
@@ -590,20 +606,23 @@ body.hero-places-ready .sugg-box{display:none !important}
     </div>
 
     <div class="search-main" style="position:relative">
-      <span class="search-ico-abs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
-      <input class="search-inp" type="text" id="hero-loc"
-        placeholder=""
-        aria-label="Search homes by address, area, Eircode, school, transport hub or workplace"
-        autocomplete="off"
-        oninput="handleLoc(this.value)"
-        onkeydown="if(event.key==='Enter')doSearch()"/>
-      <!-- Typewriter overlay — cycles through search-prompt examples until the user starts typing -->
-      <div class="hero-loc-typer" id="hero-loc-typer" aria-hidden="true">
-        <span class="typer-prefix">Search for</span><span class="typer-word"></span><span class="typer-cursor"></span>
+      <div class="search-input-wrap">
+        <span class="search-ico-abs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <input class="search-inp" type="text" id="hero-loc"
+          placeholder=""
+          aria-label="Search homes by address, area, Eircode, school, transport hub or workplace"
+          autocomplete="off"
+          oninput="handleLoc(this.value)"
+          onkeydown="if(event.key==='Enter')doSearch()"/>
+        <!-- Typewriter overlay — cycles through search-prompt examples until the user starts typing.
+             Positioned inside .search-input-wrap so it can never overflow into the Search button. -->
+        <div class="hero-loc-typer" id="hero-loc-typer" aria-hidden="true">
+          <span class="typer-prefix">Search for</span><span class="typer-word"></span><span class="typer-cursor"></span>
+        </div>
       </div>
       <button class="search-go" onclick="doSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        Search
+        <span class="search-go-label">Search</span>
       </button>
       <div class="sugg-box" id="loc-sugg"></div>
     </div>
