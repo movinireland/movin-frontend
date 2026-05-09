@@ -304,86 +304,230 @@ setTimeout(function() { if (typeof renderFooter === 'function') renderFooter() }
 // Used by Buy / Rent dropdowns on every page. Re-runs after renderNav()
 // rebuilds the nav, and also fires on first DOMContentLoaded so the inline
 // nav on index.html gets it too.
+// Inject the search-page styles inline so type-landing pages don't depend on
+// the deployed main.css being up-to-date. Idempotent — only runs once per page.
+function ensureTlpStyles(){
+  if (document.getElementById('tlp-inline-styles')) return
+  var s = document.createElement('style')
+  s.id = 'tlp-inline-styles'
+  s.textContent = ''
+    + ':root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}'
+    /* Sticky search top-bar */
+    + '.sr-topbar{background:var(--white,#fff);border-bottom:1px solid var(--border);padding:1rem 1rem .85rem;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.07)}'
+    + '.sr-search-row{display:flex;gap:8px;align-items:center;position:relative}'
+    + '.sr-input{flex:1;min-width:0;border:2px solid var(--border);border-radius:50px;padding:13px 20px;font-size:14px;outline:none;background:#fafaf8;-webkit-appearance:none;font-family:inherit;transition:border .15s,background .15s,box-shadow .15s}'
+    + '.sr-input:focus{border-color:var(--g);background:#fff;box-shadow:0 0 0 4px rgba(26,92,69,.08)}'
+    + '.sr-search-btn{background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;border:none;border-radius:50px;padding:13px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;transition:all .18s;box-shadow:0 6px 16px rgba(26,92,69,.25);display:inline-flex;align-items:center;gap:6px}'
+    + '.sr-search-btn:hover{box-shadow:0 8px 22px rgba(26,92,69,.35);transform:translateY(-1px)}'
+    + '.sr-search-btn:active{transform:scale(.97)}'
+    + '.sr-search-btn svg{width:14px;height:14px;stroke:#fff;fill:none}'
+    /* Page title row */
+    + '.tlp-titlewrap{padding:1.25rem 1rem .25rem;max-width:1180px;margin:0 auto}'
+    + '.tlp-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--g);letter-spacing:1.6px;text-transform:uppercase;font-weight:600;margin-bottom:.4rem}'
+    + '.tlp-eyebrow::before{content:"";width:18px;height:2px;background:var(--g);border-radius:2px}'
+    + '.tlp-title{font-family:"Playfair Display",serif;font-size:clamp(24px,3.5vw,32px);font-weight:900;color:var(--text,#111);letter-spacing:-.5px;margin:0;line-height:1.15}'
+    + '.tlp-title em{font-style:normal;color:var(--g)}'
+    + '.tlp-sub{font-size:14px;color:#888;font-weight:300;line-height:1.55;margin:.5rem 0 0;max-width:680px}'
+    /* Filter pill row */
+    + '.tlp-filter-row{display:flex;gap:6px;flex-wrap:wrap;padding:.75rem 1rem 1rem;max-width:1180px;margin:0 auto;align-items:center;border-bottom:1px solid var(--border)}'
+    + '.tlp-filter-row .tlp-flabel{font-size:10px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.6px;margin-right:.25rem}'
+    + '.qfc{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--border);border-radius:50px;padding:8px 14px;font-size:13px;font-weight:500;background:var(--white,#fff);color:#555;cursor:pointer;font-family:inherit;-webkit-appearance:none;outline:none;transition:all .15s;background-image:url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'10\' height=\'6\'%3E%3Cpath d=\'M1 1l4 4 4-4\' stroke=\'%23aaa\' stroke-width=\'1.5\' fill=\'none\'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;flex-shrink:0;text-decoration:none}'
+    + '.qfc:hover{border-color:var(--g);color:var(--g)}'
+    + '.qfc.has-value{background-color:var(--gl);border-color:var(--g);color:var(--g);font-weight:600}'
+    + '.qfc-link{background-image:none !important;padding-right:14px;color:var(--g) !important;border-color:var(--g) !important;background-color:var(--gl) !important;font-weight:600}'
+    + '.qfc-link:hover{background-color:var(--g) !important;color:#fff !important}'
+    /* Sibling chips strip */
+    + '.tlp-siblings{background:#f5f2ec;padding:.55rem 1rem;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}'
+    + '.tlp-siblings::-webkit-scrollbar{display:none}'
+    + '.tlp-sib{display:inline-flex;align-items:center;gap:6px;background:var(--white,#fff);border:1px solid var(--border);border-radius:50px;padding:7px 14px;font-size:12.5px;font-weight:500;color:#555;cursor:pointer;white-space:nowrap;text-decoration:none;flex-shrink:0;transition:all .15s}'
+    + '.tlp-sib:hover{border-color:var(--g);color:var(--g);background:var(--gl);transform:translateY(-1px)}'
+    + '.tlp-sib svg{width:13px;height:13px;color:var(--g);stroke:currentColor;fill:none;flex-shrink:0}'
+    + '.tlp-sib:hover svg{color:var(--g)}'
+    /* Results bar */
+    + '.tlp-results-bar{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1rem;background:#f5f2ec;border-bottom:1px solid var(--border);gap:.65rem;flex-wrap:wrap;max-width:1180px;margin:0 auto}'
+    + '.tlp-results-count{font-size:13px;font-weight:500;color:#555}'
+    + '.tlp-results-count strong{color:var(--g);font-weight:700;font-size:14px}'
+    + '.tlp-sort{border:1.5px solid var(--border);border-radius:50px;padding:7px 14px;font-size:12px;background:var(--white,#fff);outline:none;font-family:inherit;-webkit-appearance:none;cursor:pointer;color:#555;font-weight:500}'
+    /* Listings grid */
+    + '.tlp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;padding:1rem;max-width:1180px;margin:0 auto}'
+    + '@media(max-width:380px){.tlp-grid{grid-template-columns:1fr}}'
+    + '@media(min-width:640px){.tlp-grid{grid-template-columns:repeat(2,1fr);gap:1rem;padding:1.25rem}}'
+    + '@media(min-width:900px){.tlp-grid{grid-template-columns:repeat(3,1fr)}}'
+    + '@media(min-width:1200px){.tlp-grid{grid-template-columns:repeat(4,1fr)}}'
+    /* Skeleton card */
+    + '@keyframes tlpShimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}'
+    + '.tlp-skel{background:var(--white,#fff);border:1px solid var(--border);border-radius:14px;overflow:hidden}'
+    + '.tlp-skel-img{height:175px;background:linear-gradient(90deg,#ede9e1 0%,#f5f2ec 50%,#ede9e1 100%);background-size:800px 100%;animation:tlpShimmer 1.4s infinite linear}'
+    + '.tlp-skel-body{padding:.85rem 1rem 1rem}'
+    + '.tlp-skel-line{height:11px;border-radius:6px;background:linear-gradient(90deg,#ede9e1 0%,#f5f2ec 50%,#ede9e1 100%);background-size:800px 100%;animation:tlpShimmer 1.4s infinite linear;margin-bottom:8px}'
+    + '.tlp-skel-line.sm{width:35%;height:9px}'
+    + '.tlp-skel-line.lg{width:60%;height:18px}'
+    + '.tlp-skel-line.md{width:80%}'
+    /* Empty state */
+    + '.tlp-empty{grid-column:1/-1;text-align:center;padding:3.5rem 1rem;background:var(--white,#fff);border:1px dashed var(--border);border-radius:18px}'
+    + '.tlp-empty-ico{font-size:42px;margin-bottom:.85rem;opacity:.45}'
+    + '.tlp-empty h3{font-family:"Playfair Display",serif;font-size:20px;color:var(--text,#111);margin-bottom:.5rem;font-weight:700}'
+    + '.tlp-empty p{font-size:14px;color:#888;margin-bottom:1.5rem;font-weight:300;max-width:380px;margin-left:auto;margin-right:auto;line-height:1.6}'
+    + '.tlp-empty-cta{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}'
+    + '.tlp-empty-cta a{padding:11px 22px;font-size:13.5px;border-radius:50px;text-decoration:none;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;gap:6px;transition:all .18s}'
+    + '.tlp-empty-cta a.primary{background:var(--g);color:#fff;box-shadow:0 6px 16px rgba(26,92,69,.25)}'
+    + '.tlp-empty-cta a.primary:hover{background:var(--gd);box-shadow:0 8px 22px rgba(26,92,69,.35)}'
+    + '.tlp-empty-cta a.ghost{background:transparent;color:var(--g);border:1.5px solid var(--g)}'
+    + '.tlp-empty-cta a.ghost:hover{background:var(--gl)}'
+    /* FAQ */
+    + '.tlp-faq{max-width:880px;margin:0 auto;padding:2.5rem 1.25rem 4rem}'
+    + '.tlp-faq h2{font-family:"Playfair Display",serif;font-size:24px;font-weight:900;color:var(--text,#111);margin-bottom:.35rem;letter-spacing:-.3px;line-height:1.15}'
+    + '.tlp-faq-sub{font-size:13px;color:#888;font-weight:300;margin-bottom:1.5rem}'
+    + '.tlp-faq-item{background:var(--white,#fff);border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.4rem;margin-bottom:8px;transition:border-color .15s}'
+    + '.tlp-faq-item:hover{border-color:#d0d0c5}'
+    + '.tlp-faq-item summary{font-size:14.5px;font-weight:600;color:var(--text,#111);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:1rem}'
+    + '.tlp-faq-item summary::-webkit-details-marker{display:none}'
+    + '.tlp-faq-item summary::after{content:"+";color:var(--g);font-size:24px;font-weight:300;line-height:1;flex-shrink:0;transition:transform .2s}'
+    + '.tlp-faq-item[open] summary::after{content:"−";transform:rotate(180deg)}'
+    + '.tlp-faq-a{font-size:13.5px;color:#666;line-height:1.7;margin-top:.85rem;font-weight:300;padding-top:.85rem;border-top:1px solid #f5f2ec}'
+    /* Bottom CTA banner */
+    + '.tlp-bottom-cta{max-width:1180px;margin:1rem auto;padding:0 1rem}'
+    + '.tlp-bottom-cta-card{background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;border-radius:20px;padding:2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;box-shadow:0 12px 30px rgba(26,92,69,.18);position:relative;overflow:hidden}'
+    + '.tlp-bottom-cta-card::before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.06);top:-100px;right:-80px;pointer-events:none}'
+    + '.tlp-bottom-cta-card h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:900;margin-bottom:.35rem;line-height:1.15}'
+    + '.tlp-bottom-cta-card p{font-size:13.5px;color:rgba(255,255,255,.78);font-weight:300;line-height:1.55;max-width:460px}'
+    + '.tlp-bottom-cta-card a{flex-shrink:0;background:#fff;color:var(--g);padding:13px 24px;font-size:14px;font-weight:600;border-radius:50px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:transform .18s,box-shadow .18s;position:relative;z-index:1}'
+    + '.tlp-bottom-cta-card a:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18)}'
+    /* Dark mode */
+    + '[data-theme="dark"] .sr-topbar{background:#1a1a1a;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .sr-input{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}'
+    + '[data-theme="dark"] .sr-input:focus{background:#1a1a1a;border-color:#2ecc8a}'
+    + '[data-theme="dark"] .qfc{background:#1a1a1a;border-color:#2a2a2a;color:#aaa}'
+    + '[data-theme="dark"] .qfc:hover,[data-theme="dark"] .qfc.has-value{color:#7ec9a8;border-color:#2ecc8a;background-color:#0d2e1e}'
+    + '[data-theme="dark"] .tlp-siblings{background:#141414}'
+    + '[data-theme="dark"] .tlp-sib{background:#1a1a1a;border-color:#2a2a2a;color:#aaa}'
+    + '[data-theme="dark"] .tlp-sib:hover{background:#0d2e1e;color:#7ec9a8;border-color:#2ecc8a}'
+    + '[data-theme="dark"] .tlp-results-bar{background:#141414;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .tlp-sort{background:#1a1a1a;border-color:#2a2a2a;color:#ccc}'
+    + '[data-theme="dark"] .tlp-skel,[data-theme="dark"] .tlp-empty,[data-theme="dark"] .tlp-faq-item{background:#1a1a1a;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .tlp-skel-img,[data-theme="dark"] .tlp-skel-line{background:linear-gradient(90deg,#1f1f1f 0%,#2a2a2a 50%,#1f1f1f 100%);background-size:800px 100%}'
+    + '[data-theme="dark"] .tlp-empty h3{color:#e8e8e8}'
+    + '[data-theme="dark"] .tlp-faq-item summary{color:#e8e8e8}'
+    + '[data-theme="dark"] .tlp-faq-a{color:#aaa;border-color:#2a2a2a}'
+    + '[data-theme="dark"] .tlp-title{color:#e8e8e8}'
+  document.head.appendChild(s)
+}
+
 // ── Property-type landing pages ──────────────────────────────────────────
 // Each dedicated page (house-for-sale.html, apartment-for-rent.html, …) calls
-// this with its config. We render a shared layout: hero + sibling pills +
-// quick filters + listing grid + advanced-search CTA.
+// this with its config. Layout matches search.html — sticky topbar, pill
+// filters, results header and listing grid — so users get a consistent UX
+// across every entry point.
 function renderTypeLanding(opts){
+  ensureTlpStyles()
   var listingType  = opts.listingType    // 'sale' | 'rent' | 'share'
   var propertyType = opts.propertyType   // 'house' | 'apartment' | 'bungalow' | 'site' | ''
   var h1           = opts.h1
   var intro        = opts.intro
-  var eyebrow      = opts.eyebrow || (listingType === 'sale' ? 'Buy' : (listingType === 'rent' ? 'Rent' : 'Share'))
   var siblings     = opts.siblings || []
   var navActive    = opts.navActive
   var seoFaq       = opts.faq || null
 
-  // Header / footer
   if (typeof renderNav === 'function') renderNav(navActive)
 
   var root = window.location.pathname.includes('/pages/') ? '' : 'pages/'
 
-  // Hero
-  var heroHTML =
-    '<section class="tlp-hero">' +
-      '<div class="tlp-inner">' +
-        '<div class="tlp-eyebrow">' + eyebrow + '</div>' +
-        '<h1 class="tlp-h1">' + h1 + '</h1>' +
-        '<p class="tlp-sub">' + intro + '</p>' +
-        '<form class="tlp-filters" onsubmit="event.preventDefault();tlpSubmit()">' +
-          '<select id="tlp-county" class="tlp-sel"><option value="">Any county</option></select>' +
-          '<select id="tlp-beds"   class="tlp-sel"><option value="">Beds</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5">5+</option></select>' +
-          '<select id="tlp-max"    class="tlp-sel"></select>' +
-          '<button type="submit" class="tlp-go">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
-            'Search' +
-          '</button>' +
-        '</form>' +
-      '</div>' +
-    '</section>'
+  // Skeleton card — matches the prop-card aspect ratio so layout doesn't jump
+  var skel = '<div class="tlp-skel"><div class="tlp-skel-img"></div><div class="tlp-skel-body"><div class="tlp-skel-line sm"></div><div class="tlp-skel-line lg"></div><div class="tlp-skel-line md"></div></div></div>'
 
-  // Sibling pills
-  var sibHTML = ''
-  if (siblings.length){
-    sibHTML =
-      '<div class="tlp-siblings">' +
-        '<span class="tlp-sib-label">' + (listingType === 'rent' ? 'Or rent' : (listingType === 'share' ? 'Or buy / rent' : 'Or look at')) + ':</span>' +
-        siblings.map(function(s){
-          return '<a class="tlp-sib" href="' + s.href + '">' + (s.icon ? '<svg width="14" height="14"><use href="/icons.svg#' + s.icon + '"/></svg>' : '') + s.label + '</a>'
-        }).join('') +
-      '</div>'
+  // Sibling chip row — quick links to other residential types
+  function sibLink(s){
+    var ico = s.icon ? '<svg viewBox="0 0 24 24"><use href="/icons.svg#' + s.icon + '"/></svg>' : ''
+    return '<a class="tlp-sib" href="' + s.href + '">' + ico + s.label + '</a>'
   }
+  var siblingsHTML = siblings.map(sibLink).join('')
 
-  // Results shell
-  var resultsHTML =
-    '<section class="tlp-results">' +
-      '<div class="tlp-results-hdr">' +
-        '<h2 id="tlp-count">Loading…</h2>' +
-        '<select class="tlp-sort" id="tlp-sort" onchange="tlpRender()">' +
-          '<option value="newest">Newest first</option>' +
-          '<option value="price_asc">Price low → high</option>' +
-          '<option value="price_desc">Price high → low</option>' +
-        '</select>' +
-      '</div>' +
-      '<div id="tlp-grid" class="listings-grid">' +
-        Array(8).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line sm"></div><div class="skeleton-line lg"></div><div class="skeleton-line md"></div></div></div>').join('') +
-      '</div>' +
-      '<div class="tlp-cta-row">' +
-        '<a class="btn btn-primary" id="tlp-see-all">Open advanced search →</a>' +
-      '</div>' +
-    '</section>'
+  // Eyebrow text per listing-type
+  var eyebrow = listingType === 'sale' ? 'Buy a home'
+              : listingType === 'rent' ? 'Rent a home'
+              : 'Find a room'
 
-  // FAQ block (optional)
-  var faqHTML = ''
-  if (seoFaq && seoFaq.length){
-    faqHTML =
-      '<section class="tlp-faq">' +
-        '<h2>Frequently asked</h2>' +
-        seoFaq.map(function(q){
-          return '<details class="tlp-faq-item"><summary>' + q.q + '</summary><div class="tlp-faq-a">' + q.a + '</div></details>'
-        }).join('') +
-      '</section>'
-  }
+  // Bottom CTA copy varies by listing type
+  var bottomCta = listingType === 'sale'
+    ? { h:'Selling instead?', p:'List your property in under 5 minutes — your first listing on Movin is completely free.', cta:'List your property →', href: root + 'list.html' }
+    : listingType === 'rent'
+    ? { h:'Letting your property?', p:'Reach renters across Ireland — flat-fee listings, no monthly contract, no surprise charges.', cta:'List a rental →', href: root + 'list.html' }
+    : { h:'Got a room to share?', p:'List a single room in your home — perfect for splitting rent or making space for a flatmate.', cta:'List a room →', href: root + 'list.html' }
+
+  // Build the page shell — search.html-style layout, fully self-contained
+  var shellHTML =
+    /* Sticky search topbar */
+    '<div class="sr-topbar">' +
+      '<div class="sr-search-row">' +
+        '<input class="sr-input" id="tlp-q" type="text" autocomplete="off" placeholder="Filter by area, county or Eircode…" onkeydown="if(event.key===\'Enter\')tlpFetch()"/>' +
+        '<button class="sr-search-btn" onclick="tlpFetch()">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+          'Search' +
+        '</button>' +
+      '</div>' +
+    '</div>' +
+
+    /* Page title section */
+    '<div class="tlp-titlewrap">' +
+      '<div class="tlp-eyebrow">' + eyebrow + '</div>' +
+      '<h1 class="tlp-title">' + h1 + '</h1>' +
+      (intro ? '<p class="tlp-sub">' + intro + '</p>' : '') +
+    '</div>' +
+
+    /* Filter pill row */
+    '<div class="tlp-filter-row">' +
+      '<span class="tlp-flabel">Filter</span>' +
+      '<select class="qfc" id="tlp-county"><option value="">All counties</option></select>' +
+      '<select class="qfc" id="tlp-beds">' +
+        '<option value="">Any beds</option>' +
+        '<option value="1">1+ bed</option>' +
+        '<option value="2">2+ beds</option>' +
+        '<option value="3">3+ beds</option>' +
+        '<option value="4">4+ beds</option>' +
+        '<option value="5">5+ beds</option>' +
+      '</select>' +
+      '<select class="qfc" id="tlp-min"></select>' +
+      '<select class="qfc" id="tlp-max"></select>' +
+      '<a class="qfc qfc-link" href="' + root + 'search.html?listing_type=' + listingType + (propertyType ? '&property_type=' + propertyType : '') + '">⚙ More filters</a>' +
+    '</div>' +
+
+    /* Sibling chips */
+    (siblings.length ? '<div class="tlp-siblings">' + siblingsHTML + '</div>' : '') +
+
+    /* Results bar */
+    '<div class="tlp-results-bar">' +
+      '<div class="tlp-results-count" id="tlp-count">Loading ' + h1.toLowerCase() + '…</div>' +
+      '<select class="tlp-sort" id="tlp-sort" onchange="tlpRender()">' +
+        '<option value="newest">Most recent</option>' +
+        '<option value="price_asc">Price ↑</option>' +
+        '<option value="price_desc">Price ↓</option>' +
+      '</select>' +
+    '</div>' +
+
+    /* Listings grid */
+    '<div id="tlp-grid" class="tlp-grid">' + Array(8).fill(skel).join('') + '</div>' +
+
+    /* Bottom CTA */
+    '<div class="tlp-bottom-cta">' +
+      '<div class="tlp-bottom-cta-card">' +
+        '<div>' +
+          '<h3>' + bottomCta.h + '</h3>' +
+          '<p>' + bottomCta.p + '</p>' +
+        '</div>' +
+        '<a href="' + bottomCta.href + '">' + bottomCta.cta + '</a>' +
+      '</div>' +
+    '</div>' +
+
+    /* FAQ */
+    (seoFaq && seoFaq.length
+      ? '<section class="tlp-faq">' +
+          '<h2>Frequently asked</h2>' +
+          '<p class="tlp-faq-sub">Quick answers about ' + h1.toLowerCase() + '.</p>' +
+          seoFaq.map(function(q){
+            return '<details class="tlp-faq-item"><summary>' + q.q + '</summary><div class="tlp-faq-a">' + q.a + '</div></details>'
+          }).join('') +
+        '</section>'
+      : '')
 
   // Mount
   var host = document.getElementById('type-page')
@@ -392,53 +536,64 @@ function renderTypeLanding(opts){
     host.id = 'type-page'
     document.body.appendChild(host)
   }
-  host.innerHTML = heroHTML + sibHTML + resultsHTML + faqHTML
+  host.innerHTML = shellHTML
 
-  // Footer
   if (typeof renderFooter === 'function') setTimeout(renderFooter, 0)
 
-  // Hydrate counties + max-price options
+  // Hydrate counties + price options
   var COUNTIES = ['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan']
   var cSel = document.getElementById('tlp-county')
   COUNTIES.forEach(function(c){ var o = document.createElement('option'); o.value = c; o.textContent = c; cSel.appendChild(o) })
 
-  var maxOpts = listingType === 'sale'
-    ? [['',''],['200000','Up to €200k'],['300000','Up to €300k'],['500000','Up to €500k'],['750000','Up to €750k'],['1000000','Up to €1m'],['1500000','Up to €1.5m']]
-    : [['',''],['1000','Up to €1k/mo'],['1500','Up to €1.5k/mo'],['2000','Up to €2k/mo'],['2500','Up to €2.5k/mo'],['3000','Up to €3k/mo'],['4000','Up to €4k/mo']]
-  var mSel = document.getElementById('tlp-max')
-  mSel.innerHTML = ''
-  maxOpts.forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1] || (listingType === 'sale' ? 'Max price' : 'Max rent'); mSel.appendChild(op) })
+  var minOpts, maxOpts
+  if (listingType === 'sale') {
+    minOpts = [['','Min price'],['100000','€100k'],['200000','€200k'],['300000','€300k'],['500000','€500k']]
+    maxOpts = [['','Max price'],['200000','€200k'],['300000','€300k'],['500000','€500k'],['750000','€750k'],['1000000','€1m+']]
+  } else if (listingType === 'share') {
+    minOpts = [['','Min /mo'],['400','€400'],['500','€500'],['600','€600'],['800','€800']]
+    maxOpts = [['','Max /mo'],['500','€500'],['700','€700'],['900','€900'],['1100','€1.1k'],['1500','€1.5k+']]
+  } else {
+    minOpts = [['','Min /mo'],['1000','€1k'],['1500','€1.5k'],['2000','€2k'],['2500','€2.5k']]
+    maxOpts = [['','Max /mo'],['1500','€1.5k'],['2000','€2k'],['2500','€2.5k'],['3000','€3k'],['4000','€4k+']]
+  }
+  function fillSel(id, opts){
+    var sel = document.getElementById(id); if (!sel) return
+    sel.innerHTML = ''
+    opts.forEach(function(o){ var op = document.createElement('option'); op.value = o[0]; op.textContent = o[1]; sel.appendChild(op) })
+  }
+  fillSel('tlp-min', minOpts)
+  fillSel('tlp-max', maxOpts)
 
   // Pre-fill from URL if any
   var u = new URLSearchParams(location.search)
-  if (u.get('county')) cSel.value = u.get('county')
-  if (u.get('bedrooms')) document.getElementById('tlp-beds').value = u.get('bedrooms')
-  if (u.get('max_price')) mSel.value = u.get('max_price')
+  if (u.get('county'))    cSel.value = u.get('county')
+  if (u.get('bedrooms'))  document.getElementById('tlp-beds').value = u.get('bedrooms')
+  if (u.get('min_price')) document.getElementById('tlp-min').value  = u.get('min_price')
+  if (u.get('max_price')) document.getElementById('tlp-max').value  = u.get('max_price')
+  if (u.get('q'))         document.getElementById('tlp-q').value    = u.get('q')
 
-  // ── Cached state + render fn ────────────────────────────────────────────
+  // ── State + fetch / render ──────────────────────────────────────────────
   var ALL = []
   function tlpFetch(){
     var p = { listing_type: listingType, sort:'newest', limit: 60 }
     if (propertyType) p.property_type = propertyType
-    var county = cSel.value, beds = document.getElementById('tlp-beds').value, max = mSel.value
-    if (county) p.county = county
-    if (beds)   p.bedrooms = beds
+    var county = cSel.value
+    var beds   = document.getElementById('tlp-beds').value
+    var min    = document.getElementById('tlp-min').value
+    var max    = document.getElementById('tlp-max').value
+    var q      = document.getElementById('tlp-q').value.trim()
+    if (county) p.county    = county
+    if (beds)   p.bedrooms  = beds
+    if (min)    p.min_price = min
     if (max)    p.max_price = max
-    document.getElementById('tlp-count').textContent = 'Loading ' + h1.toLowerCase().replace(/^[a-z]/, function(c){return c.toUpperCase()}) + '…'
-    var grid = document.getElementById('tlp-grid')
-    grid.innerHTML = Array(8).fill('<div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line sm"></div><div class="skeleton-line lg"></div><div class="skeleton-line md"></div></div></div>').join('')
+    if (q && !county) p.q   = q
+
+    document.getElementById('tlp-count').textContent = 'Loading ' + h1.toLowerCase() + '…'
+    document.getElementById('tlp-grid').innerHTML = Array(8).fill(skel).join('')
 
     return window.API.listings.search(p).then(function(res){
       ALL = (res && res.listings) || []
       tlpRender()
-      // Update advanced-search CTA URL with current filters
-      var urlP = new URLSearchParams()
-      urlP.set('listing_type', listingType)
-      if (propertyType) urlP.set('property_type', propertyType)
-      if (county) urlP.set('county', county)
-      if (beds)   urlP.set('bedrooms', beds)
-      if (max)    urlP.set('max_price', max)
-      document.getElementById('tlp-see-all').href = root + 'search.html?' + urlP.toString()
     }).catch(function(){
       document.getElementById('tlp-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#aaa;font-size:14px">Could not load listings — please try again.</div>'
       document.getElementById('tlp-count').textContent = 'Could not load'
@@ -454,18 +609,32 @@ function renderTypeLanding(opts){
     var grid = document.getElementById('tlp-grid')
     var hdr  = document.getElementById('tlp-count')
     if (!rows.length) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;background:#fff;border:1px dashed #e8e4dc;border-radius:16px"><div style="font-family:Playfair Display,serif;font-size:18px;color:#111;margin-bottom:.5rem">No matches yet</div><p style="font-size:13px;color:#888;margin-bottom:1rem">Be the first to list — your first listing on Movin is free.</p><a class="btn btn-primary" href="' + root + 'list.html">List a property →</a></div>'
-      hdr.textContent = 'No ' + h1.toLowerCase() + ' yet'
+      grid.innerHTML =
+        '<div class="tlp-empty">' +
+          '<div class="tlp-empty-ico">🔍</div>' +
+          '<h3>No matches yet</h3>' +
+          '<p>Try widening the filters above — or be the first to list. Your first listing on Movin is completely free.</p>' +
+          '<div class="tlp-empty-cta">' +
+            '<a class="primary" href="' + root + 'list.html">List a property</a>' +
+            '<a class="ghost" href="' + root + 'search.html?listing_type=' + listingType + '">Browse all listings</a>' +
+          '</div>' +
+        '</div>'
+      hdr.textContent = 'No matches'
       return
     }
-    hdr.innerHTML = '<strong>' + rows.length + '</strong> ' + h1.toLowerCase()
+    hdr.innerHTML = '<strong>' + rows.length + '</strong> propert' + (rows.length === 1 ? 'y' : 'ies') + ' found'
     grid.innerHTML = rows.map(function(l){
       try { return window.buildPropertyCard(l, []) } catch(e){ return '' }
     }).join('')
+    // Mark filter chips that have a value so they show the active state
+    ;['tlp-county','tlp-beds','tlp-min','tlp-max'].forEach(function(id){
+      var el = document.getElementById(id); if (!el) return
+      el.classList.toggle('has-value', !!el.value)
+    })
   }
   window.tlpRender = tlpRender
-  window.tlpSubmit = tlpFetch
-  ;[cSel, document.getElementById('tlp-beds'), mSel].forEach(function(el){
+  window.tlpFetch  = tlpFetch
+  ;[cSel, document.getElementById('tlp-beds'), document.getElementById('tlp-min'), document.getElementById('tlp-max')].forEach(function(el){
     if (el) el.addEventListener('change', tlpFetch)
   })
 
