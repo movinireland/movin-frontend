@@ -114,6 +114,10 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
         <div class="nav-item" onclick="switchSection('alerts',this)"><span class="nav-item-icon">🔔</span>Search alerts</div>
       </div>
       <div class="nav-section">
+        <div class="nav-section-label">Outreach</div>
+        <div class="nav-item" onclick="switchSection('notifications',this)"><span class="nav-item-icon">📣</span>Notifications</div>
+      </div>
+      <div class="nav-section">
         <div class="nav-section-label">Settings</div>
         <div class="nav-item" onclick="switchSection('settings',this)"><span class="nav-item-icon">⚙️</span>Settings</div>
         <div class="nav-item" onclick="window.location.href='../../index.html'"><span class="nav-item-icon">↩</span>Back to site</div>
@@ -129,6 +133,7 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
     <div class="mn-item" onclick="switchSection('payments',this)">💳 Payments</div>
     <div class="mn-item" onclick="switchSection('reviews',this)">⭐ Reviews</div>
     <div class="mn-item" onclick="switchSection('alerts',this)">🔔 Alerts</div>
+    <div class="mn-item" onclick="switchSection('notifications',this)">📣 Notify</div>
     <div class="mn-item" onclick="window.location.href='../../index.html'">↩ Site</div>
   </div>
 
@@ -268,6 +273,52 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
             <thead><tr><th>User</th><th>Search criteria</th><th>Created</th><th>Last sent</th><th>Actions</th></tr></thead>
             <tbody id="alerts-body"><tr><td colspan="5" style="text-align:center;padding:2rem;color:#aaa">No saved searches yet</td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div id="section-notifications" class="section">
+      <div class="topbar">
+        <div class="topbar-title">Push notifications</div>
+        <div class="topbar-right"><span id="push-stats" style="font-size:13px;color:#888">— subscribers</span></div>
+      </div>
+      <div id="notif-alert"></div>
+      <div class="content-card">
+        <div class="card-header"><div class="card-title">Send broadcast</div></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Title *</label>
+            <input class="form-input" type="text" id="bc-title" maxlength="60" placeholder="e.g. New listings in Dublin 6"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message *</label>
+            <textarea class="form-input form-textarea" id="bc-body" maxlength="200" placeholder="Short, friendly message — keep it under 200 characters."></textarea>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Open URL when clicked</label>
+              <input class="form-input" type="text" id="bc-url" placeholder="/pages/latest.html" value="/pages/latest.html"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Audience</label>
+              <select class="form-input form-select" id="bc-audience">
+                <option value="all">All subscribers</option>
+                <option value="listers">Listers only (users with listings)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="bc-send-btn" onclick="sendBroadcast()">Send notification</button>
+          <button class="btn btn-ghost" style="margin-left:8px" onclick="sendTestToSelf()">Send test to me</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <div class="card-header"><div class="card-title">How it works</div></div>
+        <div class="card-body" style="font-size:13px;line-height:1.7;color:#555">
+          • Notifications are delivered instantly to every user who has clicked <b>Enable</b> in their dashboard.<br>
+          • They appear even when the site is closed, on phones &amp; desktops.<br>
+          • Tapping a notification opens the URL above.<br>
+          • iOS users must add Movin.ie to their Home Screen first (PWA) for push to work.
         </div>
       </div>
     </div>
@@ -454,10 +505,102 @@ function switchSection(id, navEl) {
 
 async function loadSection(id) {
   switch(id) {
-    case 'dashboard':  await loadDashboard(); break
-    case 'listings':   await loadAllListings(); break
-    case 'enquiries':  await loadEnquiries(); break
-    case 'users':      await loadUsers(); break
+    case 'dashboard':     await loadDashboard(); break
+    case 'listings':      await loadAllListings(); break
+    case 'enquiries':     await loadEnquiries(); break
+    case 'users':         await loadUsers(); break
+    case 'notifications': await loadNotifications(); break
+  }
+}
+
+// ── Notifications (admin broadcast) ───────────────────────
+async function loadNotifications() {
+  try {
+    const token = localStorage.getItem('movin_token')
+    const r = await fetch(window.MOVIN_API_URL + '/api/push/stats', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    if (r.ok) {
+      const d = await r.json()
+      const el = document.getElementById('push-stats')
+      if (el) el.textContent = (d.users || 0) + ' user' + (d.users === 1 ? '' : 's') +
+                               ' · ' + (d.subscriptions || 0) + ' device' + (d.subscriptions === 1 ? '' : 's')
+    }
+  } catch(e) {}
+}
+
+function showNotifAlert(msg, kind) {
+  const el = document.getElementById('notif-alert')
+  if (!el) return
+  const cls = kind === 'error' ? 'alert-error'
+            : kind === 'success' ? 'alert-success'
+            : 'alert'
+  el.innerHTML = '<div class="alert ' + cls + '" style="background:' +
+    (kind === 'error' ? '#fee2e2;color:#b91c1c' :
+     kind === 'success' ? '#dcfce7;color:#166534' : '#f3f4f6;color:#333') +
+    '">' + msg + '</div>'
+  setTimeout(() => { el.innerHTML = '' }, 5000)
+}
+
+async function sendBroadcast() {
+  const title    = (document.getElementById('bc-title').value || '').trim()
+  const body     = (document.getElementById('bc-body').value  || '').trim()
+  const url      = (document.getElementById('bc-url').value   || '').trim() || '/pages/dashboard.html'
+  const audience = document.getElementById('bc-audience').value || 'all'
+  const btn      = document.getElementById('bc-send-btn')
+
+  if (!title || !body) {
+    showNotifAlert('Title and message are required.', 'error')
+    return
+  }
+  if (!confirm('Send "' + title + '" to ' + (audience === 'listers' ? 'all listers' : 'all subscribers') + '?')) return
+
+  btn.disabled = true; btn.textContent = 'Sending…'
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/push/broadcast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ title, body, url, audience })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Send failed')
+    showNotifAlert('✓ Sent to ' + (data.recipients || 0) + ' user' + (data.recipients === 1 ? '' : 's') + '.', 'success')
+    document.getElementById('bc-title').value = ''
+    document.getElementById('bc-body').value  = ''
+    loadNotifications()
+  } catch (err) {
+    showNotifAlert('Could not send: ' + (err.message || err), 'error')
+  }
+  btn.disabled = false; btn.textContent = 'Send notification'
+}
+
+async function sendTestToSelf() {
+  try {
+    const token = localStorage.getItem('movin_token')
+    // Get current admin's user_id from the JWT-protected /api/auth/me
+    const meRes = await fetch(window.MOVIN_API_URL + '/api/auth/me', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    })
+    const me = await meRes.json()
+    const myId = (me && (me.id || (me.user && me.user.id)))
+    if (!myId) { showNotifAlert('Could not identify current user.', 'error'); return }
+
+    const res = await fetch(window.MOVIN_API_URL + '/api/push/send-to-user', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({
+        user_id: myId,
+        title:   '🧪 Test notification',
+        body:    'If you see this, your push setup is working.',
+        url:     '/pages/dashboard.html'
+      })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'Send failed')
+    showNotifAlert('✓ Test sent. Check your device.', 'success')
+  } catch (err) {
+    showNotifAlert('Test failed: ' + (err.message || err), 'error')
   }
 }
 
