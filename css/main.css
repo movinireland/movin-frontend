@@ -948,85 +948,90 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 /* ────────────────────────────────────────────────────────────────────────────
    Persistent mobile bottom tab bar + fancy back button (auto-injected by app.js)
    ──────────────────────────────────────────────────────────────────────────── */
+/* App Store-style floating frosted-glass pill */
 .tab-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: var(--white, #fff);
-  border-top: 1px solid var(--border, #ebebeb);
-  display: flex; align-items: stretch;
-  height: calc(62px + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  position: fixed;
+  left: 10px; right: 10px;
+  bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  height: 64px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.72);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(180%);
+  display: flex; align-items: center;
+  padding: 6px; gap: 2px;
   z-index: 1000;
-  box-shadow: 0 -6px 22px rgba(0,0,0,.07);
+  box-shadow:
+    0 14px 40px rgba(0,0,0,.18),
+    0 2px 8px rgba(0,0,0,.06),
+    inset 0 0 0 1px rgba(255,255,255,.55);
   font-family: 'DM Sans', sans-serif;
 }
-.tab-item {
-  flex: 1; display: flex; flex-direction: column;
+.tab-item, .tab-list-item {
+  flex: 1; height: 52px;
+  display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 3px;
-  cursor: pointer; border: none; background: transparent;
-  color: #b0b0b0; font-size: 10px; font-weight: 500;
-  padding: 9px 4px 0;
+  border: none; background: transparent;
+  color: #1a1a1a; font-size: 10.5px; font-weight: 500;
+  border-radius: 999px;
   -webkit-tap-highlight-color: transparent;
-  transition: color .18s;
   text-decoration: none;
+  transition: background .22s ease, color .22s ease, transform .15s ease;
   font-family: inherit;
+  cursor: pointer;
 }
-.tab-item.active { color: #1a5c45; }
+.tab-item:active, .tab-list-item:active { transform: scale(.95); }
+.tab-item.active { background: rgba(0,0,0,.06); color: #1a5c45; }
 .tab-icon-wrap {
-  width: 38px; height: 30px;
+  width: 26px; height: 22px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 12px;
-  transition: background .18s, transform .18s;
 }
-.tab-item.active .tab-icon-wrap { background: #e9f4ef; }
-.tab-item:active .tab-icon-wrap { transform: scale(.92); }
 .tab-icon-wrap svg { width: 22px; height: 22px; stroke: currentColor; fill: none; }
-.tab-list-item {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  cursor: pointer; border: none; background: transparent;
-  padding: 0;
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-}
-.tab-list-circle {
-  width: 52px; height: 52px;
-  background: linear-gradient(135deg, #1a5c45 0%, #0e3d2e 100%);
-  border-radius: 50%;
+/* List tab — flat brand-coloured accent inside the pill (no popping out) */
+.tab-list-item .tab-list-circle {
+  width: 28px; height: 22px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 6px 18px rgba(26,92,69,.42);
-  border: 3px solid var(--white, #fff);
-  margin-top: -18px;
-  transition: transform .2s ease, box-shadow .2s ease;
+  background: linear-gradient(135deg, #1a5c45 0%, #0e3d2e 100%);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(26,92,69,.32);
 }
-.tab-list-circle:active { transform: scale(.92); box-shadow: 0 3px 10px rgba(26,92,69,.45); }
-.tab-list-circle svg { width: 22px; height: 22px; stroke: #fff; fill: none; }
-.tab-list-label { font-size: 10px; font-weight: 500; color: #b0b0b0; margin-top: 6px; }
+.tab-list-item .tab-list-circle svg { width: 14px; height: 14px; stroke: #fff; fill: none; stroke-width: 2.6; }
+.tab-list-item .tab-list-label { font-size: 10.5px; font-weight: 500; color: #1a1a1a; }
 
 @media (min-width: 768px) {
   .tab-bar { display: none; }
 }
 @media (max-width: 767px) {
-  body.has-tab-bar { padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
-  /* Stack page-internal fixed bars ABOVE the global tab bar */
-  body.has-tab-bar .mobile-tabs { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; padding-bottom: 0 !important; }
-  body.has-tab-bar #compare-bar { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
-  /* Map-search: shrink map so tab bar sits below it */
-  body.has-tab-bar #map { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
-  /* Map-search slide-up panel & filter sheet should sit above the tab bar */
-  body.has-tab-bar .card-panel { bottom: calc(62px + env(safe-area-inset-bottom, 0px)) !important; }
+  body.has-tab-bar { padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)); }
+  /* Stack page-internal fixed bars ABOVE the global floating pill */
+  body.has-tab-bar .mobile-tabs { bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important; padding-bottom: 0 !important; }
+  body.has-tab-bar #compare-bar { bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important; }
+  body.has-tab-bar #map { bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important; }
+  body.has-tab-bar .card-panel { bottom: calc(82px + env(safe-area-inset-bottom, 0px)) !important; }
+  body.has-tab-bar .scroll-top-btn { bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important; }
 }
 
-[data-theme="dark"] .tab-bar { background: #1a1a1a; border-top-color: #2a2a2a; }
-[data-theme="dark"] .tab-item { color: #666; }
-[data-theme="dark"] .tab-item.active { color: #2ecc8a; }
-[data-theme="dark"] .tab-item.active .tab-icon-wrap { background: #0d2e1e; }
-[data-theme="dark"] .tab-list-circle { border-color: #1a1a1a; }
+[data-theme="dark"] .tab-bar {
+  background: rgba(28,28,30,.72);
+  box-shadow:
+    0 14px 40px rgba(0,0,0,.55),
+    0 2px 8px rgba(0,0,0,.35),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+}
+[data-theme="dark"] .tab-item { color: #ebebf5; }
+[data-theme="dark"] .tab-item.active { background: rgba(255,255,255,.08); color: #2ecc8a; }
+[data-theme="dark"] .tab-list-item .tab-list-label { color: #ebebf5; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .tab-bar { background: #1a1a1a; border-top-color: #2a2a2a; }
-  :root:not([data-theme="light"]) .tab-item { color: #666; }
-  :root:not([data-theme="light"]) .tab-item.active { color: #2ecc8a; }
-  :root:not([data-theme="light"]) .tab-item.active .tab-icon-wrap { background: #0d2e1e; }
-  :root:not([data-theme="light"]) .tab-list-circle { border-color: #1a1a1a; }
+  :root:not([data-theme="light"]) .tab-bar {
+    background: rgba(28,28,30,.72);
+    box-shadow:
+      0 14px 40px rgba(0,0,0,.55),
+      0 2px 8px rgba(0,0,0,.35),
+      inset 0 0 0 1px rgba(255,255,255,.08);
+  }
+  :root:not([data-theme="light"]) .tab-item { color: #ebebf5; }
+  :root:not([data-theme="light"]) .tab-item.active { background: rgba(255,255,255,.08); color: #2ecc8a; }
+  :root:not([data-theme="light"]) .tab-list-item .tab-list-label { color: #ebebf5; }
 }
 
 /* ─── Fancy floating back button (used when page has no .nav) ─────────────── */
