@@ -359,7 +359,8 @@
     let searchCounty = ''
     let searchDistrict = ''
 
-    // Read URL params
+    // ── Read URL params ─────────────────────────────────────────────────────
+    let urlPropertyType = ''
     const urlP = new URLSearchParams(window.location.search)
     if (urlP.get('listing_type')) {
       activeType = urlP.get('listing_type')
@@ -371,15 +372,40 @@
     if (urlP.get('county')) {
       searchCounty = urlP.get('county')
       var qfC = document.getElementById('qf-county')
-      if (qfC) {
-        qfC.value = searchCounty
-        onSearchCountyChange()
-      }
+      if (qfC) qfC.value = searchCounty
     }
     if (urlP.get('q')) {
       searchQuery = urlP.get('q')
       document.getElementById('search-q').value = searchQuery
     }
+    if (urlP.get('property_type')) {
+      urlPropertyType = urlP.get('property_type')
+    }
+    if (urlP.get('min_price')) {
+      var fMin = document.getElementById('f-min')
+      if (fMin) fMin.value = urlP.get('min_price')
+    }
+    if (urlP.get('max_price')) {
+      var fMax = document.getElementById('f-max')
+      if (fMax) fMax.value = urlP.get('max_price')
+    }
+    if (urlP.get('bedrooms')) {
+      var bedTarget = urlP.get('bedrooms')
+      document.querySelectorAll('.filter-opts .f-opt').forEach(o => {
+        if (o.dataset.val === bedTarget) o.classList.add('on')
+      })
+    }
+
+    // Re-runs search whenever the county dropdown changes. Defined at module
+    // scope so the inline onchange="onSearchCountyChange()" can find it.
+    function onSearchCountyChange() {
+      var sel = document.getElementById('qf-county')
+      searchCounty = sel ? (sel.value || '') : ''
+      if (searchCounty) showSearchChip(searchCounty)
+      else document.getElementById('search-chip-wrap').innerHTML = ''
+      doSearch(1)
+    }
+    window.onSearchCountyChange = onSearchCountyChange
 
     // ── Autocomplete ────────────────────────────────────────────────────────
     function handleSearchInput(val) {
@@ -578,8 +604,10 @@
       const berEl = Array.from(document.querySelectorAll('.ber-btn.on')).map(b => b.dataset.val)
 
       const filters = {}
-      if (activeType)   filters.listing_type = activeType
-      if (searchCounty) filters.county = searchCounty
+      if (activeType)      filters.listing_type  = activeType
+      if (searchCounty)    filters.county        = searchCounty
+      if (urlPropertyType) filters.property_type = urlPropertyType
+      if (searchQuery && !searchCounty) filters.q = searchQuery
       if (document.getElementById('f-min').value) filters.min_price = document.getElementById('f-min').value
       if (document.getElementById('f-max').value) filters.max_price = document.getElementById('f-max').value
       if (bedEl)        filters.bedrooms = bedEl.dataset.val
