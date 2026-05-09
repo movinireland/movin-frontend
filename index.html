@@ -200,6 +200,47 @@ button,input,select{font-family:inherit}
 }
 @keyframes typerBlink{50%{opacity:0}}
 
+/* ── AI search row ────────────────────────────────────────── */
+.ai-search-row{
+  margin:1rem 0 .5rem;padding:1rem;border-radius:14px;
+  background:linear-gradient(135deg,rgba(26,92,69,.06) 0%,rgba(224,123,63,.07) 100%);
+  border:1px dashed rgba(26,92,69,.25)
+}
+.ai-search-label{
+  display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;
+  color:var(--g);margin-bottom:.55rem;letter-spacing:.4px
+}
+.ai-search-label .ai-spark{font-size:14px}
+.ai-search-label .ai-tag{
+  font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  padding:2px 8px;border-radius:50px;background:var(--g);color:#fff;margin-left:auto
+}
+.ai-search-bar{display:flex;gap:8px;align-items:stretch}
+.ai-search-inp{
+  flex:1;min-width:0;border:1.5px solid var(--border);border-radius:12px;
+  padding:12px 14px;font-size:14px;background:#fff;color:#333;outline:none;
+  transition:border .15s,box-shadow .15s;font-family:inherit
+}
+.ai-search-inp:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(26,92,69,.12)}
+.ai-search-go{
+  display:inline-flex;align-items:center;gap:6px;padding:0 18px;
+  background:linear-gradient(135deg,var(--g) 0%,var(--gd) 100%);color:#fff;
+  border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;
+  transition:transform .15s,box-shadow .15s;font-family:inherit;white-space:nowrap
+}
+.ai-search-go:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(26,92,69,.25)}
+.ai-search-go:disabled{opacity:.7;cursor:wait;transform:none;box-shadow:none}
+.ai-search-hint{font-size:11.5px;color:#888;margin-top:.5rem;line-height:1.5}
+.ai-search-hint b{color:var(--g);font-weight:500;cursor:pointer}
+.ai-search-hint b:hover{text-decoration:underline}
+.ai-search-status{font-size:12px;color:var(--g);margin-top:.4rem;display:none}
+.ai-search-status.show{display:block}
+.ai-search-status.error{color:#b91c1c}
+@media(max-width:480px){
+  .ai-search-bar{flex-direction:column}
+  .ai-search-go{padding:12px}
+}
+
 /* Mid screens: shrink fonts a touch */
 @media(max-width:560px){
   .hero-loc-typer{font-size:14px}
@@ -768,6 +809,32 @@ body.hero-places-ready .sugg-box{display:none !important}
       <button class="search-full-btn" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search properties</button>
     </div>
 
+    <!-- AI search — natural language → parsed filters via Groq -->
+    <div class="ai-search-row">
+      <div class="ai-search-label">
+        <span class="ai-spark">✨</span>
+        Ask in plain English
+        <span class="ai-tag">AI</span>
+      </div>
+      <div class="ai-search-bar">
+        <input class="ai-search-inp" type="text" id="ai-search-inp"
+          placeholder="e.g. 3-bed family home in Dublin under €500k near a good school"
+          aria-label="AI property search"
+          maxlength="500"
+          onkeydown="if(event.key==='Enter')runAiSearch()"/>
+        <button class="ai-search-go" id="ai-search-go" onclick="runAiSearch()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          Search
+        </button>
+      </div>
+      <div class="ai-search-hint">
+        Try: <b onclick="aiSearchExample(this)">2-bed apartment to rent in Cork city under €1800</b> ·
+        <b onclick="aiSearchExample(this)">house for sale in Galway with garden</b> ·
+        <b onclick="aiSearchExample(this)">share a room in Dublin near LUAS</b>
+      </div>
+      <div class="ai-search-status" id="ai-search-status"></div>
+    </div>
+
     <div class="popular-row">
       <div class="popular-label">Popular areas</div>
       <div class="area-chips">
@@ -1129,6 +1196,71 @@ function doSearch(){
   window.location.href='pages/search.html?'+p.toString()
 }
 function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);searchOrigin=null;doSearch()}
+
+// ── AI search (Groq-powered natural-language → filters) ─────────────────
+function aiSearchExample(el){
+  var inp = document.getElementById('ai-search-inp')
+  if (!inp) return
+  inp.value = el.textContent.trim()
+  inp.focus()
+}
+
+function _aiSetStatus(msg, isError){
+  var el = document.getElementById('ai-search-status')
+  if (!el) return
+  el.textContent = msg || ''
+  el.classList.toggle('show',  !!msg)
+  el.classList.toggle('error', !!isError)
+}
+
+async function runAiSearch(){
+  var inp = document.getElementById('ai-search-inp')
+  var btn = document.getElementById('ai-search-go')
+  if (!inp || !btn) return
+  var q = (inp.value || '').trim()
+  if (!q) { inp.focus(); return }
+  if (q.length < 4) { _aiSetStatus('Please type a longer query.', true); return }
+
+  var origLabel = btn.innerHTML
+  btn.disabled = true
+  btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span> Thinking…'
+  _aiSetStatus('Understanding your search…', false)
+
+  try {
+    var res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q })
+    })
+    var data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'AI search failed')
+
+    var filters = data.filters || {}
+    var p = new URLSearchParams()
+    if (filters.listing_type)  p.set('listing_type',  filters.listing_type)
+    if (filters.property_type) p.set('property_type', filters.property_type)
+    if (filters.bedrooms)      p.set('bedrooms',      filters.bedrooms)
+    if (filters.min_price)     p.set('min_price',     filters.min_price)
+    if (filters.max_price)     p.set('max_price',     filters.max_price)
+    if (filters.county)        p.set('county',        filters.county)
+    if (filters.q)             p.set('q',             filters.q)
+
+    if (![...p.keys()].length) {
+      _aiSetStatus('Could not extract filters from that. Try being more specific.', true)
+      btn.disabled = false; btn.innerHTML = origLabel
+      return
+    }
+
+    _aiSetStatus(data.summary || 'Searching…', false)
+    setTimeout(function(){
+      window.location.href = 'pages/search.html?' + p.toString()
+    }, 250)
+  } catch (err) {
+    _aiSetStatus('Could not run AI search: ' + (err.message || err), true)
+    btn.disabled = false
+    btn.innerHTML = origLabel
+  }
+}
 
 // ── Google Places autocomplete on the hero search input ─────────────────
 // Loaded asynchronously below; this becomes the picker for any address /
