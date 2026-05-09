@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){
+  var t=localStorage.getItem('movin_theme');
+  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Frequently Asked Questions – Movin.ie</title>
+  <meta name="description" content="Everything you need to know about Movin.ie — buying, renting, sharing, listing, pricing, Eircodes, drive-time search and more. Comprehensive answers in one place."/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Movin"/>
+  <style>
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc}
+    *{box-sizing:border-box}
+
+    /* ── Hero ── */
+    .faq-hero{background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);padding:3rem 1.25rem 4.5rem;position:relative;overflow:hidden;text-align:center}
+    .faq-hero::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:rgba(255,255,255,.05);top:-200px;left:-180px;pointer-events:none}
+    .faq-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}
+    .faq-hero-inner{max-width:780px;margin:0 auto;position:relative;z-index:2}
+    .faq-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,.78);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:1rem;background:rgba(255,255,255,.10);padding:6px 14px;border-radius:50px;backdrop-filter:blur(6px);font-weight:500}
+    .faq-h1{font-family:'Playfair Display',serif;font-size:clamp(28px,6vw,44px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-1px;margin-bottom:.65rem}
+    .faq-h1 em{font-style:normal;color:#e07b3f}
+    .faq-sub{font-size:15px;color:rgba(255,255,255,.78);font-weight:300;margin-bottom:1.75rem;line-height:1.55;max-width:540px;margin-left:auto;margin-right:auto}
+
+    /* Search input */
+    .faq-search-wrap{position:relative;max-width:540px;margin:0 auto}
+    .faq-search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:#aaa;pointer-events:none;stroke:currentColor;fill:none}
+    .faq-search{
+      width:100%;border:none;border-radius:50px;padding:14px 18px 14px 50px;
+      font-family:inherit;font-size:15px;background:#fff;color:#111;outline:none;
+      box-shadow:0 12px 36px rgba(0,0,0,.18);
+      transition:box-shadow .18s
+    }
+    .faq-search:focus{box-shadow:0 14px 40px rgba(0,0,0,.24)}
+    .faq-search-clear{
+      position:absolute;right:14px;top:50%;transform:translateY(-50%);
+      background:#f0ede6;border:none;width:28px;height:28px;border-radius:50%;
+      cursor:pointer;color:#666;font-size:16px;display:none;align-items:center;justify-content:center
+    }
+    .faq-search-clear.show{display:inline-flex}
+
+    /* ── Category nav ── */
+    .faq-cats{
+      position:sticky;top:0;z-index:30;
+      background:rgba(255,255,255,.95);
+      -webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);
+      border-bottom:1px solid var(--border);padding:.85rem 1rem
+    }
+    .faq-cats-inner{max-width:1080px;margin:0 auto;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .faq-cats-inner::-webkit-scrollbar{display:none}
+    .faq-cat{
+      display:inline-flex;align-items:center;gap:6px;
+      border:1.5px solid var(--border);border-radius:50px;
+      padding:8px 14px;font-size:13px;font-weight:500;color:#555;
+      background:#fafaf8;cursor:pointer;white-space:nowrap;flex-shrink:0;
+      font-family:inherit;text-decoration:none;transition:all .15s
+    }
+    .faq-cat:hover{border-color:var(--g);color:var(--g)}
+    .faq-cat.active{background:var(--g);color:#fff;border-color:var(--g)}
+    .faq-cat svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none}
+
+    /* ── Layout ── */
+    .faq-shell{max-width:1080px;margin:0 auto;padding:2.5rem 1.25rem 3rem;display:grid;grid-template-columns:240px 1fr;gap:2.5rem}
+    @media(max-width:880px){.faq-shell{grid-template-columns:1fr;gap:1rem;padding:2rem 1rem}}
+
+    /* Side jump-nav (desktop only) */
+    .faq-side{position:sticky;top:80px;align-self:start}
+    @media(max-width:880px){.faq-side{display:none}}
+    .faq-side-title{font-size:11px;color:#888;letter-spacing:1.2px;text-transform:uppercase;font-weight:600;margin-bottom:.85rem}
+    .faq-side a{
+      display:block;padding:.55rem .75rem;border-radius:10px;
+      font-size:13.5px;color:#555;text-decoration:none;font-weight:500;
+      transition:all .15s;border-left:3px solid transparent;margin-left:-3px
+    }
+    .faq-side a:hover{color:var(--g);background:var(--gl)}
+    .faq-side a.on{color:var(--g);background:var(--gl);border-left-color:var(--g);font-weight:600}
+
+    /* Sections */
+    .faq-section{margin-bottom:2.75rem;scroll-margin-top:80px}
+    .faq-section-head{display:flex;align-items:center;gap:.85rem;margin-bottom:1rem}
+    .faq-section-icon{
+      width:44px;height:44px;border-radius:12px;flex-shrink:0;
+      background:var(--gl);color:var(--g);
+      display:flex;align-items:center;justify-content:center
+    }
+    .faq-section-icon svg{width:22px;height:22px;stroke:currentColor;fill:none}
+    .faq-section-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:var(--text,#111);letter-spacing:-.4px;margin:0;line-height:1.15}
+    .faq-section-sub{font-size:13px;color:var(--muted,#888);font-weight:300;margin:.2rem 0 0;line-height:1.5}
+
+    .faq-item{
+      background:var(--white,#fff);border:1px solid var(--border);
+      border-radius:14px;padding:1rem 1.25rem;margin-bottom:8px;
+      transition:border-color .15s,box-shadow .15s
+    }
+    .faq-item:hover{border-color:#d0d0c5}
+    .faq-item[open]{border-color:var(--g);box-shadow:0 8px 22px rgba(26,92,69,.06)}
+    .faq-item summary{
+      font-size:14.5px;font-weight:600;color:var(--text,#111);cursor:pointer;list-style:none;
+      display:flex;justify-content:space-between;align-items:center;gap:1rem;
+      -webkit-tap-highlight-color:transparent
+    }
+    .faq-item summary::-webkit-details-marker{display:none}
+    .faq-item summary::after{
+      content:'+';color:var(--g);font-size:24px;font-weight:300;
+      line-height:1;flex-shrink:0;transition:transform .2s
+    }
+    .faq-item[open] summary::after{content:'−';transform:rotate(180deg)}
+    .faq-answer{
+      font-size:13.5px;color:var(--muted,#666);line-height:1.7;
+      margin-top:.85rem;padding-top:.85rem;border-top:1px solid #f5f2ec;font-weight:300
+    }
+    .faq-answer p{margin-bottom:.75rem}
+    .faq-answer p:last-child{margin-bottom:0}
+    .faq-answer ul{padding-left:1.25rem;margin:.5rem 0}
+    .faq-answer ul li{margin-bottom:.4rem}
+    .faq-answer a{color:var(--g);text-decoration:underline;text-decoration-color:rgba(26,92,69,.3);text-underline-offset:2px;font-weight:500}
+    .faq-answer a:hover{text-decoration-color:var(--g)}
+    .faq-answer code{background:#f5f2ec;padding:1px 6px;border-radius:4px;font-size:12px}
+
+    /* Empty state for search-no-results */
+    .faq-empty{padding:3rem 1.5rem;text-align:center;background:var(--white,#fff);border:1px dashed var(--border);border-radius:14px}
+    .faq-empty-ico{font-size:36px;margin-bottom:.5rem;opacity:.45}
+    .faq-empty h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--text,#111);margin-bottom:.4rem}
+    .faq-empty p{font-size:13px;color:#888;font-weight:300;margin-bottom:1rem}
+    .faq-empty .btn{background:var(--g);color:#fff;padding:10px 20px;font-size:13px;border-radius:50px;text-decoration:none;display:inline-block}
+
+    /* Bottom CTA */
+    .faq-still{
+      max-width:1080px;margin:0 auto 2rem;padding:0 1.25rem
+    }
+    .faq-still-card{
+      background:linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%);color:#fff;
+      border-radius:20px;padding:2rem 1.5rem;
+      display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap;
+      box-shadow:0 12px 30px rgba(26,92,69,.18);position:relative;overflow:hidden
+    }
+    .faq-still-card::before{content:'';position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.06);top:-100px;right:-80px;pointer-events:none}
+    .faq-still-card h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:.35rem}
+    .faq-still-card p{font-size:13.5px;color:rgba(255,255,255,.78);font-weight:300;line-height:1.55;max-width:460px}
+    .faq-still-card .faq-still-actions{display:flex;gap:.6rem;flex-shrink:0;flex-wrap:wrap;position:relative;z-index:1}
+    .faq-still-card a{
+      background:#fff;color:var(--g);padding:13px 22px;font-size:14px;font-weight:600;
+      border-radius:50px;text-decoration:none;transition:transform .18s,box-shadow .18s;
+      display:inline-flex;align-items:center;gap:6px
+    }
+    .faq-still-card a.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+    .faq-still-card a:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.18)}
+    .faq-still-card a.ghost:hover{border-color:#fff;background:rgba(255,255,255,.1);box-shadow:none;transform:translateY(-1px)}
+
+    /* Highlight matching text on search */
+    mark.faq-mark{background:rgba(224,123,63,.25);color:#a04416;padding:1px 3px;border-radius:3px;font-weight:600}
+
+    /* Dark mode */
+    [data-theme="dark"] .faq-cats{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+    [data-theme="dark"] .faq-cat{background:#1a1a1a;border-color:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .faq-cat:hover{color:#7ec9a8;border-color:#2ecc8a}
+    [data-theme="dark"] .faq-search{background:#1a1a1a;color:#e8e8e8}
+    [data-theme="dark"] .faq-search-clear{background:#2a2a2a;color:#aaa}
+    [data-theme="dark"] .faq-side a{color:#aaa}
+    [data-theme="dark"] .faq-side a:hover,[data-theme="dark"] .faq-side a.on{background:#0d2e1e;color:#7ec9a8}
+    [data-theme="dark"] .faq-side a.on{border-left-color:#2ecc8a}
+    [data-theme="dark"] .faq-section-title{color:#e8e8e8}
+    [data-theme="dark"] .faq-item{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .faq-item:hover{border-color:#3a3a3a}
+    [data-theme="dark"] .faq-item[open]{border-color:#2ecc8a}
+    [data-theme="dark"] .faq-item summary{color:#e8e8e8}
+    [data-theme="dark"] .faq-answer{color:#aaa;border-color:#2a2a2a}
+    [data-theme="dark"] .faq-answer code{background:#252525}
+    [data-theme="dark"] .faq-empty{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .faq-empty h3{color:#e8e8e8}
+    @media(prefers-color-scheme:dark){
+      :root:not([data-theme="light"]) .faq-cats{background:rgba(20,20,20,.95);border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .faq-item{background:#1a1a1a;border-color:#2a2a2a}
+      :root:not([data-theme="light"]) .faq-item summary{color:#e8e8e8}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav" id="main-nav"></nav>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- Hero with search -->
+<section class="faq-hero">
+  <div class="faq-hero-inner">
+    <div class="faq-eyebrow">Help centre · Updated regularly</div>
+    <h1 class="faq-h1">How can we <em>help</em>?</h1>
+    <p class="faq-sub">Everything you need to know about buying, renting, sharing and listing on Movin.ie — answered in one place.</p>
+    <div class="faq-search-wrap">
+      <svg class="faq-search-icon" viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input class="faq-search" id="faq-search" type="search" placeholder="Search for an answer… (e.g. Eircode, deposit, fees)" aria-label="Search the FAQ"/>
+      <button class="faq-search-clear" id="faq-search-clear" type="button" aria-label="Clear search">×</button>
+    </div>
+  </div>
+</section>
+
+<!-- Sticky category pills -->
+<nav class="faq-cats" aria-label="FAQ categories">
+  <div class="faq-cats-inner" id="faq-cats-row"></div>
+</nav>
+
+<!-- Two-column shell: side nav + content -->
+<div class="faq-shell">
+  <aside class="faq-side">
+    <div class="faq-side-title">Jump to</div>
+    <div id="faq-side-list"></div>
+  </aside>
+  <div id="faq-content"></div>
+</div>
+
+<!-- Still need help -->
+<div class="faq-still">
+  <div class="faq-still-card">
+    <div>
+      <h3>Still can't find an answer?</h3>
+      <p>Email us at hello@movin.ie or use the contact form — we read every message and reply within one working day.</p>
+    </div>
+    <div class="faq-still-actions">
+      <a href="contact.html">Contact us →</a>
+      <a class="ghost" href="mailto:hello@movin.ie">hello@movin.ie</a>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav('faq')
+
+  // ── FAQ data ──────────────────────────────────────────────────────────
+  // Each section has: id (URL anchor), title, subtitle, icon SVG path data,
+  // and a list of {q,a} items. Items can use HTML in answers (links, lists, code).
+  var FAQ_DATA = [
+    {
+      id: 'about',
+      title: 'About Movin.ie',
+      sub: "What we are and why we exist.",
+      icon: '<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>',
+      items: [
+        { q: 'What is Movin.ie?',
+          a: '<p>Movin.ie is a modern Irish property marketplace where you can buy, rent, share and list properties across all 32 counties. We focus on speed, transparency and far more affordable listing fees than the older portals.</p>' },
+        { q: 'Who is Movin.ie for?',
+          a: '<p>Anyone in Ireland: <strong>homeowners</strong> selling or letting privately, <strong>renters</strong> looking for a new place, <strong>buyers</strong> hunting their next home, <strong>landlords</strong> with one or many properties, and <strong>commercial</strong> agents listing offices, retail and industrial space.</p>' },
+        { q: 'Are you a registered company?',
+          a: '<p>Yes — Movin.ie is operated by Movin Technologies Ltd, registered in the Republic of Ireland. Our terms and privacy policy are governed by Irish law.</p>' },
+        { q: 'How is Movin different from Daft.ie or MyHome.ie?',
+          a: '<p>Three things, mainly:</p><ul><li><strong>First listing free</strong> — every new user gets one completely free listing, no card required.</li><li><strong>Flat-fee pricing</strong> — €24.99 per listing after that, vs. €99+ on the older portals. Roughly <strong>75% cheaper</strong>.</li><li><strong>Modern tools</strong> — Eircode-based mapping, drive-time search, "saved places" on every listing detail page, light/dark mode, full PWA install.</li></ul>' }
+      ]
+    },
+    {
+      id: 'pricing',
+      title: 'Pricing & payments',
+      sub: 'How much it costs and what you get.',
+      icon: '<circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2"/><path d="M12 16v2"/>',
+      items: [
+        { q: 'How much does it cost to list a property?',
+          a: '<p>Your <strong>first listing is free</strong> — no card required. Standard listings after that are <strong>€24.99 per listing</strong>, valid for 30 days. Featured (priority placement) listings are €44.99. Active landlords or agents with multiple properties can subscribe at €79/month for unlimited listings.</p>' },
+        { q: 'How does the free first listing work?',
+          a: '<p>Every account gets one free listing. You only enter payment details on subsequent listings. The free listing has the same features as a paid one — full photo gallery, enquiry inbox, 30 days live, analytics.</p>' },
+        { q: 'How do I pay?',
+          a: '<p>We accept all major debit and credit cards (Visa, Mastercard, American Express) via our secure Stripe-powered checkout. Payment is taken once at the time of listing — no recurring charges unless you opt into the agent subscription.</p>' },
+        { q: 'Are there any hidden fees or commissions?',
+          a: '<p>No. The advertised price is what you pay. Movin.ie takes <strong>zero commission</strong> on the sale or rent of your property — that\'s a private agreement between you and the buyer/tenant.</p>' },
+        { q: 'Can I get a refund if my listing doesn\'t go live?',
+          a: '<p>Yes — if a listing fails our review and we don\'t publish it, we refund you in full automatically. You\'ll see the refund on your card within 5–10 working days.</p>' },
+        { q: 'Do you offer agent or landlord subscriptions?',
+          a: '<p>Yes. €79/month gives you unlimited listings, branded agent profile, bulk-upload tools and priority support. <a href="contact.html?topic=agent">Contact us</a> if you\'d like a demo or volume pricing.</p>' }
+      ]
+    },
+    {
+      id: 'buying',
+      title: 'Buying a property',
+      sub: 'Searching, viewing, offering, mortgaging.',
+      icon: '<path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+      items: [
+        { q: 'How do I search for properties to buy?',
+          a: '<p>Three main ways: <a href="search.html?listing_type=sale">Search</a> (filters), <a href="map-search.html">Map search</a> (pan and zoom), or <a href="drive-time.html">Find by drive time</a> (live near work or school). The home page also has a fast smart-search that accepts addresses, areas, Eircodes, university names and more.</p>' },
+        { q: 'Can I save listings and search alerts?',
+          a: '<p>Yes — sign in (free) and tap the heart icon on any listing to save it. From the search page you can also create an Alert, and we\'ll email you when a new property matches your filters.</p>' },
+        { q: 'Are the prices final or negotiable?',
+          a: '<p>Asking prices are guides, not auctions. Most Irish residential sales involve back-and-forth offers via the seller or their agent. The listing page shows the published asking price; offers are made via the Enquire button.</p>' },
+        { q: 'How does the offer process work?',
+          a: '<p>Click <strong>Enquire</strong> on a listing, send a message with your offer or questions, and the seller (or their agent) replies directly. We don\'t handle the offer ourselves — you\'re always in direct contact with the seller.</p>' },
+        { q: 'Can I find new-build developments?',
+          a: '<p>Yes — use the New Homes filter on the search page, or the dedicated link on each property-type page. Listings tagged "New" are 0–7 days old; "New homes" specifically means brand-new developments.</p>' },
+        { q: 'What\'s a BER rating and why does it matter?',
+          a: '<p>Building Energy Rating (BER) is a mandatory energy efficiency score in Ireland, from <code>A1</code> (most efficient) to <code>G</code> (least). Better BER = lower energy bills. The legal sale of any property requires a valid BER certificate.</p>' },
+        { q: 'Can I see what nearby properties sold for?',
+          a: '<p>Yes — visit our <a href="sold.html">Sold &amp; let prices</a> page, or look at the "Sold prices nearby" panel on individual listings (where data is available).</p>' }
+      ]
+    },
+    {
+      id: 'renting',
+      title: 'Renting a property',
+      sub: 'For tenants — viewings, deposits, RPZ rules.',
+      icon: '<path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 14h6v6H9z"/>',
+      items: [
+        { q: 'How do I find a place to rent?',
+          a: '<p>Browse <a href="house-for-rent.html">Houses to rent</a>, <a href="apartment-for-rent.html">Apartments to rent</a>, <a href="bungalow-for-rent.html">Bungalows to rent</a>, or <a href="sharing.html">Sharing &amp; rooms</a>. Filter by county, beds, max rent and more. Save searches as Alerts so you\'re notified the moment a match appears.</p>' },
+        { q: 'How does Rent Pressure Zone (RPZ) pricing work?',
+          a: '<p>Most cities and large towns are designated RPZs, which cap how much a landlord can raise the rent each year. Check the official RPZ register at <a href="https://onestopshop.rtb.ie/" target="_blank">RTB.ie</a> if you\'re unsure whether the property qualifies.</p>' },
+        { q: 'How much deposit will I need?',
+          a: '<p>The standard in Ireland is <strong>one month\'s rent as deposit + one month\'s rent in advance</strong>. By law a security deposit cannot exceed one month\'s rent. The Residential Tenancies Board protects deposits in registered tenancies.</p>' },
+        { q: 'Are bills usually included?',
+          a: '<p>Almost never for whole-property rentals. Bills (electricity, gas, broadband, bin charges) are paid by the tenant. Some short-term or "all-in" lets do include bills — the listing description will note it.</p>' },
+        { q: 'How do viewings work?',
+          a: '<p>Click <strong>Enquire</strong> on the listing — your message goes directly to the landlord or agent who arranges the viewing. We don\'t handle viewings ourselves; we\'re the marketplace, not the agent.</p>' },
+        { q: 'Should the tenancy be registered with the RTB?',
+          a: '<p>Yes — most non-rent-a-room tenancies in Ireland must be registered with the Residential Tenancies Board (RTB). It protects both you and the landlord, and is the landlord\'s legal responsibility.</p>' }
+      ]
+    },
+    {
+      id: 'sharing',
+      title: 'Sharing & rooms',
+      sub: 'House shares, rent-a-room scheme.',
+      icon: '<circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 14h2a3 3 0 0 1 3 3v2"/>',
+      items: [
+        { q: 'What\'s the difference between renting and sharing?',
+          a: '<p>Renting means the whole property is yours (or your group\'s). Sharing means you rent a single room in a property where other people already live. You\'ll usually share the kitchen, bathroom and living spaces.</p>' },
+        { q: 'Are bills shared?',
+          a: '<p>Almost always — utilities are split between the housemates, with one person typically managing payments. The listing description will explain how the household handles it.</p>' },
+        { q: 'What\'s the "rent-a-room" scheme?',
+          a: '<p>An Irish tax relief that lets a homeowner earn up to <strong>€14,000/year tax-free</strong> from renting a room (or rooms) in their main residence. If your room is in an owner-occupied home, you and the homeowner are operating under this scheme — different rules apply.</p>' },
+        { q: 'Do rent-a-room tenancies need to be registered with the RTB?',
+          a: '<p>No — the rent-a-room scheme (live-in landlord) does not require RTB registration. House-share tenancies where the owner does not live in the property usually do.</p>' }
+      ]
+    },
+    {
+      id: 'listing',
+      title: 'Listing your property',
+      sub: 'How to list, photo tips, the review process.',
+      icon: '<path d="M12 5v14"/><path d="M5 12h14"/>',
+      items: [
+        { q: 'How do I list my property?',
+          a: '<p>Click <a href="list.html"><strong>List your property</strong></a> from any page or the home menu. The 5-step wizard takes about 5 minutes: pick a category (residential or commercial), enter details, add address + Eircode, photos, choose plan, publish.</p>' },
+        { q: 'What information do I need to list?',
+          a: '<ul><li>A <strong>title</strong> and <strong>description</strong> (the more descriptive the better)</li><li>The <strong>address</strong> and <strong>Eircode</strong> (Eircode is required — buyers find your home on the map by it)</li><li><strong>Asking price</strong> or monthly rent</li><li>Optional: bedrooms, bathrooms, floor size, BER rating, facilities</li><li><strong>Photos</strong> (highly recommended — listings with photos get 5× more enquiries)</li></ul>' },
+        { q: 'Why is the Eircode required?',
+          a: '<p>Eircodes give us the exact GPS location of your property, which powers the map view, the drive-time search and the "X km away" distance hints across the site. We never let your listing go live without one. <strong>You can choose whether the Eircode is publicly visible</strong> on the listing page — toggle it during step 2 of the wizard.</p>' },
+        { q: 'Can I keep my Eircode private but still list?',
+          a: '<p>Yes — flip the "Show Eircode on the public listing" toggle off when you list. We\'ll still use the Eircode internally to position your home on the map, but the listing page shows "Eircode —" instead of the full code.</p>' },
+        { q: 'How many photos can I upload?',
+          a: '<p>Up to <strong>20 photos per listing</strong>, max 10MB each. JPG, PNG and WEBP are supported. The first photo becomes your cover photo by default — tap any other photo in the upload grid to set it as the cover.</p>' },
+        { q: 'Do I need to be a landlord or agent to list?',
+          a: '<p>No — Movin.ie is open to private sellers, landlords, agents and developers alike. Whatever your role, the listing process is the same.</p>' },
+        { q: 'Are listings reviewed before going live?',
+          a: '<p>Yes. Every listing is reviewed by our team within a few hours (usually sooner during business hours) to filter out scams, duplicates and obvious quality issues. You\'ll get an email when it goes live.</p>' },
+        { q: 'How long does my listing stay live?',
+          a: '<p><strong>30 days from publication.</strong> You can renew at any time from your dashboard, or refresh photos and copy whenever you like.</p>' },
+        { q: 'Can I edit a listing after it\'s live?',
+          a: '<p>Yes — sign in and edit the listing from your dashboard. Major changes go through a quick re-review; minor edits (price tweaks, copy updates) are live immediately.</p>' }
+      ]
+    },
+    {
+      id: 'commercial',
+      title: 'Commercial property',
+      sub: 'Offices, retail, industrial, hospitality, land.',
+      icon: '<path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 9h2"/><path d="M9 13h2"/><path d="M9 17h2"/><path d="M13 9h2"/><path d="M13 13h2"/><path d="M13 17h2"/>',
+      items: [
+        { q: 'What kinds of commercial property can I list?',
+          a: '<ul><li>Office (HQ, co-working, suites)</li><li>Retail (high-street shops, units, restaurants)</li><li>Industrial (warehouses, factories, logistics)</li><li>Hospitality (hotels, pubs, leisure, licensed)</li><li>Healthcare (clinics, surgeries, medical units)</li><li>Mixed-use (residential + commercial buildings)</li><li>Investment (income-producing assets)</li><li>Land (sites zoned for commercial use)</li></ul>' },
+        { q: 'How is commercial pricing different?',
+          a: '<p>Same flat €24.99 per listing, valid for 30 days. There\'s no premium fee for commercial — and no per-square-foot calculations, no commission, no monthly minimum.</p>' },
+        { q: 'Where do commercial listings appear?',
+          a: '<p>On the dedicated <a href="commercial.html">Commercial property page</a> with category pills (Office / Retail / Industrial / etc.), and they also surface on the <a href="latest.html">Latest listings</a> page. They are kept separate from residential search results so your audience is right.</p>' }
+      ]
+    },
+    {
+      id: 'account',
+      title: 'My account & dashboard',
+      sub: 'Sign in, profile, saved listings, alerts.',
+      icon: '<circle cx="12" cy="8" r="4"/><path d="M4 22a8 8 0 0 1 16 0"/>',
+      items: [
+        { q: 'Do I need an account to use Movin?',
+          a: '<p>No — browsing, searching, viewing listings and contacting sellers are all free with no signup. You only need an account if you want to <strong>save listings</strong>, <strong>create search alerts</strong>, <strong>list your property</strong>, or <strong>manage your enquiries</strong>.</p>' },
+        { q: 'How do I sign up?',
+          a: '<p><a href="register.html">Register</a> with an email and password (it\'s free). You can then sign in from any page via the top-right account button.</p>' },
+        { q: 'I forgot my password — what do I do?',
+          a: '<p>On the <a href="login.html">Sign in page</a>, click "Forgot password" and we\'ll email you a reset link. The link is valid for 30 minutes.</p>' },
+        { q: 'How do I delete my account?',
+          a: '<p>Email <a href="mailto:hello@movin.ie">hello@movin.ie</a> from the address on your account and we\'ll permanently delete it (and any active listings) within 5 working days, in line with GDPR.</p>' },
+        { q: 'What\'s on the dashboard?',
+          a: '<p>Your listings, your enquiries inbox, saved listings, search alerts, profile and notification preferences. It\'s the central place for everything you do as a logged-in user.</p>' }
+      ]
+    },
+    {
+      id: 'eircode',
+      title: 'Eircodes & location',
+      sub: 'Why we need them and what we do with them.',
+      icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+      items: [
+        { q: 'What\'s an Eircode?',
+          a: '<p>An <strong>Eircode</strong> is Ireland\'s postcode — 7 alphanumeric characters in the format <code>A65 F4E2</code>. Every Irish address has one. They identify a single property (unlike UK postcodes which cover a street block).</p>' },
+        { q: 'Why does Movin require an Eircode for listings?',
+          a: '<p>Because Eircodes uniquely identify a property\'s exact GPS coordinates. That powers:</p><ul><li>Map search (your property pinned exactly)</li><li><a href="drive-time.html">Drive-time search</a> (commute calculations)</li><li>"X km away" distance chips on every listing card</li><li>Saved Places matching</li></ul>' },
+        { q: 'Can I list without revealing my Eircode publicly?',
+          a: '<p>Yes — the listing wizard has a "Show Eircode on the public listing" toggle. Switch it off and the listing page shows "Eircode —" instead of the full code, while we still use the geocoded location for the map and drive-time features.</p>' },
+        { q: 'How do I find my Eircode?',
+          a: '<p>Visit <a href="https://finder.eircode.ie/" target="_blank">finder.eircode.ie</a> (the official finder) and enter your address.</p>' },
+        { q: 'What if my new-build doesn\'t have an Eircode yet?',
+          a: '<p>An Post issues Eircodes for new builds within a few weeks of occupancy. If you\'re listing pre-completion, contact us — we can manually pin the development on the map.</p>' }
+      ]
+    },
+    {
+      id: 'tools',
+      title: 'Search tools',
+      sub: 'Map search, drive-time, saved places.',
+      icon: '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>',
+      items: [
+        { q: 'How does drive-time search work?',
+          a: '<p>The <a href="drive-time.html">Drive-time</a> tool lets you set <strong>up to two locations</strong> (e.g. work and your kids\' school) and a maximum commute. We then show only properties within that drive-time circle from <em>both</em> locations. Each result shows the exact minutes by car, bike or foot from each point.</p>' },
+        { q: 'How accurate are the drive times?',
+          a: '<p>Distance pills under each property show approximate distance immediately. Once you set an origin, we use Google Distance Matrix to compute the <strong>exact</strong> driving / cycling / walking minutes from your point to every nearby listing. It accounts for road network and distance, not live traffic.</p>' },
+        { q: 'What are "Saved Places"?',
+          a: '<p>On any listing\'s detail page, in the "Local area guide" tab, you can pin your <strong>own</strong> locations — work, school, gym, family\'s house. Once added, every listing you view shows the distance + walk/drive time to your saved places. Stored on your device only.</p>' },
+        { q: 'Can I search by something other than an Eircode?',
+          a: '<p>Yes — type any of these into the search box: <strong>address</strong> ("14 Leinster Road"), <strong>area</strong> ("Rathmines"), <strong>town</strong> ("Galway"), <strong>county</strong> ("Cork"), <strong>university</strong> ("Trinity College"), <strong>train station</strong> ("Heuston"), <strong>workplace</strong> ("Google Dublin"), or <strong>Eircode</strong>. Google Places autocomplete handles them all.</p>' },
+        { q: 'Can I search on a map?',
+          a: '<p>Yes — <a href="map-search.html">Map search</a> shows every live listing as a price-pin on a Google map of Ireland. Pan, zoom, click a listing in the side panel, click a pin — they highlight each other.</p>' }
+      ]
+    },
+    {
+      id: 'mobile',
+      title: 'Mobile app & PWA',
+      sub: 'Installing on your phone, notifications.',
+      icon: '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
+      items: [
+        { q: 'Is there a Movin app?',
+          a: '<p>Movin.ie works as a <strong>Progressive Web App (PWA)</strong> — you install it like an app, but there\'s nothing to download from the App Store. It opens fullscreen with its own icon, works offline for cached pages, and supports push notifications.</p>' },
+        { q: 'How do I install it on iPhone?',
+          a: '<p>Open <a href="https://movin.ie">movin.ie</a> in Safari. Tap the <strong>Share</strong> button, scroll down, then tap <strong>Add to Home Screen</strong>. The Movin icon will appear with the rest of your apps.</p>' },
+        { q: 'How do I install it on Android?',
+          a: '<p>Open <a href="https://movin.ie">movin.ie</a> in Chrome. Tap the three-dot menu, then <strong>Install app</strong> (or "Add to Home Screen"). Done.</p>' },
+        { q: 'Can I get push notifications?',
+          a: '<p>Yes — once installed as a PWA, sign in and enable notifications from the dashboard banner. We\'ll only send you alerts about new enquiries, listing approval status, and any saved-search matches.</p>' },
+        { q: 'Does it work offline?',
+          a: '<p>Pages you\'ve already loaded stay viewable offline. Brand-new searches and listing detail pages need an internet connection to fetch fresh data.</p>' }
+      ]
+    },
+    {
+      id: 'privacy',
+      title: 'Privacy & data',
+      sub: 'GDPR, what data we hold, how to delete it.',
+      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+      items: [
+        { q: 'Is Movin GDPR-compliant?',
+          a: '<p>Yes — we\'re an Irish company governed by Irish/EU law. Our full <a href="privacy-policy.html">Privacy Policy</a> details what we collect, why, where it\'s stored, who can access it, and your rights.</p>' },
+        { q: 'What data do you collect?',
+          a: '<ul><li><strong>Account info:</strong> name, email, phone (optional), password (hashed).</li><li><strong>Listings:</strong> the property data and photos you submit.</li><li><strong>Usage:</strong> page views, searches and saved listings, used only to improve the service.</li><li><strong>Cookies:</strong> session cookies for sign-in, theme preference, cookie-consent.</li></ul>' },
+        { q: 'Do you sell my data?',
+          a: '<p>No. Ever. We make money from listing fees, full stop.</p>' },
+        { q: 'Do you serve ads?',
+          a: '<p>No third-party ads, no behavioural advertising. The site is funded entirely by listing fees.</p>' },
+        { q: 'How do I export or delete my data?',
+          a: '<p>Email <a href="mailto:hello@movin.ie">hello@movin.ie</a> from the address on your account. We\'ll send you an export within 30 days, or fully delete your account on request, in line with GDPR Article 15 / 17.</p>' }
+      ]
+    },
+    {
+      id: 'support',
+      title: 'Support & contact',
+      sub: 'How to reach us.',
+      icon: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/>',
+      items: [
+        { q: 'How do I get in touch?',
+          a: '<p>Use our <a href="contact.html">contact form</a>, email <a href="mailto:hello@movin.ie">hello@movin.ie</a>, or call <a href="tel:+35315550100">+353 1 555 0100</a> Mon–Fri 09:00–18:00 (Saturdays 10:00–14:00).</p>' },
+        { q: 'How quickly do you reply?',
+          a: '<p>Within one working day for emails. Calls are answered live during opening hours.</p>' },
+        { q: 'I\'ve found a scam listing — what do I do?',
+          a: '<p>Please email <a href="mailto:hello@movin.ie">hello@movin.ie</a> with the listing URL and a brief note. We take fraud seriously and will investigate immediately. Most listings are reviewed before going live, but no system is perfect.</p>' },
+        { q: 'I\'m a journalist / press — who do I contact?',
+          a: '<p>Email <a href="mailto:hello@movin.ie">hello@movin.ie</a> with the subject line "Press" and we\'ll route you to the right person.</p>' }
+      ]
+    }
+  ]
+
+  // ── Render the page ───────────────────────────────────────────────────
+  function renderCats(){
+    var row  = document.getElementById('faq-cats-row')
+    var side = document.getElementById('faq-side-list')
+    row.innerHTML  = FAQ_DATA.map(function(s, i){
+      return '<a class="faq-cat' + (i===0?' active':'') + '" href="#' + s.id + '" data-cat="' + s.id + '">' +
+              '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + s.icon + '</svg>' +
+              s.title +
+            '</a>'
+    }).join('')
+    side.innerHTML = FAQ_DATA.map(function(s, i){
+      return '<a href="#' + s.id + '" data-side="' + s.id + '" class="' + (i===0?'on':'') + '">' + s.title + '</a>'
+    }).join('')
+  }
+
+  function renderContent(){
+    var html = FAQ_DATA.map(function(s){
+      var items = s.items.map(function(item, idx){
+        return '<details class="faq-item" data-q="' + escapeAttr(item.q.toLowerCase()) + '" data-a="' + escapeAttr(item.a.replace(/<[^>]*>/g,' ').toLowerCase()) + '"' + (idx===0 ? '' : '') + '>' +
+                  '<summary>' + item.q + '</summary>' +
+                  '<div class="faq-answer">' + item.a + '</div>' +
+                '</details>'
+      }).join('')
+      return '<section class="faq-section" id="' + s.id + '">' +
+                '<div class="faq-section-head">' +
+                  '<div class="faq-section-icon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + s.icon + '</svg></div>' +
+                  '<div>' +
+                    '<h2 class="faq-section-title">' + s.title + '</h2>' +
+                    '<p class="faq-section-sub">' + s.sub + '</p>' +
+                  '</div>' +
+                '</div>' +
+                items +
+              '</section>'
+    }).join('') +
+    '<div id="faq-empty-state" class="faq-empty" style="display:none">' +
+      '<div class="faq-empty-ico">🔍</div>' +
+      '<h3>No matching answer</h3>' +
+      '<p>Try a different keyword, or contact us directly — we\'ll be happy to help.</p>' +
+      '<a class="btn" href="contact.html">Contact us →</a>' +
+    '</div>'
+    document.getElementById('faq-content').innerHTML = html
+  }
+
+  function escapeAttr(s){ return String(s||'').replace(/"/g,'&quot;') }
+
+  renderCats()
+  renderContent()
+
+  // ── Search filter ─────────────────────────────────────────────────────
+  var searchInput = document.getElementById('faq-search')
+  var clearBtn    = document.getElementById('faq-search-clear')
+  var emptyState  = document.getElementById('faq-empty-state')
+
+  function escRegex(s){ return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') }
+  function highlight(html, term){
+    if (!term) return html
+    var re = new RegExp('(' + escRegex(term) + ')', 'gi')
+    return html.replace(/(<[^>]+>)|([^<]+)/g, function(m, tag, text){
+      if (tag) return tag
+      return text.replace(re, '<mark class="faq-mark">$1</mark>')
+    })
+  }
+  function clearHighlights(){
+    document.querySelectorAll('.faq-item summary, .faq-answer').forEach(function(el){
+      var orig = el.getAttribute('data-orig')
+      if (orig != null) el.innerHTML = orig
+    })
+  }
+  function snapshotOrig(){
+    document.querySelectorAll('.faq-item summary, .faq-answer').forEach(function(el){
+      if (!el.getAttribute('data-orig')) el.setAttribute('data-orig', el.innerHTML)
+    })
+  }
+  snapshotOrig()
+
+  function applyFilter(term){
+    term = (term || '').trim().toLowerCase()
+    clearHighlights()
+    var anyVisible = false
+    var visiblePerSection = {}
+    document.querySelectorAll('.faq-item').forEach(function(item){
+      var q = item.getAttribute('data-q') || ''
+      var a = item.getAttribute('data-a') || ''
+      var match = !term || q.indexOf(term) !== -1 || a.indexOf(term) !== -1
+      item.style.display = match ? '' : 'none'
+      if (match) {
+        anyVisible = true
+        // Track which section has visible items
+        var sec = item.closest('.faq-section')
+        if (sec) visiblePerSection[sec.id] = (visiblePerSection[sec.id] || 0) + 1
+      }
+      if (match && term) {
+        var sumEl = item.querySelector('summary')
+        var ansEl = item.querySelector('.faq-answer')
+        sumEl.innerHTML = highlight(sumEl.getAttribute('data-orig') || sumEl.innerHTML, term)
+        ansEl.innerHTML = highlight(ansEl.getAttribute('data-orig') || ansEl.innerHTML, term)
+        // Auto-expand to reveal the match
+        item.setAttribute('open', '')
+      } else if (!term) {
+        // Restore default closed state when search is cleared
+        item.removeAttribute('open')
+      }
+    })
+    // Hide whole sections with no visible items
+    document.querySelectorAll('.faq-section').forEach(function(sec){
+      sec.style.display = (term && !visiblePerSection[sec.id]) ? 'none' : ''
+    })
+    emptyState.style.display = (term && !anyVisible) ? '' : 'none'
+    clearBtn.classList.toggle('show', !!term)
+  }
+  searchInput.addEventListener('input', function(){ applyFilter(searchInput.value) })
+  clearBtn.addEventListener('click', function(){ searchInput.value = ''; applyFilter(''); searchInput.focus() })
+
+  // ── Sync category active state on scroll ──────────────────────────────
+  var sections = FAQ_DATA.map(function(s){ return document.getElementById(s.id) })
+  function setActiveCat(id){
+    document.querySelectorAll('.faq-cat').forEach(function(el){ el.classList.toggle('active', el.dataset.cat === id) })
+    document.querySelectorAll('.faq-side a').forEach(function(el){ el.classList.toggle('on', el.dataset.side === id) })
+  }
+  function onScroll(){
+    var fromTop = window.scrollY + 120
+    for (var i = sections.length - 1; i >= 0; i--){
+      var el = sections[i]
+      if (el && el.offsetTop <= fromTop) { setActiveCat(el.id); return }
+    }
+    setActiveCat(FAQ_DATA[0].id)
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+
+  // Smooth scroll to anchor on category click + close any expanded items
+  document.querySelectorAll('.faq-cat, .faq-side a').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = (a.dataset.cat || a.dataset.side)
+      if (!id) return
+      var el = document.getElementById(id)
+      if (!el) return
+      e.preventDefault()
+      el.scrollIntoView({ behavior:'smooth', block:'start' })
+      history.replaceState(null, '', '#' + id)
+    })
+  })
+
+  // Honour ?q= in URL (e.g. linked from another page)
+  var urlQ = new URLSearchParams(location.search).get('q')
+  if (urlQ) {
+    searchInput.value = urlQ
+    applyFilter(urlQ)
+  }
+
+  // ── SEO + Schema ──────────────────────────────────────────────────────
+  // FAQPage schema with EVERY question — major SEO win for rich results.
+  var allItems = []
+  FAQ_DATA.forEach(function(s){
+    s.items.forEach(function(it){
+      allItems.push({
+        '@type': 'Question',
+        'name':  it.q,
+        'acceptedAnswer': {
+          '@type': 'Answer',
+          'text':  it.a.replace(/<[^>]*>/g, ' ').replace(/\s+/g,' ').trim()
+        }
+      })
+    })
+  })
+  if (typeof setSEO === 'function') {
+    setSEO({
+      title:       'Frequently Asked Questions – Movin.ie',
+      description: "Comprehensive answers about buying, renting, sharing and listing on Movin.ie — pricing, Eircodes, drive-time search, account, GDPR, mobile app and more.",
+      canonical:   '/pages/faq.html',
+      type:        'website',
+      schema: {
+        '@context': 'https://schema.org',
+        '@type':    'FAQPage',
+        'name':     'Movin.ie Frequently Asked Questions',
+        'description': "Everything you need to know about Movin.ie.",
+        'inLanguage': 'en-IE',
+        'mainEntity': allItems
+      },
+      breadcrumbs: [
+        { name: 'Home',           url: '/' },
+        { name: 'Help & FAQ',     url: '/pages/faq.html' }
+      ]
+    })
+  }
+
+  if (typeof renderFooter === 'function') renderFooter()
+</script>
+</body>
+</html>

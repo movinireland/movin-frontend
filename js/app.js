@@ -1029,6 +1029,7 @@ function renderFooter() {
             '<a href="' + root + 'pages/list.html">List your property</a>' +
             '<a href="' + root + 'pages/commercial.html">Commercial property</a>' +
             '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
+            '<a href="' + root + 'pages/faq.html">Help &amp; FAQ</a>' +
             '<a href="' + root + 'pages/contact.html">Contact us</a>' +
             '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
             '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +

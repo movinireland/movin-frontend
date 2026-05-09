@@ -44,6 +44,7 @@
   <!-- Company -->
   <url><loc>https://movin.ie/pages/about.html</loc>            <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/contact.html</loc>          <changefreq>monthly</changefreq><priority>0.6</priority> <lastmod>2026-05-09</lastmod></url>
+  <url><loc>https://movin.ie/pages/faq.html</loc>              <changefreq>monthly</changefreq><priority>0.7</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/privacy-policy.html</loc>   <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
   <url><loc>https://movin.ie/pages/terms-of-service.html</loc> <changefreq>yearly</changefreq> <priority>0.3</priority> <lastmod>2026-05-09</lastmod></url>
 
