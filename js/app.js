@@ -1597,7 +1597,7 @@ if (document.readyState === 'loading') {
       +   'body.has-tab-bar #compare-bar{bottom:calc(82px + env(safe-area-inset-bottom,0px)) !important}'
       +   'body.has-tab-bar #map{bottom:calc(82px + env(safe-area-inset-bottom,0px)) !important}'
       +   'body.has-tab-bar .card-panel{bottom:calc(82px + env(safe-area-inset-bottom,0px)) !important}'
-      +   'body.has-tab-bar .scroll-top-btn{bottom:calc(96px + env(safe-area-inset-bottom,0px)) !important}'
+      +   'body.has-tab-bar .scroll-top-btn{bottom:calc(110px + env(safe-area-inset-bottom,0px)) !important}'
       + '}'
       // Dark mode (translucent + heavy blur, like iOS App Store dark)
       + '[data-theme="dark"] .tab-bar{'
