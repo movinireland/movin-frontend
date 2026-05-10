@@ -784,6 +784,110 @@ body.hero-places-ready .sugg-box{display:none !important}
   content:'';width:18px;height:1.5px;background:var(--g);border-radius:1px
 }
 
+/* ── Animated headline word cycler ─────────────────────────────────────── */
+.hero-rot{
+  display:inline-block; position:relative; vertical-align:baseline;
+  min-width:1ch;
+}
+.hero-rot::before{
+  /* Reserve space so layout doesn't jiggle when the longest word swaps in */
+  content:'apartment'; visibility:hidden; pointer-events:none;
+  font-style:italic;
+  color:#e07b3f; /* same as <em> so width matches */
+}
+.hero-rot-w{
+  position:absolute; left:0; top:0; right:0;
+  color:#e07b3f; font-style:normal;
+  opacity:0; transform:translateY(18px) scale(.96);
+  transition:opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+  white-space:nowrap;
+}
+.hero-rot-w.on{
+  opacity:1; transform:translateY(0) scale(1);
+}
+.hero-rot-w.out{
+  opacity:0; transform:translateY(-18px) scale(.96);
+}
+
+/* ── Floating photo collage in hero (replaces static orbs) ─────────────── */
+.hero-collage{
+  position:absolute; inset:0; pointer-events:none; overflow:hidden;
+}
+.hero-tile{
+  position:absolute; border-radius:18px; overflow:hidden;
+  box-shadow:0 18px 38px rgba(0,0,0,.28), 0 4px 12px rgba(0,0,0,.18);
+  background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.10);
+  backdrop-filter:blur(1px);
+  opacity:.55;
+  animation:tileFloat 12s ease-in-out infinite;
+  transform:translate3d(0,0,0);
+  will-change:transform;
+}
+.hero-tile-img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  filter:saturate(.85);
+}
+.hero-tile-1{ width:180px; height:230px; top:8%;  left:6%;  transform:rotate(-7deg); animation-delay:0s   }
+.hero-tile-2{ width:140px; height:170px; top:62%; left:9%;  transform:rotate(8deg);  animation-delay:-3s  }
+.hero-tile-3{ width:200px; height:140px; top:6%;  right:5%; transform:rotate(6deg);  animation-delay:-6s  }
+.hero-tile-4{ width:160px; height:210px; top:55%; right:7%; transform:rotate(-9deg); animation-delay:-9s  }
+@keyframes tileFloat{
+  0%,100%{ translate:0 0 }
+  50%    { translate:0 -14px }
+}
+@media (prefers-reduced-motion: reduce){
+  .hero-tile{ animation:none }
+}
+@media (max-width: 900px){
+  .hero-tile-1,.hero-tile-3{ width:120px; height:150px }
+  .hero-tile-2,.hero-tile-4{ width:100px; height:130px; opacity:.4 }
+}
+@media (max-width: 640px){
+  /* On phones the search card already fills the hero — collage gets in the way */
+  .hero-collage{ display:none }
+}
+
+/* ── Property card tilt-on-hover (3D mouse parallax) ───────────────────── */
+.prop-card.tiltable{
+  transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+.prop-card.tiltable:hover{
+  box-shadow:0 22px 48px rgba(26,92,69,.18), 0 6px 16px rgba(0,0,0,.06);
+  border-color:rgba(26,92,69,.22);
+}
+.prop-card.tiltable .prop-card-img{
+  transition:transform .35s cubic-bezier(.2,.7,.2,1);
+}
+.prop-card.tiltable:hover .prop-card-img{ transform:scale(1.06) }
+
+/* ── Magnetic primary CTA (subtle pull on hover) ───────────────────────── */
+.btn-magnetic{ transition:transform .18s cubic-bezier(.2,.7,.2,1), box-shadow .18s ease }
+
+/* ── Stats strip — animated underline tick ─────────────────────────────── */
+.stats-strip .stat-cell{ position:relative }
+.stats-strip .stat-cell::after{
+  content:''; position:absolute; left:50%; bottom:0;
+  width:0; height:2px; background:linear-gradient(90deg, transparent, #e07b3f, transparent);
+  transition:width .6s cubic-bezier(.2,.7,.2,1), left .6s cubic-bezier(.2,.7,.2,1);
+}
+.stats-strip.armed .stat-cell::after{ width:60%; left:20% }
+
+/* ── County chip cascade reveal ────────────────────────────────────────── */
+.counties-section .ac-chip,
+.counties-section .county-chip,
+.counties-section [data-county-chip]{
+  opacity:0; transform:translateY(10px);
+  transition:opacity .45s cubic-bezier(.2,.7,.2,1), transform .45s cubic-bezier(.2,.7,.2,1);
+}
+.counties-section.revealed .ac-chip,
+.counties-section.revealed .county-chip,
+.counties-section.revealed [data-county-chip]{
+  opacity:1; transform:translateY(0);
+}
+
 </style>
 </head>
 <body>
@@ -905,9 +1009,18 @@ body.hero-places-ready .sugg-box{display:none !important}
 <div class="page-body">
 <div class="hero">
   <div class="hero-noise"></div>
+
+  <!-- Floating photo collage — purely decorative, behind content -->
+  <div class="hero-collage" aria-hidden="true">
+    <div class="hero-tile hero-tile-1"><img class="hero-tile-img" src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=400&q=70&auto=format" alt="" loading="eager" referrerpolicy="no-referrer"/></div>
+    <div class="hero-tile hero-tile-2"><img class="hero-tile-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&q=70&auto=format" alt="" loading="eager" referrerpolicy="no-referrer"/></div>
+    <div class="hero-tile hero-tile-3"><img class="hero-tile-img" src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&q=70&auto=format" alt="" loading="eager" referrerpolicy="no-referrer"/></div>
+    <div class="hero-tile hero-tile-4"><img class="hero-tile-img" src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=400&q=70&auto=format" alt="" loading="eager" referrerpolicy="no-referrer"/></div>
+  </div>
+
   <div class="hero-inner">
     <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
-    <h1 class="hero-h1">Find your next<br>home in <em>Ireland</em></h1>
+    <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
     <p class="hero-sub">Smarter search, transparent pricing, and a first listing that's always free. From city centres to coastal hideaways — discover where you'll live next.</p>
   </div>
 
@@ -1815,6 +1928,111 @@ function startCountUpFor(el){
     })
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
   els.forEach(function(el){ io.observe(el) })
+})()
+
+// ── Animated headline word cycler ──────────────────────────────────────
+// Cycles through words inside <span class="hero-rot"> on a 2.6s rhythm.
+// Uses CSS classes "on" / "out" so transitions are GPU-accelerated.
+;(function rotateHeadlineWord(){
+  var rot = document.getElementById('hero-rot')
+  if (!rot) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var words = rot.querySelectorAll('.hero-rot-w')
+  if (words.length < 2) return
+  var i = 0
+  setInterval(function(){
+    var cur = words[i]
+    i = (i + 1) % words.length
+    var next = words[i]
+    cur.classList.remove('on'); cur.classList.add('out')
+    next.classList.remove('out'); next.classList.add('on')
+    setTimeout(function(){ cur.classList.remove('out') }, 600)
+  }, 2400)
+})()
+
+// ── 3D tilt-on-hover for property cards ────────────────────────────────
+// Lightweight (no library). Only active on devices with a real pointer.
+;(function tiltCards(){
+  if (matchMedia('(hover: none)').matches) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var grid = document.getElementById('featured-grid')
+  if (!grid) return
+  var max = 6   // max tilt in degrees
+  function bind(card){
+    if (card.dataset.tiltBound) return
+    card.dataset.tiltBound = '1'
+    card.classList.add('tiltable')
+    card.addEventListener('pointermove', function(e){
+      var r = card.getBoundingClientRect()
+      var px = (e.clientX - r.left) / r.width  - .5  // -0.5..0.5
+      var py = (e.clientY - r.top)  / r.height - .5
+      var rx = (-py * max).toFixed(2)
+      var ry = ( px * max).toFixed(2)
+      card.style.transform = 'perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px)'
+    })
+    card.addEventListener('pointerleave', function(){
+      card.style.transform = ''
+    })
+  }
+  // Bind whatever's already there + watch for newly added cards (the listings
+  // grid is populated async after fetch).
+  grid.querySelectorAll('.prop-card').forEach(bind)
+  var mo = new MutationObserver(function(mut){
+    mut.forEach(function(m){
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if (n.nodeType === 1) {
+          if (n.classList && n.classList.contains('prop-card')) bind(n)
+          n.querySelectorAll && n.querySelectorAll('.prop-card').forEach(bind)
+        }
+      })
+    })
+  })
+  mo.observe(grid, { childList:true, subtree:true })
+})()
+
+// ── Magnetic hover on primary CTAs ─────────────────────────────────────
+;(function magneticButtons(){
+  if (matchMedia('(hover: none)').matches) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var sels = ['.search-go','.wp-cta-primary','.qa-card','.cta-banner .btn']
+  document.querySelectorAll(sels.join(',')).forEach(function(el){
+    el.classList.add('btn-magnetic')
+    var strength = 8
+    el.addEventListener('pointermove', function(e){
+      var r = el.getBoundingClientRect()
+      var x = (e.clientX - (r.left + r.width/2))  / r.width  * strength
+      var y = (e.clientY - (r.top  + r.height/2)) / r.height * strength
+      el.style.transform = 'translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)'
+    })
+    el.addEventListener('pointerleave', function(){ el.style.transform = '' })
+  })
+})()
+
+// ── Stagger county chip cascade once they enter view ───────────────────
+;(function staggerCounties(){
+  var sec = document.getElementById('counties-showcase') || document.querySelector('.counties-section')
+  if (!sec || !('IntersectionObserver' in window)) return
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        var chips = sec.querySelectorAll('.ac-chip, .county-chip, [data-county-chip]')
+        chips.forEach(function(c, i){ c.style.transitionDelay = (i*30) + 'ms' })
+        sec.classList.add('revealed')
+        io.disconnect()
+      }
+    })
+  }, { threshold: 0.15 })
+  io.observe(sec)
+})()
+
+// ── Stats strip — arm the underline tick once visible ──────────────────
+;(function armStats(){
+  var s = document.querySelector('.stats-strip')
+  if (!s || !('IntersectionObserver' in window)) return
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting){ s.classList.add('armed'); io.disconnect() } })
+  }, { threshold: 0.5 })
+  io.observe(s)
 })()
 
 // ── Floating scroll-to-top button ──────────────────────────────────────

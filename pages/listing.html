@@ -445,6 +445,97 @@
     .mort-meta{font-size:11px;color:#888;margin-top:4px}
 
     .no-photo-placeholder{background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:50px;width:100%;height:100%}
+
+/* ── Polish: subtle Ken-Burns pan on the gallery hero ─────────────────── */
+.gallery-hero img{
+  transition:transform .6s cubic-bezier(.2,.7,.2,1), filter .35s ease;
+}
+.gallery-hero:hover img{
+  transform:scale(1.04) translate(-1.5%, -1%);
+}
+.gallery-hero::after{
+  /* Soft top-to-bottom shade so any overlay text reads cleanly */
+  content:''; position:absolute; left:0; right:0; bottom:0; height:35%;
+  background:linear-gradient(to top, rgba(0,0,0,.32), transparent);
+  pointer-events:none;
+}
+
+/* ── Heart pop animation on save toggle ──────────────────────────────── */
+.prop-card-save, .listing-save-btn{
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1), background .15s ease;
+}
+.prop-card-save.popping, .listing-save-btn.popping{
+  animation:heartPop .55s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes heartPop{
+  0%   { transform:scale(1) }
+  35%  { transform:scale(1.4) }
+  60%  { transform:scale(.92) }
+  100% { transform:scale(1) }
+}
+
+/* ── Section reveal (fade-up on scroll) ──────────────────────────────── */
+.detail-section, .mort-section, #enq-section{
+  opacity:0; transform:translateY(18px);
+  transition:opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+}
+.detail-section.in, .mort-section.in, #enq-section.in{
+  opacity:1; transform:translateY(0);
+}
+@media (prefers-reduced-motion: reduce){
+  .detail-section, .mort-section, #enq-section{ opacity:1; transform:none; transition:none }
+}
+
+/* ── Sticky mobile CTA bar (price + Enquire) ─────────────────────────── */
+.sticky-cta{
+  position:fixed; left:0; right:0; bottom:0;
+  background:rgba(255,255,255,.96);
+  -webkit-backdrop-filter:saturate(180%) blur(12px);
+          backdrop-filter:saturate(180%) blur(12px);
+  border-top:1px solid var(--border);
+  display:none; align-items:center; gap:10px;
+  padding:.65rem 1rem calc(.65rem + env(safe-area-inset-bottom, 0px));
+  z-index:80;
+  transform:translateY(110%);
+  transition:transform .35s cubic-bezier(.2,.7,.2,1);
+}
+.sticky-cta.show{ transform:translateY(0) }
+.sticky-cta-price{
+  flex:1; min-width:0;
+  font-family:'Playfair Display',serif;
+  font-size:18px; font-weight:700; color:#1a5c45;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.sticky-cta-period{ font-size:11px; color:#888; font-weight:400; margin-left:4px }
+.sticky-cta-btn{
+  flex-shrink:0; background:#e07b3f; color:#fff; border:none;
+  border-radius:50px; padding:11px 22px; font-size:14px; font-weight:600;
+  cursor:pointer; font-family:inherit;
+  box-shadow:0 6px 18px rgba(224,123,63,.30);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+.sticky-cta-btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(224,123,63,.40) }
+.sticky-cta-btn:active{ transform:scale(.97) }
+@media (max-width: 768px){
+  .sticky-cta{ display:flex }
+  /* Push the page above the bar so the last section isn't hidden */
+  body.has-sticky-cta { padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ── Action strip — primary CTA gets a soft glow ─────────────────────── */
+.btn-enquire{
+  box-shadow:0 8px 22px rgba(224,123,63,.28);
+  position:relative; overflow:hidden;
+}
+.btn-enquire::after{
+  /* Subtle sheen that sweeps across on hover */
+  content:''; position:absolute; top:0; left:-60%; width:50%; height:100%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,.35), transparent);
+  transform:skewX(-20deg);
+  transition:left .55s cubic-bezier(.2,.7,.2,1);
+  pointer-events:none;
+}
+.btn-enquire:hover::after{ left:120% }
   </style>
 </head>
 <body>
@@ -1761,7 +1852,70 @@
     }, { passive: true })
 
     load()
+
+    // ── Post-render polish: section reveal, sticky CTA, heart pop ──────────
+    // The page is rendered async by load() into #page-content. This watcher
+    // fires once content is in the DOM, then sets everything up.
+    ;(function postRenderHooks(){
+      var pc = document.getElementById('page-content')
+      if (!pc) return
+      var done = false
+      function setup(){
+        if (done) return
+        done = true
+
+        // 1) Reveal sections as they enter the viewport
+        var reveals = pc.querySelectorAll('.detail-section, .mort-section, #enq-section')
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function(entries){
+            entries.forEach(function(e){
+              if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) }
+            })
+          }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' })
+          reveals.forEach(function(el){ io.observe(el) })
+        } else {
+          reveals.forEach(function(el){ el.classList.add('in') })
+        }
+
+        // 2) Build sticky mobile CTA from rendered price + listing type
+        var price = pc.querySelector('.d-price')
+        var bar = document.getElementById('sticky-cta')
+        if (price && bar){
+          bar.querySelector('.sticky-cta-price').textContent = price.textContent.trim()
+          // Show after a beat so the entrance feels deliberate
+          setTimeout(function(){
+            bar.classList.add('show')
+            document.body.classList.add('has-sticky-cta')
+          }, 320)
+        }
+
+        // 3) Heart-pop on save buttons (matches #rp-save-icon and any others)
+        var saveButtons = pc.querySelectorAll('[onclick*="toggleSave"], #rp-save-btn, .listing-save-btn, .prop-card-save')
+        saveButtons.forEach(function(btn){
+          btn.addEventListener('click', function(){
+            btn.classList.remove('popping')
+            // force reflow so the animation re-runs on each click
+            void btn.offsetWidth
+            btn.classList.add('popping')
+          })
+        })
+      }
+      // If content's already there, run now; otherwise watch for it.
+      if (pc.querySelector('.listing-page-wrap')) { setup(); return }
+      var mo = new MutationObserver(function(){
+        if (pc.querySelector('.listing-page-wrap')) { setup(); mo.disconnect() }
+      })
+      mo.observe(pc, { childList:true, subtree:true })
+    })()
   </script>
+
+  <!-- Sticky mobile CTA bar — populated post-render -->
+  <div class="sticky-cta" id="sticky-cta" role="region" aria-label="Property quick actions">
+    <div class="sticky-cta-price">€—</div>
+    <button class="sticky-cta-btn" onclick="document.getElementById('enq-section')&&document.getElementById('enq-section').scrollIntoView({behavior:'smooth'})">
+      Enquire
+    </button>
+  </div>
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" ontouchstart="lbTouchX=event.touches[0].clientX" ontouchend="var dx=event.changedTouches[0].clientX-lbTouchX;if(Math.abs(dx)>40)slideLightbox(dx<0?1:-1)">
