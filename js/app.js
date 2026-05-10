@@ -45,6 +45,11 @@ function updateToggleBtn() {
     btn.textContent = isDark ? '☀️' : '🌙'
     btn.title = isDark ? 'Switch to light mode' : 'Switch to dark mode'
   })
+  // Mobile-menu version (lives inside .mobile-menu, has icon+label)
+  var mIco = document.getElementById('mm-theme-icon')
+  var mLab = document.getElementById('mm-theme-label')
+  if (mIco) mIco.textContent = isDark ? '☀️' : '🌙'
+  if (mLab) mLab.textContent = isDark ? 'Light mode' : 'Dark mode'
 }
 function applyTheme(theme) {
   if (theme === 'auto') document.documentElement.removeAttribute('data-theme')
@@ -334,6 +339,8 @@ function renderNav(activePage = '') {
         '<div class="mm-divider"></div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/list.html\';toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6">' + icon('plus',18,'#e07b3f') + '</div>List your property</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/contact.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('message',18) + '</div>Contact us</div>' +
+        '<div class="mm-divider"></div>' +
+        '<div class="mm-item mm-theme-toggle" id="mm-theme-toggle" onclick="toggleTheme()"><div class="mm-icon" id="mm-theme-icon">🌙</div><span id="mm-theme-label">Dark mode</span></div>' +
       '</div>' +
       '<div class="mobile-menu-footer" id="mobile-menu-footer">' +
         (isLoggedIn
