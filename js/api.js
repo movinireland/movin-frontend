@@ -237,6 +237,15 @@ const push = {
   }
 }
 
+// ── Post-auth destination ─────────────────────────────────────────────────────
+// Use after register/login/verify to send the user to the right home page.
+// Agents get the agent dashboard; everyone else gets the regular dashboard.
+function postAuthDest(user, fallback) {
+  var u = user || getUser() || {}
+  if (u.role === 'agent') return '/pages/agent-dashboard.html'
+  return fallback || '/pages/dashboard.html'
+}
+
 // ── Export ────────────────────────────────────────────────────────────────────
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, getUser, getToken }
+window.API = { auth, listings, photos, enquiries, payments, saved, push, getUser, getToken, postAuthDest }

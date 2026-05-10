@@ -582,9 +582,11 @@
 
     ;(function(){
       var p = new URLSearchParams(location.search)
-      var c = (p.get('category') || '').toLowerCase()
+      var c = (p.get('category') || p.get('cat') || '').toLowerCase()
       if (c === 'commercial' || c === 'residential') pickCategory(c)
     })()
+    // Agents who came from their dashboard return there after publishing
+    window.LIST_AGENT_RETURN = (new URLSearchParams(location.search).get('from') === 'agent')
 
     function bindTypeButtons(){
       document.querySelectorAll('.type-grid .type-btn').forEach(function(b){
@@ -790,7 +792,9 @@
           toast(listingCategory === 'commercial'
             ? '🎉 Commercial listing submitted for review!'
             : '🎉 Listing submitted for review!')
-          if (listingCategory === 'commercial') {
+          if (window.LIST_AGENT_RETURN) {
+            window.location.href = 'agent-dashboard.html?tab=listings'
+          } else if (listingCategory === 'commercial') {
             window.location.href = 'commercial.html?new=' + createdListingId
           } else {
             window.location.href = 'listing.html?id=' + createdListingId

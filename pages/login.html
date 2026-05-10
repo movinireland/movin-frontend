@@ -80,7 +80,7 @@
   <script src="../js/api.js"></script>
   <script src="../js/app.js"></script>
   <script>
-    if (API.auth.isLoggedIn()) window.location.href = 'dashboard.html'
+    if (API.auth.isLoggedIn()) window.location.href = API.postAuthDest()
     renderNav()
 
     // Show verification success / error message
@@ -110,7 +110,7 @@
         localStorage.setItem('movin_token', data.token)
         localStorage.setItem('movin_user', JSON.stringify(data.user))
         toast('Welcome back! 🎉')
-        window.location.href = 'dashboard.html'
+        window.location.href = API.postAuthDest(data.user)
       } catch(err) {
         alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`
       }
@@ -128,7 +128,7 @@
           document.getElementById('email').value,
           document.getElementById('password').value
         )
-        const redirect = new URLSearchParams(window.location.search).get('redirect') || 'dashboard.html'
+        const redirect = new URLSearchParams(window.location.search).get('redirect') || API.postAuthDest()
         window.location.href = redirect
       } catch(err) {
         alert.innerHTML = `<div class="alert alert-error">${err.message}</div>`

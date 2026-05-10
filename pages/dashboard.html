@@ -754,6 +754,12 @@
       window.location.href = 'login.html'
       return
     }
+    // Agents have their own dashboard
+    var cachedUser = (function(){ try { return JSON.parse(localStorage.getItem('movin_user')) } catch(_) { return null } })()
+    if (cachedUser && cachedUser.role === 'agent') {
+      window.location.replace('agent-dashboard.html')
+      return
+    }
 
     // Render nav
     if (typeof renderNav === 'function') renderNav()

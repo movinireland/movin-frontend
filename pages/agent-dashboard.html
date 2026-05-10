@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()
+</script>
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Agent Dashboard – Movin.ie</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="manifest" href="/manifest.json"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <meta name="theme-color" content="#1a5c45"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-title" content="Movin Agent"/>
+  <style>
+    :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc;--safe-b:env(safe-area-inset-bottom,0px)}
+    *,*::before,*::after{box-sizing:border-box}
+    body{font-family:'DM Sans',sans-serif;background:#f5f2ec;color:#111;margin:0}
+
+    /* ── Agency banner ───────────────────────────────────────────── */
+    .ag-banner{background:linear-gradient(135deg,#1a5c45 0%,#0e3d2e 100%);color:#fff;padding:1.75rem 2rem 1.5rem;position:relative;overflow:hidden}
+    .ag-banner::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(224,123,63,.12);top:-150px;right:-100px;pointer-events:none}
+    .ag-banner-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;position:relative;z-index:1}
+    .ag-id{display:flex;align-items:center;gap:1rem;flex:1;min-width:240px}
+    .ag-logo{width:64px;height:64px;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:26px;flex-shrink:0;overflow:hidden}
+    .ag-logo img{width:100%;height:100%;object-fit:cover}
+    .ag-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin:0 0 4px;line-height:1.1}
+    .ag-pills{display:flex;gap:6px;flex-wrap:wrap}
+    .ag-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:50px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.92);display:inline-flex;align-items:center;gap:5px;letter-spacing:.2px}
+    .ag-pill.verified{background:rgba(126,201,168,.22);color:#a8e6c8}
+    .ag-pill.verified::before{content:'✓';font-weight:700}
+    .ag-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .ag-cta{background:#fff;color:var(--g);border:none;border-radius:50px;padding:11px 22px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:inherit;box-shadow:0 6px 20px rgba(0,0,0,.18);transition:transform .15s, box-shadow .15s}
+    .ag-cta:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(0,0,0,.25)}
+    .ag-cta:active{transform:scale(.97)}
+    .ag-cta-ghost{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:50px;padding:10px 18px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
+    .ag-cta-ghost:hover{background:rgba(255,255,255,.22)}
+
+    /* ── Tabs ────────────────────────────────────────────────────── */
+    .ag-tabs-wrap{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .ag-tabs{max-width:1200px;margin:0 auto;display:flex;gap:4px;padding:0 1rem;overflow-x:auto;scrollbar-width:none}
+    .ag-tabs::-webkit-scrollbar{display:none}
+    .ag-tab{padding:.95rem 1.1rem;font-size:14px;font-weight:500;color:#888;cursor:pointer;border:none;background:none;font-family:inherit;border-bottom:2.5px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:6px}
+    .ag-tab:hover{color:#444}
+    .ag-tab.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+    .ag-tab .tabbadge{background:var(--o);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:50px;min-width:16px;text-align:center}
+
+    .ag-main{max-width:1200px;margin:0 auto;padding:1.5rem 1.25rem 4rem;min-height:60vh}
+
+    /* ── Stat cards ──────────────────────────────────────────────── */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.85rem;margin-bottom:1.75rem}
+    .stat-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.2rem;position:relative;overflow:hidden}
+    .stat-card .si{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--g)}
+    .stat-card .si svg{width:16px;height:16px;stroke:currentColor;fill:none}
+    .stat-l{font-size:11.5px;color:#888;font-weight:500;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
+    .stat-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#111;line-height:1;letter-spacing:-.5px}
+    .stat-d{font-size:11px;color:#aaa;margin-top:6px;font-weight:300}
+    .stat-d .delta-up{color:#16a34a;font-weight:600}
+    .stat-d .delta-down{color:#dc2626;font-weight:600}
+
+    /* ── Section card ────────────────────────────────────────────── */
+    .section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.25rem}
+    .section-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+    .section-t{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#111;margin:0}
+    .section-sub{font-size:12.5px;color:#aaa;font-weight:300;margin-top:2px}
+
+    /* ── Filter chips ────────────────────────────────────────────── */
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+    .chip{padding:7px 14px;font-size:12.5px;font-weight:500;color:#666;background:#f5f2ec;border:1px solid transparent;border-radius:50px;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s}
+    .chip:hover{background:#ece7dc}
+    .chip.active{background:var(--gl);color:var(--g);border-color:var(--g);font-weight:600}
+
+    /* ── Listings ────────────────────────────────────────────────── */
+    .lst-row{display:flex;align-items:center;gap:.85rem;padding:.95rem 1rem;background:#fff;border:1px solid var(--border);border-radius:14px;margin-bottom:.65rem;transition:border-color .15s, box-shadow .15s}
+    .lst-row:hover{border-color:#d0d0c5;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+    .lst-thumb{width:80px;height:60px;border-radius:10px;background:var(--gl);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+    .lst-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .lst-thumb svg{width:24px;height:24px;color:var(--g)}
+    .lst-body{flex:1;min-width:0}
+    .lst-title{font-size:14.5px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+    .lst-meta{font-size:11.5px;color:#888;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .lst-meta .sep{color:#ddd}
+    .lst-stats{display:flex;gap:14px;font-size:11.5px;color:#666;flex-shrink:0}
+    .lst-stat{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+    .lst-stat-n{font-size:14px;font-weight:600;color:#111;font-family:'DM Sans',sans-serif}
+    .lst-stat-l{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.3px}
+    .lst-actions{display:flex;gap:6px;flex-shrink:0}
+    .icon-btn{width:32px;height:32px;border-radius:8px;background:#f5f2ec;border:none;color:#666;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .15s;font-family:inherit}
+    .icon-btn:hover{background:var(--gl);color:var(--g)}
+    .icon-btn.danger:hover{background:#fee2e2;color:#dc2626}
+    .icon-btn svg{width:15px;height:15px;stroke:currentColor;fill:none}
+
+    .status-pill{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:50px;text-transform:uppercase;letter-spacing:.4px;display:inline-flex;align-items:center;gap:4px}
+    .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+    .status-active{background:rgba(42,170,80,.12);color:#1a7a3a}
+    .status-pending,.status-pending_review,.status-pending_payment{background:#fdf0e6;color:#b85a16}
+    .status-draft{background:#f5f2ec;color:#888}
+    .status-expired,.status-rejected{background:#fef2f2;color:#dc2626}
+    .cat-pill{font-size:10.5px;font-weight:500;padding:3px 8px;border-radius:50px;background:#f5f2ec;color:#888}
+    .cat-pill.commercial{background:#fdf0e6;color:#b85a16}
+    .cat-pill.residential{background:var(--gl);color:var(--g)}
+
+    /* ── Enquiries ───────────────────────────────────────────────── */
+    .enq-row{background:#fff;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.65rem;cursor:pointer;transition:border-color .15s}
+    .enq-row.unread{border-left:3px solid var(--g);background:linear-gradient(to right, var(--gl) 0%, #fff 4px)}
+    .enq-row:hover{border-color:#d0d0c5}
+    .enq-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem;gap:.5rem;flex-wrap:wrap}
+    .enq-from{font-size:14px;font-weight:600;color:#111}
+    .enq-time{font-size:11px;color:#aaa;flex-shrink:0}
+    .enq-listing{font-size:12px;color:var(--g);margin-bottom:.5rem;font-weight:500}
+    .enq-message{font-size:13px;color:#555;line-height:1.7;font-weight:300;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .enq-contact{display:flex;gap:10px;margin-top:.85rem;font-size:12.5px;flex-wrap:wrap}
+    .enq-contact a{color:var(--g);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:5px}
+    .enq-contact a:hover{text-decoration:underline}
+
+    /* ── Profile form ────────────────────────────────────────────── */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .form-grid .full{grid-column:1/-1}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-label{font-size:12px;font-weight:500;color:#555}
+    .form-input,.form-textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;background:#fafaf8;color:#333;outline:none;transition:border .15s,background .15s;font-family:inherit;-webkit-appearance:none}
+    .form-input:focus,.form-textarea:focus{border-color:var(--g);background:#fff}
+    .form-textarea{resize:vertical;min-height:90px;line-height:1.55}
+    .form-hint{font-size:11px;color:#aaa;font-weight:300;margin-top:2px}
+
+    /* ── Buttons ────────────────────────────────────────────────── */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;font-family:inherit;font-weight:500;border:none;border-radius:50px;transition:all .18s;white-space:nowrap;-webkit-tap-highlight-color:transparent;text-decoration:none;font-size:13px}
+    .btn:active{transform:scale(.97)}
+    .btn-primary{background:var(--g);color:#fff;padding:11px 22px}
+    .btn-primary:hover{background:var(--gd);box-shadow:0 6px 18px rgba(26,92,69,.25)}
+    .btn-ghost{background:#fff;color:var(--g);border:1.5px solid var(--border);padding:10px 20px}
+    .btn-ghost:hover{border-color:var(--g);background:var(--gl)}
+    .btn-orange{background:var(--o);color:#fff;padding:11px 22px}
+    .btn-sm{padding:7px 14px;font-size:12px}
+
+    /* ── Empty / loading ────────────────────────────────────────── */
+    .empty{text-align:center;padding:3rem 1rem;color:#888}
+    .empty svg{width:48px;height:48px;color:#ccc;margin-bottom:.85rem;stroke:currentColor;fill:none}
+    .empty h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#444;margin:.5rem 0}
+    .empty p{font-size:13.5px;color:#888;margin-bottom:1.25rem;font-weight:300}
+    .spinner{width:32px;height:32px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:sp .7s linear infinite;margin:3rem auto;display:block}
+    @keyframes sp{to{transform:rotate(360deg)}}
+
+    /* ── Modal ──────────────────────────────────────────────────── */
+    .modal-bg{position:fixed;inset:0;background:rgba(15,15,15,.55);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+    .modal-bg.open{display:flex;animation:fadeIn .2s ease}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal{background:#fff;border-radius:22px;width:100%;max-width:520px;padding:2rem;animation:slideUp .25s ease}
+    @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .modal-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#111;margin:0 0 .35rem}
+    .modal-sub{font-size:13.5px;color:#888;font-weight:300;margin-bottom:1.5rem;line-height:1.55}
+    .modal-close{position:absolute;top:14px;right:16px;background:#f5f2ec;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:#666;display:flex;align-items:center;justify-content:center}
+    .modal{position:relative}
+
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    .cat-pick{background:#fafaf8;border:1.5px solid var(--border);border-radius:16px;padding:1.5rem 1rem;cursor:pointer;text-align:center;font-family:inherit;transition:all .18s}
+    .cat-pick:hover{background:var(--gl);border-color:var(--g);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,92,69,.10)}
+    .cat-pick .cp-ico{width:48px;height:48px;border-radius:14px;background:var(--gl);display:inline-flex;align-items:center;justify-content:center;margin-bottom:.65rem}
+    .cat-pick.commercial .cp-ico{background:#fdf0e6}
+    .cat-pick .cp-ico svg{width:22px;height:22px;color:var(--g);stroke:currentColor;fill:none}
+    .cat-pick.commercial .cp-ico svg{color:var(--o)}
+    .cat-pick .cp-t{font-size:14.5px;font-weight:600;color:#111;margin-bottom:3px}
+    .cat-pick .cp-s{font-size:11.5px;color:#888;font-weight:300;line-height:1.45}
+
+    /* ── Welcome banner (first-time agents) ──────────────────────── */
+    .welcome{background:linear-gradient(135deg,#fdf0e6 0%, #fff 60%);border:1.5px solid #fce0c0;border-radius:18px;padding:1.4rem 1.5rem;margin-bottom:1.25rem;display:flex;gap:1rem;align-items:center}
+    .welcome-icon{font-size:28px;flex-shrink:0}
+    .welcome h4{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#111;margin:0 0 4px}
+    .welcome p{font-size:13px;color:#666;margin:0;line-height:1.55;font-weight:300}
+    .welcome-x{margin-left:auto;background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:6px;flex-shrink:0}
+
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media(max-width:768px){
+      .ag-banner{padding:1.25rem 1rem 1rem}
+      .ag-banner-inner{flex-direction:column;align-items:flex-start;gap:1rem}
+      .ag-actions{width:100%}
+      .ag-cta{flex:1;justify-content:center}
+      .ag-name{font-size:20px}
+      .ag-logo{width:54px;height:54px;font-size:22px}
+      .stats-grid{grid-template-columns:1fr 1fr;gap:.65rem}
+      .stat-n{font-size:24px}
+      .ag-tabs{padding:0 .5rem}
+      .ag-tab{padding:.85rem .8rem;font-size:13px}
+      .section{padding:1.1rem}
+      .lst-row{gap:.65rem;padding:.75rem .85rem;flex-wrap:wrap}
+      .lst-thumb{width:64px;height:48px}
+      .lst-stats{order:5;width:100%;justify-content:space-between;padding-top:.65rem;border-top:1px dashed var(--border);margin-top:.4rem}
+      .lst-actions{order:4;margin-left:auto}
+      .form-grid{grid-template-columns:1fr}
+      .ag-main{padding:1rem 1rem 5rem}
+      .modal{padding:1.5rem;border-radius:18px}
+    }
+
+    /* ── Dark mode ──────────────────────────────────────────────── */
+    [data-theme="dark"] body{background:#0f0f0f;color:#e8e8e8}
+    [data-theme="dark"] .ag-tabs-wrap{background:#141414;border-bottom-color:#2a2a2a}
+    [data-theme="dark"] .ag-tab{color:#666}
+    [data-theme="dark"] .ag-tab:hover{color:#aaa}
+    [data-theme="dark"] .ag-tab.active{color:#2ecc8a;border-bottom-color:#2ecc8a}
+    [data-theme="dark"] .stat-card,[data-theme="dark"] .section,[data-theme="dark"] .lst-row,[data-theme="dark"] .enq-row{background:#1a1a1a;border-color:#2a2a2a}
+    [data-theme="dark"] .stat-n,[data-theme="dark"] .lst-title,[data-theme="dark"] .enq-from,[data-theme="dark"] .section-t{color:#e8e8e8}
+    [data-theme="dark"] .stat-l{color:#888}
+    [data-theme="dark"] .lst-stat-n{color:#e8e8e8}
+    [data-theme="dark"] .stat-card .si{background:#0d2e1e;color:#2ecc8a}
+    [data-theme="dark"] .chip{background:#1a1a1a;color:#aaa}
+    [data-theme="dark"] .chip.active{background:#0d2e1e;color:#2ecc8a;border-color:#2ecc8a}
+    [data-theme="dark"] .form-input,[data-theme="dark"] .form-textarea{background:#0f0f0f;border-color:#2a2a2a;color:#e8e8e8}
+    [data-theme="dark"] .form-input:focus,[data-theme="dark"] .form-textarea:focus{background:#1a1a1a;border-color:#2ecc8a}
+    [data-theme="dark"] .form-label{color:#aaa}
+    [data-theme="dark"] .icon-btn{background:#1f1f1f;color:#aaa}
+    [data-theme="dark"] .icon-btn:hover{background:#0d2e1e;color:#2ecc8a}
+    [data-theme="dark"] .modal{background:#1a1a1a}
+    [data-theme="dark"] .modal-h{color:#e8e8e8}
+    [data-theme="dark"] .cat-pick{background:#1f1f1f;border-color:#2a2a2a}
+    [data-theme="dark"] .cat-pick:hover{background:#0d2e1e;border-color:#2ecc8a}
+    [data-theme="dark"] .cat-pick .cp-t{color:#e8e8e8}
+    [data-theme="dark"] .welcome{background:linear-gradient(135deg, #2a1a0a 0%, #1a1a1a 60%);border-color:#3a2a18}
+    [data-theme="dark"] .welcome h4{color:#e8e8e8}
+    [data-theme="dark"] .welcome p{color:#aaa}
+    [data-theme="dark"] .empty h3{color:#e8e8e8}
+    [data-theme="dark"] .empty svg{color:#444}
+  </style>
+</head>
+<body>
+  <nav class="nav" id="main-nav"></nav>
+
+  <!-- Agency banner -->
+  <header class="ag-banner">
+    <div class="ag-banner-inner">
+      <div class="ag-id">
+        <div class="ag-logo" id="ag-logo">A</div>
+        <div style="min-width:0">
+          <h1 class="ag-name" id="ag-name">Loading…</h1>
+          <div class="ag-pills" id="ag-pills"></div>
+        </div>
+      </div>
+      <div class="ag-actions">
+        <button class="ag-cta" onclick="openListModal()">+ New listing</button>
+        <a href="/" class="ag-cta-ghost">View site →</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="ag-tabs-wrap">
+    <div class="ag-tabs" role="tablist">
+      <button class="ag-tab active" data-tab="overview" onclick="goTab('overview')">Overview</button>
+      <button class="ag-tab" data-tab="listings" onclick="goTab('listings')">Listings <span class="tabbadge" id="badge-listings" style="display:none">0</span></button>
+      <button class="ag-tab" data-tab="enquiries" onclick="goTab('enquiries')">Enquiries <span class="tabbadge" id="badge-enquiries" style="display:none">0</span></button>
+      <button class="ag-tab" data-tab="profile" onclick="goTab('profile')">Profile</button>
+    </div>
+  </div>
+
+  <main class="ag-main">
+
+    <!-- Overview tab -->
+    <section class="tab-pane" id="pane-overview">
+      <div id="welcome-banner"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="si"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg></div>
+          <div class="stat-l">Active listings</div>
+          <div class="stat-n" id="ov-active">—</div>
+          <div class="stat-d" id="ov-active-d">&nbsp;</div>
+        </div>
+        <div class="stat-card">
+          <div class="si"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="stat-l">Total views</div>
+          <div class="stat-n" id="ov-views">—</div>
+          <div class="stat-d" id="ov-views-d">&nbsp;</div>
+        </div>
+        <div class="stat-card">
+          <div class="si"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/></svg></div>
+          <div class="stat-l">Enquiries (30d)</div>
+          <div class="stat-n" id="ov-enq">—</div>
+          <div class="stat-d" id="ov-enq-d">&nbsp;</div>
+        </div>
+        <div class="stat-card">
+          <div class="si"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M8 14l3-3 3 3 5-5"/></svg></div>
+          <div class="stat-l">View → Enquiry</div>
+          <div class="stat-n" id="ov-conv">—</div>
+          <div class="stat-d">conversion rate</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Recent activity</h3>
+            <div class="section-sub">Your latest 5 listings & enquiries</div>
+          </div>
+        </div>
+        <div id="ov-recent"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- Listings tab -->
+    <section class="tab-pane" id="pane-listings" style="display:none">
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Your listings</h3>
+            <div class="section-sub" id="lst-count-sub">—</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openListModal()">+ New listing</button>
+        </div>
+
+        <div class="chips" id="lst-chips">
+          <button class="chip active" data-filter="all" onclick="setListFilter('all')">All</button>
+          <button class="chip" data-filter="active" onclick="setListFilter('active')">Live</button>
+          <button class="chip" data-filter="draft" onclick="setListFilter('draft')">Drafts</button>
+          <button class="chip" data-filter="pending_review" onclick="setListFilter('pending_review')">Pending review</button>
+          <button class="chip" data-filter="expired" onclick="setListFilter('expired')">Expired</button>
+          <span style="flex:1"></span>
+          <button class="chip" data-cat="all" onclick="setListCat('all')">All types</button>
+          <button class="chip" data-cat="residential" onclick="setListCat('residential')">Residential</button>
+          <button class="chip" data-cat="commercial" onclick="setListCat('commercial')">Commercial</button>
+        </div>
+
+        <div id="lst-list"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- Enquiries tab -->
+    <section class="tab-pane" id="pane-enquiries" style="display:none">
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Enquiries inbox</h3>
+            <div class="section-sub" id="enq-count-sub">—</div>
+          </div>
+        </div>
+        <div id="enq-list"><div class="spinner"></div></div>
+      </div>
+    </section>
+
+    <!-- Profile tab -->
+    <section class="tab-pane" id="pane-profile" style="display:none">
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Agency details</h3>
+            <div class="section-sub">This is what buyers and renters see on your listings</div>
+          </div>
+        </div>
+        <form id="profile-form" onsubmit="event.preventDefault();saveProfile()">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label class="form-label">Agency name</label>
+              <input class="form-input" id="pf-agency" placeholder="e.g. Murphy & Co Estate Agents"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">PSRA licence number</label>
+              <input class="form-input" id="pf-psra" placeholder="e.g. 002145"/>
+              <div class="form-hint">Required for commercial property listings</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Primary county</label>
+              <select class="form-input" id="pf-county"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Website</label>
+              <input class="form-input" id="pf-website" type="url" placeholder="https://www.youragency.ie"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-input" id="pf-phone" type="tel" placeholder="+353 1 234 5678"/>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">About your agency</label>
+              <textarea class="form-textarea" id="pf-bio" placeholder="Tell buyers and renters who you are, what areas you cover and what makes your agency different."></textarea>
+              <div class="form-hint">Shown on your public agent page. 80–300 words is ideal.</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:1.25rem;justify-content:flex-end">
+            <button class="btn btn-ghost" type="button" onclick="loadProfile()">Reset</button>
+            <button class="btn btn-primary" type="submit">Save changes</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Login & security</h3>
+            <div class="section-sub">Update your account email or password</div>
+          </div>
+        </div>
+        <form id="account-form" onsubmit="event.preventDefault();saveAccount()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Your name</label>
+              <input class="form-input" id="ac-name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-input" id="ac-email" disabled/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Current password</label>
+              <input class="form-input" id="ac-cp" type="password" autocomplete="current-password"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New password</label>
+              <input class="form-input" id="ac-np" type="password" autocomplete="new-password"/>
+              <div class="form-hint">Leave blank to keep current password</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:1.25rem;justify-content:space-between;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-ghost" type="button" onclick="signOut()" style="color:#dc2626;border-color:#fecaca">Sign out</button>
+            <button class="btn btn-primary" type="submit">Update account</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Choose-category modal -->
+  <div class="modal-bg" id="list-modal" onclick="if(event.target===this)closeListModal()">
+    <div class="modal">
+      <button class="modal-close" onclick="closeListModal()">✕</button>
+      <h2 class="modal-h">What are you listing?</h2>
+      <p class="modal-sub">Pick a category — we'll take you to a tailored listing form for that property type.</p>
+      <div class="cat-grid">
+        <button class="cat-pick" onclick="goList('residential')">
+          <div class="cp-ico">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 21v-6h6v6"/></svg>
+          </div>
+          <div class="cp-t">Residential</div>
+          <div class="cp-s">House, apartment, bungalow, site or share</div>
+        </button>
+        <button class="cat-pick commercial" onclick="goList('commercial')">
+          <div class="cp-ico">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/><path d="M9 9h.01"/><path d="M9 13h.01"/><path d="M9 17h.01"/></svg>
+          </div>
+          <div class="cp-t">Commercial</div>
+          <div class="cp-s">Office, retail, industrial, warehouse, hospitality</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+  <script>
+  // ── Demo mode — stub the API so the dashboard renders without a real agent ─
+  // Triggered by ?demo=1; safe to keep — no-op without the param.
+  if (new URLSearchParams(location.search).get('demo') === '1') {
+    // Only seed demo data if no real session exists — never overwrite a real login.
+    if (!localStorage.getItem('movin_token') || localStorage.getItem('movin_token') === 'demo') {
+      localStorage.setItem('movin_token', 'demo')
+      localStorage.setItem('movin_user', JSON.stringify({id:'demo',role:'agent',name:'Sarah Kelly',email:'sarah@kellyestates.ie'}))
+    }
+    var _f = window.fetch
+    window.fetch = function(u, o){
+      var s = String(u)
+      if (s.includes('/api/auth/me')) return Promise.resolve(new Response(JSON.stringify({
+        id:'demo', email:'sarah@kellyestates.ie', name:'Sarah Kelly', role:'agent',
+        phone:'+353 1 234 5678', email_verified:true, agency_name:'Kelly Estates',
+        psra_number:'002145', agent_county:'Dublin', agent_website:'https://kellyestates.ie',
+        agent_bio:'Family-run estate agents covering Dublin and Wicklow.',
+        created_at: new Date().toISOString()
+      }), {status:200,headers:{'Content-Type':'application/json'}}))
+      if (s.includes('/api/listings/mine')) return Promise.resolve(new Response(JSON.stringify([
+        {id:'l1', title:'2 Beech Grove, Rathmines, Dublin 6', price:625000, listing_type:'sale', property_type:'house', status:'active', county:'Dublin', views:412, enquiry_count:8, created_at: new Date(Date.now()-1000*60*60*24*4).toISOString()},
+        {id:'l2', title:'Apt 14, Sandymount Square', price:2400, listing_type:'rent', property_type:'apartment', status:'active', county:'Dublin', views:283, enquiry_count:11, created_at: new Date(Date.now()-1000*60*60*24*7).toISOString()},
+        {id:'l3', title:'Office Suite, IFSC Tower', price:4800, listing_type:'rent', property_type:'office', status:'pending_review', county:'Dublin', views:42, enquiry_count:1, created_at: new Date(Date.now()-1000*60*60*36).toISOString()},
+        {id:'l4', title:'Retail Unit, Henry Street', price:850000, listing_type:'sale', property_type:'retail', status:'draft', county:'Dublin', views:0, enquiry_count:0, created_at: new Date(Date.now()-1000*60*60*2).toISOString()}
+      ]), {status:200,headers:{'Content-Type':'application/json'}}))
+      if (s.includes('/api/enquiries/inbox')) return Promise.resolve(new Response(JSON.stringify({enquiries:[
+        {id:'e1', sender_name:"James O'Brien", sender_email:'james@example.ie', sender_phone:'+353 87 123 4567', listing_title:'2 Beech Grove, Rathmines, Dublin 6', message:'Hi Sarah — is this property still available for viewings this weekend? I am a cash buyer ready to move quickly. Could we arrange a Saturday viewing?', is_read:0, created_at: new Date(Date.now()-1000*60*45).toISOString()},
+        {id:'e2', sender_name:'Aoife Murphy', sender_email:'aoife@example.com', listing_title:'Apt 14, Sandymount Square', message:'Could you let me know if pets are allowed and if the apartment is furnished?', is_read:0, created_at: new Date(Date.now()-1000*60*60*3).toISOString()},
+        {id:'e3', sender_name:'Cian Walsh', sender_email:'cian@example.com', listing_title:'2 Beech Grove, Rathmines, Dublin 6', message:"Interested in viewing — what's your earliest availability?", is_read:1, created_at: new Date(Date.now()-1000*60*60*24).toISOString()}
+      ], unread:2}), {status:200,headers:{'Content-Type':'application/json'}}))
+      return _f(u, o)
+    }
+  }
+  </script>
+  <script src="../js/icons.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/app.js"></script>
+  <script>
+    renderNav('agent')
+
+    // Gate: must be logged in AND role agent
+    if (!API.auth.isLoggedIn()) {
+      location.href = 'login.html?redirect=' + encodeURIComponent('/pages/agent-dashboard.html')
+    }
+
+    var STATE = { listings: [], enquiries: [], filter: 'all', cat: 'all', user: null }
+
+    function goTab(name){
+      document.querySelectorAll('.ag-tab').forEach(function(t){t.classList.toggle('active', t.dataset.tab === name)})
+      document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display = (p.id === 'pane-' + name ? '' : 'none')})
+      history.replaceState(null, '', '?tab=' + name)
+    }
+
+    function escapeHtml(s){return (s == null ? '' : String(s)).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+    function fmtPrice(p, t){var n='€'+Number(p).toLocaleString('en-IE');return t==='rent'||t==='share'?n+'/mo':n}
+    function timeAgoShort(s){var d=Date.now()-new Date(s).getTime();var m=Math.floor(d/60000),h=Math.floor(d/3600000),y=Math.floor(d/86400000);if(m<60)return m+'m';if(h<24)return h+'h';if(y<30)return y+'d';return new Date(s).toLocaleDateString('en-IE',{day:'numeric',month:'short'})}
+    function isCommercial(l){var c=(l.property_type||'').toLowerCase();return ['office','retail','industrial','warehouse','hospitality','restaurant','cafe','pub','salon','gym'].indexOf(c) > -1}
+
+    // ── Load me, then everything else ─────────────────────────────────────
+    async function init(){
+      try {
+        var me = await API.auth.me()
+        if (!me || me.role !== 'agent') {
+          // Not an agent — redirect to regular dashboard
+          location.replace('/pages/dashboard.html')
+          return
+        }
+        STATE.user = me
+        renderHeader(me)
+        // Welcome banner if first day
+        if (me.created_at && (Date.now() - new Date(me.created_at).getTime()) < 1000*60*60*24*7) {
+          document.getElementById('welcome-banner').innerHTML =
+            '<div class="welcome">' +
+              '<div class="welcome-icon">🎉</div>' +
+              '<div style="flex:1">' +
+                '<h4>Welcome to Movin, ' + escapeHtml(me.name.split(' ')[0]) + '!</h4>' +
+                '<p>Your agent account is live. Start by listing your first property — your first listing is on us.</p>' +
+              '</div>' +
+              '<button class="welcome-x" onclick="this.parentElement.remove()">✕</button>' +
+            '</div>'
+        }
+
+        // Load tab from URL
+        var tab = new URLSearchParams(location.search).get('tab')
+        if (tab && ['overview','listings','enquiries','profile'].indexOf(tab) > -1) goTab(tab)
+
+        await Promise.all([loadListings(), loadEnquiries(), loadProfile()])
+        renderOverview()
+      } catch (e) {
+        console.error(e)
+        toast(e.message || 'Could not load your dashboard', 'error')
+      }
+    }
+
+    function renderHeader(me){
+      var initials = (me.agency_name || me.name || 'A').split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()
+      document.getElementById('ag-logo').textContent = initials
+      document.getElementById('ag-name').textContent = me.agency_name || me.name + "'s agency"
+      var pills = []
+      if (me.agent_county) pills.push('<span class="ag-pill">📍 ' + escapeHtml(me.agent_county) + '</span>')
+      if (me.psra_number) pills.push('<span class="ag-pill verified">PSRA ' + escapeHtml(me.psra_number) + '</span>')
+      pills.push('<span class="ag-pill">' + (me.email_verified ? '✓ Email verified' : '⚠ Verify your email') + '</span>')
+      document.getElementById('ag-pills').innerHTML = pills.join('')
+    }
+
+    // ── Listings ──────────────────────────────────────────────────────────
+    async function loadListings(){
+      try {
+        STATE.listings = await API.listings.mine()
+      } catch (e) {
+        STATE.listings = []
+      }
+      var liveCount = STATE.listings.filter(function(l){return l.status === 'active'}).length
+      var b = document.getElementById('badge-listings')
+      b.textContent = STATE.listings.length
+      b.style.display = STATE.listings.length ? '' : 'none'
+      document.getElementById('lst-count-sub').textContent = STATE.listings.length + ' total · ' + liveCount + ' live'
+      renderListings()
+    }
+    function setListFilter(f){STATE.filter=f;document.querySelectorAll('#lst-chips .chip[data-filter]').forEach(function(c){c.classList.toggle('active',c.dataset.filter===f)});renderListings()}
+    function setListCat(c){STATE.cat=c;document.querySelectorAll('#lst-chips .chip[data-cat]').forEach(function(b){b.classList.toggle('active',b.dataset.cat===c)});renderListings()}
+    function renderListings(){
+      var items = STATE.listings.filter(function(l){
+        if (STATE.filter !== 'all' && l.status !== STATE.filter) return false
+        if (STATE.cat === 'residential' && isCommercial(l)) return false
+        if (STATE.cat === 'commercial' && !isCommercial(l)) return false
+        return true
+      })
+      var host = document.getElementById('lst-list')
+      if (!items.length) {
+        host.innerHTML =
+          '<div class="empty">' +
+            '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>' +
+            '<h3>No listings yet</h3>' +
+            '<p>Create your first listing — it\'s free for agents on your trial.</p>' +
+            '<button class="btn btn-primary" onclick="openListModal()">+ New listing</button>' +
+          '</div>'
+        return
+      }
+      host.innerHTML = items.map(function(l){
+        var cat = isCommercial(l) ? 'commercial' : 'residential'
+        var typeLabel = l.listing_type === 'sale' ? 'For sale' : (l.listing_type === 'rent' ? 'To let' : (l.listing_type === 'share' ? 'Share' : l.listing_type))
+        var thumbHTML = l.primary_photo
+          ? '<img src="' + escapeHtml(l.primary_photo) + '" alt=""/>'
+          : '<svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>'
+        return '<div class="lst-row">' +
+          '<div class="lst-thumb">' + thumbHTML + '</div>' +
+          '<div class="lst-body">' +
+            '<div class="lst-title">' + escapeHtml(l.title) + '</div>' +
+            '<div class="lst-meta">' +
+              '<span class="status-pill status-' + (l.status || 'draft') + '">' + (l.status || 'draft').replace('_',' ') + '</span>' +
+              '<span class="cat-pill ' + cat + '">' + cat + '</span>' +
+              '<span>' + escapeHtml(typeLabel) + '</span>' +
+              '<span class="sep">·</span>' +
+              '<span>' + escapeHtml(l.county || '—') + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="lst-stats">' +
+            '<div class="lst-stat"><div class="lst-stat-n">' + (l.views || 0) + '</div><div class="lst-stat-l">views</div></div>' +
+            '<div class="lst-stat"><div class="lst-stat-n">' + (l.enquiry_count || 0) + '</div><div class="lst-stat-l">enq.</div></div>' +
+            '<div class="lst-stat"><div class="lst-stat-n">' + fmtPrice(l.price, l.listing_type) + '</div><div class="lst-stat-l">price</div></div>' +
+          '</div>' +
+          '<div class="lst-actions">' +
+            '<button class="icon-btn" title="View" onclick="window.open(\'/pages/listing.html?id=' + l.id + '\',\'_blank\')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></button>' +
+            '<button class="icon-btn" title="Edit" onclick="location.href=\'/pages/list.html?edit=' + l.id + '\'"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>' +
+            '<button class="icon-btn danger" title="Delete" onclick="deleteListing(\'' + l.id + '\')"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>' +
+          '</div>' +
+        '</div>'
+      }).join('')
+    }
+    async function deleteListing(id){
+      if (!confirm('Delete this listing? This cannot be undone.')) return
+      try { await API.listings.delete(id); toast('Listing deleted'); await loadListings(); renderOverview() }
+      catch(e){ toast(e.message || 'Could not delete', 'error') }
+    }
+
+    // ── Enquiries ─────────────────────────────────────────────────────────
+    async function loadEnquiries(){
+      try {
+        var data = await API.enquiries.inbox()
+        STATE.enquiries = (data && data.enquiries) ? data.enquiries : (Array.isArray(data) ? data : [])
+      } catch (e) {
+        STATE.enquiries = []
+      }
+      var unread = STATE.enquiries.filter(function(e){return !e.is_read}).length
+      var b = document.getElementById('badge-enquiries')
+      b.textContent = unread
+      b.style.display = unread ? '' : 'none'
+      document.getElementById('enq-count-sub').textContent = STATE.enquiries.length + ' total · ' + unread + ' unread'
+      renderEnquiries()
+    }
+    function renderEnquiries(){
+      var host = document.getElementById('enq-list')
+      if (!STATE.enquiries.length) {
+        host.innerHTML =
+          '<div class="empty">' +
+            '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 6l-10 7L2 6"/><path d="M2 6h20v12H2z"/></svg>' +
+            '<h3>No enquiries yet</h3>' +
+            '<p>When someone contacts you about a listing, it will appear here.</p>' +
+          '</div>'
+        return
+      }
+      host.innerHTML = STATE.enquiries.map(function(e){
+        return '<div class="enq-row ' + (e.is_read ? '' : 'unread') + '" onclick="openEnq(\'' + e.id + '\')">' +
+          '<div class="enq-h">' +
+            '<div class="enq-from">' + escapeHtml(e.sender_name) + (e.is_read ? '' : ' <span style="color:var(--g);font-size:11px">●</span>') + '</div>' +
+            '<div class="enq-time">' + timeAgoShort(e.created_at) + '</div>' +
+          '</div>' +
+          '<div class="enq-listing">📍 ' + escapeHtml(e.listing_title || '—') + '</div>' +
+          '<div class="enq-message">' + escapeHtml(e.message) + '</div>' +
+          '<div class="enq-contact">' +
+            '<a href="mailto:' + encodeURIComponent(e.sender_email) + '" onclick="event.stopPropagation()">✉ ' + escapeHtml(e.sender_email) + '</a>' +
+            (e.sender_phone ? '<a href="tel:' + encodeURIComponent(e.sender_phone) + '" onclick="event.stopPropagation()">📞 ' + escapeHtml(e.sender_phone) + '</a>' : '') +
+          '</div>' +
+        '</div>'
+      }).join('')
+    }
+    async function openEnq(id){
+      var enq = STATE.enquiries.find(function(e){return e.id === id})
+      if (!enq) return
+      if (!enq.is_read) {
+        try { await API.enquiries.markRead(id); enq.is_read = 1; loadEnquiries() } catch(e){}
+      }
+    }
+
+    // ── Overview ──────────────────────────────────────────────────────────
+    function renderOverview(){
+      var live = STATE.listings.filter(function(l){return l.status === 'active'})
+      document.getElementById('ov-active').textContent = live.length
+      document.getElementById('ov-active-d').innerHTML = STATE.listings.length + ' total'
+      var totalViews = STATE.listings.reduce(function(s,l){return s + (l.views || 0)}, 0)
+      document.getElementById('ov-views').textContent = totalViews.toLocaleString('en-IE')
+      document.getElementById('ov-views-d').innerHTML = 'across all listings'
+      var thirty = Date.now() - 1000*60*60*24*30
+      var recentEnq = STATE.enquiries.filter(function(e){return new Date(e.created_at).getTime() > thirty})
+      document.getElementById('ov-enq').textContent = recentEnq.length
+      document.getElementById('ov-enq-d').innerHTML = STATE.enquiries.length + ' all-time'
+      var conv = totalViews ? Math.round((STATE.enquiries.length / totalViews) * 1000) / 10 : 0
+      document.getElementById('ov-conv').textContent = conv + '%'
+      // Recent activity feed
+      var recent = []
+      STATE.listings.slice(0, 3).forEach(function(l){recent.push({t: new Date(l.created_at), kind: 'listing', data: l})})
+      STATE.enquiries.slice(0, 3).forEach(function(e){recent.push({t: new Date(e.created_at), kind: 'enquiry', data: e})})
+      recent.sort(function(a,b){return b.t - a.t})
+      recent = recent.slice(0, 6)
+      var host = document.getElementById('ov-recent')
+      if (!recent.length) {
+        host.innerHTML = '<div class="empty"><h3>No activity yet</h3><p>Your recent listings and enquiries will show here.</p><button class="btn btn-primary" onclick="openListModal()">+ Create your first listing</button></div>'
+        return
+      }
+      host.innerHTML = recent.map(function(r){
+        if (r.kind === 'listing') {
+          var l = r.data
+          return '<div class="lst-row" style="cursor:pointer" onclick="window.open(\'/pages/listing.html?id=' + l.id + '\',\'_blank\')">' +
+            '<div class="lst-thumb"><svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg></div>' +
+            '<div class="lst-body"><div class="lst-title">' + escapeHtml(l.title) + '</div><div class="lst-meta"><span class="status-pill status-' + (l.status || 'draft') + '">' + (l.status || 'draft').replace('_',' ') + '</span><span>Listed ' + timeAgoShort(l.created_at) + ' ago</span></div></div>' +
+            '<div class="lst-stats"><div class="lst-stat"><div class="lst-stat-n">' + fmtPrice(l.price, l.listing_type) + '</div><div class="lst-stat-l">price</div></div></div>' +
+          '</div>'
+        } else {
+          var e = r.data
+          return '<div class="enq-row ' + (e.is_read ? '' : 'unread') + '" onclick="goTab(\'enquiries\')">' +
+            '<div class="enq-h"><div class="enq-from">📥 New enquiry from ' + escapeHtml(e.sender_name) + '</div><div class="enq-time">' + timeAgoShort(e.created_at) + '</div></div>' +
+            '<div class="enq-listing">' + escapeHtml(e.listing_title || '') + '</div>' +
+            '<div class="enq-message">' + escapeHtml(e.message) + '</div>' +
+          '</div>'
+        }
+      }).join('')
+    }
+
+    // ── Profile ───────────────────────────────────────────────────────────
+    async function loadProfile(){
+      try {
+        var me = await API.auth.me()
+        STATE.user = me
+        document.getElementById('pf-agency').value  = me.agency_name || ''
+        document.getElementById('pf-psra').value    = me.psra_number || ''
+        document.getElementById('pf-website').value = me.agent_website || ''
+        document.getElementById('pf-phone').value   = me.phone || ''
+        document.getElementById('pf-bio').value     = me.agent_bio || ''
+        var sel = document.getElementById('pf-county')
+        if (!sel.options.length) {
+          ;['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan'].forEach(function(c){
+            var o = document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o)
+          })
+        }
+        sel.value = me.agent_county || 'Dublin'
+        document.getElementById('ac-name').value = me.name || ''
+        document.getElementById('ac-email').value = me.email || ''
+      } catch(e){ console.error(e) }
+    }
+    async function saveProfile(){
+      try {
+        await API.auth.updateProfile({
+          agency_name:   document.getElementById('pf-agency').value.trim(),
+          psra_number:   document.getElementById('pf-psra').value.trim(),
+          agent_county:  document.getElementById('pf-county').value,
+          agent_website: document.getElementById('pf-website').value.trim(),
+          agent_bio:     document.getElementById('pf-bio').value.trim(),
+          phone:         document.getElementById('pf-phone').value.trim()
+        })
+        toast('Agency details saved')
+        await loadProfile()
+        renderHeader(STATE.user)
+      } catch(e){ toast(e.message || 'Could not save', 'error') }
+    }
+    async function saveAccount(){
+      var name = document.getElementById('ac-name').value.trim()
+      var cp = document.getElementById('ac-cp').value
+      var np = document.getElementById('ac-np').value
+      try {
+        await API.auth.updateProfile({ name: name, currentPassword: cp || undefined, newPassword: np || undefined })
+        document.getElementById('ac-cp').value = ''
+        document.getElementById('ac-np').value = ''
+        toast('Account updated')
+      } catch(e){ toast(e.message || 'Could not update', 'error') }
+    }
+    function signOut(){ API.auth.logout() }
+
+    // ── List modal ────────────────────────────────────────────────────────
+    function openListModal(){ document.getElementById('list-modal').classList.add('open') }
+    function closeListModal(){ document.getElementById('list-modal').classList.remove('open') }
+    function goList(cat){ location.href = 'list.html?cat=' + cat + '&from=agent' }
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeListModal() })
+
+    init()
+  </script>
+</body>
+</html>
