@@ -390,7 +390,8 @@ button,input,select{font-family:inherit}
 .price-card.feat .price-cta{background:#fff;color:var(--g);border-color:#fff}
 .test-scroll{display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;scroll-snap-type:x mandatory}
 .test-scroll::-webkit-scrollbar{display:none}
-.test-card{flex-shrink:0;width:82vw;max-width:280px;background:var(--white,#fff);border-radius:14px;padding:1.25rem;border:1px solid var(--border);scroll-snap-align:start}
+.test-card{flex-shrink:0;width:82vw;max-width:300px;background:var(--white,#fff);border-radius:16px;padding:1.4rem 1.25rem;border:1px solid var(--border);scroll-snap-align:start;transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;cursor:default}
+.test-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.07);border-color:rgba(26,92,69,.18)}
 .test-stars{color:#e07b3f;font-size:13px;margin-bottom:.5rem}
 .test-text{font-size:13px;color:var(--muted,#555);line-height:1.7;font-weight:300;font-style:italic;margin-bottom:.75rem}
 .test-author{font-size:13px;font-weight:500;color:var(--text,#333)}
@@ -399,6 +400,117 @@ button,input,select{font-family:inherit}
 .cta-banner h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:.5rem}
 .cta-banner p{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:1.25rem;font-weight:300}
 .cta-banner .btn{background:#fff;color:#e07b3f;padding:13px 28px;font-size:14px}
+
+/* ── Why Movin + Pricing — combined section ──────────────────────── */
+.why-pricing{
+  background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%);
+  padding:4.5rem 1.25rem 5rem;
+  position:relative; overflow:hidden;
+}
+.why-pricing::before{
+  content:''; position:absolute; width:520px; height:520px; border-radius:50%;
+  background:rgba(224,123,63,.10); top:-260px; right:-180px; pointer-events:none;
+  filter:blur(8px);
+}
+.why-pricing::after{
+  content:''; position:absolute; width:420px; height:420px; border-radius:50%;
+  background:rgba(126,201,168,.08); bottom:-220px; left:-160px; pointer-events:none;
+  filter:blur(8px);
+}
+.wp-inner{ max-width:1080px; margin:0 auto; position:relative; z-index:1 }
+.wp-head{ text-align:center; margin-bottom:3rem }
+.wp-head .section-title{ font-size:clamp(28px,4.5vw,40px); line-height:1.1; margin-bottom:.65rem }
+.wp-head .section-sub{ font-size:15px; max-width:520px; margin:0 auto; line-height:1.6 }
+
+.wp-values{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;
+  max-width:880px; margin:0 auto 3rem;
+}
+.wp-val{
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.13);
+  backdrop-filter:blur(6px); border-radius:18px; padding:1.5rem 1.25rem; text-align:left;
+  transition:transform .25s ease, background .25s ease;
+}
+.wp-val:hover{ transform:translateY(-4px); background:rgba(255,255,255,.11) }
+.wp-val-ico{
+  width:42px; height:42px; border-radius:11px;
+  background:rgba(224,123,63,.18); color:#e07b3f;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-bottom:1rem;
+}
+.wp-val-ico svg{ width:20px; height:20px; stroke:currentColor; fill:none }
+.wp-val h3{
+  font-family:'Playfair Display',serif; font-size:17px; font-weight:700;
+  color:#fff; margin-bottom:.4rem; letter-spacing:-.2px;
+}
+.wp-val p{ font-size:13.5px; color:rgba(255,255,255,.72); line-height:1.65; font-weight:300; margin:0 }
+
+.wp-prices{
+  display:grid; grid-template-columns:1fr 1fr; gap:1rem;
+  max-width:680px; margin:0 auto;
+}
+.wp-price{
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(6px); border-radius:20px; padding:1.75rem 1.5rem;
+  text-align:left; position:relative;
+}
+.wp-price-feat{
+  background:#fff; border-color:#fff;
+  box-shadow:0 18px 46px rgba(0,0,0,.22);
+}
+.wp-price-eyebrow{
+  font-size:10.5px; font-weight:600; color:rgba(255,255,255,.62);
+  text-transform:uppercase; letter-spacing:1.4px; margin-bottom:.5rem;
+}
+.wp-price-feat .wp-price-eyebrow{ color:var(--g) }
+.wp-price-num{
+  font-family:'Playfair Display',serif; font-size:42px; font-weight:900;
+  color:#fff; line-height:1; letter-spacing:-1.5px;
+}
+.wp-price-feat .wp-price-num{ color:var(--g) }
+.wp-price-period{
+  font-size:12.5px; color:rgba(255,255,255,.6); font-weight:300; margin:.4rem 0 1rem;
+}
+.wp-price-feat .wp-price-period{ color:#888 }
+.wp-price ul{
+  list-style:none; padding:0; margin:0 0 1.25rem; display:flex; flex-direction:column; gap:.55rem;
+}
+.wp-price ul li{
+  font-size:13px; color:rgba(255,255,255,.78); font-weight:300;
+  padding-left:22px; position:relative; line-height:1.5;
+}
+.wp-price ul li::before{
+  content:''; position:absolute; left:0; top:5px; width:14px; height:14px;
+  background:rgba(126,201,168,.22); border-radius:50%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7l3 3 5-6' stroke='%237ec9a8' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:center;
+}
+.wp-price-feat ul li{ color:#444 }
+.wp-price-feat ul li::before{
+  background:var(--gl);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M3 7l3 3 5-6' stroke='%231a5c45' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:center;
+}
+.wp-cta{
+  width:100%; padding:13px 20px; border-radius:50px; font-size:13.5px; font-weight:600;
+  cursor:pointer; font-family:inherit; border:none; transition:all .18s ease;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+}
+.wp-cta-ghost{ background:rgba(255,255,255,.10); color:#fff; border:1.5px solid rgba(255,255,255,.30) }
+.wp-cta-ghost:hover{ background:rgba(255,255,255,.18) }
+.wp-cta-primary{ background:var(--g); color:#fff }
+.wp-cta-primary:hover{ background:var(--gd); transform:translateY(-1px); box-shadow:0 8px 22px rgba(0,0,0,.18) }
+
+@media(max-width:680px){
+  .why-pricing{ padding:3rem 1rem 3.5rem }
+  .wp-values{ grid-template-columns:1fr; gap:.75rem; margin-bottom:2rem }
+  .wp-prices{ grid-template-columns:1fr; gap:.85rem }
+  .wp-head{ margin-bottom:2rem }
+}
+
+/* ── Section breathing room ─────────────────────────────────────── */
+.section{ padding-top:4rem; padding-bottom:4rem }
+@media(max-width:680px){ .section{ padding-top:2.5rem; padding-bottom:2.5rem } }
 .footer{background:#0e2d22;padding:1.5rem 1rem;padding-bottom:calc(1.5rem + var(--safe-b))}
 .footer-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:.5rem}
 .footer-logo span{color:#e07b3f}
@@ -910,32 +1022,6 @@ body.hero-places-ready .sugg-box{display:none !important}
       <button class="search-full-btn" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search properties</button>
     </div>
 
-    <!-- AI search — natural language → parsed filters via Groq -->
-    <div class="ai-search-row">
-      <div class="ai-search-label">
-        <span class="ai-spark">✨</span>
-        Ask in plain English
-        <span class="ai-tag">AI</span>
-      </div>
-      <div class="ai-search-bar">
-        <input class="ai-search-inp" type="text" id="ai-search-inp"
-          placeholder="e.g. 3-bed family home in Dublin under €500k near a good school"
-          aria-label="AI property search"
-          maxlength="500"
-          onkeydown="if(event.key==='Enter')runAiSearch()"/>
-        <button class="ai-search-go" id="ai-search-go" onclick="runAiSearch()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-          Search
-        </button>
-      </div>
-      <div class="ai-search-hint">
-        Try: <b onclick="aiSearchExample(this)">2-bed apartment to rent in Cork city under €1800</b> ·
-        <b onclick="aiSearchExample(this)">house for sale in Galway with garden</b> ·
-        <b onclick="aiSearchExample(this)">share a room in Dublin near LUAS</b>
-      </div>
-      <div class="ai-search-status" id="ai-search-status"></div>
-    </div>
-
     <div class="popular-row">
       <div class="popular-label">Popular areas</div>
       <div class="area-chips">
@@ -1062,39 +1148,11 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="why-section reveal">
-  <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">The Movin difference</div>
-  <h2 class="section-title">Why Movin.ie?</h2>
-  <p class="section-sub">What Ireland's property market needed</p>
-  <div class="why-grid">
-    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-star"/></svg></div><h3>Free first listing</h3><p>List at no cost. See how it performs before you pay a cent.</p></div>
-    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-euro"/></svg></div><h3>Radically fair pricing</h3><p>Just €24.99 per listing. Over 75% cheaper than competitors.</p></div>
-    <div class="why-card"><div class="why-icon"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg></div><h3>Modern & fast</h3><p>Built for mobile. Clean, intuitive, works on any device.</p></div>
-  </div>
-</div>
-
+<!-- Social proof first — buyers/sellers like to see this before the pitch -->
 <div class="section reveal" style="background:#fff">
-  <div class="section-eyebrow">Pricing</div>
-  <h2 class="section-title">Simple pricing</h2>
-  <p class="section-sub">No monthly fees. No hidden costs.</p>
-  <div class="pricing-grid">
-    <div class="price-card">
-      <div class="price-eyebrow">First listing</div><div class="price-num">€0</div><div class="price-period">completely free</div>
-      <ul class="price-list"><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live</li></ul>
-      <button class="price-cta" onclick="go('pages/list.html')">Start free</button>
-    </div>
-    <div class="price-card feat">
-      <div class="price-eyebrow">After that</div><div class="price-num">€24.99</div><div class="price-period">per listing</div>
-      <ul class="price-list"><li>Everything free</li><li>Boost visibility</li><li>Analytics</li><li>Support</li></ul>
-      <button class="price-cta" onclick="go('pages/list.html')">List now</button>
-    </div>
-  </div>
-</div>
-
-<div class="section reveal">
   <div class="section-eyebrow">Real stories</div>
-  <h2 class="section-title">What people say</h2>
-  <p class="section-sub">Thousands trust Movin across Ireland</p>
+  <h2 class="section-title">Trusted across Ireland</h2>
+  <p class="section-sub">Thousands of homeowners, renters and agents already use Movin.</p>
   <div class="test-scroll">
     <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. More enquiries in a day than on Daft in a month."</p><div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div></div>
     <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"€24.99 to list my rental instead of €99. Identical results. Absolute no-brainer."</p><div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div></div>
@@ -1102,11 +1160,51 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="cta-banner">
-  <h2>List your property today</h2>
-  <p>Join thousands of Irish homeowners. Your first listing is completely free.</p>
-  <button class="btn" onclick="go('pages/list.html')">List for free →</button>
-</div>
+<!-- Why Movin + pricing + CTA — all in one cohesive section -->
+<section class="why-pricing reveal">
+  <div class="wp-inner">
+    <div class="wp-head">
+      <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
+      <h2 class="section-title" style="color:#fff">Built for Ireland.<br>Priced for everyone.</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.78)">No monthly fees. No hidden costs. Your first listing is free.</p>
+    </div>
+
+    <div class="wp-values">
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+        <h3>Free first listing</h3>
+        <p>List for nothing. See how it performs before you pay a cent.</p>
+      </div>
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11a4 4 0 0 1 0 8H8"/><path d="M5 14h11a4 4 0 0 0 0-8"/></svg></div>
+        <h3>75% cheaper</h3>
+        <p>Just €24.99 per listing — a fraction of what other portals charge.</p>
+      </div>
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <h3>Modern & fast</h3>
+        <p>Built mobile-first. Clean, intuitive, works on any device.</p>
+      </div>
+    </div>
+
+    <div class="wp-prices">
+      <div class="wp-price">
+        <div class="wp-price-eyebrow">Your first listing</div>
+        <div class="wp-price-num">€0</div>
+        <div class="wp-price-period">free, no card needed</div>
+        <ul><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live</li></ul>
+        <button class="wp-cta wp-cta-ghost" onclick="go('pages/list.html')">Start free →</button>
+      </div>
+      <div class="wp-price wp-price-feat">
+        <div class="wp-price-eyebrow">After that</div>
+        <div class="wp-price-num">€24.99</div>
+        <div class="wp-price-period">per listing · 30 days</div>
+        <ul><li>Everything in free</li><li>Boosted visibility</li><li>View & enquiry analytics</li><li>Priority support</li></ul>
+        <button class="wp-cta wp-cta-primary" onclick="go('pages/list.html')">List a property →</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- The rich multi-column footer is rendered into <footer id="site-footer"> below by renderFooter() -->
 </div>
