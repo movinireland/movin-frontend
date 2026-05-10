@@ -283,10 +283,47 @@ function renderNav(activePage = '') {
           <a href="${root}pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
           <a href="${root}pages/register.html" class="btn btn-primary btn-sm">Register</a>
         `}
+        <button class="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   `
- 
+
+  // Inject mobile slide-out menu once per page load
+  if (!document.getElementById('mobile-menu')) {
+    var mm = document.createElement('div')
+    mm.className = 'mobile-menu'
+    mm.id = 'mobile-menu'
+    mm.innerHTML =
+      '<div class="mobile-menu-header">' +
+        '<div class="mobile-menu-logo">mov<span style="color:#e07b3f">in</span></div>' +
+        '<button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>' +
+      '</div>' +
+      '<div class="mobile-menu-body">' +
+        '<div class="mm-item" onclick="location.href=\'/pages/search.html?listing_type=sale\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18,'#1a5c45') + '</div>Buy a property</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/search.html?listing_type=rent\';toggleMobileMenu()"><div class="mm-icon">' + icon('apartment',18) + '</div>Rent a property</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/map-search.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('map',18) + '</div>Map search</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/commercial.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Commercial</div>' +
+        '<div class="mm-divider"></div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/tools.html#mortgage\';toggleMobileMenu()"><div class="mm-icon">' + icon('calculator',18) + '</div>Mortgage calculator</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/tools.html#valuation\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Home valuation</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/tools.html#stamp\';toggleMobileMenu()"><div class="mm-icon">' + icon('document',18) + '</div>Stamp duty</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/tools.html#ftb\';toggleMobileMenu()"><div class="mm-icon">' + icon('key',18) + '</div>First-time buyer</div>' +
+        '<div class="mm-divider"></div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/list.html\';toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6">' + icon('plus',18,'#e07b3f') + '</div>List your property</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/contact.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('message',18) + '</div>Contact us</div>' +
+      '</div>' +
+      '<div class="mobile-menu-footer" id="mobile-menu-footer">' +
+        (isLoggedIn
+          ? '<a href="/pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center;padding:13px">My account</a>'
+          : '<a href="/pages/login.html" class="btn btn-ghost" style="flex:1;justify-content:center;padding:13px">Sign in</a>' +
+            '<a href="/pages/register.html" class="btn btn-primary" style="flex:1;justify-content:center;padding:13px">Register free</a>'
+        ) +
+      '</div>'
+    document.body.insertBefore(mm, nav.nextSibling)
+  }
+
   // Handle deep link to specific tool tab
   const hash = window.location.hash
   if (hash && ['#mortgage','#valuation','#stamp','#ftb'].includes(hash)) {
@@ -302,6 +339,14 @@ setTimeout(function() { if (typeof renderFooter === 'function') renderFooter() }
   // than pure :hover, which can be flaky once an LI also has an onclick.
   setTimeout(bindNavDropdowns, 0)
 }
+
+function toggleMobileMenu() {
+  var m = document.getElementById('mobile-menu')
+  if (!m) return
+  m.classList.toggle('open')
+  document.body.style.overflow = m.classList.contains('open') ? 'hidden' : ''
+}
+window.toggleMobileMenu = toggleMobileMenu
 
 // ── Hover-open dropdown menus on .nav-has-dropdown items ─────────────────
 // Used by Buy / Rent dropdowns on every page. Re-runs after renderNav()
