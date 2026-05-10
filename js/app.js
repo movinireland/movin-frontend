@@ -1355,6 +1355,14 @@ function renderFooter() {
           '</div>' +
         '</div>' +
         '<div>' +
+          '<div class="footer-col-title">For agents</div>' +
+          '<div class="footer-links">' +
+            '<a href="' + root + 'pages/agent-dashboard.html">Agent dashboard</a>' +
+            '<a href="' + root + 'pages/register.html?account_type=agent">List as an agent</a>' +
+            '<a href="' + root + 'pages/login.html?redirect=' + encodeURIComponent('/pages/agent-dashboard.html') + '">Agent sign in</a>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
           '<div class="footer-col-title">Neighbourhood guides</div>' +
           '<div class="footer-links">' +
             '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin">Dublin 4</a>' +

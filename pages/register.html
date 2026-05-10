@@ -243,6 +243,13 @@
   var registeredToken = null
   var registeredUser = null
 
+  // Honour ?account_type=agent so footer / marketing links can pre-select agent.
+  // Defer the visual flip until DOM is ready so setType can find the buttons.
+  document.addEventListener('DOMContentLoaded', function(){
+    var qsType = new URLSearchParams(location.search).get('account_type')
+    if (qsType === 'agent') setType('agent')
+  })
+
   function setType(type) {
     accountType = type
     document.getElementById('btn-personal').classList.toggle('on', type === 'personal')
