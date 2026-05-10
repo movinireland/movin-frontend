@@ -1261,6 +1261,18 @@ function buildPropertyCard(listing, savedIds = []) {
   `
 }
 window.buildPropertyCard = buildPropertyCard
+
+async function toggleSave(listingId, btn) {
+  if (!window.API || !window.API.auth.isLoggedIn()) {
+    location.href = '/pages/login.html?redirect=' + encodeURIComponent(location.pathname + location.search)
+    return
+  }
+  var saved = btn && btn.classList.contains('saved')
+  try {
+    if (saved) { await window.API.saved.unsave(listingId); btn.classList.remove('saved'); toast('Removed from saved') }
+    else       { await window.API.saved.save(listingId);   btn && btn.classList.add('saved'); toast('Saved') }
+  } catch (e) { toast(e.message || 'Could not update saved', 'error') }
+}
 window.toggleSave = toggleSave
 
 // ── Render footer ─────────────────────────────────────────────────────────────

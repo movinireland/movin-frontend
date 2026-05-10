@@ -101,6 +101,10 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; font-weight: 700; line-height
 .nav-hamburger span { width: 22px; height: 2px; background: #555; border-radius: 2px; display: block; }
 @media (max-width: 767px) {
   .nav-hamburger { display: flex; }
+  /* Auth links live in the mobile menu — keep nav uncluttered on phones */
+  .nav-right > a.btn-ghost,
+  .nav-right > a.btn-primary { display: none; }
+  .nav-right .nav-user-name { display: none; }
 }
 
 /* ── Mobile slide-out menu ───────────────────────────────────────── */
