@@ -3,6 +3,27 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
+// ── Capacitor splash hide ─────────────────────────────────────────────────────
+// When loaded inside the iOS Capacitor wrapper, hide the native splash screen
+// as soon as the page has parsed. Without this, Capacitor holds the splash for
+// the full launchShowDuration (3s), making the app feel slow even when the
+// website has actually loaded. No-op in regular browsers — `window.Capacitor`
+// is only present inside the wrapper.
+;(function hideCapacitorSplash(){
+  function hide(){
+    try {
+      if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SplashScreen) {
+        Capacitor.Plugins.SplashScreen.hide({ fadeOutDuration: 250 })
+      }
+    } catch(_) {}
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', hide, { once: true })
+  } else {
+    hide()
+  }
+})()
+
 // ── Dark mode ────────────────────────────────────────────────────────────────
 function getSystemTheme() {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
