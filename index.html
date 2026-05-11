@@ -511,6 +511,20 @@ button,input,select{font-family:inherit}
 /* ── Section breathing room ─────────────────────────────────────── */
 .section{ padding-top:4rem; padding-bottom:4rem }
 @media(max-width:680px){ .section{ padding-top:2.5rem; padding-bottom:2.5rem } }
+
+/* ── Mobile: short home like Rightmove ───────────────────────────── */
+/* Hide marketing-heavy sections on phones to keep the page short.
+   Desktop still shows everything. */
+@media (max-width: 767px){
+  .mobile-hide{ display: none !important; }
+  /* Compact whatever's left so the page feels tight */
+  .counties-section{ padding-top: 1.5rem; padding-bottom: 1.5rem; }
+  .section{ padding-top: 1.75rem; padding-bottom: 1.75rem; }
+  /* "Just listed" eyebrow + title — smaller */
+  .section .section-title{ font-size: 22px; }
+  .section .section-eyebrow{ font-size: 10px; margin-bottom: .35rem; }
+  .section .section-sub{ font-size: 13px; margin-bottom: 1rem; }
+}
 .footer{background:#0e2d22;padding:1.5rem 1rem;padding-bottom:calc(1.5rem + var(--safe-b))}
 .footer-logo{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:900;color:#fff;margin-bottom:.5rem}
 .footer-logo span{color:#e07b3f}
@@ -1170,7 +1184,7 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </section>
 
-<div class="section reveal" style="background:#fff">
+<div class="section reveal mobile-hide" style="background:#fff">
   <div style="margin-bottom:1.75rem">
     <div class="section-eyebrow">Where to next</div>
     <h2 class="section-title">Smarter ways to find a home</h2>
@@ -1216,7 +1230,7 @@ body.hero-places-ready .sugg-box{display:none !important}
 </div>
 
 <!-- Social proof first — buyers/sellers like to see this before the pitch -->
-<div class="section reveal" style="background:#fff">
+<div class="section reveal mobile-hide" style="background:#fff">
   <div class="section-eyebrow">Real stories</div>
   <h2 class="section-title">Trusted across Ireland</h2>
   <p class="section-sub">Thousands of homeowners, renters and agents already use Movin.</p>
@@ -1228,7 +1242,7 @@ body.hero-places-ready .sugg-box{display:none !important}
 </div>
 
 <!-- Why Movin + pricing + CTA — all in one cohesive section -->
-<section class="why-pricing reveal">
+<section class="why-pricing reveal mobile-hide">
   <div class="wp-inner">
     <div class="wp-head">
       <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>

@@ -411,38 +411,105 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 .site-footer {
   background: #0e3d2e;
   color: rgba(255,255,255,.6);
-  padding: 3rem 1.5rem 2rem;
+  padding: 2.5rem 1.5rem 2rem;
   margin-top: auto;
 }
-.footer-inner { max-width: 900px; margin: 0 auto; }
-.footer-top {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+.site-footer .footer-inner { max-width: 1080px; margin: 0 auto; display: block; justify-content: initial; align-items: initial; flex-wrap: initial; gap: 0; }
+.footer-brand-row {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  margin-bottom: 2rem;
 }
-@media(max-width:680px) { .footer-top { grid-template-columns: 1fr 1fr; gap: 1.5rem; } }
-@media(max-width:400px) { .footer-top { grid-template-columns: 1fr; } }
 .footer-brand-logo {
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size: 22px; font-weight: 900; color: #fff; margin-bottom: .5rem;
+  font-size: 24px; font-weight: 900; color: #fff;
 }
 .footer-brand-logo span { color: #e07b3f; }
 .footer-brand-tag {
-  font-size: 12px; color: rgba(255,255,255,.45);
-  line-height: 1.6; font-weight: 300; margin-bottom: 1rem;
+  font-size: 13px; color: rgba(255,255,255,.45);
+  font-weight: 300;
 }
-.footer-col-title {
-  font-size: 11px; font-weight: 500;
-  color: rgba(255,255,255,.4);
-  text-transform: uppercase; letter-spacing: 1px; margin-bottom: .85rem;
+.footer-top {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
-.footer-links { display: flex; flex-direction: column; gap: .5rem; }
-.footer-links a {
+@media(max-width:880px) { .footer-top { grid-template-columns: repeat(3, 1fr); } }
+@media(max-width:680px) { .footer-top { grid-template-columns: 1fr; gap: 0; } }
+
+/* ── Collapsible accordion groups ────────────────────────────────── */
+.ftr-group { border: none; }
+.ftr-group-head {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-bottom: .85rem; cursor: pointer;
+  list-style: none; padding: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  -webkit-tap-highlight-color: transparent; user-select: none;
+}
+.ftr-group-head::-webkit-details-marker { display: none; }
+.ftr-chev {
+  color: rgba(255,255,255,.45);
+  transition: transform .25s cubic-bezier(.2,.7,.2,1);
+  flex-shrink: 0;
+}
+.ftr-group[open] .ftr-chev { transform: rotate(180deg); color: rgba(255,255,255,.7); }
+.ftr-group-body {
+  display: flex; flex-direction: column; gap: .5rem;
+}
+.ftr-group-body a {
   font-size: 13px; color: rgba(255,255,255,.6);
   text-decoration: none; transition: color .15s; font-weight: 300;
+  padding: 2px 0;
 }
-.footer-links a:hover { color: #fff; }
+.ftr-group-body a:hover { color: #fff; }
+
+/* Desktop: force everything open, hide chevron, columnar layout */
+@media (min-width: 681px) {
+  .ftr-group .ftr-chev { display: none; }
+  .ftr-group .ftr-group-head { cursor: default; }
+  .ftr-group-body { display: flex !important; }
+  /* Use CSS to force <details> content always shown on desktop */
+  .ftr-group > .ftr-group-body { display: flex !important; }
+}
+
+/* Mobile: full-width rows with subtle dividers, more comfortable tap area */
+@media (max-width: 680px) {
+  .ftr-group {
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .ftr-group:last-of-type { border-bottom: none; }
+  .ftr-group-head {
+    padding: 1rem 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: rgba(255,255,255,.78);
+    letter-spacing: .5px;
+    text-transform: none; font-weight: 500;
+  }
+  .ftr-group[open] .ftr-group-head {
+    padding-bottom: .65rem;
+  }
+  .ftr-group-body {
+    padding: 0 0 1rem;
+    gap: .65rem;
+  }
+  .ftr-group-body a { font-size: 14px; padding: 4px 0; }
+}
+
+.footer-social {
+  display: flex; gap: 1rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+  flex-wrap: wrap;
+}
+.footer-social a {
+  color: rgba(255,255,255,.55); font-size: 13px; text-decoration: none;
+  transition: color .15s; font-weight: 400;
+}
+.footer-social a:hover { color: #fff; }
+
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,.1);
   padding-top: 1.5rem;
@@ -453,6 +520,13 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 .footer-legal { display: flex; gap: 1rem; flex-wrap: wrap; }
 .footer-legal a { font-size: 12px; color: rgba(255,255,255,.4); text-decoration: none; }
 .footer-legal a:hover { color: rgba(255,255,255,.7); }
+
+@media (max-width: 680px) {
+  .site-footer { padding: 1.5rem 1.25rem 1.5rem; }
+  .footer-brand-row { margin-bottom: 1.25rem; }
+  .footer-bottom { padding-top: 1rem; }
+  .footer-copy, .footer-legal a { font-size: 11px; }
+}
 
 
 /* ── Image shimmer loading ── */

@@ -1370,112 +1370,102 @@ function renderFooter() {
   var root = '/'
   var footer = document.getElementById('site-footer')
   if (!footer) return
+
+  // Each group is a <details> for native accordion behaviour on mobile.
+  // CSS forces them open and hides the chevron on desktop, so the layout
+  // still feels like a multi-column footer on big screens.
+  function group(title, links){
+    return '<details class="ftr-group">' +
+      '<summary class="ftr-group-head">' +
+        '<span>' + title + '</span>' +
+        '<svg class="ftr-chev" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>' +
+      '</summary>' +
+      '<div class="ftr-group-body">' +
+        links.map(function(l){ return '<a href="' + l[0] + '">' + l[1] + '</a>' }).join('') +
+      '</div>' +
+    '</details>'
+  }
+
+  var searchLinks = [
+    [root + 'pages/search.html?listing_type=sale', 'All properties for sale'],
+    [root + 'pages/search.html?listing_type=rent', 'All rentals'],
+    [root + 'pages/house-for-sale.html',     'Houses for sale'],
+    [root + 'pages/apartment-for-sale.html', 'Apartments for sale'],
+    [root + 'pages/bungalow-for-sale.html',  'Bungalows for sale'],
+    [root + 'pages/site-for-sale.html',      'Sites & Land'],
+    [root + 'pages/house-for-rent.html',     'Houses to rent'],
+    [root + 'pages/apartment-for-rent.html', 'Apartments to rent'],
+    [root + 'pages/sharing.html',            'Sharing & rooms'],
+    [root + 'pages/map-search.html',         'Map search'],
+    [root + 'pages/drive-time.html',         'Find by drive time'],
+    [root + 'pages/latest.html',             'Latest listings']
+  ]
+  var resourceLinks = [
+    [root + 'pages/tools.html#mortgage',                'Mortgage calculator'],
+    [root + 'pages/tools.html#valuation',               'Home valuation'],
+    [root + 'pages/tools.html#stamp',                   'Stamp duty calculator'],
+    [root + 'pages/tools.html#ftb',                     'First-time buyer guide'],
+    [root + 'pages/house-price-index.html',             'House Price Index'],
+    [root + 'pages/guides/buying.html',                 'Buyer guides'],
+    [root + 'pages/guides/selling.html',                'Seller guides'],
+    [root + 'pages/guides/renting.html',                'Renter guides'],
+    [root + 'pages/guides/landlords.html',              'Landlord guides'],
+    [root + 'pages/guides/mortgage.html',               'Mortgage guides'],
+    [root + 'pages/guides/mortgage-in-principle.html',  'Mortgage in Principle'],
+    [root + 'pages/guides/energy-efficiency.html',      'Energy efficiency & BER'],
+    [root + 'pages/guides/removals.html',               'Removals'],
+    [root + 'pages/guides/property-news.html',          'Property news'],
+    [root + 'pages/faq.html',                           'Help & FAQ']
+  ]
+  var locationLinks = [
+    [root + 'pages/area.html?county=Dublin',    'Dublin'],
+    [root + 'pages/area.html?county=Cork',      'Cork'],
+    [root + 'pages/area.html?county=Galway',    'Galway'],
+    [root + 'pages/area.html?county=Limerick',  'Limerick'],
+    [root + 'pages/area.html?county=Kerry',     'Kerry'],
+    [root + 'pages/area.html?county=Meath',     'Meath'],
+    [root + 'pages/area.html?county=Kildare',   'Kildare'],
+    [root + 'pages/area.html?county=Wicklow',   'Wicklow'],
+    [root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin',  'Dublin 4'],
+    [root + 'pages/neighbourhood.html?area=Dublin%206&county=Dublin',  'Dublin 6'],
+    [root + 'pages/neighbourhood.html?area=Rathmines&county=Dublin',   'Rathmines'],
+    [root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin',   'Blackrock'],
+    [root + 'pages/neighbourhood.html?area=Malahide&county=Dublin',    'Malahide'],
+    [root + 'pages/neighbourhood.html?area=Swords&county=Dublin',      'Swords'],
+    [root + 'pages/neighbourhood.html?area=Galway%20City%20Centre&county=Galway', 'Galway City'],
+    [root + 'pages/neighbourhood.html?area=Cork%20City%20Centre&county=Cork',     'Cork City']
+  ]
+  var movinLinks = [
+    [root + 'pages/about.html',             'About us'],
+    [root + 'pages/list.html',              'List your property'],
+    [root + 'pages/commercial.html',        'Commercial property'],
+    [root + 'pages/sold.html',              'Sold & let prices'],
+    [root + 'pages/contact.html',           'Contact us'],
+    [root + 'pages/privacy-policy.html',    'Privacy policy'],
+    [root + 'pages/terms-of-service.html',  'Terms of service']
+  ]
+  var proLinks = [
+    [root + 'pages/agent-dashboard.html', 'Agent dashboard'],
+    [root + 'pages/register.html?account_type=agent', 'List as an agent'],
+    [root + 'pages/login.html?redirect=' + encodeURIComponent('/pages/agent-dashboard.html'), 'Agent sign in']
+  ]
+
   footer.innerHTML =
     '<div class="footer-inner">' +
+      '<div class="footer-brand-row">' +
+        '<div class="footer-brand-logo">mov<span>in</span></div>' +
+        '<div class="footer-brand-tag">Ireland\'s home for finding your home.</div>' +
+      '</div>' +
       '<div class="footer-top">' +
-        '<div>' +
-          '<div class="footer-brand-logo">mov<span>in</span></div>' +
-          '<div class="footer-brand-tag">Ireland\'s home for<br>finding your home.</div>' +
-          '<div style="display:flex;gap:10px;margin-top:.5rem">' +
-            '<a href="https://www.facebook.com/movin.ie" target="_blank" style="color:rgba(255,255,255,.5);font-size:13px;text-decoration:none">Facebook</a>' +
-            '<a href="https://www.instagram.com/movin.ie" target="_blank" style="color:rgba(255,255,255,.5);font-size:13px;text-decoration:none">Instagram</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Buy</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/house-for-sale.html">Houses for sale</a>' +
-            '<a href="' + root + 'pages/apartment-for-sale.html">Apartments for sale</a>' +
-            '<a href="' + root + 'pages/bungalow-for-sale.html">Bungalows for sale</a>' +
-            '<a href="' + root + 'pages/site-for-sale.html">Sites &amp; Land</a>' +
-            '<a href="' + root + 'pages/search.html?listing_type=sale">All properties for sale</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Rent</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/house-for-rent.html">Houses to rent</a>' +
-            '<a href="' + root + 'pages/apartment-for-rent.html">Apartments to rent</a>' +
-            '<a href="' + root + 'pages/bungalow-for-rent.html">Bungalows to rent</a>' +
-            '<a href="' + root + 'pages/sharing.html">Sharing &amp; rooms</a>' +
-            '<a href="' + root + 'pages/search.html?listing_type=rent">All rentals</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Tools</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/drive-time.html">Find by drive time</a>' +
-            '<a href="' + root + 'pages/map-search.html">Map search</a>' +
-            '<a href="' + root + 'pages/latest.html">Latest listings</a>' +
-            '<a href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
-            '<a href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
-            '<a href="' + root + 'pages/tools.html#stamp">Stamp duty calculator</a>' +
-            '<a href="' + root + 'pages/tools.html#ftb">First-time buyer</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Resources</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/guides/buying.html">Buyer guides</a>' +
-            '<a href="' + root + 'pages/guides/selling.html">Seller guides</a>' +
-            '<a href="' + root + 'pages/guides/renting.html">Renter guides</a>' +
-            '<a href="' + root + 'pages/guides/landlords.html">Landlord guides</a>' +
-            '<a href="' + root + 'pages/guides/mortgage.html">Mortgage guides</a>' +
-            '<a href="' + root + 'pages/guides/mortgage-in-principle.html">Mortgage in Principle</a>' +
-            '<a href="' + root + 'pages/guides/energy-efficiency.html">Energy efficiency &amp; BER</a>' +
-            '<a href="' + root + 'pages/guides/removals.html">Removals</a>' +
-            '<a href="' + root + 'pages/house-price-index.html">House Price Index</a>' +
-            '<a href="' + root + 'pages/guides/property-news.html">Property news</a>' +
-            '<a href="' + root + 'pages/faq.html">Help &amp; FAQ</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Company</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/about.html">About us</a>' +
-            '<a href="' + root + 'pages/list.html">List your property</a>' +
-            '<a href="' + root + 'pages/commercial.html">Commercial property</a>' +
-            '<a href="' + root + 'pages/sold.html">Sold &amp; let prices</a>' +
-            '<a href="' + root + 'pages/faq.html">Help &amp; FAQ</a>' +
-            '<a href="' + root + 'pages/contact.html">Contact us</a>' +
-            '<a href="' + root + 'pages/privacy-policy.html">Privacy policy</a>' +
-            '<a href="' + root + 'pages/terms-of-service.html">Terms of service</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">For agents</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/agent-dashboard.html">Agent dashboard</a>' +
-            '<a href="' + root + 'pages/register.html?account_type=agent">List as an agent</a>' +
-            '<a href="' + root + 'pages/login.html?redirect=' + encodeURIComponent('/pages/agent-dashboard.html') + '">Agent sign in</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Neighbourhood guides</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%204&county=Dublin">Dublin 4</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Dublin%206&county=Dublin">Dublin 6</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Rathmines&county=Dublin">Rathmines</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Blackrock&county=Dublin">Blackrock</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Malahide&county=Dublin">Malahide</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Swords&county=Dublin">Swords</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Galway%20City%20Centre&county=Galway">Galway City</a>' +
-            '<a href="' + root + 'pages/neighbourhood.html?area=Cork%20City%20Centre&county=Cork">Cork City</a>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<div class="footer-col-title">Browse by county</div>' +
-          '<div class="footer-links">' +
-            '<a href="' + root + 'pages/area.html?county=Dublin">Dublin</a>' +
-            '<a href="' + root + 'pages/area.html?county=Cork">Cork</a>' +
-            '<a href="' + root + 'pages/area.html?county=Galway">Galway</a>' +
-            '<a href="' + root + 'pages/area.html?county=Limerick">Limerick</a>' +
-            '<a href="' + root + 'pages/area.html?county=Kerry">Kerry</a>' +
-            '<a href="' + root + 'pages/area.html?county=Meath">Meath</a>' +
-            '<a href="' + root + 'pages/area.html?county=Kildare">Kildare</a>' +
-            '<a href="' + root + 'pages/area.html?county=Wicklow">Wicklow</a>' +
-          '</div>' +
-        '</div>' +
+        group('Search',       searchLinks) +
+        group('Resources',    resourceLinks) +
+        group('Locations',    locationLinks) +
+        group('Movin',        movinLinks) +
+        group('Professional', proLinks) +
+      '</div>' +
+      '<div class="footer-social">' +
+        '<a href="https://www.facebook.com/movin.ie" target="_blank">Facebook</a>' +
+        '<a href="https://www.instagram.com/movin.ie" target="_blank">Instagram</a>' +
       '</div>' +
       '<div class="footer-bottom">' +
         '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Ltd · Republic of Ireland</div>' +
