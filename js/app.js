@@ -3,24 +3,77 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
-// ── Capacitor splash hide ─────────────────────────────────────────────────────
-// When loaded inside the iOS Capacitor wrapper, hide the native splash screen
-// as soon as the page has parsed. Without this, Capacitor holds the splash for
-// the full launchShowDuration (3s), making the app feel slow even when the
-// website has actually loaded. No-op in regular browsers — `window.Capacitor`
-// is only present inside the wrapper.
-;(function hideCapacitorSplash(){
-  function hide(){
-    try {
-      if (window.Capacitor && Capacitor.Plugins && Capacitor.Plugins.SplashScreen) {
-        Capacitor.Plugins.SplashScreen.hide({ fadeOutDuration: 250 })
-      }
-    } catch(_) {}
+// ── In-app zoom lock (iOS Capacitor wrapper only) ─────────────────────────────
+// Web users keep pinch-zoom (accessibility). Inside the Capacitor app we lock
+// it so the site behaves like a native app — no pinch-zoom, no double-tap zoom,
+// no rubber-banding on individual sections.
+;(function lockZoomInApp(){
+  var inApp = !!window.Capacitor || /MovinApp/.test(navigator.userAgent || '')
+  if (!inApp) return
+  function setVp(){
+    var m = document.querySelector('meta[name="viewport"]')
+    var content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover'
+    if (m) m.setAttribute('content', content)
+    else { m = document.createElement('meta'); m.name = 'viewport'; m.content = content; document.head.appendChild(m) }
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', hide, { once: true })
-  } else {
-    hide()
+  setVp()
+  // Belt-and-braces: cancel pinch + double-tap zoom gestures even if a stray
+  // viewport meta sneaks in.
+  ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+    document.addEventListener(ev, function(e){ e.preventDefault() }, { passive: false })
+  })
+  function applyTouchAction(){ if (document.body) document.body.style.touchAction = 'manipulation' }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyTouchAction, { once: true })
+  else applyTouchAction()
+})()
+
+// ── Capacitor splash + offline guard ──────────────────────────────────────────
+// The splash is configured to last 5s in capacitor.config.json. We don't hide
+// it early any more — but if the device is offline we replace the splash with
+// a "No internet" overlay rendered in JS so the user sees a message instead of
+// a frozen splash followed by a blank webview. No-op in regular browsers.
+;(function offlineGuard(){
+  // navigator.onLine is true once the webview successfully loaded this page,
+  // so the bigger risk is going offline AFTER load. We listen for that too.
+  function showOfflineOverlay(){
+    if (document.getElementById('movin-offline-overlay')) return
+    var o = document.createElement('div')
+    o.id = 'movin-offline-overlay'
+    o.setAttribute('role','alert')
+    o.style.cssText = [
+      'position:fixed','inset:0','z-index:99999',
+      'background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 100%)',
+      'color:#fff','font-family:DM Sans, system-ui, sans-serif',
+      'display:flex','flex-direction:column',
+      'align-items:center','justify-content:center',
+      'padding:2rem','text-align:center',
+      'opacity:0','transition:opacity .25s ease'
+    ].join(';')
+    o.innerHTML =
+      '<div style="font-family:\'Playfair Display\', serif;font-size:38px;font-weight:900;line-height:1">' +
+        'mov<span style="color:#e07b3f">in</span>' +
+      '</div>' +
+      '<div style="margin-top:1.5rem;font-size:48px">📡</div>' +
+      '<h2 style="font-family:\'Playfair Display\', serif;font-size:24px;font-weight:700;margin:1rem 0 .5rem">No internet connection</h2>' +
+      '<p style="font-size:14px;opacity:.78;font-weight:300;line-height:1.55;max-width:300px">Movin needs an internet connection to show properties. Reconnect and we\'ll try again.</p>' +
+      '<button id="movin-offline-retry" style="margin-top:1.5rem;background:#fff;color:#1a5c45;border:none;padding:11px 22px;border-radius:50px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer">Try again</button>'
+    document.body.appendChild(o)
+    requestAnimationFrame(function(){ o.style.opacity = '1' })
+    document.getElementById('movin-offline-retry').addEventListener('click', function(){
+      if (navigator.onLine) { o.remove(); location.reload() }
+    })
+  }
+  function hideOfflineOverlay(){
+    var o = document.getElementById('movin-offline-overlay')
+    if (o) o.remove()
+  }
+  window.addEventListener('offline', showOfflineOverlay)
+  window.addEventListener('online',  hideOfflineOverlay)
+  // If we somehow loaded but onLine is false (rare), show immediately
+  if (typeof navigator.onLine === 'boolean' && !navigator.onLine) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showOfflineOverlay, { once: true })
+    } else { showOfflineOverlay() }
   }
 })()
 
@@ -1260,7 +1313,14 @@ function buildPropertyCard(listing, savedIds = []) {
           : `<div style="width:100%;height:175px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">🏡</div>`
         }
         <div class="prop-card-tags">
-          ${listing.is_featured ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">⭐ Featured</span>` : `<span style="background:${typeBg};color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${typeLabel}</span>`}
+          ${listing.plan === 'premium'
+            ? `<span style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(217,119,6,.4)">⚡ Premium</span>`
+            : (listing.plan === 'featured' || listing.is_featured
+                ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">⭐ Featured</span>`
+                : `<span style="background:${typeBg};color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${typeLabel}</span>`)
+          }
+          ${(listing.status === 'sale_agreed' || listing.status === 'let_agreed') ? `<span style="background:#fbbf24;color:#78350f;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${listing.status.replace('_',' ').toUpperCase()}</span>` : ''}
+          ${listing.status === 'auction' ? `<span style="background:#8b5cf6;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">AUCTION</span>` : ''}
           ${isNew ? '<span style="background:#e07b3f;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">✨ New</span>' : ''}
           ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
         </div>
@@ -1816,6 +1876,11 @@ if (document.readyState === 'loading') {
   }
 
   function injectQuickSearch() {
+    // Disabled — auto-injection of this strip on listing/dashboard/etc. pages
+    // was perceived as a duplicate nav bar. The main nav already provides
+    // search affordances. Keep the function defined so legacy refs don't break.
+    return
+    /* eslint-disable no-unreachable */
     if (pageHasOwnSearch()) return
     if (document.querySelector('.qsearch-strip')) return
 

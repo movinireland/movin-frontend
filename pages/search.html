@@ -79,7 +79,7 @@
     .modal{background:#fff;border-radius:24px 24px 0 0;padding:1.25rem 1.25rem 2rem;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;transform:translateY(100%);transition:transform .25s ease}
     .modal-bg.open .modal{transform:translateY(0)}
     .modal-handle{width:40px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 1rem}
-    .modal-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:1.25rem}
+    .modal-title{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:20px;font-weight:700;margin-bottom:1.25rem}
     .filter-section{margin-bottom:1.25rem}
     .filter-section-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:.65rem}
     .filter-opts{display:flex;flex-wrap:wrap;gap:6px}
@@ -276,11 +276,22 @@
       </div>
 
       <div class="filter-section">
-        <div class="filter-section-label">Facilities</div>
+        <div class="filter-section-label">Facilities &amp; features</div>
         <div class="cb-col">
           <label class="cb-row"><input type="checkbox" id="f-parking"/><label>Parking</label></label>
           <label class="cb-row"><input type="checkbox" id="f-garden"/><label>Garden</label></label>
           <label class="cb-row"><input type="checkbox" id="f-garage"/><label>Garage</label></label>
+          <label class="cb-row"><input type="checkbox" id="f-alarm"/><label>Alarm system</label></label>
+          <label class="cb-row"><input type="checkbox" id="f-wheelchair"/><label>Wheelchair access</label></label>
+        </div>
+      </div>
+
+      <!-- Buy-only filters: hidden when searchType === 'rent' or 'share' -->
+      <div class="filter-section" id="filters-buy-only">
+        <div class="filter-section-label">Sale specifics</div>
+        <div class="cb-col">
+          <label class="cb-row"><input type="checkbox" id="f-auction"/><label>Auction</label></label>
+          <label class="cb-row"><input type="checkbox" id="f-newdev"/><label>New development</label></label>
         </div>
       </div>
 
@@ -559,6 +570,7 @@
       activeType = t
       document.querySelectorAll('.pill[data-type]').forEach(p => p.classList.remove('active'))
       el.classList.add('active')
+      if (typeof applyFilterVisibility === 'function') applyFilterVisibility()
       doSearch()
     }
 
@@ -574,10 +586,20 @@
       document.getElementById('f-max').value = ''
       document.querySelectorAll('.f-opt').forEach(o => o.classList.remove('on'))
       document.querySelectorAll('.ber-btn').forEach(b => b.classList.remove('on'))
-      document.getElementById('f-parking').checked = false
-      document.getElementById('f-garden').checked = false
-      document.getElementById('f-garage').checked = false
+      ;['f-parking','f-garden','f-garage','f-alarm','f-wheelchair','f-auction','f-newdev'].forEach(function(id){
+        var el = document.getElementById(id); if (el) el.checked = false
+      })
     }
+
+    // Show/hide buy-only filter section based on active listing type.
+    // Called whenever the user changes between Buy / Rent / Share tabs.
+    function applyFilterVisibility(){
+      var buyOnly = document.getElementById('filters-buy-only')
+      if (!buyOnly) return
+      var isBuy = !activeType || activeType === 'sale'
+      buyOnly.style.display = isBuy ? '' : 'none'
+    }
+    applyFilterVisibility()
 
     function applyFilters() {
       document.getElementById('filter-modal').classList.remove('open')
@@ -612,8 +634,16 @@
       if (document.getElementById('f-max').value) filters.max_price = document.getElementById('f-max').value
       if (bedEl)        filters.bedrooms = bedEl.dataset.val
       if (berEl.length) filters.ber = berEl[0]
-      if (document.getElementById('f-parking')?.checked) filters.parking = '1'
-      if (document.getElementById('f-garden')?.checked)  filters.garden  = '1'
+      if (document.getElementById('f-parking')?.checked)    filters.parking    = '1'
+      if (document.getElementById('f-garden')?.checked)     filters.garden     = '1'
+      if (document.getElementById('f-garage')?.checked)     filters.garage     = '1'
+      if (document.getElementById('f-alarm')?.checked)      filters.alarm      = '1'
+      if (document.getElementById('f-wheelchair')?.checked) filters.wheelchair = '1'
+      // Buy-only flags
+      if ((!activeType || activeType === 'sale')) {
+        if (document.getElementById('f-auction')?.checked) filters.is_auction = '1'
+        if (document.getElementById('f-newdev')?.checked)  filters.is_new_dev = '1'
+      }
       filters.sort  = document.getElementById('sort-sel').value
       filters.page  = page
       filters.limit = 12
@@ -633,7 +663,7 @@
         if (!res.listings.length) {
           grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 1rem">
             <div style="font-size:44px;margin-bottom:1rem">🔍</div>
-            <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:#111;margin-bottom:.5rem">No properties found</h3>
+            <h3 style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:20px;font-weight:700;color:#111;margin-bottom:.5rem">No properties found</h3>
             <p style="font-size:14px;color:#aaa;margin-bottom:1.5rem;max-width:300px;margin-left:auto;margin-right:auto">Try widening your search — remove a filter or choose a different area.</p>
             <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap">
               <button onclick="clearSearch()" class="btn btn-primary btn-sm">Clear all filters</button>
@@ -687,7 +717,7 @@
   </script>
   <footer class="site-footer" id="site-footer"></footer>
   <div id="rv-section" style="padding:1rem 1rem 0;display:none">
-    <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
+    <div style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
     <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem"></div>
   </div>
   <footer class="site-footer" id="site-footer"></footer>
@@ -696,7 +726,7 @@
 
   <!-- Recently viewed -->
   <div id="rv-wrap" style="padding:1rem 1rem 0;display:none">
-    <div style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
+    <div style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
     <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;scrollbar-width:none"></div>
   </div>
 

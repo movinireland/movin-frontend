@@ -22,7 +22,7 @@
     .list-hero::after{content:'';position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(224,123,63,.10);bottom:-200px;right:-160px;pointer-events:none}
     .list-hero > *{position:relative;z-index:2}
     .list-hero-badge{display:inline-block;background:rgba(255,255,255,.15);color:#fff;font-size:12px;padding:5px 15px;border-radius:var(--radius-pill);margin-bottom:1rem;backdrop-filter:blur(6px)}
-    .list-hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,6vw,34px);font-weight:900;color:#fff;margin-bottom:.5rem;line-height:1.1}
+    .list-hero h1{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:clamp(26px,6vw,34px);font-weight:900;color:#fff;margin-bottom:.5rem;line-height:1.1}
     .list-hero h1 em{font-style:normal;color:#e07b3f}
     .list-hero p{font-size:15px;color:rgba(255,255,255,.7);font-weight:300}
     .form-wrap{max-width:700px;margin:0 auto;padding:2rem 1.5rem 4rem}
@@ -37,11 +37,12 @@
     .type-lbl{font-size:12px;color:#666;font-weight:500}
     .type-btn.on .type-lbl{color:var(--green);font-weight:600}
 
-    .plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+    .plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
+    @media(max-width:680px){.plan-grid{grid-template-columns:1fr}}
     .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
     .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
     .plan-badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;display:inline-block;margin-bottom:.6rem}
-    .plan-price{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#111;margin-bottom:2px}
+    .plan-price{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:26px;font-weight:700;color:#111;margin-bottom:2px}
     .plan-opt.on .plan-price{color:var(--green)}
     .plan-desc{font-size:12px;color:#bbb;margin-bottom:.85rem}
     .plan-list{list-style:none;display:flex;flex-direction:column;gap:5px}
@@ -81,7 +82,7 @@
     .cat-gate{max-width:760px;margin:-2.5rem auto 0;padding:0 1.25rem 2.5rem;position:relative;z-index:3}
     .cat-gate-card{background:var(--white,#fff);border:1px solid var(--border);border-radius:22px;padding:1.75rem;box-shadow:0 14px 40px rgba(0,0,0,.08)}
     .cat-gate-eyebrow{font-size:11px;color:#888;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:.4rem;font-weight:500}
-    .cat-gate-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--text,#111);margin-bottom:.4rem}
+    .cat-gate-title{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:24px;font-weight:700;color:var(--text,#111);margin-bottom:.4rem}
     .cat-gate-sub{font-size:14px;color:var(--muted,#888);font-weight:300;margin-bottom:1.5rem;line-height:1.5}
     .cat-pick{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
     @media(max-width:560px){.cat-pick{grid-template-columns:1fr}}
@@ -100,7 +101,7 @@
     }
     .cat-card .cat-icon svg{width:26px;height:26px}
     .cat-card:hover .cat-icon{transform:scale(1.05) rotate(-3deg)}
-    .cat-card .cat-name{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--text,#111)}
+    .cat-card .cat-name{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:700;color:var(--text,#111)}
     .cat-card .cat-desc{font-size:13px;color:var(--muted,#888);font-weight:300;line-height:1.55}
     .cat-card .cat-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:.5rem}
     .cat-card .cat-tag{font-size:10px;font-weight:600;padding:3px 9px;border-radius:50px;background:#fff;color:#666;border:1px solid var(--border);letter-spacing:.3px}
@@ -481,17 +482,41 @@
         <div class="card-title">Choose your plan</div>
         <div class="card-sub" id="plan-sub">Your first listing is completely free — no card required</div>
         <div class="plan-grid" id="plan-grid">
-          <div class="plan-opt on" data-plan="free">
-            <div class="plan-badge">Your first listing</div>
-            <div class="plan-price">€0</div>
-            <div class="plan-desc">Free, always</div>
-            <ul class="plan-list"><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live</li></ul>
+          <div class="plan-opt on" data-plan="standard">
+            <div class="plan-badge">Standard</div>
+            <div class="plan-price"><span id="plan-price-standard">€0</span></div>
+            <div class="plan-desc" id="plan-desc-standard">Your first listing is free</div>
+            <ul class="plan-list">
+              <li>Full listing page</li>
+              <li>Photo gallery</li>
+              <li>Enquiry inbox</li>
+              <li>30 days live</li>
+            </ul>
           </div>
-          <div class="plan-opt" data-plan="paid">
-            <div class="plan-badge" style="background:var(--green)">Standard listing</div>
-            <div class="plan-price">€24.99</div>
-            <div class="plan-desc">Per listing after first</div>
-            <ul class="plan-list"><li>Everything in free</li><li>Boost visibility</li><li>Analytics</li><li>Priority support</li></ul>
+          <div class="plan-opt" data-plan="featured">
+            <div class="plan-badge" style="background:var(--green)">Featured ★</div>
+            <div class="plan-price">€59.99</div>
+            <div class="plan-desc">Show above standard listings</div>
+            <ul class="plan-list">
+              <li>Everything in Standard</li>
+              <li>Featured badge on cards</li>
+              <li>Top of search results</li>
+              <li>2× more views on average</li>
+              <li>Performance analytics</li>
+            </ul>
+          </div>
+          <div class="plan-opt" data-plan="premium">
+            <div class="plan-badge" style="background:linear-gradient(135deg,#e07b3f,#c45e20)">Premium ⚡</div>
+            <div class="plan-price">€149.99</div>
+            <div class="plan-desc">Maximum visibility</div>
+            <ul class="plan-list">
+              <li>Everything in Featured</li>
+              <li>Premium badge (gold)</li>
+              <li>Homepage carousel feature</li>
+              <li>Social media promotion</li>
+              <li>60 days live (vs 30)</li>
+              <li>Priority human support</li>
+            </ul>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:.5rem">
@@ -752,6 +777,7 @@
           garage:          document.getElementById('f-garage').checked,
           alarm:           document.getElementById('f-alarm').checked,
           wheelchair:      document.getElementById('f-wheelchair').checked,
+          plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',
         }
 
         var res = await API.listings.create(payload)

@@ -25,9 +25,9 @@
     .ag-banner::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(224,123,63,.12);top:-150px;right:-100px;pointer-events:none}
     .ag-banner-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;position:relative;z-index:1}
     .ag-id{display:flex;align-items:center;gap:1rem;flex:1;min-width:240px}
-    .ag-logo{width:64px;height:64px;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;font-size:26px;flex-shrink:0;overflow:hidden}
+    .ag-logo{width:64px;height:64px;border-radius:14px;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-weight:900;font-size:26px;flex-shrink:0;overflow:hidden}
     .ag-logo img{width:100%;height:100%;object-fit:cover}
-    .ag-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin:0 0 4px;line-height:1.1}
+    .ag-name{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:24px;font-weight:900;margin:0 0 4px;line-height:1.1}
     .ag-pills{display:flex;gap:6px;flex-wrap:wrap}
     .ag-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:50px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.92);display:inline-flex;align-items:center;gap:5px;letter-spacing:.2px}
     .ag-pill.verified{background:rgba(126,201,168,.22);color:#a8e6c8}
@@ -56,7 +56,7 @@
     .stat-card .si{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:9px;background:var(--gl);display:flex;align-items:center;justify-content:center;color:var(--g)}
     .stat-card .si svg{width:16px;height:16px;stroke:currentColor;fill:none}
     .stat-l{font-size:11.5px;color:#888;font-weight:500;letter-spacing:.3px;text-transform:uppercase;margin-bottom:8px}
-    .stat-n{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;color:#111;line-height:1;letter-spacing:-.5px}
+    .stat-n{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:30px;font-weight:900;color:#111;line-height:1;letter-spacing:-.5px}
     .stat-d{font-size:11px;color:#aaa;margin-top:6px;font-weight:300}
     .stat-d .delta-up{color:#16a34a;font-weight:600}
     .stat-d .delta-down{color:#dc2626;font-weight:600}
@@ -64,7 +64,7 @@
     /* ── Section card ────────────────────────────────────────────── */
     .section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:1.5rem;margin-bottom:1.25rem}
     .section-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
-    .section-t{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#111;margin:0}
+    .section-t{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:700;color:#111;margin:0}
     .section-sub{font-size:12.5px;color:#aaa;font-weight:300;margin-top:2px}
 
     /* ── Filter chips ────────────────────────────────────────────── */
@@ -95,6 +95,16 @@
 
     .status-pill{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:50px;text-transform:uppercase;letter-spacing:.4px;display:inline-flex;align-items:center;gap:4px}
     .status-pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+    /* Editable status select — styled to look identical to a pill */
+    .status-sel{font-size:10.5px;font-weight:600;padding:3px 22px 3px 18px;border-radius:50px;text-transform:uppercase;letter-spacing:.4px;border:none;cursor:pointer;font-family:inherit;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='currentColor' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;outline:none;position:relative}
+    .status-sel:focus{box-shadow:0 0 0 2px rgba(26,92,69,.18)}
+    .status-sel.status-active{background-color:rgba(42,170,80,.12);color:#1a7a3a}
+    .status-sel.status-sale_agreed,.status-sel.status-let_agreed{background-color:#fef3c7;color:#92400e}
+    .status-sel.status-auction{background-color:#ede9fe;color:#6d28d9}
+    .status-sel.status-sold,.status-sel.status-let{background-color:#dbeafe;color:#1e40af}
+    .status-sel.status-draft{background-color:#f5f2ec;color:#888}
+    .status-sel.status-pending,.status-sel.status-pending_review,.status-sel.status-pending_payment{background-color:#fdf0e6;color:#b85a16}
+    .status-sel.status-expired,.status-sel.status-rejected{background-color:#fef2f2;color:#dc2626}
     .status-active{background:rgba(42,170,80,.12);color:#1a7a3a}
     .status-pending,.status-pending_review,.status-pending_payment{background:#fdf0e6;color:#b85a16}
     .status-draft{background:#f5f2ec;color:#888}
@@ -139,7 +149,7 @@
     /* ── Empty / loading ────────────────────────────────────────── */
     .empty{text-align:center;padding:3rem 1rem;color:#888}
     .empty svg{width:48px;height:48px;color:#ccc;margin-bottom:.85rem;stroke:currentColor;fill:none}
-    .empty h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#444;margin:.5rem 0}
+    .empty h3{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:700;color:#444;margin:.5rem 0}
     .empty p{font-size:13.5px;color:#888;margin-bottom:1.25rem;font-weight:300}
     .spinner{width:32px;height:32px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:sp .7s linear infinite;margin:3rem auto;display:block}
     @keyframes sp{to{transform:rotate(360deg)}}
@@ -150,7 +160,7 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .modal{background:#fff;border-radius:22px;width:100%;max-width:520px;padding:2rem;animation:slideUp .25s ease}
     @keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
-    .modal-h{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#111;margin:0 0 .35rem}
+    .modal-h{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:22px;font-weight:900;color:#111;margin:0 0 .35rem}
     .modal-sub{font-size:13.5px;color:#888;font-weight:300;margin-bottom:1.5rem;line-height:1.55}
     .modal-close{position:absolute;top:14px;right:16px;background:#f5f2ec;border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;color:#666;display:flex;align-items:center;justify-content:center}
     .modal{position:relative}
@@ -168,7 +178,7 @@
     /* ── Welcome banner (first-time agents) ──────────────────────── */
     .welcome{background:linear-gradient(135deg,#fdf0e6 0%, #fff 60%);border:1.5px solid #fce0c0;border-radius:18px;padding:1.4rem 1.5rem;margin-bottom:1.25rem;display:flex;gap:1rem;align-items:center}
     .welcome-icon{font-size:28px;flex-shrink:0}
-    .welcome h4{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#111;margin:0 0 4px}
+    .welcome h4{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:17px;font-weight:700;color:#111;margin:0 0 4px}
     .welcome p{font-size:13px;color:#666;margin:0;line-height:1.55;font-weight:300}
     .welcome-x{margin-left:auto;background:none;border:none;cursor:pointer;color:#aaa;font-size:18px;padding:6px;flex-shrink:0}
 
@@ -591,12 +601,45 @@
         var thumbHTML = l.primary_photo
           ? '<img src="' + escapeHtml(l.primary_photo) + '" alt=""/>'
           : '<svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>'
+        // For listings that the agent controls (active/sale_agreed/let_agreed/auction/sold/let)
+        // we render an inline status SELECT so they can update without leaving the page.
+        // Admin-controlled statuses (pending_review, rejected) stay read-only.
+        var s = l.status || 'draft'
+        var isAdminControlled = ['pending_review','pending_payment','rejected'].indexOf(s) > -1
+        var statusHTML
+        if (isAdminControlled) {
+          statusHTML = '<span class="status-pill status-' + s + '">' + s.replace('_',' ') + '</span>'
+        } else {
+          var opts = [
+            ['active', 'Live'],
+            ['sale_agreed', 'Sale agreed'],
+            ['let_agreed', 'Let agreed'],
+            ['auction', 'Auction'],
+            ['sold', 'Sold'],
+            ['let', 'Let'],
+            ['draft', 'Draft'],
+            ['expired', 'Expired']
+          ]
+          // Filter: only show sale-y states for sale listings; let-y for rent listings
+          var isRent = l.listing_type === 'rent' || l.listing_type === 'share'
+          opts = opts.filter(function(o){
+            if (o[0] === 'sale_agreed' || o[0] === 'sold' || o[0] === 'auction') return !isRent
+            if (o[0] === 'let_agreed'  || o[0] === 'let')                       return  isRent
+            return true
+          })
+          statusHTML = '<select class="status-sel status-' + s + '" data-id="' + l.id + '" onchange="changeStatus(this)">' +
+            opts.map(function(o){
+              var sel = (o[0] === s) ? ' selected' : ''
+              return '<option value="' + o[0] + '"' + sel + '>' + o[1] + '</option>'
+            }).join('') +
+          '</select>'
+        }
         return '<div class="lst-row">' +
           '<div class="lst-thumb">' + thumbHTML + '</div>' +
           '<div class="lst-body">' +
             '<div class="lst-title">' + escapeHtml(l.title) + '</div>' +
             '<div class="lst-meta">' +
-              '<span class="status-pill status-' + (l.status || 'draft') + '">' + (l.status || 'draft').replace('_',' ') + '</span>' +
+              statusHTML +
               '<span class="cat-pill ' + cat + '">' + cat + '</span>' +
               '<span>' + escapeHtml(typeLabel) + '</span>' +
               '<span class="sep">·</span>' +
@@ -621,6 +664,25 @@
       try { await API.listings.delete(id); toast('Listing deleted'); await loadListings(); renderOverview() }
       catch(e){ toast(e.message || 'Could not delete', 'error') }
     }
+    async function changeStatus(sel){
+      var id  = sel.dataset.id
+      var val = sel.value
+      // Refresh the pill colour immediately so it feels snappy
+      sel.className = 'status-sel status-' + val
+      try {
+        await API.listings.update(id, { status: val })
+        toast('Status updated to ' + val.replace('_',' '))
+        // Update local cache so the filter chips re-render correctly
+        var l = STATE.listings.find(function(x){ return x.id === id })
+        if (l) l.status = val
+        renderOverview()
+      } catch(e){
+        toast(e.message || 'Could not update status', 'error')
+        // Revert
+        await loadListings()
+      }
+    }
+    window.changeStatus = changeStatus
 
     // ── Enquiries ─────────────────────────────────────────────────────────
     async function loadEnquiries(){
