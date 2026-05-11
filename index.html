@@ -935,6 +935,7 @@ body.hero-places-ready .sugg-box{display:none !important}
         </div>
       </li>
 
+      <li onclick="go('pages/latest.html')">Latest</li>
       <li onclick="go('pages/commercial.html')">Commercial</li>
       <li onclick="go('pages/list.html')">List your property</li>
       <li onclick="go('pages/tools.html')">Tools</li>
@@ -963,6 +964,7 @@ body.hero-places-ready .sugg-box{display:none !important}
     <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
     <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
     <div class="mm-item" onclick="go('pages/commercial.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Commercial property</div>
+    <div class="mm-item" onclick="go('pages/latest.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-new-listing"/></svg></div>Latest listings</div>
     <div class="mm-divider"></div>
     <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
     <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
@@ -1218,7 +1220,7 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<div class="section reveal">
+<div class="section reveal mobile-hide">
   <div class="section-eyebrow">Just listed</div>
   <div class="section-hdr">
     <h2 class="section-title">Latest listings</h2>

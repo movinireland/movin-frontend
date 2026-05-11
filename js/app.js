@@ -291,6 +291,9 @@ function renderNav(activePage = '') {
           </div>
         </li>
 
+        <li class="${activePage === 'latest' ? 'active' : ''}"
+            onclick="window.location.href='${root}pages/latest.html'">Latest</li>
+
         <li class="${activePage === 'commercial' ? 'active' : ''}"
             onclick="window.location.href='${root}pages/commercial.html'">Commercial</li>
 
@@ -384,6 +387,7 @@ function renderNav(activePage = '') {
         '<div class="mm-item" onclick="location.href=\'/pages/search.html?listing_type=rent\';toggleMobileMenu()"><div class="mm-icon">' + icon('apartment',18) + '</div>Rent a property</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/map-search.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('map',18) + '</div>Map search</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/commercial.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Commercial</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/latest.html\';toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6">' + icon('new-listing',18,'#e07b3f') + '</div>Latest listings</div>' +
         '<div class="mm-divider"></div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/tools.html#mortgage\';toggleMobileMenu()"><div class="mm-icon">' + icon('calculator',18) + '</div>Mortgage calculator</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/tools.html#valuation\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Home valuation</div>' +
