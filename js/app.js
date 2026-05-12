@@ -492,7 +492,7 @@ function movinOrgSchema(){
     'name': 'Movin.ie',
     'url': window.MOVIN_ORIGIN + '/',
     'logo': window.MOVIN_ORIGIN + '/favicon.svg',
-    'description': "Ireland's modern property marketplace. Buy, rent, share and list — your first listing is free.",
+    'description': "Ireland's modern property marketplace. Buy, rent, share and list — listings are free for private sellers and landlords (launch period).",
     'areaServed': { '@type': 'Country', 'name': 'Ireland' },
     'address': {
       '@type': 'PostalAddress',
@@ -743,7 +743,7 @@ function renderTypeLanding(opts){
 
   // Bottom CTA copy varies by listing type
   var bottomCta = listingType === 'sale'
-    ? { h:'Selling instead?', p:'List your property in under 5 minutes — your first listing on Movin is completely free.', cta:'List your property →', href: root + 'list.html' }
+    ? { h:'Selling instead?', p:'List your property in under 5 minutes — listing is free for private sellers and landlords during our launch period.', cta:'List your property →', href: root + 'list.html' }
     : listingType === 'rent'
     ? { h:'Letting your property?', p:'Reach renters across Ireland — flat-fee listings, no monthly contract, no surprise charges.', cta:'List a rental →', href: root + 'list.html' }
     : { h:'Got a room to share?', p:'List a single room in your home — perfect for splitting rent or making space for a flatmate.', cta:'List a room →', href: root + 'list.html' }
@@ -907,7 +907,7 @@ function renderTypeLanding(opts){
         '<div class="tlp-empty">' +
           '<div class="tlp-empty-ico">🔍</div>' +
           '<h3>No matches yet</h3>' +
-          '<p>Try widening the filters above — or be the first to list. Your first listing on Movin is completely free.</p>' +
+          '<p>Try widening the filters above — or be the first to list. Listings are free for private sellers and landlords during our launch period.</p>' +
           '<div class="tlp-empty-cta">' +
             '<a class="primary" href="' + root + 'list.html">List a property</a>' +
             '<a class="ghost" href="' + root + 'search.html?listing_type=' + listingType + '">Browse all listings</a>' +

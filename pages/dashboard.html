@@ -365,7 +365,7 @@
         var statusLabel = (l.status||'draft').replace(/_/g,' ')
         var dotClass = 'dot-' + (l.status||'draft')
         var payBtn = l.status === 'pending_payment'
-          ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\')">Pay €24.99</button>'
+          ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\')">Pay to publish</button>'
           : ''
         return '<div class="listing-row">' +
           '<div class="listing-thumb">' + thumb + '</div>' +

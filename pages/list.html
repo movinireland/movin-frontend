@@ -251,8 +251,8 @@
     <div class="pricing-info-banner" style="background:linear-gradient(135deg,#e9f4ef 0%,#fdf0e6 100%);border:1.5px solid #c8dfd4;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;gap:.85rem;align-items:flex-start;font-size:13.5px;line-height:1.55;color:#333">
       <span style="font-size:22px;flex-shrink:0;line-height:1">🎉</span>
       <div>
-        <strong style="color:var(--green,#1a5c45)">Listing on Movin.ie is currently free for private sellers and landlords.</strong>
-        <span style="display:block;margin-top:4px;color:#555;font-size:13px">Estate agents: single listing <strong>€29.99</strong> or unlimited listings from <strong>€149.99/month</strong>.</span>
+        <strong style="color:var(--green,#1a5c45)">Listing on Movin.ie is free for private sellers and landlords during our launch period.</strong>
+        <span style="display:block;margin-top:4px;color:#555;font-size:13px">Estate agents — see our <a href="terms-of-service.html#pricing" target="_blank" rel="noopener" style="color:var(--green,#1a5c45);font-weight:500;text-decoration:underline">plan options</a> in the Terms of Service.</span>
       </div>
     </div>
 
@@ -489,12 +489,12 @@
     <div id="step-5" style="display:none">
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Choose your plan</div>
-        <div class="card-sub" id="plan-sub">Your first listing is completely free — no card required</div>
+        <div class="card-sub" id="plan-sub">Free for private sellers and landlords — no card required during our launch period</div>
         <div class="plan-grid" id="plan-grid">
           <div class="plan-opt on" data-plan="standard">
             <div class="plan-badge">Standard</div>
-            <div class="plan-price"><span id="plan-price-standard">€0</span></div>
-            <div class="plan-desc" id="plan-desc-standard">Your first listing is free</div>
+            <div class="plan-price" style="font-size:22px">Free</div>
+            <div class="plan-desc" id="plan-desc-standard">For private sellers &amp; landlords — launch period</div>
             <ul class="plan-list">
               <li>Full listing page</li>
               <li>Photo gallery</li>
@@ -504,8 +504,8 @@
           </div>
           <div class="plan-opt" data-plan="featured">
             <div class="plan-badge" style="background:var(--green)">Featured ★</div>
-            <div class="plan-price">€59.99</div>
-            <div class="plan-desc">Show above standard listings</div>
+            <div class="plan-price" style="font-size:22px">Featured</div>
+            <div class="plan-desc">Boosted placement in search</div>
             <ul class="plan-list">
               <li>Everything in Standard</li>
               <li>Featured badge on cards</li>
@@ -516,8 +516,8 @@
           </div>
           <div class="plan-opt" data-plan="premium">
             <div class="plan-badge" style="background:linear-gradient(135deg,#e07b3f,#c45e20)">Premium ⚡</div>
-            <div class="plan-price">€149.99</div>
-            <div class="plan-desc">Maximum visibility</div>
+            <div class="plan-price" style="font-size:22px">Premium</div>
+            <div class="plan-desc">Maximum visibility — agents</div>
             <ul class="plan-list">
               <li>Everything in Featured</li>
               <li>Premium badge (gold)</li>
@@ -528,6 +528,7 @@
             </ul>
           </div>
         </div>
+        <p style="font-size:12px;color:#888;text-align:center;margin-top:.65rem">Pricing details for paid plans are in our <a href="terms-of-service.html#pricing" target="_blank" rel="noopener" style="color:var(--green,#1a5c45);text-decoration:underline">Terms of Service</a>.</p>
         <label for="list-terms-agree" style="display:flex;gap:10px;align-items:flex-start;padding:.85rem 1rem;background:#f7f5f0;border:1.5px solid var(--border);border-radius:12px;margin:1rem 0 .85rem;cursor:pointer;transition:border-color .15s">
           <input type="checkbox" id="list-terms-agree" style="margin-top:2px;width:18px;height:18px;accent-color:#1a5c45;cursor:pointer;flex-shrink:0"/>
           <span style="font-size:13px;color:#555;line-height:1.55">
@@ -539,7 +540,7 @@
           <button class="btn btn-ghost" onclick="goStep(4)">← Back</button>
           <button class="btn btn-orange btn-lg" id="publish-btn" onclick="publishListing()"><svg width="18" height="18" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg> Publish listing</button>
         </div>
-        <p style="text-align:center;font-size:12px;color:var(--green);margin-top:.85rem" id="free-note">🎉 This is your first listing — it's free! No payment needed.</p>
+        <p style="text-align:center;font-size:12px;color:var(--green);margin-top:.85rem" id="free-note">🎉 Listing is free for private sellers and landlords during our launch period — no payment needed.</p>
       </div>
     </div>
   </div>
@@ -572,11 +573,11 @@
         ? 'List your <em>commercial</em> property'
         : 'List your property on <em>Movin.ie</em>'
       document.getElementById('hero-sub').textContent = isCom
-        ? 'Reach buyers, tenants and investors across Ireland — flat €24.99 listing fee.'
+        ? 'Reach buyers, tenants and investors across Ireland — free for private sellers, plans for agents.'
         : 'Reach thousands of buyers and renters across Ireland — in minutes'
       document.getElementById('hero-badge').innerHTML = isCom
         ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>Commercial property'
-        : '✦ First listing always free'
+        : '✦ Free for private sellers &amp; landlords'
 
       var strip = document.getElementById('cat-active-strip')
       strip.style.display = ''
