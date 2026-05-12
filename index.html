@@ -1480,12 +1480,101 @@ function readQF(key){
   const opts = QF_OPTIONS[key]; return opts ? opts[QF_STATE[key]].v : ''
 }
 
-function doSearch(){
-  document.getElementById('loc-sugg').classList.remove('open')
+// ── Smart query router ──────────────────────────────────────────────────
+// Decides if a query is "natural language" and should go through Groq, or
+// if it's a simple location/Eircode and can skip the AI roundtrip.
+// Anything with descriptors (numbers, beds, price words, intent verbs) → AI.
+function _looksLikeNaturalLanguage(q){
+  q = (q || '').trim().toLowerCase()
+  if (q.length < 8) return false                        // too short to be a sentence
+  if (q.split(/\s+/).length >= 4) return true           // 4+ words → conversational
+  if (/\d/.test(q) && /(bed|bath|m2|sqm|sq\s?m)/.test(q)) return true
+  if (/(under|over|around|less|more)\s*\d|€|k\b|thousand|million/.test(q)) return true
+  if (/(rent|buy|sale|let|sharing|share|to let|for sale)/.test(q)) return true
+  if (/(near|close to|next to|beside|walking distance|drive to)/.test(q)) return true
+  return false
+}
+
+async function _runAiThenRedirect(q){
+  const goBtn = document.querySelector('.search-go')
+  const origHTML = goBtn ? goBtn.innerHTML : ''
+  if (goBtn) {
+    goBtn.disabled = true
+    goBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
+  }
+  try {
+    const res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'AI search failed')
+    const f = data.filters || {}
+    const p = new URLSearchParams()
+    if (f.listing_type)  p.set('listing_type',  f.listing_type)
+    else                  p.set('listing_type',  searchType)
+    if (f.property_type) p.set('property_type', f.property_type)
+    if (f.bedrooms)      p.set('bedrooms',      f.bedrooms)
+    if (f.min_price)     p.set('min_price',     f.min_price)
+    if (f.max_price)     p.set('max_price',     f.max_price)
+    if (f.county)        p.set('county',        f.county)
+    if (f.q)             p.set('q',             f.q)
+    p.set('ai', '1')                                    // marker — search.html could show "AI search for: …"
+    if (data.summary) p.set('ai_summary', data.summary)
+    window.location.href = 'pages/search.html?' + p.toString()
+  } catch (err) {
+    // AI failed — fall back gracefully to traditional search with raw text
+    console.warn('AI route failed, falling back:', err && err.message)
+    _doDirectSearch(q)
+    if (goBtn) { goBtn.disabled = false; goBtn.innerHTML = origHTML }
+  }
+}
+
+function _doDirectSearch(qOverride){
   const p=new URLSearchParams()
   p.set('listing_type',searchType)
   if(searchCounty)p.set('county',searchCounty)
-  const q=document.getElementById('hero-loc').value
+  const q = qOverride !== undefined ? qOverride : document.getElementById('hero-loc').value
+  if(q&&!searchCounty)p.set('q',q)
+  const qfBeds  = readQF('beds')
+  const qfMax   = readQF('price')
+  const qfType  = readQF('type')
+  const minP=document.getElementById('adv-min').value
+  const maxP=document.getElementById('adv-max').value
+  const beds=document.getElementById('adv-beds').value
+  const baths=document.getElementById('adv-baths').value
+  const ptype=document.getElementById('adv-ptype').value
+  const ber=document.getElementById('adv-ber').value
+  if(minP)p.set('min_price',minP)
+  const finalMax = qfMax || maxP
+  if(finalMax)p.set('max_price',finalMax)
+  const finalBeds = qfBeds || beds
+  if(finalBeds)p.set('bedrooms',finalBeds)
+  if(baths)p.set('bathrooms',baths)
+  const finalType = qfType || ptype
+  if(finalType)p.set('property_type',finalType)
+  if(ber)p.set('ber',ber)
+  document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
+  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
+    p.set('lat',  searchOrigin.lat)
+    p.set('lng',  searchOrigin.lng)
+    p.set('near', searchOrigin.label || q || '')
+  }
+  window.location.href='pages/search.html?'+p.toString()
+}
+
+function doSearch(){
+  document.getElementById('loc-sugg').classList.remove('open')
+  const q = (document.getElementById('hero-loc').value || '').trim()
+  // Route to AI when the query reads like natural language. Direct search
+  // (faster, no network roundtrip) handles short/locational queries.
+  if (q && !searchCounty && _looksLikeNaturalLanguage(q)) {
+    return _runAiThenRedirect(q)
+  }
+  const p=new URLSearchParams()
+  p.set('listing_type',searchType)
+  if(searchCounty)p.set('county',searchCounty)
   if(q&&!searchCounty)p.set('q',q)
 
   // Quick-filter pills override the advanced panel when both are set
