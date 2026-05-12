@@ -312,6 +312,77 @@ button,input,select{font-family:inherit}
 .area-chips::-webkit-scrollbar{display:none}
 .ac{border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;background:#fafaf8;color:#555;white-space:nowrap;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all .15s}
 .ac:active,.ac:hover{background:var(--g);color:#fff;border-color:var(--g)}
+/* ── Compact AI search pill ─────────────────────────────────────────── */
+.ai-pill{
+  max-width:720px; margin:1rem auto 0; padding:.85rem 1rem;
+  background:rgba(255,255,255,.94);
+  -webkit-backdrop-filter:saturate(180%) blur(14px); backdrop-filter:saturate(180%) blur(14px);
+  border:1px solid rgba(255,255,255,.85); border-radius:18px;
+  box-shadow:0 14px 36px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.04);
+  position:relative; z-index:2;
+  animation:aiPillIn .55s cubic-bezier(.2,.7,.2,1) .15s both;
+}
+@keyframes aiPillIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.ai-pill::before{
+  /* subtle gradient sheen on the top edge */
+  content:''; position:absolute; left:14%; right:14%; top:-1px; height:2px;
+  background:linear-gradient(90deg, transparent, #e07b3f 30%, #1a5c45 70%, transparent);
+  border-radius:2px; opacity:.55;
+}
+.ai-pill-head{
+  display:flex; align-items:center; gap:8px; margin-bottom:.55rem;
+  font-size:12px; color:var(--g,#1a5c45); font-weight:600; letter-spacing:.3px;
+}
+.ai-pill-spark{ font-size:13px; line-height:1 }
+.ai-pill-label{ flex:1 }
+.ai-pill-tag{
+  font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+  padding:2px 8px; border-radius:50px;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff;
+}
+.ai-pill-row{ display:flex; gap:8px; align-items:stretch }
+.ai-pill-inp{
+  flex:1; min-width:0; border:1.5px solid var(--border,#e8e4dc); border-radius:12px;
+  padding:11px 14px; font-size:14px; background:#fff; color:#222; outline:none;
+  transition:border-color .15s, box-shadow .15s; font-family:inherit;
+}
+.ai-pill-inp::placeholder{ color:#9aa19c }
+.ai-pill-inp:focus{ border-color:#1a5c45; box-shadow:0 0 0 3px rgba(26,92,69,.12) }
+.ai-pill-go{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:46px; height:auto;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff; border:none; border-radius:12px;
+  cursor:pointer; font-family:inherit; flex-shrink:0;
+  transition:transform .15s, box-shadow .18s;
+  box-shadow:0 6px 16px rgba(26,92,69,.25);
+}
+.ai-pill-go:hover{ transform:translateY(-1px); box-shadow:0 9px 22px rgba(26,92,69,.35) }
+.ai-pill-go:active{ transform:scale(.96) }
+.ai-pill-go:disabled{ opacity:.7; cursor:wait; transform:none; box-shadow:none }
+.ai-pill-go svg{ width:16px; height:16px; stroke:#fff; fill:none }
+.ai-pill-examples{
+  margin-top:.65rem; display:flex; gap:6px; flex-wrap:wrap;
+}
+.ai-chip{
+  font-size:11.5px; padding:5px 11px; border-radius:50px;
+  background:rgba(26,92,69,.07); color:#1a5c45; border:1px solid rgba(26,92,69,.14);
+  cursor:pointer; font-family:inherit;
+  transition:background .15s, border-color .15s, transform .15s;
+}
+.ai-chip:hover{ background:rgba(26,92,69,.14); border-color:rgba(26,92,69,.30); transform:translateY(-1px) }
+.ai-chip:active{ transform:scale(.97) }
+
+@media (max-width:560px){
+  .ai-pill{ margin:.85rem 1rem 0; padding:.7rem .85rem }
+  .ai-pill-inp{ font-size:13.5px; padding:10px 12px }
+  .ai-pill-go{ width:42px }
+  .ai-pill-examples .ai-chip{ font-size:11px }
+}
+[data-theme="dark"] .ai-pill{ background:rgba(26,26,26,.92); border-color:rgba(255,255,255,.06) }
+[data-theme="dark"] .ai-pill-inp{ background:#0f0f0f; border-color:#2a2a2a; color:#e8e8e8 }
+[data-theme="dark"] .ai-pill-head{ color:#7ec9a8 }
+[data-theme="dark"] .ai-chip{ background:rgba(126,201,168,.10); color:#7ec9a8; border-color:rgba(126,201,168,.22) }
+
 .stats-strip{display:flex;background:var(--gd);overflow-x:auto}
 .stats-strip::-webkit-scrollbar{display:none}
 .stat-cell{flex:1;min-width:80px;padding:1rem .5rem;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
@@ -1106,6 +1177,28 @@ body.hero-places-ready .sugg-box{display:none !important}
     </div>
 
   </div>
+
+  <!-- ── Compact AI search pill — sits beneath the main search card ─────── -->
+  <div class="ai-pill" id="ai-pill">
+    <div class="ai-pill-head">
+      <span class="ai-pill-spark" aria-hidden="true">✨</span>
+      <span class="ai-pill-label">Ask anything</span>
+      <span class="ai-pill-tag">AI</span>
+    </div>
+    <form class="ai-pill-row" onsubmit="event.preventDefault();heroAskAi()">
+      <input class="ai-pill-inp" id="ai-pill-inp" type="text"
+        placeholder="e.g. 3-bed family home in Dublin under €500k near a good school"
+        aria-label="AI search" maxlength="500"/>
+      <button class="ai-pill-go" id="ai-pill-go" type="submit" aria-label="Run AI search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+    <div class="ai-pill-examples" id="ai-pill-examples">
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">2-bed apartment to rent in Cork under €1800</button>
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">house with garden in Galway</button>
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">share a room in Dublin near LUAS</button>
+    </div>
+  </div>
 </div>
 
 <div class="stats-strip">
@@ -1493,6 +1586,32 @@ function _looksLikeNaturalLanguage(q){
   if (/(rent|buy|sale|let|sharing|share|to let|for sale)/.test(q)) return true
   if (/(near|close to|next to|beside|walking distance|drive to)/.test(q)) return true
   return false
+}
+
+// ── Compact AI pill handler (sits below the main search card) ──────────
+function useAiExample(btn){
+  const inp = document.getElementById('ai-pill-inp')
+  if (!inp || !btn) return
+  inp.value = btn.textContent.trim()
+  inp.focus()
+}
+async function heroAskAi(){
+  const inp = document.getElementById('ai-pill-inp')
+  if (!inp) return
+  const q = (inp.value || '').trim()
+  if (q.length < 4) { inp.focus(); return }
+  // Reuse the universal AI runner — same spinner, same fallback.
+  const pillBtn = document.getElementById('ai-pill-go')
+  const origHTML = pillBtn ? pillBtn.innerHTML : ''
+  if (pillBtn) {
+    pillBtn.disabled = true
+    pillBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
+  }
+  try {
+    await _runAiThenRedirect(q)
+  } finally {
+    if (pillBtn) { pillBtn.disabled = false; pillBtn.innerHTML = origHTML }
+  }
 }
 
 async function _runAiThenRedirect(q){
