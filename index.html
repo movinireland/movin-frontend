@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
 <meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Free for private sellers and landlords (launch period)."/>
-<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, daft alternative, myhome alternative, Eircode property search"/>
+<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, Eircode property search, Movin.ie"/>
 <meta name="author" content="Movin Technologies Ltd"/>
 <meta name="robots" content="index, follow, max-image-preview:large"/>
 <link rel="canonical" href="https://movin.ie/"/>
@@ -1051,7 +1051,7 @@ body.hero-places-ready .sugg-box{display:none !important}
   overflow: hidden;
 }
 .stt-row{
-  background: var(--paper-deep) !important;
+  background: var(--green-light) !important;   /* Heath Mist — soft sage that matches the brand */
   border-radius: 0 !important;
   border-bottom: 1px solid var(--border) !important;
   padding: 6px !important;
@@ -1342,6 +1342,196 @@ body.hero-places-ready .sugg-box{display:none !important}
   font-weight: 400 !important;
   line-height: 1.6;
   max-width: 580px;
+}
+
+/* ── Tools section — modern asymmetric feature grid ──────────────── */
+.tools-section{
+  background: var(--white) !important;
+  border-radius: 32px;
+  margin: 1.5rem auto 2rem !important;
+  max-width: 1180px;
+  padding: 3rem 2rem !important;
+  border: 1px solid var(--border);
+}
+.tools-head{ margin-bottom: 2rem; max-width: 640px }
+.tools-head .section-eyebrow{ margin-bottom: .5rem }
+.tools-head .section-title{ margin-bottom: .5rem }
+.tools-grid{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 1rem;
+}
+@media (max-width: 980px){ .tools-grid{ grid-template-columns: 1fr 1fr; } .tool-card-feature{ grid-column: 1 / -1; } }
+@media (max-width: 560px){ .tools-grid{ grid-template-columns: 1fr; } .tool-card-feature{ grid-column: 1; } }
+
+.tool-card{
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: .6rem;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.4rem 1.4rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, border-color .25s, background .25s;
+  overflow: hidden;
+}
+.tool-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -18px rgba(31,36,33,.18);
+  border-color: var(--g);
+  background: var(--white);
+}
+.tool-card-icon{
+  width: 44px; height: 44px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: .25rem;
+  transition: transform .3s ease;
+}
+.tool-card:hover .tool-card-icon{ transform: scale(1.06) rotate(-3deg) }
+.tool-card-title{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px; font-weight: 700; color: var(--text);
+  letter-spacing: -.2px; line-height: 1.2;
+  margin: 0;
+}
+.tool-card-sub{
+  font-size: 13px; color: var(--muted);
+  line-height: 1.55; font-weight: 400; margin: 0;
+}
+.tool-card-cta{
+  margin-top: auto;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--g);
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: gap .2s ease;
+}
+.tool-card:hover .tool-card-cta{ gap: 9px }
+
+/* Featured card — bigger, with decorative SVG background panel */
+.tool-card-feature{
+  position: relative;
+  grid-row: span 1;
+  display: flex; flex-direction: column;
+  padding: 0;
+  background: linear-gradient(135deg, #f7faf6 0%, #e9f4ef 100%);
+  border-color: var(--green-light);
+  min-height: 240px;
+}
+.tool-card-feature .tool-card-bg{
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+.tool-card-feature .tool-card-bg svg{ width: 100%; height: 100% }
+.tool-card-feature .tool-card-content{
+  position: relative; z-index: 1;
+  padding: 1.6rem 1.6rem 1.6rem;
+  display: flex; flex-direction: column; gap: .55rem;
+  margin-top: auto;
+}
+.tool-card-tag{
+  display: inline-block; align-self: flex-start;
+  background: var(--g); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 4px 10px; border-radius: 50px;
+  margin-bottom: .25rem;
+}
+.tool-card-feature .tool-card-title{ font-size: 22px; letter-spacing: -.4px; line-height: 1.15; }
+.tool-card-feature .tool-card-sub{ font-size: 14px; max-width: 360px }
+.tool-card-feature:hover{ background: linear-gradient(135deg, #f0f7ed 0%, #d9ebde 100%); border-color: var(--g) }
+
+/* ── Trust / testimonials — refreshed quote-card grid ────────────── */
+.trust-section{
+  background: var(--white) !important;
+  border-radius: 32px;
+  margin: 1rem auto 2rem !important;
+  max-width: 1180px;
+  padding: 3rem 2rem 3.5rem !important;
+  border: 1px solid var(--border);
+}
+.trust-head{ text-align: center; max-width: 620px; margin: 0 auto 2.25rem }
+.trust-head .section-eyebrow{ justify-content: center; display: inline-flex }
+.trust-head .section-sub{ margin-left: auto; margin-right: auto; }
+.trust-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 880px){ .trust-grid{ grid-template-columns: 1fr; gap: 1rem; } }
+.trust-card{
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+  overflow: hidden;
+}
+.trust-card::after{
+  content:''; position:absolute; top:0; right:0; width: 120px; height: 120px;
+  background: radial-gradient(circle at top right, rgba(217,120,71,.10), transparent 65%);
+  pointer-events: none;
+}
+.trust-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -16px rgba(31,36,33,.16);
+  border-color: var(--g);
+}
+.trust-quote-mark{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 64px; line-height: .6; color: var(--o);
+  height: 32px;
+  font-weight: 900;
+}
+.trust-quote{
+  flex: 1;
+  font-size: 15px; line-height: 1.65;
+  color: var(--text);
+  font-weight: 400; font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -.1px;
+  margin: 0;
+}
+.trust-byline{
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.trust-avatar{
+  width: 38px; height: 38px; border-radius: 50%;
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  flex-shrink: 0;
+}
+.trust-name{
+  font-size: 13.5px; font-weight: 600; color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+.trust-role{
+  font-size: 11.5px; color: var(--muted); font-weight: 400;
+  margin-top: 1px;
+}
+.trust-stars{
+  margin-left: auto;
+  color: var(--o);
+  font-size: 13px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px){
+  .tools-section, .trust-section{ padding: 1.75rem 1.25rem !important; border-radius: 22px; margin: 1rem 1rem 1.5rem !important }
+  .tool-card{ padding: 1.1rem 1.1rem 1.2rem }
+  .tool-card-feature .tool-card-content{ padding: 1.25rem }
+  .trust-head{ margin-bottom: 1.5rem }
+  .trust-card{ padding: 1.25rem }
+  .trust-quote{ font-size: 14.5px }
 }
 
 /* ── Why-pricing — refresh the dark band so it works with new theme ─ */
@@ -1717,39 +1907,54 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </section>
 
-<div class="section reveal mobile-hide" style="background:#fff">
-  <div style="margin-bottom:1.75rem">
-    <div class="section-eyebrow">Where to next</div>
-    <h2 class="section-title">Smarter ways to find a home</h2>
-    <p class="section-sub">Tools that go beyond a basic search — built for how Irish people actually browse property today.</p>
+<!-- Tools row — clean modern feature cards -->
+<section class="section reveal mobile-hide tools-section">
+  <div class="tools-head">
+    <div class="section-eyebrow">Tools to find faster</div>
+    <h2 class="section-title">Everything you need in one place</h2>
+    <p class="section-sub">Search by map, drive-time, AI chat or postcode. Calculate your mortgage. List your property in minutes.</p>
   </div>
-  <div class="qa-grid">
-    <div class="qa-card" onclick="go('pages/list.html')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>
-      <div class="qa-title">List your home</div>
-      <div class="qa-sub">Free for private sellers & landlords — no card required.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/map-search.html')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>
-      <div class="qa-title">Map search</div>
-      <div class="qa-sub">Pan and zoom Ireland — every live listing on a single map.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/drive-time.html')">
-      <div class="qa-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <div class="qa-title">Find by drive time</div>
-      <div class="qa-sub">Live near work, school, family — set a commute, see homes inside it.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/tools.html#mortgage')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>
-      <div class="qa-title">Mortgage calculator</div>
-      <div class="qa-sub">See what you can borrow and what you'd repay each month.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
+  <div class="tools-grid">
+    <a class="tool-card tool-card-feature" href="pages/map-search.html">
+      <div class="tool-card-bg" aria-hidden="true">
+        <svg viewBox="0 0 220 160" preserveAspectRatio="xMidYMid slice" fill="none"><defs><linearGradient id="tg1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1a5c45" stop-opacity=".18"/><stop offset="1" stop-color="#1a5c45" stop-opacity="0"/></linearGradient></defs><rect width="220" height="160" fill="url(#tg1)"/><path d="M10 70 Q60 30 110 60 T210 50 L210 160 L10 160 Z" fill="#1a5c45" fill-opacity=".12"/><circle cx="60" cy="60" r="5" fill="#1a5c45"/><circle cx="120" cy="80" r="5" fill="#e07b3f"/><circle cx="170" cy="50" r="5" fill="#1a5c45"/><path d="M60 60 Q90 100 120 80 T170 50" stroke="#1a5c45" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+      </div>
+      <div class="tool-card-content">
+        <span class="tool-card-tag">Featured</span>
+        <h3 class="tool-card-title">Browse the whole island on a map</h3>
+        <p class="tool-card-sub">Pan, zoom and filter every live listing across Ireland. Pin saved areas, set search alerts.</p>
+        <span class="tool-card-cta">Open map search <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="pages/drive-time.html">
+      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3 class="tool-card-title">Find by drive time</h3>
+      <p class="tool-card-sub">Live within a 30-minute drive of work, school or family.</p>
+      <span class="tool-card-cta">Try it <span aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="tool-card" href="pages/tools.html#mortgage">
+      <div class="tool-card-icon" style="background:#e9f4ef;color:#1a5c45">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 16h2M14 16h2"/></svg>
+      </div>
+      <h3 class="tool-card-title">Mortgage calculator</h3>
+      <p class="tool-card-sub">Estimate monthly repayments and what you can borrow.</p>
+      <span class="tool-card-cta">Calculate <span aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="tool-card" href="pages/list.html">
+      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M12 14v6"/><path d="M9 17h6"/></svg>
+      </div>
+      <h3 class="tool-card-title">List your property</h3>
+      <p class="tool-card-sub">Free for private sellers & landlords. No card required.</p>
+      <span class="tool-card-cta">Get started <span aria-hidden="true">→</span></span>
+    </a>
   </div>
-</div>
+</section>
 
 <div class="section reveal mobile-hide">
   <div class="section-eyebrow">Just listed</div>
@@ -1762,25 +1967,60 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<!-- Social proof first — buyers/sellers like to see this before the pitch -->
-<div class="section reveal mobile-hide" style="background:#fff">
-  <div class="section-eyebrow">Real stories</div>
-  <h2 class="section-title">Trusted across Ireland</h2>
-  <p class="section-sub">Thousands of homeowners, renters and agents already use Movin.</p>
-  <div class="test-scroll">
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. More enquiries in a day than on Daft in a month."</p><div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div></div>
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Free to list my rental — identical results to the big paid portals. Absolute no-brainer."</p><div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div></div>
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Found our forever home through Movin. The search is so much better than anything else."</p><div class="test-author">Aoife & Tadhg R.</div><div class="test-role">First-time buyers, Galway</div></div>
+<!-- Social proof — refreshed editorial card grid -->
+<section class="section reveal mobile-hide trust-section">
+  <div class="trust-head">
+    <div class="section-eyebrow">From the community</div>
+    <h2 class="section-title">Why Movin works for Irish homeowners</h2>
+    <p class="section-sub">Real stories from people who've sold, rented and found their next place on Movin.ie.</p>
   </div>
-</div>
+  <div class="trust-grid">
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Sold my Dublin 8 terrace in three weeks. The dashboard made it easy to track every viewing and reply to enquiries from one place.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#1a5c45">SM</div>
+        <div>
+          <div class="trust-name">Siobhán M.</div>
+          <div class="trust-role">Homeowner · Dublin 8</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Free to list my rental and the enquiries came in straight away. Saved a fortune compared to the paid portals and the results were honestly better.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#e07b3f">CB</div>
+        <div>
+          <div class="trust-name">Ciarán B.</div>
+          <div class="trust-role">Landlord · Cork</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Found our forever home through Movin. The map search and drive-time tools made it so much easier to figure out where we actually wanted to live.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#2a7d5c">AR</div>
+        <div>
+          <div class="trust-name">Aoife &amp; Tadhg R.</div>
+          <div class="trust-role">First-time buyers · Galway</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+  </div>
+</section>
 
 <!-- Why Movin + pricing + CTA — all in one cohesive section -->
 <section class="why-pricing reveal mobile-hide">
   <div class="wp-inner">
     <div class="wp-head">
       <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
-      <h2 class="section-title" style="color:#fff">Built for Ireland.<br>Priced for everyone.</h2>
-      <p class="section-sub" style="color:rgba(255,255,255,.78)">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
+      <h2 class="section-title" style="color:#e07b3f !important">Built for Ireland.<br>Priced for everyone.</h2>
+      <p class="section-sub" style="color:#ffffff !important">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
     </div>
 
     <div class="wp-values">
@@ -1853,7 +2093,7 @@ function go(u){window.location.href=u}
 function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
 let searchType='sale',searchCounty='',searchQuery=''
 
-// Daft-style price ranges — Buy uses lump sums, Rent and Sharing use monthly.
+// Price ranges — Buy uses lump sums, Rent and Sharing use monthly.
 // `min` and `max` arrays are independent so users can pick a sensible range.
 const PRICE_RANGES = {
   sale: {
