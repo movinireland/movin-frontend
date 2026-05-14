@@ -81,7 +81,7 @@
   if (standalone) document.documentElement.classList.add('pwa-standalone');
 })()
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,400;1,400;1,500&display=swap" rel="stylesheet"/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="apple-touch-icon" href="/favicon.svg"/>
 <meta name="theme-color" content="#1a5c45"/>
@@ -869,6 +869,292 @@ body.hero-places-ready .sugg-box{display:none !important}
   content:'';width:18px;height:1.5px;background:var(--g);border-radius:1px
 }
 
+/* ────────────────────────────────────────────────────────────────────────
+   EDITORIAL HOMEPAGE REDESIGN — "Modern Irish Editorial"
+   Premium architecture-magazine feel. Warm cream paper, deep emerald
+   inkwell, terracotta accents. Big confident Playfair, classified-style
+   uppercase labels, asymmetric composition, subtle film-grain texture.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Editorial palette — layered on top of the existing brand vars */
+:root{
+  --paper:        #f4ede0;       /* warm cream "newsprint" base */
+  --paper-soft:   #fbf6ec;
+  --ink:          #1a1a17;       /* near-black for body copy */
+  --ink-muted:    #6b6760;
+  --emerald:      #1a5c45;
+  --emerald-deep: #0a2a20;
+  --terracotta:   #c9622b;
+  --terracotta-soft:#e07b3f;
+  --rule:         #d5cdb8;       /* hairline rule colour */
+  --serif-display: 'Playfair Display','Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --serif-accent:  'Cormorant Garamond','Playfair Display', Georgia, serif;
+}
+[data-theme="dark"]:root{
+  --paper:#16140f;--paper-soft:#1a1812;--ink:#f0eadd;--ink-muted:#8a847a;--rule:#322e26;
+}
+
+/* Replace the cream/grey body bg with the warm paper tone for the hero
+   composition. The cream tone is reused below by sections that want to
+   feel "above the fold". */
+body{ background:var(--paper) }
+
+/* ── Hero composition — asymmetric editorial layout ───────────────────── */
+.hero{
+  background:
+    radial-gradient(1100px 700px at 75% -10%, rgba(201,98,43,.12) 0%, transparent 60%),
+    radial-gradient(900px 600px at -10% 100%, rgba(26,92,69,.10) 0%, transparent 55%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-soft) 100%) !important;
+  padding:3.5rem 1.5rem 1.5rem !important;
+  position:relative; overflow:hidden;
+}
+.hero::before{
+  /* Film grain — adds a paper texture without an image asset */
+  content:''; position:absolute; inset:0; pointer-events:none; opacity:.45; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .08 0 0 0 0 .07 0 0 0 0 .04 0 0 0 .8 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+}
+.hero::after{
+  /* Two thin editorial rules — top + bottom — give the hero the feel of a
+     "section" from a print magazine. */
+  content:''; position:absolute; left:1.5rem; right:1.5rem; top:1.5rem; height:1px;
+  background:linear-gradient(90deg, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
+  pointer-events:none;
+}
+.hero-noise{ display:none }   /* legacy noise layer — replaced by ::before grain */
+
+/* Margin-style decorative numerals on the hero corners — like page numbers
+   in an architectural journal. */
+.hero-inner{ position:relative; z-index:2 }
+.hero-inner::before{
+  content:'№ 01'; position:absolute;
+  top:-1.5rem; left:0;
+  font-family:var(--serif-accent);
+  font-style:italic; font-size:14px; letter-spacing:.5px;
+  color:var(--ink-muted);
+}
+.hero-inner::after{
+  content:'Spring · 2026'; position:absolute;
+  top:-1.5rem; right:0;
+  font-family:var(--serif-accent);
+  font-style:italic; font-size:14px; letter-spacing:.5px;
+  color:var(--ink-muted);
+}
+
+/* Eyebrow → classified pill */
+.hero-eyebrow{
+  background:transparent !important;
+  color:var(--ink-muted) !important;
+  padding:0 !important;
+  font-size:10.5px !important;
+  letter-spacing:2.4px !important;
+  font-weight:600 !important;
+  text-transform:uppercase;
+  backdrop-filter:none !important;
+  margin-bottom:2rem !important;
+  position:relative; padding-left:24px !important;
+}
+.hero-eyebrow::before{
+  content:''; position:absolute; left:0; top:50%; width:16px; height:1.5px;
+  background:var(--terracotta); transform:translateY(-50%); border-radius:1px;
+}
+.hero-eyebrow .pulse-dot{ display:none }
+
+/* The big editorial headline */
+.hero-h1{
+  font-family:var(--serif-display) !important;
+  font-weight:900 !important;
+  font-size:clamp(44px, 7vw, 92px) !important;
+  line-height:.95 !important;
+  letter-spacing:-2.5px !important;
+  color:var(--ink) !important;
+  margin-bottom:1.5rem !important;
+  max-width:880px;
+  text-shadow:none;
+}
+.hero-h1 em{
+  /* The "Ireland" — typeset as italic in the lighter serif for contrast */
+  font-family:var(--serif-accent) !important;
+  font-style:italic !important;
+  font-weight:400 !important;
+  color:var(--emerald) !important;
+  letter-spacing:-1.5px;
+}
+.hero-h1 em::after{ display:none }   /* drop the orange highlight rule */
+
+/* Replace the fading word-cycler with a vertical mask-roll — feels like a
+   carousel of printed cards. All words sit on top of each other, absolutely
+   positioned, while the container reserves width for the longest one. */
+.hero-rot{
+  display:inline-block; vertical-align:baseline;
+  position:relative; overflow:hidden;
+  line-height:.95;
+  height:1em;
+}
+.hero-rot::before{
+  /* Width reservation — invisible "apartment" (longest word). The italic
+     and font-family must match the visible spans so the metric is right. */
+  content:'apartment'; visibility:hidden; pointer-events:none;
+  font-style:italic; font-family:var(--serif-accent);
+  font-weight:500;
+  display:inline-block;
+}
+.hero-rot-w{
+  position:absolute; left:0; top:0; right:0;
+  display:inline-block;
+  color:var(--terracotta) !important;
+  font-style:italic; font-family:var(--serif-accent) !important;
+  font-weight:500;
+  opacity:0; transform:translateY(110%);
+  transition:opacity .55s cubic-bezier(.2,.7,.2,1), transform .55s cubic-bezier(.2,.7,.2,1);
+}
+.hero-rot-w.on{ opacity:1; transform:translateY(0) }
+.hero-rot-w.out{ opacity:0; transform:translateY(-110%) }
+
+/* Subhead — refined editorial lede */
+.hero-sub{
+  font-family:'DM Sans', sans-serif !important;
+  font-size:16.5px !important;
+  font-weight:300 !important;
+  color:var(--ink-muted) !important;
+  line-height:1.7 !important;
+  max-width:560px !important;
+  margin:0 0 2.5rem !important;
+}
+
+/* Hand-drawn pull-quote dash separator above the search card */
+.search-card{
+  margin-top:1rem !important;
+  background:#fff !important;
+  border:1px solid var(--rule) !important;
+  border-radius:6px !important;             /* editorial: rectangles, not pillows */
+  box-shadow:
+    0 26px 56px -28px rgba(26,26,23,.20),
+    0 12px 28px -18px rgba(26,26,23,.16) !important;
+  max-width:760px !important;
+  position:relative; z-index:2;
+}
+.search-card::before{
+  content:''; position:absolute; left:50%; top:-22px; width:42px; height:2px;
+  background:var(--terracotta); transform:translateX(-50%); border-radius:1px;
+}
+.stt-row{
+  background:#faf7ef !important;
+  border-radius:6px 6px 0 0 !important;
+  border-bottom:1px solid var(--rule) !important;
+  padding:4px !important;
+}
+.stt{
+  border-radius:4px !important;
+  font-family:'DM Sans', sans-serif;
+  font-size:13.5px !important; font-weight:500 !important;
+  letter-spacing:.2px;
+  color:var(--ink-muted) !important;
+  text-transform:none;
+}
+.stt.active{
+  background:var(--emerald) !important;
+  box-shadow:0 6px 16px rgba(26,92,69,.22) !important;
+  color:#fff !important;
+}
+
+.search-inp{ border-radius:4px !important; background:#fbf8f0 !important; border-color:var(--rule) !important }
+.search-inp:focus{ background:#fff !important; border-color:var(--emerald) !important; box-shadow:0 0 0 3px rgba(26,92,69,.10) !important }
+.search-go{
+  background:var(--ink) !important; color:#fff !important;
+  border-radius:4px !important;
+  font-family:'DM Sans', sans-serif; font-weight:500;
+  letter-spacing:.2px;
+  box-shadow:none !important;
+  transition:background .18s;
+}
+.search-go:hover{ background:var(--emerald) !important; transform:none !important; box-shadow:0 8px 22px rgba(26,92,69,.30) !important }
+
+.qf-pill{
+  background:#fbf8f0 !important; border-radius:50px !important;
+  border-color:var(--rule) !important;
+  font-family:'DM Sans', sans-serif; font-weight:500 !important;
+  text-transform:none; letter-spacing:.2px; font-size:12.5px !important;
+}
+.qf-pill.on{ background:var(--emerald) !important; border-color:var(--emerald) !important; color:#fff !important }
+.qf-row .qf-label{
+  font-family:var(--serif-accent); font-style:italic;
+  font-size:13px !important; letter-spacing:0 !important;
+  text-transform:none !important; color:var(--ink-muted) !important;
+  font-weight:400 !important;
+}
+
+/* AI pill — refine for editorial palette */
+.ai-pill{
+  background:rgba(255,255,255,.85) !important;
+  border:1px solid var(--rule) !important;
+  border-radius:6px !important;
+  box-shadow:0 14px 34px -18px rgba(26,26,23,.22) !important;
+}
+.ai-pill::before{ background:linear-gradient(90deg, transparent, var(--terracotta) 30%, var(--emerald) 70%, transparent) }
+.ai-pill-head{ font-family:var(--serif-accent); font-style:italic; font-size:13px; font-weight:400; letter-spacing:0; text-transform:none; color:var(--ink-muted) !important }
+.ai-pill-label{ color:var(--ink-muted) }
+.ai-pill-tag{ background:var(--ink) !important; font-family:'DM Sans', sans-serif; letter-spacing:1.8px }
+.ai-pill-inp{ background:#fbf8f0 !important; border-color:var(--rule) !important; border-radius:4px !important }
+.ai-pill-inp:focus{ background:#fff !important; border-color:var(--emerald) !important; box-shadow:0 0 0 3px rgba(26,92,69,.08) !important }
+.ai-pill-go{ background:var(--emerald) !important; border-radius:4px !important; box-shadow:none !important }
+.ai-chip{
+  background:transparent !important; border:1px solid var(--rule) !important;
+  color:var(--ink-muted) !important;
+  font-family:var(--serif-accent); font-style:italic;
+  font-size:12.5px !important; padding:5px 12px !important;
+}
+.ai-chip:hover{ background:#fff !important; border-color:var(--emerald) !important; color:var(--emerald) !important }
+
+/* ── Stats strip — magazine masthead style ───────────────────────────── */
+.stats-strip{
+  background:transparent !important;
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  margin-top:1.5rem;
+}
+.stats-strip .stat-cell{ border-right:1px solid var(--rule) !important; padding:1.4rem .75rem !important }
+.stats-strip .stat-cell:last-child{ border-right:none !important }
+.stat-n{ font-family:var(--serif-display) !important; font-weight:900 !important; color:var(--ink) !important; font-size:32px !important; letter-spacing:-1px !important }
+.stat-prefix, .stat-suffix{ color:var(--terracotta) !important; font-style:italic; font-family:var(--serif-accent) }
+.stat-l{
+  font-family:'DM Sans', sans-serif !important;
+  font-size:10px !important; letter-spacing:1.8px !important;
+  text-transform:uppercase; color:var(--ink-muted) !important;
+  font-weight:500; margin-top:6px !important;
+}
+
+/* ── Counties grid — keep your clean cards but warm them up ──────────── */
+.counties-section{ background:transparent }
+.counties-title{ font-family:var(--serif-display) !important; color:var(--ink) !important; letter-spacing:-.8px !important }
+.counties-title::before{
+  /* Editorial drop-cap-style accent */
+  content:'·'; color:var(--terracotta); margin-right:.4rem;
+  font-family:var(--serif-display); font-weight:900;
+}
+.counties-all{ color:var(--emerald) !important; font-family:var(--serif-accent); font-style:italic; font-size:14px; font-weight:500 }
+.county-card{
+  background:#fff !important; border:1px solid var(--rule) !important; border-radius:6px !important;
+  transition:transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, border-color .25s;
+}
+.county-card:hover{
+  border-color:var(--emerald) !important;
+  box-shadow:0 16px 32px -16px rgba(26,92,69,.20) !important;
+}
+.county-card-stripe{ background:linear-gradient(180deg, var(--terracotta), var(--emerald)) !important }
+.county-card-name{ font-family:var(--serif-display) !important; color:var(--ink) !important }
+.county-card-meta{ color:var(--ink-muted) !important; font-family:var(--serif-accent); font-style:italic; font-size:13px }
+
+/* ── Mobile tweaks ───────────────────────────────────────────────────── */
+@media (max-width: 640px){
+  .hero{ padding:2rem 1.1rem 1.25rem !important }
+  .hero-inner::before, .hero-inner::after{ font-size:11.5px; top:-1rem }
+  .hero-h1{ font-size:clamp(40px, 11vw, 56px) !important; letter-spacing:-1.5px !important }
+  .hero-sub{ font-size:14.5px !important; margin-bottom:1.5rem !important }
+  .stats-strip .stat-cell{ padding:1rem .5rem !important }
+  .stat-n{ font-size:22px !important }
+  .stat-l{ font-size:9px !important; letter-spacing:1.4px !important }
+}
+
 /* ── Animated headline word cycler ─────────────────────────────────────── */
 .hero-rot{
   display:inline-block; position:relative; vertical-align:baseline;
@@ -1062,7 +1348,7 @@ body.hero-places-ready .sugg-box{display:none !important}
   <div class="hero-inner">
     <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
     <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
-    <p class="hero-sub">Smarter search, transparent pricing, and free listings for private sellers and landlords. From city centres to coastal hideaways — discover where you'll live next.</p>
+    <p class="hero-sub">A new kind of Irish property marketplace — built for buyers, renters and landlords, not portals. Free for private sellers and landlords during our launch period.</p>
   </div>
 
   <div class="search-card">
