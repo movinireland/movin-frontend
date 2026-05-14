@@ -125,6 +125,22 @@ if (window.matchMedia) {
 }
 initTheme()
 
+// ── Admin-only menu items — show only when logged-in user has role='admin' ───
+;(function gateAdminMenu(){
+  function apply(){
+    var u = (window.API && window.API.getUser && window.API.getUser()) || null
+    var isAdmin = u && u.role === 'admin'
+    document.querySelectorAll('.mm-admin-only, [data-admin-only]').forEach(function(el){
+      el.style.display = isAdmin ? '' : 'none'
+    })
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply)
+  else apply()
+  // Re-apply when renderNav rebuilds the menu
+  setTimeout(apply, 50)
+  setTimeout(apply, 500)
+})()
+
 // ── "Enquiry already sent" badge on property cards ────────────────────────────
 // When the logged-in user has previously sent an enquiry about a listing,
 // decorate every rendered .prop-card with a small "✓ Enquiry sent" pill on
@@ -1533,7 +1549,7 @@ function renderFooter() {
         '</a>' +
       '</div>' +
       '<div class="footer-bottom">' +
-        '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Ltd · Republic of Ireland</div>' +
+        '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Limited · Republic of Ireland</div>' +
         '<div class="footer-legal">' +
           '<a href="' + root + 'pages/privacy-policy.html">Privacy</a>' +
           '<a href="' + root + 'pages/terms-of-service.html">Terms</a>' +

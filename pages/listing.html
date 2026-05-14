@@ -446,6 +446,42 @@
 
     .no-photo-placeholder{background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:50px;width:100%;height:100%}
 
+/* ── Mobile-only gallery refresh — vertically stacked photo strip ───────
+   On phones the lightbox-style swipe gallery is overkill. We swap to a
+   clean vertical strip: hero photo on top, then up to 4 stacked photos
+   below at 16:9, each tappable to open the lightbox. */
+@media (max-width:580px){
+  .gallery-wrap{ background:transparent !important; padding:0 1rem }
+  .gallery-hero{
+    height:240px !important;
+    border-radius:18px !important;
+    box-shadow:0 10px 24px -12px rgba(0,0,0,.22);
+    overflow:hidden !important;
+    margin-top:0.25rem;
+  }
+  .gallery-hero img{ border-radius:18px }
+  .gallery-counter{
+    background:rgba(255,255,255,.96) !important; color:#1f2421 !important;
+    font-weight:600 !important; bottom:10px !important; right:10px !important;
+    box-shadow:0 4px 10px rgba(0,0,0,.18);
+  }
+  .gallery-nav{ width:32px !important; height:32px !important }
+  .gallery-thumbs{
+    background:transparent !important;
+    padding:.75rem 0 0 !important;
+    gap:.5rem !important;
+    overflow-x:auto;
+  }
+  .gallery-thumb-item{
+    width:72px !important; height:54px !important;
+    border-radius:10px !important;
+    opacity:1 !important;
+    border:2px solid rgba(0,0,0,.06) !important;
+    box-shadow:0 4px 10px -4px rgba(0,0,0,.12);
+  }
+  .gallery-thumb-item.active{ border-color:#1a5c45 !important; opacity:1 !important }
+}
+
 /* ── Polish: subtle Ken-Burns pan on the gallery hero ─────────────────── */
 .gallery-hero img{
   transition:transform .6s cubic-bezier(.2,.7,.2,1), filter .35s ease;
@@ -1322,10 +1358,10 @@
       var visible = (L.eircode_visible === undefined || L.eircode_visible === null)
         ? true
         : !!L.eircode_visible
-      if (visible && L.eircode) {
-        return '<strong style="color:' + c + '">' + L.eircode + '</strong>'
-      }
-      return '<span style="color:' + c + '">Eircode <span style="color:#bbb;font-weight:500">—</span></span>'
+      // If the lister chose to hide the Eircode, render nothing at all so
+      // the address line reads naturally (no awkward "Eircode —" placeholder).
+      if (!visible || !L.eircode) return ''
+      return '<strong style="color:' + c + '">' + L.eircode + '</strong>'
     }
 
     var galleryPhotos = []
@@ -1578,14 +1614,16 @@
               (((Date.now() - new Date(L.created_at).getTime()) / 86400000) < 7 ? '<span class="badge" style="background:#e07b3f;color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600">NEW</span>' : '') +
             '</div>' +
             '<h1 class="d-title">' + L.title + '</h1>' +
-            '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + ' · ' + eircodeDisplay(L) + '</div>' +
+            '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + (eircodeDisplay(L) ? ' · ' + eircodeDisplay(L) : '') + '</div>' +
             '<div class="d-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
             '<div class="d-stats">' +
               (L.bedrooms ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bed"/></svg> ' + L.bedrooms + ' beds</span>' : '') +
               (L.bathrooms ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bath"/></svg> ' + L.bathrooms + ' baths</span>' : '') +
+              (L.ensuite ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bath"/></svg> Ensuite</span>' : '') +
               (L.floor_size_m2 ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-size"/></svg> ' + L.floor_size_m2 + 'm²</span>' : '') +
               (L.ber_rating ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-ber"/></svg> ' + L.ber_rating + '</span>' : '') +
               '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-eye"/></svg> ' + (L.views || 0) + ' views</span>' +
+              (L.available_from ? '<span class="d-stat" style="color:#1a5c45;font-weight:600"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-approve"/></svg> Available ' + new Date(L.available_from).toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'}) + '</span>' : '') +
               (L.floor_size_m2 && L.price ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-euro"/></svg> €' + Math.round(parseInt(L.price) / parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</span>' : '') +
             '</div>' +
           '</div>' +
@@ -1635,7 +1673,7 @@
             '<h2>Location &amp; nearby</h2>' +
             '<div id="property-map"></div>' +
             '<p style="font-size:12px;color:#aaa;margin-bottom:1.25rem">📍 ' + L.address_line1 + ', ' + (L.address_area || '') + ', ' + L.county +
-              ' &nbsp;·&nbsp; ' + eircodeDisplay(L, '#555') +
+              (eircodeDisplay(L, '#555') ? ' &nbsp;·&nbsp; ' + eircodeDisplay(L, '#555') : '') +
               ' &nbsp;·&nbsp; <a href="https://www.google.com/maps/search/?api=1&query=' + mapsQuery + '" target="_blank" style="color:var(--g)">Open in Google Maps ↗</a>' +
             '</p>' +
             '<div class="lag-head">' +

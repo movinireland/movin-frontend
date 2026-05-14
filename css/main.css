@@ -44,16 +44,52 @@ input, select, textarea, button { font-family: inherit; }
   --nav-h:        64px;
 }
 
-/* Dark mode tokens */
+/* Dark mode tokens — tuned for WCAG AA contrast against the dark surfaces */
 [data-theme="dark"]:root {
-  --green-light:  #1a3d2e;
+  --green-light:  #1f3a30;
   --bg:           #14130f;
   --white:        #1c1b16;
-  --paper-deep:   #18170f;
-  --text:         #ece6d6;
-  --muted:        #8f8b80;
-  --border:       #2a2820;
+  --paper-deep:   #1f1d16;
+  --text:         #f1ebdc;
+  --muted:        #a8a496;
+  --border:       #38342a;
 }
+/* Belt-and-braces text-contrast guarantees in dark mode. Some pages have
+   hard-coded #1a1a1a / #111 / #888 inline styles that ignore CSS vars —
+   these overrides catch the common offenders. */
+[data-theme="dark"] body{ background:#14130f !important; color:#f1ebdc !important; }
+[data-theme="dark"] h1, [data-theme="dark"] h2,
+[data-theme="dark"] h3, [data-theme="dark"] h4,
+[data-theme="dark"] h5, [data-theme="dark"] h6,
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .nav-logo,
+[data-theme="dark"] strong{ color:#f1ebdc !important; }
+[data-theme="dark"] p, [data-theme="dark"] li, [data-theme="dark"] span,
+[data-theme="dark"] label, [data-theme="dark"] td, [data-theme="dark"] th{ color:inherit }
+[data-theme="dark"] .form-input, [data-theme="dark"] .form-select,
+[data-theme="dark"] .form-textarea, [data-theme="dark"] input, [data-theme="dark"] select,
+[data-theme="dark"] textarea{
+  background:#1c1b16 !important; color:#f1ebdc !important; border-color:#38342a !important;
+}
+[data-theme="dark"] .form-input::placeholder, [data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder{ color:#7a7567 !important }
+[data-theme="dark"] .card, [data-theme="dark"] .prop-card,
+[data-theme="dark"] .lst-row, [data-theme="dark"] .enq-row,
+[data-theme="dark"] .listing-row, [data-theme="dark"] .stat-mini,
+[data-theme="dark"] .tool-card, [data-theme="dark"] .trust-card,
+[data-theme="dark"] .county-card{
+  background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important;
+}
+[data-theme="dark"] .tools-section, [data-theme="dark"] .trust-section{
+  background:#1c1b16 !important; border-color:#38342a !important;
+}
+[data-theme="dark"] .footer-links a, [data-theme="dark"] .ftr-group-body a{ color:rgba(241,235,220,.65) }
+[data-theme="dark"] .footer-links a:hover, [data-theme="dark"] .ftr-group-body a:hover{ color:#fff }
+[data-theme="dark"] .breadcrumb, [data-theme="dark"] .form-hint{ color:#a8a496 !important }
+[data-theme="dark"] .prop-card-title, [data-theme="dark"] .prop-card-price,
+[data-theme="dark"] .listing-title{ color:#f1ebdc !important }
+[data-theme="dark"] a{ color:inherit }
+[data-theme="dark"] a.btn-ghost{ color:#2ecc8a !important; border-color:#2ecc8a !important }
 
 /* ── Typography ────────────────────────────────────────────────── */
 .serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
@@ -549,6 +585,7 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
   padding: 1.25rem 0 .65rem;
   border-top: 1px solid rgba(255,255,255,.08);
   flex-wrap: wrap;
+  justify-content: center;
 }
 .footer-social a {
   display: inline-flex; align-items: center; justify-content: center;
@@ -572,6 +609,7 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
   display: flex; align-items: center; gap: .65rem;
   padding-bottom: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .footer-apps-label {
   font-size: 11px; font-weight: 600;
