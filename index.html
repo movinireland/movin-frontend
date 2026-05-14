@@ -940,49 +940,87 @@ body.hero-places-ready .sugg-box{display:none !important}
    sans-serif everywhere, generous whitespace. Photos do the talking.
    ════════════════════════════════════════════════════════════════════ */
 
-/* ── Hero — full-bleed photo background ──────────────────────────── */
+/* ── Hero — animated gradient mesh (no photo, more alive) ────────── */
 .hero{
   background:
-    linear-gradient(180deg, rgba(250,247,240,.30) 0%, rgba(250,247,240,.85) 70%, var(--paper) 100%),
-    url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=70&auto=format&fit=crop') center 30%/cover no-repeat !important;
-  padding: 4.5rem 1.5rem 3rem !important;
+    radial-gradient(circle 700px at 18% 18%, rgba(26,92,69,.18) 0%, rgba(26,92,69,0) 60%),
+    radial-gradient(circle 600px at 82% 22%, rgba(217,120,71,.18) 0%, rgba(217,120,71,0) 60%),
+    radial-gradient(circle 800px at 60% 95%, rgba(46,142,90,.16) 0%, rgba(46,142,90,0) 65%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%) !important;
+  background-size: 130% 130%, 130% 130%, 130% 130%, auto !important;
+  background-position: 0% 0%, 100% 0%, 50% 100%, 0 0;
+  animation: heroMesh 18s ease-in-out infinite alternate;
+  padding: 4rem 1.5rem 2.5rem !important;
   position: relative;
   isolation: isolate;
+  overflow: hidden;
+}
+@keyframes heroMesh{
+  0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+  50%  { background-position: 10% 25%, 88% 18%, 45% 92%, 0 0; }
+  100% { background-position: 5% 18%, 92% 28%, 55% 85%, 0 0; }
 }
 .hero::before, .hero::after, .hero-noise{ display:none !important }
-/* tiny grain for tooth */
-.hero::before{
-  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.18;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .08 0 0 0 0 .06 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  display:block !important;
-}
 .hero-inner{ position:relative; z-index:2 }
 
-.hero-eyebrow{
-  background: rgba(255,253,248,.92) !important;
-  color: var(--g) !important;
-  padding: 7px 14px 7px 28px !important;
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  border:1px solid rgba(255,255,255,.6) !important;
-  box-shadow: 0 8px 20px -8px rgba(31,36,33,.18);
-  border-radius: 50px !important;
-  font-size: 11px !important; font-weight: 600 !important; letter-spacing: 1.1px !important;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem !important;
-  position: relative;
+/* Floating decorative shapes — gentle drift, feels alive without distracting */
+.hero-shape{
+  position: absolute; pointer-events: none; z-index: 0;
+  border-radius: 50%; opacity: .25; filter: blur(1px);
 }
-.hero-eyebrow .pulse-dot{ background:#2aaa50 !important; box-shadow: 0 0 0 0 rgba(42,170,80,.6); animation:pulse 2s infinite }
-.hero-eyebrow::before{ display:none !important }
+.hero-shape-1{ width: 12px; height: 12px; background: var(--g); top: 22%; left: 8%; animation: drift 9s ease-in-out infinite; }
+.hero-shape-2{ width: 8px;  height: 8px;  background: var(--o); top: 38%; right: 11%; animation: drift 11s ease-in-out infinite reverse; }
+.hero-shape-3{ width: 14px; height: 14px; background: var(--g); top: 70%; left: 14%; animation: drift 13s ease-in-out infinite; animation-delay:-4s; }
+.hero-shape-4{ width: 10px; height: 10px; background: var(--o); top: 60%; right: 9%; animation: drift 10s ease-in-out infinite reverse; animation-delay:-3s; }
+.hero-shape-5{ width: 6px;  height: 6px;  background: var(--g); top: 18%; left: 75%; animation: drift 14s ease-in-out infinite; animation-delay:-7s; }
+.hero-shape-6{ width: 18px; height: 18px; background: rgba(46,142,90,.5); top: 50%; left: 4%; animation: drift 16s ease-in-out infinite; animation-delay:-2s; }
+@keyframes drift{
+  0%,100% { transform: translate(0,0); }
+  33%     { transform: translate(20px, -28px); }
+  66%     { transform: translate(-14px, 18px); }
+}
+
+/* Live activity ticker — gives the page energy + motivates engagement */
+.hero-ticker{
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,253,248,.92);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: 0 6px 16px -8px rgba(31,36,33,.15);
+  padding: 7px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  color: var(--g);
+  font-weight: 600;
+  letter-spacing: .2px;
+  margin-bottom: 1rem;
+  animation: tickerIn .6s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes tickerIn{ from{ opacity:0; transform: translateY(8px) } to{ opacity:1; transform: translateY(0) } }
+.hero-ticker .live-dot{
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #2aaa50;
+  box-shadow: 0 0 0 0 rgba(42,170,80,.6);
+  animation: pulse 2s infinite;
+}
+.hero-ticker-text{ color: var(--text); font-weight: 500; }
+.hero-ticker-text strong{ color: var(--g); font-weight: 700; }
+@media (prefers-reduced-motion: reduce){
+  .hero, .hero-shape{ animation: none !important; }
+}
+
+/* Old eyebrow hidden in favour of the live ticker */
+.hero-eyebrow{ display: none !important }
 
 .hero-h1{
   font-family: 'Playfair Display', Georgia, serif !important;
   font-weight: 700 !important;
-  font-size: clamp(40px, 6.5vw, 68px) !important;
-  line-height: 1.05 !important;
-  letter-spacing: -1.8px !important;
-  color: #1a2421 !important;
+  font-size: clamp(44px, 7vw, 76px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -2px !important;
+  color: var(--text) !important;
   margin-bottom: 1.25rem !important;
-  text-shadow: 0 1px 1px rgba(255,253,248,.4);
+  text-shadow: none;
 }
 .hero-h1 em{
   font-style: normal !important;
@@ -993,12 +1031,12 @@ body.hero-places-ready .sugg-box{display:none !important}
 .hero-rot-w{ color: var(--o) !important; font-style: normal !important; font-weight: 900 !important; font-family: 'Playfair Display', serif !important }
 
 .hero-sub{
-  color: #3d4540 !important;
-  font-size: 16px !important;
+  color: var(--muted) !important;
+  font-size: 16.5px !important;
   font-weight: 400 !important;
   line-height: 1.65 !important;
   max-width: 580px;
-  margin: 0 auto 2.25rem !important;
+  margin: 0 auto 2.5rem !important;
 }
 
 /* ── Search card — big rounded "Airbnb" pill style ───────────────── */
@@ -1174,87 +1212,114 @@ body.hero-places-ready .sugg-box{display:none !important}
   font-weight: 400 !important;
 }
 
-/* ── Counties — photo-led 16:9 cards ─────────────────────────────── */
-.counties-section{ padding: 3rem 1.25rem !important }
-.counties-head{ margin-bottom: 1.5rem !important }
+/* ── Counties — clean text grid with subtle accents ──────────────── */
+.counties-section{ padding: 3.5rem 1.25rem 3rem !important; max-width: 1180px !important; margin: 0 auto }
+.counties-head{
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 1rem;
+  margin-bottom: 2rem !important;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
 .counties-title{
   font-family: 'Playfair Display', serif !important;
-  font-size: clamp(24px, 3.4vw, 32px) !important;
+  font-size: clamp(26px, 3.6vw, 36px) !important;
   font-weight: 700 !important;
-  letter-spacing: -.5px !important;
+  letter-spacing: -.6px !important;
   color: var(--text) !important;
+  margin: 0 !important;
 }
-.counties-all{ color: var(--g) !important; font-weight: 600 !important }
+.counties-title::before{ display: none !important }
+.counties-all{
+  color: var(--g) !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: gap .2s ease;
+}
+.counties-all:hover{ gap: 9px }
 .counties-grid{
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 1rem !important;
+  gap: .85rem !important;
 }
 @media (max-width: 900px){ .counties-grid{ grid-template-columns: repeat(3, 1fr) !important } }
-@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .75rem !important } }
+@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .65rem !important } }
 
 .county-card{
   position: relative !important;
-  aspect-ratio: 4/5 !important;
-  border-radius: 18px !important;
-  overflow: hidden !important;
-  border: none !important;
-  padding: 0 !important;
-  background-position: center !important;
-  background-size: cover !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .75rem !important;
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  padding: 1.1rem 1.2rem !important;
   cursor: pointer;
-  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
-  box-shadow: 0 4px 16px rgba(31,36,33,.08);
-  display: block !important;
+  font-family: 'DM Sans', sans-serif !important;
+  text-align: left !important;
+  background-image: none !important;
+  aspect-ratio: auto !important;
+  box-shadow: none !important;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-.county-card::before{
-  content:'';
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(15,20,18,.78) 0%, rgba(15,20,18,.20) 50%, rgba(15,20,18,.0) 100%);
-  z-index: 1; pointer-events: none;
-  transition: background .35s ease;
-}
+.county-card::before, .county-card::after{ display: none !important; content: none !important; background: none !important; }
 .county-card:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 22px 44px -16px rgba(31,36,33,.30);
+  border-color: var(--g) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 24px -12px rgba(26,92,69,.18) !important;
+  background: var(--white) !important;
 }
-.county-card:hover::before{
-  background: linear-gradient(to top, rgba(26,92,69,.85) 0%, rgba(26,92,69,.30) 60%, rgba(26,92,69,.05) 100%);
-}
-.county-card-stripe{ display:none !important }
+.county-card-stripe{ display: none !important }
 .county-card-name{
-  position: absolute; left: 16px; bottom: 44px; z-index: 2;
+  position: static !important;
   font-family: 'Playfair Display', serif !important;
-  font-size: 21px !important; font-weight: 700 !important;
-  color: #fff !important;
-  letter-spacing: -.3px !important;
-  text-shadow: 0 2px 14px rgba(0,0,0,.4);
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  letter-spacing: -.2px !important;
+  text-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
 }
 .county-card-meta{
-  position: absolute; left: 16px; bottom: 16px; z-index: 2;
-  color: rgba(255,255,255,.92) !important;
-  font-size: 12.5px !important;
+  position: static !important;
+  font-size: 11.5px !important;
   font-weight: 500 !important;
-  display: inline-flex !important;
-  align-items: center; gap: 5px;
+  color: var(--muted) !important;
+  text-shadow: none !important;
+  font-family: 'DM Sans', sans-serif !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
 }
 .county-card-meta::after{
   content: '→';
   display: inline-block;
-  transition: transform .25s ease;
+  margin-left: 6px;
   font-size: 14px;
+  color: var(--muted);
+  transition: transform .2s ease, color .2s ease;
 }
-.county-card:hover .county-card-meta::after{ transform: translateX(3px) }
+.county-card:hover .county-card-meta{ color: var(--g) !important }
+.county-card:hover .county-card-meta::after{ transform: translateX(4px); color: var(--g) }
 
-/* Apply per-county photo backgrounds */
-.county-card[onclick*="Dublin"]   { background-image: url("https://images.unsplash.com/photo-1597092182617-c9d28dd1d6b3?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Cork"]     { background-image: url("https://images.unsplash.com/photo-1610027733876-ce3d72ea7e7c?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Galway"]   { background-image: url("https://images.unsplash.com/photo-1593254095506-9d10ce4f9bca?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Meath"]    { background-image: url("https://images.unsplash.com/photo-1565073282469-cf3094cd9a06?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Kildare"]  { background-image: url("https://images.unsplash.com/photo-1551763067-9aab9929d3c7?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Wicklow"]  { background-image: url("https://images.unsplash.com/photo-1593254095506-9d10ce4f9bca?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Limerick"] { background-image: url("https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=600&q=70&auto=format&fit=crop") }
-.county-card[onclick*="Kerry"]    { background-image: url("https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=70&auto=format&fit=crop") }
+/* Pin icon next to the name — small Irish-county locator vibe */
+.county-card-name::before{
+  content: '';
+  display: inline-block;
+  width: 22px; height: 22px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 4px;
+  opacity: .8;
+}
 
 /* ── Section titles — sans-serif, friendly ───────────────────────── */
 .section-title{
@@ -1442,8 +1507,19 @@ body.hero-places-ready .sugg-box{display:none !important}
 <div class="page-body">
 <div class="hero">
   <div class="hero-noise"></div>
+  <!-- Floating decorative shapes — pure CSS animation, no JS needed -->
+  <span class="hero-shape hero-shape-1" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-2" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-3" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-4" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-5" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-6" aria-hidden="true"></span>
+
   <div class="hero-inner">
-    <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
+    <div class="hero-ticker" id="hero-ticker">
+      <span class="live-dot"></span>
+      <span class="hero-ticker-text"><strong id="hero-ticker-num">—</strong> new homes listed this week</span>
+    </div>
     <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
     <p class="hero-sub">Smarter search, transparent pricing, and free listings for private sellers and landlords. From city centres to coastal hideaways — discover where you'll live next.</p>
   </div>
@@ -2276,6 +2352,14 @@ async function loadFeatured(){
     statCountEl.dataset.countTarget = statTotal
     statCountEl.dataset.countSuffix = '+'
     if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
+
+    // Live ticker — count listings created in the past 7 days
+    var tickerEl = document.getElementById('hero-ticker-num')
+    if (tickerEl) {
+      var weekAgo = Date.now() - 7 * 86400000
+      var freshCount = pool.filter(function(l){ return l && l.created_at && new Date(l.created_at).getTime() >= weekAgo }).length
+      tickerEl.textContent = freshCount > 0 ? freshCount : statTotal
+    }
 
     // Tally per-county counts so the Browse-by-county tiles can show real numbers
     var countyTotals = {}
