@@ -934,6 +934,389 @@ body.hero-places-ready .sugg-box{display:none !important}
   opacity:1; transform:translateY(0);
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   MODERN MARKETPLACE — Option 2 (Airbnb / Stripe clean)
+   Friendly, functional, photo-led. Big rounded surfaces, soft shadows,
+   sans-serif everywhere, generous whitespace. Photos do the talking.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Hero — full-bleed photo background ──────────────────────────── */
+.hero{
+  background:
+    linear-gradient(180deg, rgba(250,247,240,.30) 0%, rgba(250,247,240,.85) 70%, var(--paper) 100%),
+    url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1600&q=70&auto=format&fit=crop') center 30%/cover no-repeat !important;
+  padding: 4.5rem 1.5rem 3rem !important;
+  position: relative;
+  isolation: isolate;
+}
+.hero::before, .hero::after, .hero-noise{ display:none !important }
+/* tiny grain for tooth */
+.hero::before{
+  content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; opacity:.18;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .08 0 0 0 0 .06 0 0 0 .7 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  display:block !important;
+}
+.hero-inner{ position:relative; z-index:2 }
+
+.hero-eyebrow{
+  background: rgba(255,253,248,.92) !important;
+  color: var(--g) !important;
+  padding: 7px 14px 7px 28px !important;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  border:1px solid rgba(255,255,255,.6) !important;
+  box-shadow: 0 8px 20px -8px rgba(31,36,33,.18);
+  border-radius: 50px !important;
+  font-size: 11px !important; font-weight: 600 !important; letter-spacing: 1.1px !important;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem !important;
+  position: relative;
+}
+.hero-eyebrow .pulse-dot{ background:#2aaa50 !important; box-shadow: 0 0 0 0 rgba(42,170,80,.6); animation:pulse 2s infinite }
+.hero-eyebrow::before{ display:none !important }
+
+.hero-h1{
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(40px, 6.5vw, 68px) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -1.8px !important;
+  color: #1a2421 !important;
+  margin-bottom: 1.25rem !important;
+  text-shadow: 0 1px 1px rgba(255,253,248,.4);
+}
+.hero-h1 em{
+  font-style: normal !important;
+  color: var(--g) !important;
+  font-weight: 900 !important;
+}
+.hero-h1 em::after{ display:none !important }
+.hero-rot-w{ color: var(--o) !important; font-style: normal !important; font-weight: 900 !important; font-family: 'Playfair Display', serif !important }
+
+.hero-sub{
+  color: #3d4540 !important;
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  max-width: 580px;
+  margin: 0 auto 2.25rem !important;
+}
+
+/* ── Search card — big rounded "Airbnb" pill style ───────────────── */
+.search-card{
+  background: var(--white) !important;
+  border-radius: 28px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow:
+    0 28px 56px -22px rgba(31,36,33,.22),
+    0 10px 24px -12px rgba(31,36,33,.10) !important;
+  max-width: 760px !important;
+  overflow: hidden;
+}
+.stt-row{
+  background: var(--paper-deep) !important;
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 6px !important;
+  gap: 4px !important;
+}
+.stt{
+  border-radius: 50px !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+  font-size: 13.5px !important;
+  padding: 11px .5rem !important;
+  transition: all .2s ease;
+}
+.stt:hover:not(.active){
+  background: rgba(255,255,255,.6) !important;
+  color: var(--text) !important;
+}
+.stt.active{
+  background: var(--g) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(26,92,69,.30) !important;
+  border-radius: 50px !important;
+}
+
+.search-input-wrap{ margin: .25rem 0 }
+.search-inp{
+  border-radius: 50px !important;
+  height: 56px !important;
+  background: var(--white) !important;
+  border: 1.5px solid var(--border) !important;
+  padding: 0 1.25rem 0 50px !important;
+  font-size: 15px !important;
+  font-weight: 400;
+  transition: all .2s;
+}
+.search-inp:focus{
+  border-color: var(--g) !important;
+  background: var(--white) !important;
+  box-shadow: 0 0 0 4px rgba(26,92,69,.10) !important;
+}
+.search-ico-abs{ left: 18px !important }
+.search-ico-abs svg{ width: 19px !important; height: 19px !important; color: var(--muted) }
+.hero-loc-typer{ left: 50px !important; font-size: 15px; color: var(--muted) }
+
+.search-go{
+  background: var(--g) !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  height: 56px !important;
+  padding: 0 28px !important;
+  font-size: 14.5px !important; font-weight: 600 !important;
+  box-shadow: 0 8px 20px -6px rgba(26,92,69,.40) !important;
+  transition: all .2s ease;
+}
+.search-go:hover{ background: var(--gd) !important; transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(26,92,69,.45) !important }
+
+/* Quick filter pills — softer, more tactile */
+.qf-row{ padding: .85rem 1.1rem .25rem !important }
+.qf-row .qf-label{
+  font-size: 10.5px !important; color: var(--muted) !important;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  font-weight: 600 !important;
+}
+.qf-pill{
+  border-radius: 50px !important;
+  background: var(--paper-deep) !important;
+  border: 1px solid transparent !important;
+  font-weight: 500 !important;
+  font-size: 12.5px !important;
+  padding: 8px 14px !important;
+  color: var(--text) !important;
+  transition: all .15s;
+}
+.qf-pill:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important }
+.qf-pill.on{ background: var(--g) !important; border-color: var(--g) !important; color: #fff !important }
+.adv-toggle{ color: var(--g) !important; font-weight: 500; padding: .85rem 1rem 1rem !important; font-size: 13px !important }
+
+/* ── AI pill — softer, friendlier ───────────────────────────────── */
+.ai-pill{
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 38px -18px rgba(31,36,33,.18), 0 4px 10px -4px rgba(31,36,33,.06) !important;
+}
+.ai-pill::before{ background: linear-gradient(90deg, transparent, var(--o) 30%, var(--g) 70%, transparent) !important }
+.ai-pill-head{ color: var(--g) !important; font-weight: 600 !important; letter-spacing: .4px }
+.ai-pill-tag{ background: var(--g) !important; letter-spacing: 1.4px }
+.ai-pill-inp{ border-radius: 50px !important; height: 44px !important; padding: 0 16px !important; background: var(--paper) !important; border: 1.5px solid transparent !important }
+.ai-pill-inp:focus{ border-color: var(--g) !important; background: var(--white) !important; box-shadow: 0 0 0 3px rgba(26,92,69,.08) !important }
+.ai-pill-go{
+  width: 44px !important; height: 44px !important;
+  background: var(--g) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 6px 16px -4px rgba(26,92,69,.40) !important;
+}
+.ai-pill-go:hover{ background: var(--gd) !important; transform: translateY(-1px) !important }
+.ai-chip{
+  background: var(--paper-deep) !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  font-weight: 500 !important;
+  font-size: 11.5px !important;
+  border-radius: 50px !important;
+}
+.ai-chip:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important; transform: translateY(-1px) }
+
+/* ── Stats strip → soft check-pill row ──────────────────────────── */
+.stats-strip{
+  background: transparent !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 1.5rem 1rem 2rem !important;
+  border: none !important;
+  overflow: visible !important;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.stats-strip .stat-cell{
+  flex: 0 0 auto !important;
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-right: 1px solid var(--border) !important;
+  border-radius: 50px !important;
+  padding: 10px 18px 10px 16px !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  transition: all .15s;
+  position: relative;
+}
+.stats-strip .stat-cell::after, .stats-strip .stat-cell::before{ display:none !important }
+.stats-strip .stat-cell:hover{ border-color: var(--g) !important; transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(31,36,33,.10) }
+.stats-strip .stat-n{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 17px !important; font-weight: 700 !important;
+  color: var(--g) !important;
+  letter-spacing: -.3px !important;
+  display: inline-flex !important;
+}
+.stats-strip .stat-n::before{
+  content: ''; width: 16px; height: 16px; flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  margin-right: 8px;
+}
+.stat-prefix, .stat-suffix{ color: var(--g) !important; font-weight: 700 }
+.stat-l{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12.5px !important;
+  color: var(--text) !important;
+  margin: 0 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* ── Counties — photo-led 16:9 cards ─────────────────────────────── */
+.counties-section{ padding: 3rem 1.25rem !important }
+.counties-head{ margin-bottom: 1.5rem !important }
+.counties-title{
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(24px, 3.4vw, 32px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.5px !important;
+  color: var(--text) !important;
+}
+.counties-all{ color: var(--g) !important; font-weight: 600 !important }
+.counties-grid{
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 1rem !important;
+}
+@media (max-width: 900px){ .counties-grid{ grid-template-columns: repeat(3, 1fr) !important } }
+@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .75rem !important } }
+
+.county-card{
+  position: relative !important;
+  aspect-ratio: 4/5 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  border: none !important;
+  padding: 0 !important;
+  background-position: center !important;
+  background-size: cover !important;
+  cursor: pointer;
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease;
+  box-shadow: 0 4px 16px rgba(31,36,33,.08);
+  display: block !important;
+}
+.county-card::before{
+  content:'';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,20,18,.78) 0%, rgba(15,20,18,.20) 50%, rgba(15,20,18,.0) 100%);
+  z-index: 1; pointer-events: none;
+  transition: background .35s ease;
+}
+.county-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 22px 44px -16px rgba(31,36,33,.30);
+}
+.county-card:hover::before{
+  background: linear-gradient(to top, rgba(26,92,69,.85) 0%, rgba(26,92,69,.30) 60%, rgba(26,92,69,.05) 100%);
+}
+.county-card-stripe{ display:none !important }
+.county-card-name{
+  position: absolute; left: 16px; bottom: 44px; z-index: 2;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 21px !important; font-weight: 700 !important;
+  color: #fff !important;
+  letter-spacing: -.3px !important;
+  text-shadow: 0 2px 14px rgba(0,0,0,.4);
+}
+.county-card-meta{
+  position: absolute; left: 16px; bottom: 16px; z-index: 2;
+  color: rgba(255,255,255,.92) !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  display: inline-flex !important;
+  align-items: center; gap: 5px;
+}
+.county-card-meta::after{
+  content: '→';
+  display: inline-block;
+  transition: transform .25s ease;
+  font-size: 14px;
+}
+.county-card:hover .county-card-meta::after{ transform: translateX(3px) }
+
+/* Apply per-county photo backgrounds */
+.county-card[onclick*="Dublin"]   { background-image: url("https://images.unsplash.com/photo-1597092182617-c9d28dd1d6b3?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Cork"]     { background-image: url("https://images.unsplash.com/photo-1610027733876-ce3d72ea7e7c?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Galway"]   { background-image: url("https://images.unsplash.com/photo-1593254095506-9d10ce4f9bca?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Meath"]    { background-image: url("https://images.unsplash.com/photo-1565073282469-cf3094cd9a06?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Kildare"]  { background-image: url("https://images.unsplash.com/photo-1551763067-9aab9929d3c7?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Wicklow"]  { background-image: url("https://images.unsplash.com/photo-1593254095506-9d10ce4f9bca?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Limerick"] { background-image: url("https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=600&q=70&auto=format&fit=crop") }
+.county-card[onclick*="Kerry"]    { background-image: url("https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=600&q=70&auto=format&fit=crop") }
+
+/* ── Section titles — sans-serif, friendly ───────────────────────── */
+.section-title{
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(24px, 3.4vw, 32px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.5px !important;
+  color: var(--text) !important;
+}
+.section-eyebrow{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 1.4px !important;
+  color: var(--g) !important;
+  font-weight: 600 !important;
+}
+.section-sub{
+  color: var(--muted) !important;
+  font-size: 14.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.6;
+  max-width: 580px;
+}
+
+/* ── Why-pricing — refresh the dark band so it works with new theme ─ */
+.why-pricing{
+  background: linear-gradient(160deg, var(--g) 0%, var(--gd) 100%) !important;
+  border-radius: 32px;
+  margin: 2rem 1.5rem;
+  max-width: 1180px;
+  margin-left: auto; margin-right: auto;
+}
+.wp-val{ border-radius: 20px !important; transition: all .25s ease }
+.wp-val:hover{ background: rgba(255,255,255,.12) !important; transform: translateY(-4px) }
+.wp-price{ border-radius: 20px !important }
+.wp-price-feat{ box-shadow: 0 24px 56px -20px rgba(0,0,0,.40) !important }
+.wp-cta{ font-weight: 600 !important; border-radius: 50px !important }
+
+/* ── Listings grid — slightly more spacious ──────────────────────── */
+.listings-grid{ gap: 1rem !important }
+@media (min-width: 1024px){ .listings-grid{ gap: 1.25rem !important } }
+.prop-card{ border-radius: 18px !important; border: 1px solid var(--border) !important; transition: transform .25s, box-shadow .25s, border-color .25s }
+.prop-card:hover{ transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(31,36,33,.18); border-color: rgba(26,92,69,.20) }
+
+/* ── Mobile polish ───────────────────────────────────────────────── */
+@media (max-width: 640px){
+  .hero{ padding: 2.5rem 1rem 1.5rem !important; background-position: center !important }
+  .hero-h1{ font-size: clamp(36px, 10vw, 48px) !important; letter-spacing: -1px !important }
+  .hero-sub{ font-size: 14.5px !important; margin-bottom: 1.5rem !important }
+  .search-card{ border-radius: 24px !important }
+  .search-inp{ height: 50px !important }
+  .search-go{ height: 50px !important; padding: 0 20px !important; font-size: 13px !important }
+  .stats-strip{ padding: 1rem .75rem 1.5rem !important; gap: 8px !important }
+  .stats-strip .stat-cell{ padding: 8px 14px !important }
+  .stats-strip .stat-n{ font-size: 14.5px !important }
+  .stat-l{ font-size: 11.5px !important }
+  .counties-section{ padding: 1.75rem 1rem !important }
+  .county-card{ aspect-ratio: 4/5 }
+  .county-card-name{ font-size: 17px !important; bottom: 38px }
+  .county-card-meta{ font-size: 11.5px !important; bottom: 14px }
+}
+
 </style>
 </head>
 <body>
