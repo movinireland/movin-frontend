@@ -467,9 +467,10 @@
     ]
   })
   document.body.setAttribute('data-no-back','')   // we already have our own back button
-  // Default view: 'split' on tablets/desktop, 'list' on phones (cleaner first impression)
+  // Default view: 'split' on tablets/desktop, 'map' on phones — users
+  // tapping "Map" expect to see a map first, not a list of properties.
   ;(function(){
-    var initialView = window.matchMedia('(max-width:520px)').matches ? 'list' : 'split'
+    var initialView = window.matchMedia('(max-width:520px)').matches ? 'map' : 'split'
     document.body.classList.add('view-' + initialView)
     document.querySelectorAll('#view-toggle button').forEach(function(b){
       b.classList.toggle('on', b.dataset.view === initialView)

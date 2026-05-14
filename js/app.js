@@ -125,6 +125,43 @@ if (window.matchMedia) {
 }
 initTheme()
 
+// ── "Enquiry already sent" badge on property cards ────────────────────────────
+// When the logged-in user has previously sent an enquiry about a listing,
+// decorate every rendered .prop-card with a small "✓ Enquiry sent" pill on
+// the photo. Watches the DOM so it works on async-rendered listings too.
+window.MOVIN_SENT_ENQUIRIES = window.MOVIN_SENT_ENQUIRIES || new Set()
+function _decorateEnquiredCards(){
+  if (!window.MOVIN_SENT_ENQUIRIES || !window.MOVIN_SENT_ENQUIRIES.size) return
+  document.querySelectorAll('.prop-card').forEach(function(card){
+    if (card.querySelector('.prop-enq-sent')) return
+    var oc = card.getAttribute('onclick') || ''
+    var m  = oc.match(/id=([A-Za-z0-9\-]+)/)
+    var id = m && m[1]
+    if (!id || !window.MOVIN_SENT_ENQUIRIES.has(id)) return
+    var imgWrap = card.querySelector('.prop-card-img')
+    if (!imgWrap) return
+    var badge = document.createElement('div')
+    badge.className = 'prop-enq-sent'
+    badge.innerHTML = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Enquiry sent'
+    imgWrap.appendChild(badge)
+  })
+}
+;(function loadSentEnquiries(){
+  if (!window.API || !window.API.auth || !window.API.auth.isLoggedIn()) return
+  window.API.enquiries.sent().then(function(d){
+    ;(d && d.listing_ids || []).forEach(function(id){ window.MOVIN_SENT_ENQUIRIES.add(id) })
+    _decorateEnquiredCards()
+  }).catch(function(){ /* silent — non-essential UI */ })
+  // Re-decorate whenever new .prop-card nodes are inserted (listings render async)
+  if (typeof MutationObserver !== 'undefined') {
+    var run = function(){ _decorateEnquiredCards() }
+    var mo  = new MutationObserver(run)
+    var attach = function(){ if (document.body) mo.observe(document.body, { childList:true, subtree:true }) }
+    if (document.body) attach()
+    else document.addEventListener('DOMContentLoaded', attach)
+  }
+})()
+
 // ── Icon system ───────────────────────────────────────────────────────────────
 var MOVIN_ICON_IDS = {
   'home':'icon-home','search':'icon-search','location':'icon-location','map':'icon-map',
@@ -387,7 +424,7 @@ function renderNav(activePage = '') {
         '<div class="mm-item" onclick="location.href=\'/pages/search.html?listing_type=rent\';toggleMobileMenu()"><div class="mm-icon">' + icon('apartment',18) + '</div>Rent a property</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/map-search.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('map',18) + '</div>Map search</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/commercial.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Commercial</div>' +
-        '<div class="mm-item" onclick="location.href=\'/pages/latest.html\';toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6">' + icon('new-listing',18,'#e07b3f') + '</div>Latest listings</div>' +
+        '<div class="mm-item" onclick="location.href=\'/pages/latest.html\';toggleMobileMenu()"><div class="mm-icon">' + icon('bell',18) + '</div>Latest listings</div>' +
         '<div class="mm-divider"></div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/tools.html#mortgage\';toggleMobileMenu()"><div class="mm-icon">' + icon('calculator',18) + '</div>Mortgage calculator</div>' +
         '<div class="mm-item" onclick="location.href=\'/pages/tools.html#valuation\';toggleMobileMenu()"><div class="mm-icon">' + icon('house',18) + '</div>Home valuation</div>' +

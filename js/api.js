@@ -188,6 +188,10 @@ const enquiries = {
     return request('GET', '/api/enquiries/inbox')
   },
 
+  async sent() {
+    return request('GET', '/api/enquiries/sent')
+  },
+
   async markRead(id) {
     return request('PUT', `/api/enquiries/${id}/read`)
   }

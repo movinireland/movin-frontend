@@ -240,6 +240,26 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 .prop-card-save:hover { transform: scale(1.15); }
 .prop-card-save.saved { color: var(--orange); }
 .prop-card-tags { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+
+/* "Enquiry sent" indicator — shown when the logged-in user has previously
+   contacted the lister about this property. Sits at the bottom-left of the
+   image area so it never collides with the status/featured/NEW tags on top. */
+.prop-enq-sent {
+  position: absolute;
+  bottom: 8px; left: 8px;
+  background: rgba(26, 92, 69, .92);
+  color: #fff;
+  font-size: 10px; font-weight: 600; letter-spacing: .3px;
+  padding: 4px 10px 4px 8px;
+  border-radius: 50px;
+  display: inline-flex; align-items: center; gap: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .22);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: enqSentIn .35s cubic-bezier(.34,1.56,.64,1);
+  z-index: 2;
+}
+.prop-enq-sent svg { stroke: #7ec9a8; flex-shrink: 0; }
+@keyframes enqSentIn { from{ opacity:0; transform: translateY(4px) scale(.9) } to{ opacity:1; transform: translateY(0) scale(1) } }
 .prop-card-body { padding: 1rem 1.1rem 1.1rem; }
 .prop-card-loc  { font-size: 11px; color: #bbb; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .5px; }
 .prop-card-title { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; font-size: 15px; font-weight: 900; color: #111; margin-bottom: 6px; line-height: 1.25; letter-spacing: -.2px; }
