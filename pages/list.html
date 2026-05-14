@@ -630,6 +630,61 @@
     // Agents who came from their dashboard return there after publishing
     window.LIST_AGENT_RETURN = (new URLSearchParams(location.search).get('from') === 'agent')
 
+    // Style options keyed by residential property type. Apartments don't have
+    // "Detached / Terraced" the way houses do — their styles are completely
+    // different (studios, duplexes, penthouses, etc.).
+    var STYLE_OPTIONS_BY_TYPE = {
+      house: [
+        ['',           'Select…'],
+        ['detached',   'Detached'],
+        ['semi-d',     'Semi-detached'],
+        ['terraced',   'Terraced'],
+        ['end-terrace','End of terrace'],
+        ['townhouse',  'Townhouse'],
+        ['duplex',     'Duplex']
+      ],
+      apartment: [
+        ['',            'Select…'],
+        ['studio',      'Studio'],
+        ['1-bed',       '1-bedroom'],
+        ['2-bed',       '2-bedroom'],
+        ['3-bed',       '3-bedroom'],
+        ['penthouse',   'Penthouse'],
+        ['duplex',      'Duplex apartment'],
+        ['ground-floor','Ground-floor flat']
+      ],
+      bungalow: [
+        ['',         'Select…'],
+        ['detached', 'Detached'],
+        ['semi-d',   'Semi-detached'],
+        ['dormer',   'Dormer'],
+        ['cottage',  'Cottage']
+      ],
+      site: [
+        ['',                  'Select…'],
+        ['serviced',          'Serviced site'],
+        ['unserviced',        'Unserviced site'],
+        ['agricultural',      'Agricultural land'],
+        ['planning-permission','With planning permission']
+      ]
+    }
+    function refreshStyleOptions(propType){
+      var styleGroup = document.getElementById('style-group')
+      var styleSel   = document.getElementById('property_style')
+      if (!styleSel) return
+      var opts = STYLE_OPTIONS_BY_TYPE[propType] || STYLE_OPTIONS_BY_TYPE.house
+      // Sites get no style — hide the whole group rather than show one option
+      if (propType === 'site') {
+        styleGroup.style.display = 'none'
+        styleSel.value = ''
+        return
+      }
+      if (styleGroup) styleGroup.style.display = ''
+      styleSel.innerHTML = opts.map(function(o){
+        return '<option value="'+ o[0] +'">'+ o[1] +'</option>'
+      }).join('')
+      styleSel.value = ''
+    }
     function bindTypeButtons(){
       document.querySelectorAll('.type-grid .type-btn').forEach(function(b){
         if (b.dataset.bound) return
@@ -638,10 +693,16 @@
           var grid = b.closest('.type-grid'); if (!grid) return
           grid.querySelectorAll('.type-btn').forEach(function(x){ x.classList.remove('on') })
           b.classList.add('on')
+          // Residential grid only — swap the style options to match the type
+          if (grid.id === 'type-grid-residential') {
+            refreshStyleOptions(b.dataset.val)
+          }
         })
       })
     }
     bindTypeButtons()
+    // Initialise dropdown to match the default-selected type (house)
+    refreshStyleOptions('house')
 
     document.querySelectorAll('.plan-opt').forEach(function(b) {
       b.addEventListener('click', function() {
@@ -838,8 +899,16 @@
         if (res.requires_payment) {
           toast('Redirecting to payment…', 'info')
           var payment = await API.payments.startCheckout(createdListingId)
-          window.location.href = payment.checkout_url
-        } else {
+          // Backend may return free:true with no checkout URL (e.g. agent on
+          // active subscription, or launch-period private user). Treat as
+          // success and continue with the standard success flow.
+          if (payment && payment.checkout_url) {
+            window.location.href = payment.checkout_url
+            return
+          }
+          if (payment && payment.message) toast(payment.message, 'success')
+        }
+        {
           toast(listingCategory === 'commercial'
             ? '🎉 Commercial listing submitted for review!'
             : '🎉 Listing submitted for review!')
