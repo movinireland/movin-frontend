@@ -1505,8 +1505,32 @@ function renderFooter() {
         group('Professional', proLinks) +
       '</div>' +
       '<div class="footer-social">' +
-        '<a href="https://www.facebook.com/movin.ie" target="_blank">Facebook</a>' +
-        '<a href="https://www.instagram.com/movin.ie" target="_blank">Instagram</a>' +
+        '<a href="https://www.facebook.com/movinireland" target="_blank" rel="noopener" aria-label="Movin on Facebook" title="Facebook">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.02H7.9v-2.91h2.54V9.85c0-2.51 1.49-3.89 3.77-3.89 1.09 0 2.24.19 2.24.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.77l-.44 2.91h-2.33V22c4.78-.75 8.44-4.91 8.44-9.93z"/></svg>' +
+        '</a>' +
+        '<a href="https://www.instagram.com/movinireland" target="_blank" rel="noopener" aria-label="Movin on Instagram" title="Instagram">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.92 1.18A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>' +
+        '</a>' +
+        '<a href="https://www.linkedin.com/company/movinireland" target="_blank" rel="noopener" aria-label="Movin on LinkedIn" title="LinkedIn">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18V10.05H5.67V18h2.67zM7 8.86A1.55 1.55 0 1 0 7 5.76a1.55 1.55 0 0 0 0 3.1zM18.34 18v-4.35c0-2.35-1.26-3.45-2.94-3.45a2.53 2.53 0 0 0-2.3 1.27v-1.42H10.4V18h2.69v-4.16c0-1.1.21-2.17 1.57-2.17 1.34 0 1.36 1.26 1.36 2.24V18h2.32z"/></svg>' +
+        '</a>' +
+        '<a href="https://www.tiktok.com/@movinireland" target="_blank" rel="noopener" aria-label="Movin on TikTok" title="TikTok">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M19.6 6.32a5.92 5.92 0 0 1-3.5-1.13 5.92 5.92 0 0 1-2.35-3.7L13.66 1h-3.36v13.46a2.65 2.65 0 0 1-2.66 2.65 2.65 2.65 0 0 1-2.65-2.65 2.65 2.65 0 0 1 2.65-2.66c.28 0 .56.05.82.13V8.51a6.05 6.05 0 0 0-.82-.06A6.06 6.06 0 0 0 1.58 14.5 6.06 6.06 0 0 0 7.64 20.57a6.06 6.06 0 0 0 6.06-6.06V8.06a8.96 8.96 0 0 0 5.9 2.19v-3.4c0-.18-.01-.36-.04-.53z"/></svg>' +
+        '</a>' +
+      '</div>' +
+
+      // App download — Apple + Google Play. Replace href="#" once you have
+      // the real App Store / Play Store URLs.
+      '<div class="footer-apps">' +
+        '<span class="footer-apps-label">Get the app</span>' +
+        '<a class="footer-app-btn" href="#" aria-label="Download on the App Store" data-store="apple" target="_blank" rel="noopener">' +
+          '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.36 12.33a4.36 4.36 0 0 1 2.08-3.65 4.46 4.46 0 0 0-3.5-1.9c-1.48-.16-2.9.88-3.65.88-.77 0-1.91-.86-3.16-.84a4.69 4.69 0 0 0-3.95 2.41c-1.7 2.94-.43 7.28 1.22 9.66.8 1.16 1.76 2.47 3.01 2.42 1.22-.05 1.68-.78 3.15-.78 1.47 0 1.88.78 3.16.76 1.31-.02 2.13-1.18 2.93-2.35.93-1.35 1.31-2.66 1.32-2.73a4.24 4.24 0 0 1-2.61-3.88zM14.07 5.31a4.31 4.31 0 0 0 .99-3.07 4.4 4.4 0 0 0-2.84 1.47 4.11 4.11 0 0 0-1.01 2.97c1.13.09 2.28-.57 2.86-1.37z"/></svg>' +
+          '<span><span class="fa-pre">Download on the</span><span class="fa-store">App Store</span></span>' +
+        '</a>' +
+        '<a class="footer-app-btn" href="#" aria-label="Get it on Google Play" data-store="google" target="_blank" rel="noopener">' +
+          '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#34a853" d="M3.6 20.36L13.07 12 3.6 3.64A2 2 0 0 0 3 5.07v13.86c0 .56.23 1.06.6 1.43z"/><path fill="#fbbc04" d="M16.49 8.83L13.07 12l3.42 3.17 4.18-2.46c1.1-.65 1.1-2.27 0-2.91l-4.18-2.97z"/><path fill="#ea4335" d="M3.6 20.36c.45.45 1.16.5 1.66.16L16.49 15.17 13.07 12 3.6 20.36z"/><path fill="#4285f4" d="M13.07 12L3.6 3.64a1.45 1.45 0 0 1 1.66.16L16.49 8.83 13.07 12z"/></svg>' +
+          '<span><span class="fa-pre">Get it on</span><span class="fa-store">Google Play</span></span>' +
+        '</a>' +
       '</div>' +
       '<div class="footer-bottom">' +
         '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Ltd · Republic of Ireland</div>' +

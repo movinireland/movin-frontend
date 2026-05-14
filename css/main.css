@@ -519,16 +519,68 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 }
 
 .footer-social {
-  display: flex; gap: 1rem;
-  padding: 1.25rem 0;
+  display: flex; gap: .65rem;
+  padding: 1.25rem 0 .65rem;
   border-top: 1px solid rgba(255,255,255,.08);
   flex-wrap: wrap;
 }
 .footer-social a {
-  color: rgba(255,255,255,.55); font-size: 13px; text-decoration: none;
-  transition: color .15s; font-weight: 400;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.07); color: rgba(255,255,255,.65);
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,.10);
+  transition: background .18s, color .18s, transform .18s, border-color .18s;
 }
-.footer-social a:hover { color: #fff; }
+.footer-social a:hover {
+  background: rgba(255,255,255,.14);
+  color: #fff;
+  border-color: rgba(255,255,255,.22);
+  transform: translateY(-2px);
+}
+.footer-social a svg { display: block; }
+
+/* App download buttons (Apple + Google Play). Placeholder href="#" — drop in
+   the real App Store / Play Store URLs in renderFooter() once available. */
+.footer-apps {
+  display: flex; align-items: center; gap: .65rem;
+  padding-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.footer-apps-label {
+  font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  margin-right: .35rem;
+}
+.footer-app-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: #000; color: #fff;
+  padding: 8px 14px 8px 12px; border-radius: 10px;
+  text-decoration: none; line-height: 1;
+  border: 1px solid rgba(255,255,255,.18);
+  transition: transform .18s, border-color .18s, background .18s;
+}
+.footer-app-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.32);
+  background: #111;
+}
+.footer-app-btn svg { flex-shrink: 0; }
+.footer-app-btn .fa-pre {
+  display: block; font-size: 9.5px; letter-spacing: .4px;
+  color: rgba(255,255,255,.65); text-transform: uppercase; font-weight: 500;
+  margin-bottom: 1px;
+}
+.footer-app-btn .fa-store {
+  display: block; font-size: 14px; font-weight: 600; letter-spacing: -.2px;
+}
+
+@media (max-width: 680px) {
+  .footer-apps { padding-bottom: .75rem }
+  .footer-app-btn { padding: 7px 12px }
+  .footer-app-btn .fa-store { font-size: 13px }
+}
 
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,.1);

@@ -130,7 +130,7 @@
     <div class="sr-pills">
       <button class="pill active" data-type="sale"  onclick="togglePill(this)">Buy</button>
       <button class="pill" data-type="rent"  onclick="togglePill(this)">Rent</button>
-      <button class="pill" data-type="share" onclick="togglePill(this)">Sharing</button>
+      <button class="pill" data-type="share" onclick="togglePill(this)">Room for rent</button>
       <button class="pill" data-type="new"   onclick="togglePill(this)">New homes</button>
       <button class="filter-btn" id="filter-btn" onclick="document.getElementById('filter-modal').classList.add('open')">
         <svg width="14" height="14" style="color:currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="21" y2="5"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="19" x2="14" y2="19"/></svg>
@@ -477,7 +477,7 @@
         return
       }
       var params = buildSearchParams()
-      var label = (params.listing_type === 'sale' ? 'For Sale' : params.listing_type === 'rent' ? 'To Rent' : 'Properties') +
+      var label = (params.listing_type === 'sale' ? 'For Sale' : params.listing_type === 'rent' ? 'To Rent' : params.listing_type === 'share' ? 'Rooms for Rent' : 'Properties') +
         (params.county ? ' in ' + params.county : ' in Ireland') +
         (params.bedrooms ? ', ' + params.bedrooms + '+ beds' : '')
 
