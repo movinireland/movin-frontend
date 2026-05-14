@@ -4,29 +4,55 @@
 /* ── Reset & Variables ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; font-size: 15px; }
-body { font-family: 'DM Sans', sans-serif; background: #F7F5F0; color: #1a1a1a; line-height: 1.5; }
+body { font-family: 'DM Sans', sans-serif; background: #faf7f0; color: #1f2421; line-height: 1.55; }
 a { text-decoration: none; color: inherit; }
 img { max-width: 100%; }
 input, select, textarea, button { font-family: inherit; }
 
+/* ── Theme: Irish Heath (May 2026) ───────────────────────────────
+   Custom Movin palette. Keeps the brand DNA (deep emerald + warm
+   terracotta) but warms the paper, sharpens text contrast, and
+   adds a third tone (Heath Mist) for section stratification. */
 :root {
-  --green:        #1a5c45;
-  --green-dark:   #0e3d2e;
-  --green-light:  #e9f4ef;
-  --orange:       #e07b3f;
-  --border:       #e8e4dc;
-  --bg:           #F7F5F0;
-  --white:        #fff;
-  --text:         #1a1a1a;
-  --muted:        #888;
-  --error:        #d93025;
-  --success:      #1a7a3a;
-  --radius:       16px;
+  /* Brand primaries — kept stable so logo, iOS app, prints all match */
+  --green:        #1a5c45;   /* Heritage Green */
+  --green-dark:   #0e3d2e;   /* Bog Oak */
+  --green-light:  #e3ebe1;   /* Heath Mist — soft sage tint */
+  --orange:       #d97847;   /* Weathered Terracotta — slightly warmer */
+  --orange-soft:  #fbe9da;   /* hover/wash tint */
+
+  /* Surfaces */
+  --bg:           #faf7f0;   /* Cream Paper — warmer base */
+  --white:        #fffdf8;   /* Linen — raised cards */
+  --paper-deep:   #f3eee0;   /* darker bands */
+
+  /* Type */
+  --text:         #1f2421;   /* Charcoal Ink — warm near-black */
+  --muted:        #737069;   /* Stone — secondary copy */
+  --border:       #dad6c8;   /* Soft Lichen — hairline rules */
+
+  /* Status */
+  --error:        #c5443d;
+  --success:      #2f7a4a;
+
+  /* Geometry */
+  --radius:       14px;
   --radius-sm:    10px;
   --radius-pill:  50px;
-  --shadow:       0 4px 24px rgba(0,0,0,.07);
-  --shadow-lg:    0 12px 40px rgba(0,0,0,.12);
+  --shadow:       0 6px 24px -8px rgba(31,36,33,.10), 0 2px 6px rgba(31,36,33,.05);
+  --shadow-lg:    0 22px 48px -20px rgba(31,36,33,.18), 0 6px 14px rgba(31,36,33,.08);
   --nav-h:        64px;
+}
+
+/* Dark mode tokens */
+[data-theme="dark"]:root {
+  --green-light:  #1a3d2e;
+  --bg:           #14130f;
+  --white:        #1c1b16;
+  --paper-deep:   #18170f;
+  --text:         #ece6d6;
+  --muted:        #8f8b80;
+  --border:       #2a2820;
 }
 
 /* ── Typography ────────────────────────────────────────────────── */
