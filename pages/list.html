@@ -39,6 +39,8 @@
 
     .plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.25rem}
     @media(max-width:680px){.plan-grid{grid-template-columns:1fr}}
+    .plan-grid.plan-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:680px;margin:0 auto}
+    @media (max-width:560px){.plan-grid.plan-grid-2{grid-template-columns:1fr}}
     .plan-opt{border:1.5px solid var(--border);border-radius:14px;padding:1.4rem;cursor:pointer;background:#fafaf8;transition:all .15s}
     .plan-opt:hover,.plan-opt.on{border-color:var(--green);background:var(--green-light)}
     .plan-badge{font-size:10px;font-weight:500;padding:2px 9px;border-radius:var(--radius-pill);background:var(--orange);color:#fff;display:inline-block;margin-bottom:.6rem}
@@ -445,6 +447,12 @@
             </select>
           </div>
         </div>
+        <!-- Available from — only relevant for rent / room listings -->
+        <div class="form-group" id="available-from-group" style="display:none">
+          <label class="form-label" for="available_from">Available from</label>
+          <input class="form-input" type="date" id="available_from" style="max-width:240px"/>
+          <div class="form-hint">When the property (or room) will be ready for the new tenant to move in.</div>
+        </div>
         <div class="form-group">
           <label class="form-label">Facilities</label>
           <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.25rem">
@@ -453,6 +461,8 @@
             <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garage" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg> Garage</label>
             <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-alarm" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Alarm</label>
             <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-wheelchair" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-wheelchair"/></svg> Wheelchair access</label>
+            <!-- Ensuite — only shown for "Room for rent" (share) -->
+            <label id="f-ensuite-label" style="display:none;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-ensuite" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bath"/></svg> Ensuite bathroom</label>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
@@ -490,7 +500,7 @@
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title">Choose your plan</div>
         <div class="card-sub" id="plan-sub">Free for private sellers and landlords — no card required during our launch period</div>
-        <div class="plan-grid" id="plan-grid">
+        <div class="plan-grid plan-grid-2" id="plan-grid">
           <div class="plan-opt on" data-plan="standard">
             <div class="plan-badge">Standard</div>
             <div class="plan-price" style="font-size:22px">Free</div>
@@ -512,19 +522,6 @@
               <li>Top of search results</li>
               <li>2× more views on average</li>
               <li>Performance analytics</li>
-            </ul>
-          </div>
-          <div class="plan-opt" data-plan="premium">
-            <div class="plan-badge" style="background:linear-gradient(135deg,#e07b3f,#c45e20)">Premium ⚡</div>
-            <div class="plan-price" style="font-size:22px">Premium</div>
-            <div class="plan-desc">Maximum visibility — agents</div>
-            <ul class="plan-list">
-              <li>Everything in Featured</li>
-              <li>Premium badge (gold)</li>
-              <li>Homepage carousel feature</li>
-              <li>Social media promotion</li>
-              <li>60 days live (vs 30)</li>
-              <li>Priority human support</li>
             </ul>
           </div>
         </div>
@@ -711,10 +708,19 @@
       })
     })
 
-    document.getElementById('listing_type').addEventListener('change', function() {
-      document.getElementById('price-hint').textContent =
-        this.value === 'rent' || this.value === 'share' ? 'Enter monthly rent in €' : 'Enter asking price in €'
-    })
+    function refreshListingTypeFields(){
+      var t = document.getElementById('listing_type').value
+      var hint = document.getElementById('price-hint')
+      if (hint) hint.textContent = (t === 'rent' || t === 'share') ? 'Enter monthly rent in €' : 'Enter asking price in €'
+      // Available from — show for rent and share listings only
+      var avFrom = document.getElementById('available-from-group')
+      if (avFrom) avFrom.style.display = (t === 'rent' || t === 'share') ? '' : 'none'
+      // Ensuite — only for "Room for rent" (share)
+      var ens = document.getElementById('f-ensuite-label')
+      if (ens) ens.style.display = (t === 'share') ? 'inline-flex' : 'none'
+    }
+    document.getElementById('listing_type').addEventListener('change', refreshListingTypeFields)
+    refreshListingTypeFields()
 
     var zone = document.getElementById('upload-zone')
     zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over') })
@@ -863,6 +869,8 @@
           garage:          document.getElementById('f-garage').checked,
           alarm:           document.getElementById('f-alarm').checked,
           wheelchair:      document.getElementById('f-wheelchair').checked,
+          ensuite:         !!(document.getElementById('f-ensuite') && document.getElementById('f-ensuite').checked),
+          available_from:  document.getElementById('available_from') && document.getElementById('available_from').value || null,
           plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',
         }
 

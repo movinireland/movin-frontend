@@ -3,6 +3,200 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 
+// ── Coming-soon gate ──────────────────────────────────────────────────────────
+// Holds back the public site while the owner (you) keeps full access.
+// To get in: hit any page and enter the password — your browser keeps a
+// long-lived token so you only do it once. To turn the gate OFF for the
+// public, set `MOVIN_LAUNCHED = true` below (or delete this block).
+//
+// CHANGE THE PASSWORD HERE before deploying. This is a low-stakes "soft
+// launch" gate, not real auth — anyone who pulls your bundle can read it.
+;(function comingSoonGate(){
+  var MOVIN_LAUNCHED = false                              // set to true on public launch day
+  var MOVIN_PREVIEW_PASSWORD = 'movin2026'                // CHANGE ME before deploy
+  if (MOVIN_LAUNCHED) return
+  // Already unlocked in this browser? Let them through.
+  try {
+    if (localStorage.getItem('movin_preview_unlocked') === '1') return
+  } catch(_) { /* private mode — show the gate */ }
+
+  // Wait for DOM so we can insert the overlay
+  function showGate(){
+    // Style + overlay markup — self-contained, doesn't depend on main.css
+    var style = document.createElement('style')
+    style.textContent = ''
+      + '#movin-cs-gate{position:fixed;inset:0;z-index:99999;background:'
+      +   'radial-gradient(circle 700px at 20% 20%, rgba(126,201,168,.20) 0%, rgba(126,201,168,0) 60%),'
+      +   'radial-gradient(circle 600px at 80% 80%, rgba(224,123,63,.20) 0%, rgba(224,123,63,0) 60%),'
+      +   'linear-gradient(160deg, #14130f 0%, #0e3d2e 100%);'
+      +   'display:flex;align-items:center;justify-content:center;padding:1.5rem;'
+      +   'font-family:"DM Sans","Helvetica Neue",Arial,sans-serif;color:#f1ebdc;}'
+      + '#movin-cs-card{max-width:520px;width:100%;background:rgba(28,27,22,.72);'
+      +   '-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);'
+      +   'border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:2.75rem 2rem 2.5rem;'
+      +   'text-align:center;box-shadow:0 32px 64px -24px rgba(0,0,0,.6)}'
+      + '#movin-cs-logo{font-family:"Playfair Display","Cormorant Garamond",Georgia,serif;'
+      +   'font-size:38px;font-weight:900;color:#fff;margin-bottom:.4rem;letter-spacing:-1px}'
+      + '#movin-cs-logo span{color:#e07b3f}'
+      + '#movin-cs-tag{display:inline-flex;align-items:center;gap:8px;'
+      +   'font-size:11px;font-weight:600;letter-spacing:2.4px;text-transform:uppercase;'
+      +   'color:#7ec9a8;margin-bottom:2rem;background:rgba(126,201,168,.08);'
+      +   'border:1px solid rgba(126,201,168,.18);padding:6px 14px;border-radius:50px}'
+      + '#movin-cs-tag::before{content:"";width:8px;height:8px;border-radius:50%;'
+      +   'background:#7ec9a8;box-shadow:0 0 0 0 rgba(126,201,168,.6);animation:movinCSPulse 2s infinite}'
+      + '@keyframes movinCSPulse{0%{box-shadow:0 0 0 0 rgba(126,201,168,.6)}'
+      +   '70%{box-shadow:0 0 0 10px rgba(126,201,168,0)}100%{box-shadow:0 0 0 0 rgba(126,201,168,0)}}'
+      + '#movin-cs-h1{font-family:"Playfair Display",Georgia,serif;font-size:34px;font-weight:700;'
+      +   'color:#fff;letter-spacing:-.6px;line-height:1.1;margin-bottom:1rem}'
+      + '#movin-cs-h1 em{font-style:italic;color:#7ec9a8;font-weight:400}'
+      + '#movin-cs-sub{font-size:15px;color:rgba(241,235,220,.78);line-height:1.7;'
+      +   'margin:0 auto 2rem;font-weight:300;max-width:420px}'
+      + '#movin-cs-contact{display:inline-block;background:rgba(255,255,255,.08);'
+      +   'border:1px solid rgba(255,255,255,.10);border-radius:50px;padding:9px 18px;'
+      +   'color:#fff;font-size:13px;font-weight:500;text-decoration:none;'
+      +   'transition:background .2s,transform .2s}'
+      + '#movin-cs-contact:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}'
+      + '#movin-cs-foot{font-size:11.5px;color:rgba(241,235,220,.42);margin-top:2rem;letter-spacing:.3px;}'
+
+      /* ── Stealth admin entrance — tiny dot in the bottom-right corner.
+            Visible to the eye but visually indistinguishable from a status
+            indicator. Three rapid clicks (or two on touch) open the modal. */
+      + '#movin-cs-key{position:fixed;bottom:18px;right:18px;width:14px;height:14px;'
+      +   'border-radius:50%;background:rgba(126,201,168,.22);'
+      +   'border:1px solid rgba(126,201,168,.32);cursor:pointer;z-index:100000;'
+      +   'transition:transform .2s,background .2s;-webkit-tap-highlight-color:transparent}'
+      + '#movin-cs-key:hover{transform:scale(1.18);background:rgba(126,201,168,.45)}'
+      + '#movin-cs-key::after{content:"";position:absolute;inset:-12px;border-radius:50%}'
+
+      /* ── Password modal (hidden until the dot is clicked) */
+      + '#movin-cs-modal{position:fixed;inset:0;z-index:100001;background:rgba(10,10,8,.78);'
+      +   '-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);'
+      +   'display:none;align-items:center;justify-content:center;padding:1.25rem;'
+      +   'animation:movinCSFade .2s ease}'
+      + '#movin-cs-modal.show{display:flex}'
+      + '@keyframes movinCSFade{from{opacity:0}to{opacity:1}}'
+      + '#movin-cs-modal-card{max-width:380px;width:100%;background:#1c1b16;'
+      +   'border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:2rem 1.75rem 1.5rem;'
+      +   'box-shadow:0 32px 64px -24px rgba(0,0,0,.7);position:relative;'
+      +   'animation:movinCSPop .25s cubic-bezier(.2,.7,.2,1)}'
+      + '@keyframes movinCSPop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}'
+      + '#movin-cs-modal-close{position:absolute;top:10px;right:10px;width:28px;height:28px;'
+      +   'border-radius:50%;background:transparent;border:none;cursor:pointer;'
+      +   'color:rgba(255,255,255,.45);font-size:16px;font-family:inherit;line-height:1}'
+      + '#movin-cs-modal-close:hover{color:#fff;background:rgba(255,255,255,.08)}'
+      + '#movin-cs-modal-h{font-family:"Playfair Display",Georgia,serif;font-size:18px;'
+      +   'font-weight:700;color:#fff;margin-bottom:.35rem;letter-spacing:-.2px}'
+      + '#movin-cs-modal-sub{font-size:12.5px;color:rgba(241,235,220,.55);margin-bottom:1.25rem}'
+      + '#movin-cs-form{display:flex;gap:6px;margin-bottom:.65rem}'
+      + '#movin-cs-input{flex:1;background:#0f0e0b;border:1.5px solid rgba(255,255,255,.10);'
+      +   'border-radius:10px;padding:11px 13px;font-size:14px;color:#fff;outline:none;'
+      +   'font-family:inherit;-webkit-appearance:none;transition:border-color .15s,background .15s}'
+      + '#movin-cs-input::placeholder{color:rgba(241,235,220,.35)}'
+      + '#movin-cs-input:focus{border-color:#7ec9a8;background:#14130f}'
+      + '#movin-cs-btn{background:#7ec9a8;color:#0a1f17;border:none;border-radius:10px;'
+      +   'padding:11px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;'
+      +   'transition:transform .15s,filter .15s}'
+      + '#movin-cs-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}'
+      + '#movin-cs-btn:active{transform:scale(.97)}'
+      + '#movin-cs-err{color:#f29862;font-size:12px;height:16px;transition:opacity .2s;opacity:0}'
+      + '#movin-cs-err.show{opacity:1}'
+
+    document.head.appendChild(style)
+
+    var overlay = document.createElement('div')
+    overlay.id = 'movin-cs-gate'
+    overlay.setAttribute('role','dialog')
+    overlay.setAttribute('aria-label','Site coming soon')
+    overlay.innerHTML = ''
+      + '<div id="movin-cs-card">'
+      +   '<div id="movin-cs-logo">mov<span>in</span></div>'
+      +   '<div id="movin-cs-tag">Launching soon</div>'
+      +   '<div id="movin-cs-h1">Ireland\'s new property home<br><em>is on its way.</em></div>'
+      +   '<div id="movin-cs-sub">A fairer, faster way to buy, rent and list across all 32 counties. We\'re finishing the final touches — say hello and we\'ll let you know when we launch.</div>'
+      +   '<a id="movin-cs-contact" href="mailto:hello@movin.ie">✉ hello@movin.ie</a>'
+      +   '<div id="movin-cs-foot">© Movin Technologies Limited · Made in Ireland 🇮🇪</div>'
+      + '</div>'
+
+    // Stealth admin dot — looks like a decorative status indicator
+    var key = document.createElement('div')
+    key.id = 'movin-cs-key'
+    key.title = ''
+    key.setAttribute('aria-hidden','true')
+
+    // Password modal — hidden by default, opens on dot click
+    var modal = document.createElement('div')
+    modal.id = 'movin-cs-modal'
+    modal.innerHTML = ''
+      + '<div id="movin-cs-modal-card" role="dialog" aria-label="Preview access">'
+      +   '<button id="movin-cs-modal-close" aria-label="Close">✕</button>'
+      +   '<div id="movin-cs-modal-h">Preview access</div>'
+      +   '<div id="movin-cs-modal-sub">Enter your password to bypass the coming-soon screen.</div>'
+      +   '<form id="movin-cs-form" autocomplete="off">'
+      +     '<input id="movin-cs-input" type="password" placeholder="••••••••" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"/>'
+      +     '<button id="movin-cs-btn" type="submit">Enter</button>'
+      +   '</form>'
+      +   '<div id="movin-cs-err">Incorrect password</div>'
+      + '</div>'
+
+    // Lock the page behind the overlay
+    document.documentElement.style.overflow = 'hidden'
+    function mountAll(){
+      document.body.appendChild(overlay)
+      document.body.appendChild(key)
+      document.body.appendChild(modal)
+    }
+    if (document.body) mountAll()
+    else document.addEventListener('DOMContentLoaded', mountAll)
+
+    // Open the modal when the stealth dot is clicked
+    key.addEventListener('click', function(){
+      modal.classList.add('show')
+      setTimeout(function(){
+        var i = document.getElementById('movin-cs-input')
+        if (i) i.focus()
+      }, 80)
+    })
+    // Close the modal — click backdrop or X
+    modal.addEventListener('click', function(e){
+      if (e.target === modal) modal.classList.remove('show')
+    })
+    document.getElementById('movin-cs-modal-close').addEventListener('click', function(){
+      modal.classList.remove('show')
+    })
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape' && modal.classList.contains('show')) modal.classList.remove('show')
+    })
+
+    document.getElementById('movin-cs-form').addEventListener('submit', function(e){
+      e.preventDefault()
+      var inp = document.getElementById('movin-cs-input')
+      var err = document.getElementById('movin-cs-err')
+      var val = (inp.value || '').trim()
+      if (val === MOVIN_PREVIEW_PASSWORD) {
+        try { localStorage.setItem('movin_preview_unlocked', '1') } catch(_){}
+        overlay.style.transition = 'opacity .35s ease'
+        modal.style.transition  = 'opacity .25s ease'
+        overlay.style.opacity = '0'
+        modal.style.opacity   = '0'
+        setTimeout(function(){
+          overlay.remove(); modal.remove(); key.remove()
+          document.documentElement.style.overflow = ''
+        }, 360)
+      } else {
+        err.classList.add('show')
+        inp.value = ''
+        inp.focus()
+        inp.style.borderColor = '#f29862'
+        setTimeout(function(){ inp.style.borderColor = '' }, 600)
+      }
+    })
+  }
+
+  // Show as early as possible — even before DOM is parsed if document.body exists
+  if (document.body) showGate()
+  else document.addEventListener('DOMContentLoaded', showGate)
+})()
+
 // ── In-app zoom lock (iOS Capacitor wrapper only) ─────────────────────────────
 // Web users keep pinch-zoom (accessibility). Inside the Capacitor app we lock
 // it so the site behaves like a native app — no pinch-zoom, no double-tap zoom,

@@ -1009,6 +1009,113 @@ body.hero-places-ready .sugg-box{display:none !important}
   .hero, .hero-shape{ animation: none !important; }
 }
 
+/* ── Dark-mode legibility passes for the homepage ───────────────────── */
+[data-theme="dark"] .hero,
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .hero{
+    background:
+      radial-gradient(circle 700px at 18% 18%, rgba(126,201,168,.10) 0%, rgba(126,201,168,0) 60%),
+      radial-gradient(circle 600px at 82% 22%, rgba(224,123,63,.12) 0%, rgba(224,123,63,0) 60%),
+      radial-gradient(circle 800px at 60% 95%, rgba(46,142,90,.10) 0%, rgba(46,142,90,0) 65%),
+      linear-gradient(180deg, #14130f 0%, #1a1812 100%) !important;
+  }
+}
+[data-theme="dark"] .hero{
+  background:
+    radial-gradient(circle 700px at 18% 18%, rgba(126,201,168,.10) 0%, rgba(126,201,168,0) 60%),
+    radial-gradient(circle 600px at 82% 22%, rgba(224,123,63,.12) 0%, rgba(224,123,63,0) 60%),
+    radial-gradient(circle 800px at 60% 95%, rgba(46,142,90,.10) 0%, rgba(46,142,90,0) 65%),
+    linear-gradient(180deg, #14130f 0%, #1a1812 100%) !important;
+}
+[data-theme="dark"] .hero-h1{ color: #f1ebdc !important; }
+[data-theme="dark"] .hero-h1 em{ color: #7ec9a8 !important; }
+[data-theme="dark"] .hero-rot-w{ color: #f29862 !important; }
+[data-theme="dark"] .hero-sub{ color: #d8d2c2 !important; }      /* high-contrast warm gray */
+[data-theme="dark"] .hero-ticker{ background:rgba(28,27,22,.92) !important; border-color:rgba(255,255,255,.06) !important; color:#7ec9a8 !important; }
+[data-theme="dark"] .hero-ticker-text{ color:#f1ebdc !important; }
+[data-theme="dark"] .hero-ticker-text strong{ color:#7ec9a8 !important; }
+[data-theme="dark"] .hero-shape{ opacity:.18 }
+
+/* Search card surfaces */
+[data-theme="dark"] .search-card{ background:#1c1b16 !important; border-color:#38342a !important; box-shadow:0 28px 56px -22px rgba(0,0,0,.6), 0 10px 24px -12px rgba(0,0,0,.4) !important; }
+[data-theme="dark"] .stt-row{ background:#221f17 !important; border-bottom-color:#38342a !important }
+[data-theme="dark"] .stt{ color:#a8a496 !important }
+[data-theme="dark"] .stt:hover:not(.active){ background:rgba(255,255,255,.06) !important; color:#f1ebdc !important }
+[data-theme="dark"] .stt.active{ background:#1a5c45 !important; color:#fff !important }
+[data-theme="dark"] .search-inp{ background:#14130f !important; border-color:#38342a !important; color:#f1ebdc !important }
+[data-theme="dark"] .search-inp::placeholder{ color:#7a7567 !important }
+[data-theme="dark"] .search-ico-abs svg{ color:#a8a496 }
+[data-theme="dark"] .qf-pill{ background:#221f17 !important; color:#d8d2c2 !important }
+[data-theme="dark"] .qf-pill:hover{ background:#1f3a30 !important; color:#7ec9a8 !important }
+[data-theme="dark"] .adv-toggle{ color:#7ec9a8 !important }
+
+/* AI pill in dark */
+[data-theme="dark"] .ai-pill{ background:#1c1b16 !important; border-color:#38342a !important }
+[data-theme="dark"] .ai-pill-head{ color:#7ec9a8 !important }
+[data-theme="dark"] .ai-pill-inp{ background:#14130f !important; color:#f1ebdc !important }
+[data-theme="dark"] .ai-chip{ background:#221f17 !important; color:#d8d2c2 !important; border-color:transparent !important }
+[data-theme="dark"] .ai-chip:hover{ background:#1f3a30 !important; color:#7ec9a8 !important; border-color:#7ec9a8 !important }
+
+/* Stats pills */
+[data-theme="dark"] .stats-strip .stat-cell{ background:#1c1b16 !important; border-color:#38342a !important }
+[data-theme="dark"] .stats-strip .stat-cell:hover{ border-color:#7ec9a8 !important }
+[data-theme="dark"] .stats-strip .stat-n{ color:#7ec9a8 !important }
+[data-theme="dark"] .stats-strip .stat-n::before{ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237ec9a8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") }
+[data-theme="dark"] .stat-l{ color:#d8d2c2 !important }
+
+/* Counties section */
+[data-theme="dark"] .counties-title{ color:#f1ebdc !important }
+[data-theme="dark"] .counties-head{ border-bottom-color:#38342a !important }
+[data-theme="dark"] .counties-all{ color:#7ec9a8 !important }
+[data-theme="dark"] .county-card{ background:#1c1b16 !important; border-color:#38342a !important }
+[data-theme="dark"] .county-card:hover{ border-color:#7ec9a8 !important; box-shadow:0 10px 24px -12px rgba(126,201,168,.18) !important }
+[data-theme="dark"] .county-card-name{ color:#f1ebdc !important }
+[data-theme="dark"] .county-card-meta{ color:#a8a496 !important }
+[data-theme="dark"] .county-card:hover .county-card-meta,
+[data-theme="dark"] .county-card:hover .county-card-meta::after{ color:#7ec9a8 !important }
+[data-theme="dark"] .county-card-name::before{ filter: brightness(1.4) }
+
+/* Tools & trust sections */
+[data-theme="dark"] .tools-section, [data-theme="dark"] .trust-section{ background:#1c1b16 !important; border-color:#38342a !important }
+[data-theme="dark"] .tool-card{ background:#14130f !important; border-color:#38342a !important }
+[data-theme="dark"] .tool-card:hover{ background:#1f1d16 !important; border-color:#7ec9a8 !important }
+[data-theme="dark"] .tool-card-title{ color:#f1ebdc !important }
+[data-theme="dark"] .tool-card-sub{ color:#a8a496 !important }
+[data-theme="dark"] .tool-card-cta{ color:#7ec9a8 !important }
+[data-theme="dark"] .tool-card-feature{ background: linear-gradient(135deg, #1c2a22 0%, #14130f 100%) !important; border-color:#2a3d33 !important }
+[data-theme="dark"] .tool-card-feature:hover{ background: linear-gradient(135deg, #1f3a30 0%, #1a2a22 100%) !important }
+[data-theme="dark"] .tool-card-tag{ background:#7ec9a8 !important; color:#0e2a20 !important }
+[data-theme="dark"] .trust-card{ background:#14130f !important; border-color:#38342a !important }
+[data-theme="dark"] .trust-card:hover{ border-color:#7ec9a8 !important }
+[data-theme="dark"] .trust-quote{ color:#f1ebdc !important }
+[data-theme="dark"] .trust-quote-mark{ color:#f29862 !important }
+[data-theme="dark"] .trust-name{ color:#f1ebdc !important }
+[data-theme="dark"] .trust-role{ color:#a8a496 !important }
+[data-theme="dark"] .trust-byline{ border-top-color:#38342a !important }
+
+/* Section eyebrows + section titles */
+[data-theme="dark"] .section-eyebrow{ color:#7ec9a8 !important }
+[data-theme="dark"] .section-title{ color:#f1ebdc !important }
+[data-theme="dark"] .section-sub{ color:#d8d2c2 !important }
+
+/* Nav */
+[data-theme="dark"] .nav{ background:#1c1b16 !important; border-bottom-color:#38342a !important }
+[data-theme="dark"] .nav-links li{ color:#d8d2c2 !important }
+[data-theme="dark"] .nav-links li:hover{ color:#7ec9a8 !important }
+[data-theme="dark"] .nav-logo{ color:#7ec9a8 !important }
+
+/* Mobile menu */
+[data-theme="dark"] .mobile-menu{ background:#14130f !important }
+[data-theme="dark"] .mm-item{ color:#f1ebdc !important }
+[data-theme="dark"] .mm-icon{ background:#1f3a30 !important }
+[data-theme="dark"] .mm-divider{ background:#38342a !important }
+
+/* Footer */
+[data-theme="dark"] .site-footer{ background:#0a0f0c !important }
+[data-theme="dark"] .ftr-group-head{ color:rgba(241,235,220,.78) !important }
+[data-theme="dark"] .ftr-group-body a{ color:rgba(241,235,220,.65) !important }
+[data-theme="dark"] .ftr-group-body a:hover{ color:#7ec9a8 !important }
+
 /* Old eyebrow hidden in favour of the live ticker */
 .hero-eyebrow{ display: none !important }
 
