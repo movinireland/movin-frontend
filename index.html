@@ -1624,4 +1624,1335 @@ body.hero-places-ready .sugg-box{display:none !important}
       <!-- Rent dropdown — residential only, each links to a dedicated page -->
       <li class="nav-has-dropdown">
         <span>Rent <span class="ntd-caret">▾</span></span>
-...
+        <div class="nav-tools-dropdown">
+          <a class="ntd-item" href="pages/house-for-rent.html">
+            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
+            <div><div class="ntd-title">Houses to rent</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
+          </a>
+          <a class="ntd-item" href="pages/apartment-for-rent.html">
+            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-apartment"/></svg></span>
+            <div><div class="ntd-title">Apartments to rent</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
+          </a>
+          <a class="ntd-item" href="pages/bungalow-for-rent.html">
+            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-bungalow"/></svg></span>
+            <div><div class="ntd-title">Bungalows to rent</div><div class="ntd-sub">Single-storey rentals</div></div>
+          </a>
+          <a class="ntd-item" href="pages/sharing.html">
+            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-user"/></svg></span>
+            <div><div class="ntd-title">Sharing &amp; rooms</div><div class="ntd-sub">Single rooms in shared homes</div></div>
+          </a>
+        </div>
+      </li>
+
+      <li onclick="go('pages/latest.html')">Latest</li>
+      <li onclick="go('pages/commercial.html')">Commercial</li>
+      <li onclick="go('pages/list.html')">List your property</li>
+      <li onclick="go('pages/tools.html')">Tools</li>
+      <li onclick="go('pages/contact.html')">Contact</li>
+    </ul>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+      <div id="nav-auth-area">
+        <a href="pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
+        <a href="pages/register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <button class="nav-hamburger" onclick="toggleMobileMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <div class="mobile-menu-logo">mov<span>in</span></div>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
+  </div>
+  <div class="mobile-menu-body">
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-house"/></svg></div>Buy a property</div>
+    <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
+    <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
+    <div class="mm-item" onclick="go('pages/commercial.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Commercial property</div>
+    <div class="mm-item" onclick="go('pages/latest.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bell"/></svg></div>Latest listings</div>
+    <div class="mm-divider"></div>
+    <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
+    <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
+    <div class="mm-item" onclick="go('pages/tools.html#stamp');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-document"/></svg></div>Stamp duty</div>
+    <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-key"/></svg></div>First-time buyer</div>
+    <div class="mm-divider"></div>
+    <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>List your property</div>
+    <div class="mm-item" onclick="go('pages/contact.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg></div>Contact us</div>
+    <div class="mm-item mm-admin-only" id="mm-admin-link" style="display:none" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
+    <div class="mm-divider"></div>
+    <div class="mm-item mm-theme-toggle" id="mm-theme-toggle" onclick="toggleTheme()"><div class="mm-icon" id="mm-theme-icon">🌙</div><span id="mm-theme-label">Dark mode</span></div>
+  </div>
+  <div class="mobile-menu-footer" id="mobile-menu-footer">
+    <a href="pages/login.html" class="btn btn-ghost">Sign in</a>
+    <a href="pages/register.html" class="btn btn-primary">Register free</a>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<div class="page-body">
+<div class="hero">
+  <div class="hero-noise"></div>
+  <!-- Floating decorative shapes — pure CSS animation, no JS needed -->
+  <span class="hero-shape hero-shape-1" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-2" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-3" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-4" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-5" aria-hidden="true"></span>
+  <span class="hero-shape hero-shape-6" aria-hidden="true"></span>
+
+  <div class="hero-inner">
+    <div class="hero-ticker" id="hero-ticker">
+      <span class="live-dot"></span>
+      <span class="hero-ticker-text"><strong id="hero-ticker-num">—</strong> new homes listed this week</span>
+    </div>
+    <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
+    <p class="hero-sub">Smarter search, transparent pricing, and free listings for private sellers and landlords. From city centres to coastal hideaways — discover where you'll live next.</p>
+  </div>
+
+  <div class="search-card">
+    <div class="stt-row">
+      <div class="stt active" data-type="sale" onclick="selectType(this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+        Buy
+      </div>
+      <div class="stt" data-type="rent" onclick="selectType(this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 14h6v6H9z"/></svg>
+        Rent
+      </div>
+      <div class="stt" data-type="share" onclick="selectType(this)">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 14h2a3 3 0 0 1 3 3v2"/></svg>
+        Room
+      </div>
+    </div>
+
+    <div class="search-main" style="position:relative">
+      <div class="search-input-wrap">
+        <span class="search-ico-abs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+        <input class="search-inp" type="text" id="hero-loc"
+          placeholder=""
+          aria-label="Search homes by address, area, Eircode, school, transport hub or workplace"
+          autocomplete="off"
+          oninput="handleLoc(this.value)"
+          onkeydown="if(event.key==='Enter')doSearch()"/>
+        <!-- Typewriter overlay — cycles through search-prompt examples until the user starts typing.
+             Positioned inside .search-input-wrap so it can never overflow into the Search button. -->
+        <div class="hero-loc-typer" id="hero-loc-typer" aria-hidden="true">
+          <span class="typer-prefix">Search for</span><span class="typer-word"></span><span class="typer-cursor"></span>
+        </div>
+      </div>
+      <button class="search-go" onclick="doSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span class="search-go-label">Search</span>
+      </button>
+      <div class="sugg-box" id="loc-sugg"></div>
+    </div>
+
+    <!-- Visible quick filter row — bigger, more prominent than the old advanced toggle -->
+    <div class="qf-row">
+      <span class="qf-label">Quick filters</span>
+      <button type="button" class="qf-pill" id="qf-beds-pill" onclick="cycleQF('beds')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6"/><path d="M3 18h18"/><path d="M7 9V6"/><path d="M17 9V6"/></svg>
+        <span id="qf-beds-label">Beds: any</span>
+      </button>
+      <button type="button" class="qf-pill" id="qf-price-pill" onclick="cycleQF('price')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11a4 4 0 0 1 0 8H8"/><path d="M5 14h11a4 4 0 0 0 0-8"/><path d="M3 8h2"/><path d="M3 12h2"/></svg>
+        <span id="qf-price-label">Price: any</span>
+      </button>
+      <button type="button" class="qf-pill" id="qf-type-pill" onclick="cycleQF('type')">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+        <span id="qf-type-label">Any type</span>
+      </button>
+    </div>
+
+    <div class="chip-wrap" id="chip-wrap"></div>
+
+    <div class="adv-toggle" onclick="toggleAdv()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 2h12M3 7h8M5 12h4" stroke="#1a5c45" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Advanced search
+      <span class="adv-arrow" id="adv-arrow">▾</span>
+    </div>
+
+    <div class="adv-panel" id="adv-panel">
+      <div class="adv-grid">
+        <div class="adv-field">
+          <label><span id="adv-min-label">Min price</span></label>
+          <select class="adv-sel" id="adv-min"></select>
+        </div>
+        <div class="adv-field">
+          <label><span id="adv-max-label">Max price</span></label>
+          <select class="adv-sel" id="adv-max"></select>
+        </div>
+        <div class="adv-field"><label>Bedrooms</label>
+          <select class="adv-sel" id="adv-beds">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
+            <option value="3">3+</option><option value="4">4+</option><option value="5">5+</option>
+          </select>
+        </div>
+        <div class="adv-field"><label>Bathrooms</label>
+          <select class="adv-sel" id="adv-baths">
+            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option>
+          </select>
+        </div>
+        <div class="adv-field"><label>Property type</label>
+          <select class="adv-sel" id="adv-ptype">
+            <option value="">Any type</option><option value="house">House</option><option value="apartment">Apartment</option>
+            <option value="bungalow">Bungalow</option><option value="site">Site / Land</option>
+          </select>
+        </div>
+        <div class="adv-field"><label>BER rating</label>
+          <select class="adv-sel" id="adv-ber">
+            <option value="">Any</option><option value="A1">A1</option><option value="A2">A2</option>
+            <option value="A3">A3</option><option value="B1">B1</option><option value="B2">B2</option>
+            <option value="B3">B3</option><option value="C1">C1</option>
+          </select>
+        </div>
+      </div>
+      <div class="features-label">Features</div>
+      <div class="feat-chips">
+        <div class="fc" data-key="parking" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-parking"/></svg> Parking</div>
+        <div class="fc" data-key="garden" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garden"/></svg> Garden</div>
+        <div class="fc" data-key="garage" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg> Garage</div>
+        <div class="fc" data-key="furnished" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-sofa"/></svg> Furnished</div>
+        <div class="fc" data-key="pets" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-pets"/></svg> Pet-friendly</div>
+        <div class="fc" data-key="alarm" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Alarm</div>
+        <div class="fc" data-key="wheelchair" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-wheelchair"/></svg> Accessible</div>
+      </div>
+      <button class="search-full-btn" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search properties</button>
+    </div>
+
+  </div>
+
+  <!-- ── Compact AI search pill — sits beneath the main search card ─────── -->
+  <div class="ai-pill" id="ai-pill">
+    <div class="ai-pill-head">
+      <span class="ai-pill-spark" aria-hidden="true">✨</span>
+      <span class="ai-pill-label">Ask anything</span>
+      <span class="ai-pill-tag">AI</span>
+    </div>
+    <form class="ai-pill-row" onsubmit="event.preventDefault();heroAskAi()">
+      <input class="ai-pill-inp" id="ai-pill-inp" type="text"
+        placeholder="e.g. 3-bed family home in Dublin under €500k near a good school"
+        aria-label="AI search" maxlength="500"/>
+      <button class="ai-pill-go" id="ai-pill-go" type="submit" aria-label="Run AI search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+    </form>
+    <div class="ai-pill-examples" id="ai-pill-examples">
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">2-bed apartment to rent in Cork under €1800</button>
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">house with garden in Galway</button>
+      <button type="button" class="ai-chip" onclick="useAiExample(this)">share a room in Dublin near LUAS</button>
+    </div>
+  </div>
+</div>
+
+<div class="stats-strip">
+  <div class="stat-cell"><div class="stat-n" data-count-target="0" id="stat-count">0</div><div class="stat-l">Live listings</div></div>
+  <div class="stat-cell"><div class="stat-n" data-count-target="32">0</div><div class="stat-l">Counties</div></div>
+  <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="0">0</span></div><div class="stat-l">Free for private sellers</div></div>
+  <div class="stat-cell"><div class="stat-n"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="stat-l">Agent plans available</div></div>
+</div>
+
+<!-- ── Browse by county — clean compact tiles ──────────────────────────── -->
+<section class="counties-section reveal" id="counties-showcase">
+  <div class="counties-head">
+    <h2 class="counties-title">Find homes by county</h2>
+    <a class="counties-all" href="pages/search.html">All 32 counties <span aria-hidden="true">→</span></a>
+  </div>
+  <div class="counties-grid">
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Dublin','Dublin')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Dublin</span>
+      <span class="county-card-meta"><span data-county-count="Dublin">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Cork','Cork')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Cork</span>
+      <span class="county-card-meta"><span data-county-count="Cork">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Galway','Galway')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Galway</span>
+      <span class="county-card-meta"><span data-county-count="Galway">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Meath','Meath')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Meath</span>
+      <span class="county-card-meta"><span data-county-count="Meath">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kildare','Kildare')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Kildare</span>
+      <span class="county-card-meta"><span data-county-count="Kildare">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Wicklow','Wicklow')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Wicklow</span>
+      <span class="county-card-meta"><span data-county-count="Wicklow">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Limerick','Limerick')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Limerick</span>
+      <span class="county-card-meta"><span data-county-count="Limerick">View homes</span></span>
+    </button>
+    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kerry','Kerry')">
+      <span class="county-card-stripe"></span>
+      <span class="county-card-name">Kerry</span>
+      <span class="county-card-meta"><span data-county-count="Kerry">View homes</span></span>
+    </button>
+  </div>
+</section>
+
+<!-- Tools row — clean modern feature cards -->
+<section class="section reveal mobile-hide tools-section">
+  <div class="tools-head">
+    <div class="section-eyebrow">Tools to find faster</div>
+    <h2 class="section-title">Everything you need in one place</h2>
+    <p class="section-sub">Search by map, drive-time, AI chat or postcode. Calculate your mortgage. List your property in minutes.</p>
+  </div>
+  <div class="tools-grid">
+    <a class="tool-card tool-card-feature" href="pages/map-search.html">
+      <div class="tool-card-bg" aria-hidden="true">
+        <svg viewBox="0 0 220 160" preserveAspectRatio="xMidYMid slice" fill="none"><defs><linearGradient id="tg1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1a5c45" stop-opacity=".18"/><stop offset="1" stop-color="#1a5c45" stop-opacity="0"/></linearGradient></defs><rect width="220" height="160" fill="url(#tg1)"/><path d="M10 70 Q60 30 110 60 T210 50 L210 160 L10 160 Z" fill="#1a5c45" fill-opacity=".12"/><circle cx="60" cy="60" r="5" fill="#1a5c45"/><circle cx="120" cy="80" r="5" fill="#e07b3f"/><circle cx="170" cy="50" r="5" fill="#1a5c45"/><path d="M60 60 Q90 100 120 80 T170 50" stroke="#1a5c45" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
+      </div>
+      <div class="tool-card-content">
+        <span class="tool-card-tag">Featured</span>
+        <h3 class="tool-card-title">Browse the whole island on a map</h3>
+        <p class="tool-card-sub">Pan, zoom and filter every live listing across Ireland. Pin saved areas, set search alerts.</p>
+        <span class="tool-card-cta">Open map search <span aria-hidden="true">→</span></span>
+      </div>
+    </a>
+
+    <a class="tool-card" href="pages/drive-time.html">
+      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3 class="tool-card-title">Find by drive time</h3>
+      <p class="tool-card-sub">Live within a 30-minute drive of work, school or family.</p>
+      <span class="tool-card-cta">Try it <span aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="tool-card" href="pages/tools.html#mortgage">
+      <div class="tool-card-icon" style="background:#e9f4ef;color:#1a5c45">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 16h2M14 16h2"/></svg>
+      </div>
+      <h3 class="tool-card-title">Mortgage calculator</h3>
+      <p class="tool-card-sub">Estimate monthly repayments and what you can borrow.</p>
+      <span class="tool-card-cta">Calculate <span aria-hidden="true">→</span></span>
+    </a>
+
+    <a class="tool-card" href="pages/list.html">
+      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M12 14v6"/><path d="M9 17h6"/></svg>
+      </div>
+      <h3 class="tool-card-title">List your property</h3>
+      <p class="tool-card-sub">Free for private sellers & landlords. No card required.</p>
+      <span class="tool-card-cta">Get started <span aria-hidden="true">→</span></span>
+    </a>
+  </div>
+</section>
+
+<div class="section reveal mobile-hide">
+  <div class="section-eyebrow">Just listed</div>
+  <div class="section-hdr">
+    <h2 class="section-title">Latest listings</h2>
+    <span class="see-all" onclick="go('pages/latest.html')">See all →</span>
+  </div>
+  <div class="listings-grid" id="featured-grid">
+    <div class="loading-wrap"><div class="spinner"></div></div>
+  </div>
+</div>
+
+<!-- Social proof — refreshed editorial card grid -->
+<section class="section reveal mobile-hide trust-section">
+  <div class="trust-head">
+    <div class="section-eyebrow">From the community</div>
+    <h2 class="section-title">Why Movin works for Irish homeowners</h2>
+    <p class="section-sub">Real stories from people who've sold, rented and found their next place on Movin.ie.</p>
+  </div>
+  <div class="trust-grid">
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Sold my Dublin 8 terrace in three weeks. The dashboard made it easy to track every viewing and reply to enquiries from one place.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#1a5c45">SM</div>
+        <div>
+          <div class="trust-name">Siobhán M.</div>
+          <div class="trust-role">Homeowner · Dublin 8</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Free to list my rental and the enquiries came in straight away. Saved a fortune compared to the paid portals and the results were honestly better.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#e07b3f">CB</div>
+        <div>
+          <div class="trust-name">Ciarán B.</div>
+          <div class="trust-role">Landlord · Cork</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+    <article class="trust-card">
+      <div class="trust-quote-mark">"</div>
+      <p class="trust-quote">Found our forever home through Movin. The map search and drive-time tools made it so much easier to figure out where we actually wanted to live.</p>
+      <div class="trust-byline">
+        <div class="trust-avatar" style="background:#2a7d5c">AR</div>
+        <div>
+          <div class="trust-name">Aoife &amp; Tadhg R.</div>
+          <div class="trust-role">First-time buyers · Galway</div>
+        </div>
+        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- Why Movin + pricing + CTA — all in one cohesive section -->
+<section class="why-pricing reveal mobile-hide">
+  <div class="wp-inner">
+    <div class="wp-head">
+      <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
+      <h2 class="section-title" style="color:#e07b3f !important">Built for Ireland.<br>Priced for everyone.</h2>
+      <p class="section-sub" style="color:#ffffff !important">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
+    </div>
+
+    <div class="wp-values">
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+        <h3>Free for private sellers</h3>
+        <p>List for nothing. See how it performs before you pay a cent.</p>
+      </div>
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11a4 4 0 0 1 0 8H8"/><path d="M5 14h11a4 4 0 0 0 0-8"/></svg></div>
+        <h3>Fair pricing</h3>
+        <p>Free for private sellers and landlords. Simple, transparent plans for estate agents.</p>
+      </div>
+      <div class="wp-val">
+        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <h3>Modern & fast</h3>
+        <p>Built mobile-first. Clean, intuitive, works on any device.</p>
+      </div>
+    </div>
+
+    <div class="wp-prices">
+      <div class="wp-price">
+        <div class="wp-price-eyebrow">Private sellers &amp; landlords</div>
+        <div class="wp-price-num">Free</div>
+        <div class="wp-price-period">during our launch period</div>
+        <ul><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live, no card needed</li></ul>
+        <button class="wp-cta wp-cta-ghost" onclick="go('pages/list.html')">Start free →</button>
+      </div>
+      <div class="wp-price wp-price-feat">
+        <div class="wp-price-eyebrow">Estate agents &amp; agencies</div>
+        <div class="wp-price-num">Plans</div>
+        <div class="wp-price-period">single listings or unlimited subscription</div>
+        <ul><li>Single listing or unlimited subscription</li><li>Featured upgrade available</li><li>View &amp; enquiry analytics</li><li>Priority support</li></ul>
+        <button class="wp-cta wp-cta-primary" onclick="go('pages/terms-of-service.html#pricing')">See agent plans →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- The rich multi-column footer is rendered into <footer id="site-footer"> below by renderFooter() -->
+</div>
+
+<div class="tab-bar">
+  <button class="tab-item active" onclick="go('index.html')">
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-home"/></svg></div>Home
+  </button>
+  <button class="tab-item" onclick="go('pages/search.html')">
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></div>Search
+  </button>
+  <button class="tab-list-item" onclick="go('pages/list.html')">
+    <div class="tab-list-circle"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>
+    <span class="tab-list-label">List</span>
+  </button>
+  <button class="tab-item" onclick="go('pages/map-search.html')">
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map
+  </button>
+  <button class="tab-item" id="tab-account" onclick="go('pages/dashboard.html')">
+    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></div>Account
+  </button>
+</div>
+
+<script>
+window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'
+</script>
+<script src="js/icons.js"></script>
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+<script>
+function go(u){window.location.href=u}
+function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
+let searchType='sale',searchCounty='',searchQuery=''
+
+// Price ranges — Buy uses lump sums, Rent and Sharing use monthly.
+// `min` and `max` arrays are independent so users can pick a sensible range.
+const PRICE_RANGES = {
+  sale: {
+    label: 'price',
+    min: [
+      {v:'',       l:'No min'},
+      {v:'50000',  l:'€50k'},
+      {v:'100000', l:'€100k'},
+      {v:'150000', l:'€150k'},
+      {v:'200000', l:'€200k'},
+      {v:'250000', l:'€250k'},
+      {v:'300000', l:'€300k'},
+      {v:'400000', l:'€400k'},
+      {v:'500000', l:'€500k'},
+      {v:'750000', l:'€750k'},
+      {v:'1000000',l:'€1m'}
+    ],
+    max: [
+      {v:'',       l:'No max'},
+      {v:'100000', l:'€100k'},
+      {v:'150000', l:'€150k'},
+      {v:'200000', l:'€200k'},
+      {v:'250000', l:'€250k'},
+      {v:'300000', l:'€300k'},
+      {v:'400000', l:'€400k'},
+      {v:'500000', l:'€500k'},
+      {v:'750000', l:'€750k'},
+      {v:'1000000',l:'€1m'},
+      {v:'1500000',l:'€1.5m'},
+      {v:'2000000',l:'€2m+'}
+    ]
+  },
+  rent: {
+    label: 'rent /mo',
+    min: [
+      {v:'',     l:'No min'},
+      {v:'500',  l:'€500'},
+      {v:'750',  l:'€750'},
+      {v:'1000', l:'€1,000'},
+      {v:'1250', l:'€1,250'},
+      {v:'1500', l:'€1,500'},
+      {v:'1750', l:'€1,750'},
+      {v:'2000', l:'€2,000'},
+      {v:'2500', l:'€2,500'},
+      {v:'3000', l:'€3,000'}
+    ],
+    max: [
+      {v:'',     l:'No max'},
+      {v:'750',  l:'€750'},
+      {v:'1000', l:'€1,000'},
+      {v:'1250', l:'€1,250'},
+      {v:'1500', l:'€1,500'},
+      {v:'1750', l:'€1,750'},
+      {v:'2000', l:'€2,000'},
+      {v:'2500', l:'€2,500'},
+      {v:'3000', l:'€3,000'},
+      {v:'4000', l:'€4,000'},
+      {v:'5000', l:'€5,000+'}
+    ]
+  },
+  share: {
+    label: 'rent /mo',
+    min: [
+      {v:'',    l:'No min'},
+      {v:'300', l:'€300'},
+      {v:'400', l:'€400'},
+      {v:'500', l:'€500'},
+      {v:'600', l:'€600'},
+      {v:'700', l:'€700'},
+      {v:'800', l:'€800'},
+      {v:'1000',l:'€1,000'}
+    ],
+    max: [
+      {v:'',    l:'No max'},
+      {v:'400', l:'€400'},
+      {v:'500', l:'€500'},
+      {v:'600', l:'€600'},
+      {v:'700', l:'€700'},
+      {v:'800', l:'€800'},
+      {v:'900', l:'€900'},
+      {v:'1000',l:'€1,000'},
+      {v:'1200',l:'€1,200'},
+      {v:'1500',l:'€1,500+'}
+    ]
+  }
+}
+
+function fillPriceSelects(type){
+  const cfg = PRICE_RANGES[type] || PRICE_RANGES.sale
+  const minSel = document.getElementById('adv-min')
+  const maxSel = document.getElementById('adv-max')
+  const minLbl = document.getElementById('adv-min-label')
+  const maxLbl = document.getElementById('adv-max-label')
+
+  // Repopulate the dropdowns and reset the selected value (the price you'd
+  // accept for €500k buy makes no sense as €500k/mo rent)
+  if (minSel) {
+    minSel.innerHTML = cfg.min.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
+    minSel.value = ''
+  }
+  if (maxSel) {
+    maxSel.innerHTML = cfg.max.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
+    maxSel.value = ''
+  }
+  if (minLbl) minLbl.textContent = type === 'sale' ? 'Min price' : 'Min rent /mo'
+  if (maxLbl) maxLbl.textContent = type === 'sale' ? 'Max price' : 'Max rent /mo'
+}
+
+function selectType(el){
+  searchType = el.dataset.type
+  document.querySelectorAll('.stt').forEach(t => t.classList.remove('active'))
+  el.classList.add('active')
+  // Swap the advanced-panel prices to match
+  fillPriceSelects(searchType)
+  // Swap the quick-filter price pill options too
+  if (typeof QF_OPTIONS !== 'undefined' && typeof QF_PRICE_BY_TYPE !== 'undefined') {
+    QF_OPTIONS.price = QF_PRICE_BY_TYPE[searchType] || QF_PRICE_BY_TYPE.sale
+    QF_STATE.price = 0
+    const labelEl = document.getElementById('qf-price-label')
+    const pillEl  = document.getElementById('qf-price-pill')
+    if (labelEl) labelEl.textContent = QF_OPTIONS.price[0].l
+    if (pillEl)  pillEl.classList.remove('on')
+  }
+}
+function toggleAdv(){document.getElementById('adv-panel').classList.toggle('open');document.getElementById('adv-arrow').classList.toggle('open')}
+const DD=[{code:'D1',name:'Dublin 1',area:'City Centre'},{code:'D2',name:'Dublin 2',area:'City Centre South'},{code:'D3',name:'Dublin 3',area:'Clontarf, Fairview'},{code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook'},{code:'D5',name:'Dublin 5',area:'Artane, Coolock'},{code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines'},{code:'D6W',name:'Dublin 6W',area:'Templeogue, Terenure'},{code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough'},{code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham'},{code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin'},{code:'D10',name:'Dublin 10',area:'Ballyfermot'},{code:'D11',name:'Dublin 11',area:'Finglas, Ballymun'},{code:'D12',name:'Dublin 12',area:'Crumlin, Kimmage'},{code:'D13',name:'Dublin 13',area:'Baldoyle, Howth'},{code:'D14',name:'Dublin 14',area:'Dundrum, Rathfarnham'},{code:'D15',name:'Dublin 15',area:'Blanchardstown'},{code:'D16',name:'Dublin 16',area:'Ballinteer, Knocklyon'},{code:'D18',name:'Dublin 18',area:'Foxrock, Sandyford'},{code:'D20',name:'Dublin 20',area:'Chapelizod'},{code:'D22',name:'Dublin 22',area:'Clondalkin'},{code:'D24',name:'Dublin 24',area:'Firhouse, Tallaght'}]
+const COUNTIES=['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan']
+function handleLoc(val){
+  const box=document.getElementById('loc-sugg')
+  if(!val||val.length<1){box.classList.remove('open');return}
+  const q=val.toUpperCase().trim(),results=[]
+  DD.forEach(d=>{if(d.code.startsWith(q)||d.name.toUpperCase().includes(q))results.push({type:'district',...d})})
+  if(/^[A-Z][0-9]{0,2}/.test(q)&&!results.length)results.push({type:'eircode',code:val.toUpperCase(),name:'Eircode: '+val.toUpperCase(),area:'Search by Eircode'})
+  COUNTIES.forEach(c=>{if(c.toUpperCase().startsWith(q)||c.toUpperCase().includes(q))results.push({type:'county',code:c,name:c,area:'County'})})
+  if(!results.length){box.classList.remove('open');return}
+  box.innerHTML=results.slice(0,5).map(r=>`<div class="sugg-item" onclick="selectLoc(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span>${r.type==='county'?'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>':r.type==='eircode'?'<svg width="14" height="14" style="color:#888;vertical-align:middle"><use href="/icons.svg#icon-search"/></svg>':'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>'}</span><div><div class="sugg-main">${r.name}</div><div class="sugg-sub">${r.area}</div></div><span class="sugg-tag">${r.type==='district'?'Dublin':r.type==='eircode'?'Eircode':'County'}</span></div>`).join('')
+  box.classList.add('open')
+}
+function selectLoc(item){
+  document.getElementById('loc-sugg').classList.remove('open')
+  document.getElementById('hero-loc').value=item.name
+  searchCounty=item.type==='county'?item.code:(item.type==='district'?'Dublin':'')
+  searchQuery=item.name
+  showChip(item.name)
+}
+function showChip(label){document.getElementById('chip-wrap').innerHTML=`<span class="search-chip">📍 ${label}<button class="chip-x" onclick="clearSearch()">×</button></span>`}
+function clearSearch(){searchQuery='';searchCounty='';document.getElementById('hero-loc').value='';document.getElementById('chip-wrap').innerHTML=''}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-main'))document.getElementById('loc-sugg')?.classList.remove('open')})
+// When the user picks a place from the Google Places dropdown we capture
+// its lat/lng so search.html can sort listings by distance to it.
+let searchOrigin = null   // { lat, lng, label } or null
+
+// Quick filter pills — cycle through preset options on tap
+const QF_PRICE_BY_TYPE = {
+  sale:  [{v:'', l:'Price: any'},     {v:'200000',l:'Up to €200k'},   {v:'300000',l:'Up to €300k'},   {v:'500000',l:'Up to €500k'},   {v:'750000',l:'Up to €750k'},   {v:'1000000',l:'Up to €1m'}],
+  rent:  [{v:'', l:'Rent: any'},      {v:'1000',  l:'Up to €1k/mo'},  {v:'1500',  l:'Up to €1.5k/mo'},{v:'2000',  l:'Up to €2k/mo'},  {v:'2500',  l:'Up to €2.5k/mo'},{v:'3000',  l:'Up to €3k/mo'}, {v:'4000',l:'Up to €4k/mo'}],
+  share: [{v:'', l:'Rent: any'},      {v:'500',   l:'Up to €500/mo'}, {v:'700',   l:'Up to €700/mo'}, {v:'900',   l:'Up to €900/mo'}, {v:'1100',  l:'Up to €1.1k/mo'},{v:'1500',  l:'Up to €1.5k/mo'}]
+}
+const QF_OPTIONS = {
+  beds:  [{v:'',  l:'Beds: any'},  {v:'1',l:'1+ beds'}, {v:'2',l:'2+ beds'}, {v:'3',l:'3+ beds'}, {v:'4',l:'4+ beds'}, {v:'5',l:'5+ beds'}],
+  price: QF_PRICE_BY_TYPE.sale.slice(),
+  type:  [{v:'',  l:'Any type'},   {v:'house',l:'House'}, {v:'apartment',l:'Apartment'}, {v:'bungalow',l:'Bungalow'}, {v:'site',l:'Site / Land'}]
+}
+const QF_STATE = { beds:0, price:0, type:0 }
+function cycleQF(key){
+  const opts = QF_OPTIONS[key]; if (!opts) return
+  QF_STATE[key] = (QF_STATE[key] + 1) % opts.length
+  const cur = opts[QF_STATE[key]]
+  const labelEl = document.getElementById('qf-' + key + '-label')
+  const pillEl  = document.getElementById('qf-' + key + '-pill')
+  if (labelEl) labelEl.textContent = cur.l
+  if (pillEl)  pillEl.classList.toggle('on', !!cur.v)
+}
+window.cycleQF = cycleQF
+function readQF(key){
+  const opts = QF_OPTIONS[key]; return opts ? opts[QF_STATE[key]].v : ''
+}
+
+// ── Smart query router ──────────────────────────────────────────────────
+// Decides if a query is "natural language" and should go through Groq, or
+// if it's a simple location/Eircode and can skip the AI roundtrip.
+// Anything with descriptors (numbers, beds, price words, intent verbs) → AI.
+function _looksLikeNaturalLanguage(q){
+  q = (q || '').trim().toLowerCase()
+  if (q.length < 8) return false                        // too short to be a sentence
+  if (q.split(/\s+/).length >= 4) return true           // 4+ words → conversational
+  if (/\d/.test(q) && /(bed|bath|m2|sqm|sq\s?m)/.test(q)) return true
+  if (/(under|over|around|less|more)\s*\d|€|k\b|thousand|million/.test(q)) return true
+  if (/(rent|buy|sale|let|sharing|share|to let|for sale)/.test(q)) return true
+  if (/(near|close to|next to|beside|walking distance|drive to)/.test(q)) return true
+  return false
+}
+
+// ── Compact AI pill handler (sits below the main search card) ──────────
+function useAiExample(btn){
+  const inp = document.getElementById('ai-pill-inp')
+  if (!inp || !btn) return
+  inp.value = btn.textContent.trim()
+  inp.focus()
+}
+async function heroAskAi(){
+  const inp = document.getElementById('ai-pill-inp')
+  if (!inp) return
+  const q = (inp.value || '').trim()
+  if (q.length < 4) { inp.focus(); return }
+  // Reuse the universal AI runner — same spinner, same fallback.
+  const pillBtn = document.getElementById('ai-pill-go')
+  const origHTML = pillBtn ? pillBtn.innerHTML : ''
+  if (pillBtn) {
+    pillBtn.disabled = true
+    pillBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
+  }
+  try {
+    await _runAiThenRedirect(q)
+  } finally {
+    if (pillBtn) { pillBtn.disabled = false; pillBtn.innerHTML = origHTML }
+  }
+}
+
+async function _runAiThenRedirect(q){
+  const goBtn = document.querySelector('.search-go')
+  const origHTML = goBtn ? goBtn.innerHTML : ''
+  if (goBtn) {
+    goBtn.disabled = true
+    goBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
+  }
+  try {
+    const res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q })
+    })
+    const data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'AI search failed')
+    const f = data.filters || {}
+    const p = new URLSearchParams()
+    if (f.listing_type)  p.set('listing_type',  f.listing_type)
+    else                  p.set('listing_type',  searchType)
+    if (f.property_type) p.set('property_type', f.property_type)
+    if (f.bedrooms)      p.set('bedrooms',      f.bedrooms)
+    if (f.min_price)     p.set('min_price',     f.min_price)
+    if (f.max_price)     p.set('max_price',     f.max_price)
+    if (f.county)        p.set('county',        f.county)
+    if (f.q)             p.set('q',             f.q)
+    p.set('ai', '1')                                    // marker — search.html could show "AI search for: …"
+    if (data.summary) p.set('ai_summary', data.summary)
+    window.location.href = 'pages/search.html?' + p.toString()
+  } catch (err) {
+    // AI failed — fall back gracefully to traditional search with raw text
+    console.warn('AI route failed, falling back:', err && err.message)
+    _doDirectSearch(q)
+    if (goBtn) { goBtn.disabled = false; goBtn.innerHTML = origHTML }
+  }
+}
+
+function _doDirectSearch(qOverride){
+  const p=new URLSearchParams()
+  p.set('listing_type',searchType)
+  if(searchCounty)p.set('county',searchCounty)
+  const q = qOverride !== undefined ? qOverride : document.getElementById('hero-loc').value
+  if(q&&!searchCounty)p.set('q',q)
+  const qfBeds  = readQF('beds')
+  const qfMax   = readQF('price')
+  const qfType  = readQF('type')
+  const minP=document.getElementById('adv-min').value
+  const maxP=document.getElementById('adv-max').value
+  const beds=document.getElementById('adv-beds').value
+  const baths=document.getElementById('adv-baths').value
+  const ptype=document.getElementById('adv-ptype').value
+  const ber=document.getElementById('adv-ber').value
+  if(minP)p.set('min_price',minP)
+  const finalMax = qfMax || maxP
+  if(finalMax)p.set('max_price',finalMax)
+  const finalBeds = qfBeds || beds
+  if(finalBeds)p.set('bedrooms',finalBeds)
+  if(baths)p.set('bathrooms',baths)
+  const finalType = qfType || ptype
+  if(finalType)p.set('property_type',finalType)
+  if(ber)p.set('ber',ber)
+  document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
+  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
+    p.set('lat',  searchOrigin.lat)
+    p.set('lng',  searchOrigin.lng)
+    p.set('near', searchOrigin.label || q || '')
+  }
+  window.location.href='pages/search.html?'+p.toString()
+}
+
+function doSearch(){
+  document.getElementById('loc-sugg').classList.remove('open')
+  const q = (document.getElementById('hero-loc').value || '').trim()
+  // Route to AI when the query reads like natural language. Direct search
+  // (faster, no network roundtrip) handles short/locational queries.
+  if (q && !searchCounty && _looksLikeNaturalLanguage(q)) {
+    return _runAiThenRedirect(q)
+  }
+  const p=new URLSearchParams()
+  p.set('listing_type',searchType)
+  if(searchCounty)p.set('county',searchCounty)
+  if(q&&!searchCounty)p.set('q',q)
+
+  // Quick-filter pills override the advanced panel when both are set
+  const qfBeds  = readQF('beds')
+  const qfMax   = readQF('price')
+  const qfType  = readQF('type')
+
+  const minP=document.getElementById('adv-min').value
+  const maxP=document.getElementById('adv-max').value
+  const beds=document.getElementById('adv-beds').value
+  const baths=document.getElementById('adv-baths').value
+  const ptype=document.getElementById('adv-ptype').value
+  const ber=document.getElementById('adv-ber').value
+  if(minP)p.set('min_price',minP)
+  const finalMax = qfMax || maxP
+  if(finalMax)p.set('max_price',finalMax)
+  const finalBeds = qfBeds || beds
+  if(finalBeds)p.set('bedrooms',finalBeds)
+  if(baths)p.set('bathrooms',baths)
+  const finalType = qfType || ptype
+  if(finalType)p.set('property_type',finalType)
+  if(ber)p.set('ber',ber)
+  document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
+  // Pass the picked place's coordinates so search.html can show distance + sort closest-first
+  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
+    p.set('lat',  searchOrigin.lat)
+    p.set('lng',  searchOrigin.lng)
+    p.set('near', searchOrigin.label || q || '')
+  }
+  window.location.href='pages/search.html?'+p.toString()
+}
+function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);searchOrigin=null;doSearch()}
+
+// ── AI search (Groq-powered natural-language → filters) ─────────────────
+function aiSearchExample(el){
+  var inp = document.getElementById('ai-search-inp')
+  if (!inp) return
+  inp.value = el.textContent.trim()
+  inp.focus()
+}
+
+function _aiSetStatus(msg, isError){
+  var el = document.getElementById('ai-search-status')
+  if (!el) return
+  el.textContent = msg || ''
+  el.classList.toggle('show',  !!msg)
+  el.classList.toggle('error', !!isError)
+}
+
+async function runAiSearch(){
+  var inp = document.getElementById('ai-search-inp')
+  var btn = document.getElementById('ai-search-go')
+  if (!inp || !btn) return
+  var q = (inp.value || '').trim()
+  if (!q) { inp.focus(); return }
+  if (q.length < 4) { _aiSetStatus('Please type a longer query.', true); return }
+
+  var origLabel = btn.innerHTML
+  btn.disabled = true
+  btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span> Thinking…'
+  _aiSetStatus('Understanding your search…', false)
+
+  try {
+    var res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: q })
+    })
+    var data = await res.json()
+    if (!res.ok) throw new Error(data.error || 'AI search failed')
+
+    var filters = data.filters || {}
+    var p = new URLSearchParams()
+    if (filters.listing_type)  p.set('listing_type',  filters.listing_type)
+    if (filters.property_type) p.set('property_type', filters.property_type)
+    if (filters.bedrooms)      p.set('bedrooms',      filters.bedrooms)
+    if (filters.min_price)     p.set('min_price',     filters.min_price)
+    if (filters.max_price)     p.set('max_price',     filters.max_price)
+    if (filters.county)        p.set('county',        filters.county)
+    if (filters.q)             p.set('q',             filters.q)
+
+    if (![...p.keys()].length) {
+      _aiSetStatus('Could not extract filters from that. Try being more specific.', true)
+      btn.disabled = false; btn.innerHTML = origLabel
+      return
+    }
+
+    _aiSetStatus(data.summary || 'Searching…', false)
+    setTimeout(function(){
+      window.location.href = 'pages/search.html?' + p.toString()
+    }, 250)
+  } catch (err) {
+    _aiSetStatus('Could not run AI search: ' + (err.message || err), true)
+    btn.disabled = false
+    btn.innerHTML = origLabel
+  }
+}
+
+// ── Google Places autocomplete on the hero search input ─────────────────
+// Loaded asynchronously below; this becomes the picker for any address /
+// university / Eircode / town in Ireland, and captures lat/lng so the
+// results page can show "X km away" on each listing.
+window.initHeroSearch = function(){
+  if (!window.google || !google.maps || !google.maps.places) return
+  const input = document.getElementById('hero-loc')
+  if (!input || input.dataset.acBound) return
+  input.dataset.acBound = '1'
+  document.body.classList.add('hero-places-ready')
+  // Suppress the existing custom dropdown — Places replaces it
+  const sugg = document.getElementById('loc-sugg')
+  if (sugg) sugg.classList.remove('open')
+  window.handleLoc = function(){}
+
+  const ac = new google.maps.places.Autocomplete(input, {
+    componentRestrictions: { country: 'ie' },
+    fields: ['geometry','name','formatted_address','address_components','types']
+  })
+  ac.addListener('place_changed', function(){
+    const place = ac.getPlace()
+    if (!place) return
+    applyHeroPlace(place)
+  })
+
+  // Enter without picking a suggestion → geocode the typed text
+  input.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return
+    if (document.querySelector('.pac-container .pac-item-selected')) return
+    const v = (input.value || '').trim()
+    if (!v) return
+    const gc = window._heroGeo = window._heroGeo || new google.maps.Geocoder()
+    gc.geocode({ address: v, componentRestrictions: { country: 'IE' } }, function(results, status){
+      if (status === 'OK' && results && results[0]) applyHeroPlace(results[0])
+      else doSearch()
+    })
+  })
+}
+
+function applyHeroPlace(place){
+  const comp = place.address_components || []
+  const pick = (t) => { const c = comp.find(x => x.types.indexOf(t) !== -1); return c ? c.long_name : '' }
+  const county   = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i, '')
+  const locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
+  const postcode = pick('postal_code')
+  const label = (place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0)
+    ? place.name + ' — ' + place.formatted_address
+    : (place.formatted_address || place.name || document.getElementById('hero-loc').value)
+
+  // Capture coordinates for distance-aware results
+  if (place.geometry && place.geometry.location){
+    const loc = place.geometry.location
+    searchOrigin = {
+      lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
+      lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
+      label: label
+    }
+  }
+
+  // Update the input + visible chip + state used by doSearch()
+  document.getElementById('hero-loc').value = label
+  searchQuery  = label
+  searchCounty = county || ''
+  // Pretty Dublin postcode handling: "Dublin 6" gets sent as the q since the
+  // backend expects a county filter for Dublin not a district code
+  const dub = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
+  if (dub) { searchCounty = 'Dublin'; searchQuery = label }
+  if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim())) searchQuery = postcode.toUpperCase()
+  showChip(label)
+  // Don't auto-submit — just like Bayut, picking the place primes the search
+  // and the user clicks Search (or hits Enter again) when ready
+}
+async function loadFeatured(){
+  const grid=document.getElementById('featured-grid')
+  try{
+    // Pull a wider net so we can mix residential + commercial, then filter to last 7 days
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000)
+    const seen = {}
+    let pool = []
+    let total = 0
+
+    async function pull(params){
+      try{
+        const r = await window.API.listings.search(params)
+        if (r && Array.isArray(r.listings)){
+          if (r.total) total = Math.max(total, r.total)
+          r.listings.forEach(l => { if (!seen[l.id]) { seen[l.id]=1; pool.push(l) } })
+        }
+      } catch(_) {}
+    }
+
+    await pull({sort:'newest',limit:60})
+    // Sprinkle in commercial property types that may not surface in the default newest sort
+    await Promise.all(['office','retail','industrial','hospitality','warehouse','land','commercial']
+      .map(t => pull({sort:'newest',limit:20,property_type:t})))
+
+    var statCountEl = document.getElementById('stat-count')
+    var statTotal   = total > 0 ? total : pool.length
+    statCountEl.dataset.countTarget = statTotal
+    statCountEl.dataset.countSuffix = '+'
+    if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
+
+    // Live ticker — count listings created in the past 7 days
+    var tickerEl = document.getElementById('hero-ticker-num')
+    if (tickerEl) {
+      var weekAgo = Date.now() - 7 * 86400000
+      var freshCount = pool.filter(function(l){ return l && l.created_at && new Date(l.created_at).getTime() >= weekAgo }).length
+      tickerEl.textContent = freshCount > 0 ? freshCount : statTotal
+    }
+
+    // Tally per-county counts so the Browse-by-county tiles can show real numbers
+    var countyTotals = {}
+    pool.forEach(function(l){
+      if (l && l.county) countyTotals[l.county] = (countyTotals[l.county] || 0) + 1
+    })
+    document.querySelectorAll('[data-county-count]').forEach(function(el){
+      var c = el.getAttribute('data-county-count')
+      var n = countyTotals[c] || 0
+      el.textContent = n > 0 ? (n + ' home' + (n === 1 ? '' : 's')) : 'Browse →'
+      // Bubble up to the parent card so the meta colour can turn green
+      var card = el.closest('.county-card')
+      if (card) card.setAttribute('data-has-count', n > 0 ? '1' : '0')
+    })
+
+    const fresh = pool
+      .filter(l => l.created_at && new Date(l.created_at) >= sevenDaysAgo)
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 4)
+
+    if (!fresh.length){
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">No listings yet — <a href="pages/list.html" style="color:#1a5c45;font-weight:500">be the first!</a></div>'
+      return
+    }
+    grid.innerHTML = fresh.map(l => buildPropertyCard(l)).join('')
+  }catch(e){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">Could not load listings.</div>'
+  }
+}
+function updateNav(){
+  if(!window.API||!window.API.auth.isLoggedIn())return
+  const user=window.API.getUser()
+  document.getElementById('nav-auth-area').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary btn-sm">${user?.name?.split(' ')[0]||'Account'}</a>`
+  document.getElementById('mobile-menu-footer').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center">My dashboard →</a>`
+}
+// ── Typewriter placeholder for the hero search ────────────────────────────
+// Cycles through example search prompts (Eircode, area, train station, …)
+// until the user focuses or types. Inspired by Zoopla's homepage.
+;(function(){
+  var input  = document.getElementById('hero-loc')
+  var typer  = document.getElementById('hero-loc-typer')
+  if (!input || !typer) return
+  var wordEl = typer.querySelector('.typer-word')
+
+  var PHRASES = [
+    'an Eircode (e.g. D02 EH73)',
+    'an area (e.g. Rathmines)',
+    'a train station (e.g. Heuston)',
+    'a school (e.g. UCD, Trinity)',
+    'a town (e.g. Galway)',
+    'a county (e.g. Cork)',
+    'a hospital (e.g. St Vincent’s)',
+    'a workplace (e.g. Google Dublin)'
+  ]
+
+  var idx     = 0
+  var charIdx = 0
+  var deleting = false
+  var stopped  = false
+  var timer    = null
+
+  function setHidden(h){ typer.classList.toggle('hide', h) }
+  function isOccupied(){ return !!input.value || document.activeElement === input }
+
+  function tick(){
+    if (stopped) return
+    if (isOccupied()) {
+      setHidden(true)
+      timer = setTimeout(tick, 600)
+      return
+    }
+    setHidden(false)
+
+    var current = PHRASES[idx]
+
+    if (!deleting) {
+      // Typing forward
+      charIdx++
+      wordEl.textContent = current.slice(0, charIdx)
+      if (charIdx === current.length) {
+        deleting = true
+        timer = setTimeout(tick, 1700)   // hold the full phrase
+        return
+      }
+      // Slight randomness for a natural feel
+      timer = setTimeout(tick, 55 + Math.random() * 45)
+    } else {
+      // Deleting
+      charIdx--
+      wordEl.textContent = current.slice(0, Math.max(0, charIdx))
+      if (charIdx <= 0) {
+        deleting = false
+        idx = (idx + 1) % PHRASES.length
+        timer = setTimeout(tick, 280)    // tiny pause before next word
+        return
+      }
+      timer = setTimeout(tick, 28)
+    }
+  }
+
+  // Permanently stop the loop the moment the user actually engages with
+  // the input — feels less like a busy gif and more like a thoughtful hint.
+  function stop(){
+    if (stopped) return
+    stopped = true
+    clearTimeout(timer)
+    setHidden(true)
+  }
+  input.addEventListener('focus', stop)
+  input.addEventListener('input', function(){ if (input.value) stop() })
+
+  // If the user picks the input but doesn't type and blurs again, restart
+  input.addEventListener('blur', function(){
+    if (stopped && !input.value) {
+      stopped  = false
+      charIdx  = 0
+      deleting = false
+      setHidden(false)
+      timer = setTimeout(tick, 200)
+    }
+  })
+
+  // Kick off shortly after first paint so it doesn't compete with the hero
+  // entrance animation
+  timer = setTimeout(tick, 700)
+})()
+
+// Initial price options for Buy (the default selected mode)
+fillPriceSelects('sale')
+
+// ── Count-up animator ───────────────────────────────────────────────────
+// Animates any element with data-count-target from 0 to its target when it
+// scrolls into view. Honors prefers-reduced-motion.
+function startCountUpFor(el){
+  if (!el || el.dataset.countDone === '1') return
+  var target = parseFloat(el.dataset.countTarget || '0')
+  if (!Number.isFinite(target)) return
+  var suffix = el.dataset.countSuffix || ''
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  var isFloat = String(target).indexOf('.') >= 0
+  var format = function(n){
+    if (isFloat) return n.toFixed(2)
+    return Math.round(n).toLocaleString('en-IE')
+  }
+  if (prefersReduced || target === 0){
+    el.textContent = format(target) + suffix
+    el.dataset.countDone = '1'
+    return
+  }
+  el.dataset.countDone = '1'
+  var duration = 1300
+  var start = null
+  var ease = function(t){ return 1 - Math.pow(1 - t, 3) }
+  function step(ts){
+    if (start === null) start = ts
+    var p = Math.min((ts - start) / duration, 1)
+    el.textContent = format(target * ease(p)) + suffix
+    if (p < 1) requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+}
+
+;(function setupCountUp(){
+  var els = document.querySelectorAll('[data-count-target]')
+  if (!els.length) return
+  if (!('IntersectionObserver' in window)){
+    els.forEach(startCountUpFor); return
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        startCountUpFor(e.target)
+        io.unobserve(e.target)
+      }
+    })
+  }, { threshold: 0.4 })
+  els.forEach(function(el){ io.observe(el) })
+})()
+
+// ── Scroll reveal: fade-up sections as they enter the viewport ─────────
+;(function setupScrollReveal(){
+  var els = document.querySelectorAll('.reveal')
+  if (!els.length) return
+  if (!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('revealed') }); return
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        e.target.classList.add('revealed')
+        io.unobserve(e.target)
+      }
+    })
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
+  els.forEach(function(el){ io.observe(el) })
+})()
+
+// ── Animated headline word cycler ──────────────────────────────────────
+// Cycles through words inside <span class="hero-rot"> on a 2.6s rhythm.
+// Uses CSS classes "on" / "out" so transitions are GPU-accelerated.
+;(function rotateHeadlineWord(){
+  var rot = document.getElementById('hero-rot')
+  if (!rot) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var words = rot.querySelectorAll('.hero-rot-w')
+  if (words.length < 2) return
+  var i = 0
+  setInterval(function(){
+    var cur = words[i]
+    i = (i + 1) % words.length
+    var next = words[i]
+    cur.classList.remove('on'); cur.classList.add('out')
+    next.classList.remove('out'); next.classList.add('on')
+    setTimeout(function(){ cur.classList.remove('out') }, 600)
+  }, 2400)
+})()
+
+// ── 3D tilt-on-hover for property cards ────────────────────────────────
+// Lightweight (no library). Only active on devices with a real pointer.
+;(function tiltCards(){
+  if (matchMedia('(hover: none)').matches) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var grid = document.getElementById('featured-grid')
+  if (!grid) return
+  var max = 6   // max tilt in degrees
+  function bind(card){
+    if (card.dataset.tiltBound) return
+    card.dataset.tiltBound = '1'
+    card.classList.add('tiltable')
+    card.addEventListener('pointermove', function(e){
+      var r = card.getBoundingClientRect()
+      var px = (e.clientX - r.left) / r.width  - .5  // -0.5..0.5
+      var py = (e.clientY - r.top)  / r.height - .5
+      var rx = (-py * max).toFixed(2)
+      var ry = ( px * max).toFixed(2)
+      card.style.transform = 'perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px)'
+    })
+    card.addEventListener('pointerleave', function(){
+      card.style.transform = ''
+    })
+  }
+  // Bind whatever's already there + watch for newly added cards (the listings
+  // grid is populated async after fetch).
+  grid.querySelectorAll('.prop-card').forEach(bind)
+  var mo = new MutationObserver(function(mut){
+    mut.forEach(function(m){
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if (n.nodeType === 1) {
+          if (n.classList && n.classList.contains('prop-card')) bind(n)
+          n.querySelectorAll && n.querySelectorAll('.prop-card').forEach(bind)
+        }
+      })
+    })
+  })
+  mo.observe(grid, { childList:true, subtree:true })
+})()
+
+// ── Magnetic hover on primary CTAs ─────────────────────────────────────
+;(function magneticButtons(){
+  if (matchMedia('(hover: none)').matches) return
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  var sels = ['.search-go','.wp-cta-primary','.qa-card','.cta-banner .btn']
+  document.querySelectorAll(sels.join(',')).forEach(function(el){
+    el.classList.add('btn-magnetic')
+    var strength = 8
+    el.addEventListener('pointermove', function(e){
+      var r = el.getBoundingClientRect()
+      var x = (e.clientX - (r.left + r.width/2))  / r.width  * strength
+      var y = (e.clientY - (r.top  + r.height/2)) / r.height * strength
+      el.style.transform = 'translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)'
+    })
+    el.addEventListener('pointerleave', function(){ el.style.transform = '' })
+  })
+})()
+
+// ── Stagger county chip cascade once they enter view ───────────────────
+;(function staggerCounties(){
+  var sec = document.getElementById('counties-showcase') || document.querySelector('.counties-section')
+  if (!sec || !('IntersectionObserver' in window)) return
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        var chips = sec.querySelectorAll('.ac-chip, .county-chip, [data-county-chip]')
+        chips.forEach(function(c, i){ c.style.transitionDelay = (i*30) + 'ms' })
+        sec.classList.add('revealed')
+        io.disconnect()
+      }
+    })
+  }, { threshold: 0.15 })
+  io.observe(sec)
+})()
+
+// ── Stats strip — arm the underline tick once visible ──────────────────
+;(function armStats(){
+  var s = document.querySelector('.stats-strip')
+  if (!s || !('IntersectionObserver' in window)) return
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting){ s.classList.add('armed'); io.disconnect() } })
+  }, { threshold: 0.5 })
+  io.observe(s)
+})()
+
+// ── Floating scroll-to-top button ──────────────────────────────────────
+;(function scrollTopBtn(){
+  var btn = document.createElement('button')
+  btn.type = 'button'
+  btn.className = 'scroll-top-btn'
+  btn.setAttribute('aria-label', 'Back to top')
+  btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'
+  btn.addEventListener('click', function(){
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  })
+  document.body.appendChild(btn)
+  var visible = false
+  function onScroll(){
+    var should = window.scrollY > 600
+    if (should !== visible){
+      visible = should
+      btn.classList.toggle('show', should)
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
+})()
+
+loadFeatured()
+updateNav()
+// Render the shared rich multi-column footer (Buy / Rent / Tools / Company / Neighbourhoods / Counties).
+// Defer until DOMContentLoaded so the <footer id="site-footer"> element below
+// has actually been parsed before we try to populate it.
+function _renderFooterNow(){ if (typeof renderFooter === 'function') renderFooter() }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _renderFooterNow)
+else _renderFooterNow()
+
+// Hide PWA splash once page is interactive (and only matters in standalone mode)
+;(function(){
+  var splash = document.getElementById('pwa-splash')
+  if (!splash) return
+  function hide(){ splash.classList.add('hide'); setTimeout(function(){ splash.remove() }, 600) }
+  if (document.documentElement.classList.contains('pwa-standalone')) {
+    if (document.readyState === 'complete') setTimeout(hide, 700)
+    else window.addEventListener('load', function(){ setTimeout(hide, 700) })
+  } else {
+    splash.remove()
+  }
+})()
+</script>
+
+<!-- Google Maps + Places (loaded last so it can call window.initHeroSearch) -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initHeroSearch&v=weekly"
+  async defer></script>
+
+<footer class="site-footer" id="site-footer"></footer>
+</body>
+</html>
