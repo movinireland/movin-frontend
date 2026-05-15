@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
 <meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Free for private sellers and landlords (launch period)."/>
-<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, daft alternative, myhome alternative, Eircode property search"/>
+<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, Eircode property search, Movin.ie"/>
 <meta name="author" content="Movin Technologies Ltd"/>
 <meta name="robots" content="index, follow, max-image-preview:large"/>
 <link rel="canonical" href="https://movin.ie/"/>
@@ -92,8 +92,8 @@
   <meta name="apple-mobile-web-app-title" content="Movin"/><style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#111;overflow-x:hidden}
-:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc;--white:#fff;--text:#111;--muted:#888;--safe-b:env(safe-area-inset-bottom,0px);--nav-h:56px}
+body{font-family:'DM Sans',sans-serif;background:#faf7f0;color:#1f2421;overflow-x:hidden;line-height:1.55}
+:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e3ebe1;--o:#d97847;--border:#dad6c8;--white:#fffdf8;--text:#1f2421;--muted:#737069;--paper:#faf7f0;--paper-deep:#f3eee0;--orange-soft:#fbe9da;--safe-b:env(safe-area-inset-bottom,0px);--nav-h:56px}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--white:#1a1a1a;--text:#e8e8e8;--border:#2a2a2a;--muted:#666;--gl:#0d2e1e;background:#0f0f0f}}
 [data-theme="dark"]{--white:#1a1a1a;--text:#e8e8e8;--border:#2a2a2a;--muted:#666;--gl:#0d2e1e}
 [data-theme="dark"] body,[data-theme="dark"]{background:#0f0f0f;color:#e8e8e8}
@@ -312,6 +312,77 @@ button,input,select{font-family:inherit}
 .area-chips::-webkit-scrollbar{display:none}
 .ac{border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;background:#fafaf8;color:#555;white-space:nowrap;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all .15s}
 .ac:active,.ac:hover{background:var(--g);color:#fff;border-color:var(--g)}
+/* ── Compact AI search pill ─────────────────────────────────────────── */
+.ai-pill{
+  max-width:720px; margin:1rem auto 0; padding:.85rem 1rem;
+  background:rgba(255,255,255,.94);
+  -webkit-backdrop-filter:saturate(180%) blur(14px); backdrop-filter:saturate(180%) blur(14px);
+  border:1px solid rgba(255,255,255,.85); border-radius:18px;
+  box-shadow:0 14px 36px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.04);
+  position:relative; z-index:2;
+  animation:aiPillIn .55s cubic-bezier(.2,.7,.2,1) .15s both;
+}
+@keyframes aiPillIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.ai-pill::before{
+  /* subtle gradient sheen on the top edge */
+  content:''; position:absolute; left:14%; right:14%; top:-1px; height:2px;
+  background:linear-gradient(90deg, transparent, #e07b3f 30%, #1a5c45 70%, transparent);
+  border-radius:2px; opacity:.55;
+}
+.ai-pill-head{
+  display:flex; align-items:center; gap:8px; margin-bottom:.55rem;
+  font-size:12px; color:var(--g,#1a5c45); font-weight:600; letter-spacing:.3px;
+}
+.ai-pill-spark{ font-size:13px; line-height:1 }
+.ai-pill-label{ flex:1 }
+.ai-pill-tag{
+  font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
+  padding:2px 8px; border-radius:50px;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff;
+}
+.ai-pill-row{ display:flex; gap:8px; align-items:stretch }
+.ai-pill-inp{
+  flex:1; min-width:0; border:1.5px solid var(--border,#e8e4dc); border-radius:12px;
+  padding:11px 14px; font-size:14px; background:#fff; color:#222; outline:none;
+  transition:border-color .15s, box-shadow .15s; font-family:inherit;
+}
+.ai-pill-inp::placeholder{ color:#9aa19c }
+.ai-pill-inp:focus{ border-color:#1a5c45; box-shadow:0 0 0 3px rgba(26,92,69,.12) }
+.ai-pill-go{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:46px; height:auto;
+  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff; border:none; border-radius:12px;
+  cursor:pointer; font-family:inherit; flex-shrink:0;
+  transition:transform .15s, box-shadow .18s;
+  box-shadow:0 6px 16px rgba(26,92,69,.25);
+}
+.ai-pill-go:hover{ transform:translateY(-1px); box-shadow:0 9px 22px rgba(26,92,69,.35) }
+.ai-pill-go:active{ transform:scale(.96) }
+.ai-pill-go:disabled{ opacity:.7; cursor:wait; transform:none; box-shadow:none }
+.ai-pill-go svg{ width:16px; height:16px; stroke:#fff; fill:none }
+.ai-pill-examples{
+  margin-top:.65rem; display:flex; gap:6px; flex-wrap:wrap;
+}
+.ai-chip{
+  font-size:11.5px; padding:5px 11px; border-radius:50px;
+  background:rgba(26,92,69,.07); color:#1a5c45; border:1px solid rgba(26,92,69,.14);
+  cursor:pointer; font-family:inherit;
+  transition:background .15s, border-color .15s, transform .15s;
+}
+.ai-chip:hover{ background:rgba(26,92,69,.14); border-color:rgba(26,92,69,.30); transform:translateY(-1px) }
+.ai-chip:active{ transform:scale(.97) }
+
+@media (max-width:560px){
+  .ai-pill{ margin:.85rem 1rem 0; padding:.7rem .85rem }
+  .ai-pill-inp{ font-size:13.5px; padding:10px 12px }
+  .ai-pill-go{ width:42px }
+  .ai-pill-examples .ai-chip{ font-size:11px }
+}
+[data-theme="dark"] .ai-pill{ background:rgba(26,26,26,.92); border-color:rgba(255,255,255,.06) }
+[data-theme="dark"] .ai-pill-inp{ background:#0f0f0f; border-color:#2a2a2a; color:#e8e8e8 }
+[data-theme="dark"] .ai-pill-head{ color:#7ec9a8 }
+[data-theme="dark"] .ai-chip{ background:rgba(126,201,168,.10); color:#7ec9a8; border-color:rgba(126,201,168,.22) }
+
 .stats-strip{display:flex;background:var(--gd);overflow-x:auto}
 .stats-strip::-webkit-scrollbar{display:none}
 .stat-cell{flex:1;min-width:80px;padding:1rem .5rem;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
@@ -863,264 +934,647 @@ body.hero-places-ready .sugg-box{display:none !important}
   opacity:1; transform:translateY(0);
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   MODERN MARKETPLACE — Option 2 (Airbnb / Stripe clean)
+   Friendly, functional, photo-led. Big rounded surfaces, soft shadows,
+   sans-serif everywhere, generous whitespace. Photos do the talking.
+   ════════════════════════════════════════════════════════════════════ */
 
-    /* ── Coming Soon Overlay ─────────────────────────────────────── */
-    .cs-overlay{
-      position:fixed;inset:0;z-index:999999;
-      background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 55%,#081f17 100%);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      padding:2rem 1.5rem;overflow:hidden;
-    }
-    .cs-overlay::before{
-      content:'';position:absolute;width:700px;height:700px;border-radius:50%;
-      background:radial-gradient(circle,rgba(224,123,63,.18) 0%,transparent 65%);
-      top:-280px;right:-220px;pointer-events:none;
-      animation:csBlobA 14s ease-in-out infinite;
-    }
-    .cs-overlay::after{
-      content:'';position:absolute;width:560px;height:560px;border-radius:50%;
-      background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 65%);
-      bottom:-240px;left:-180px;pointer-events:none;
-      animation:csBlobB 17s ease-in-out infinite;
-    }
-    @keyframes csBlobA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(1.08)}}
-    @keyframes csBlobB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.06)}}
-    .cs-inner{position:relative;z-index:2;max-width:520px;width:100%;text-align:center}
-    /* Logo mark */
-    .cs-mark{
-      width:88px;height:88px;border-radius:22px;
-      background:linear-gradient(135deg,#fff 0%,#f0f7f4 100%);
-      display:inline-flex;align-items:center;justify-content:center;
-      margin-bottom:1.75rem;
-      box-shadow:0 24px 56px rgba(0,0,0,.28),0 0 0 6px rgba(255,255,255,.08);
-      animation:csMarkIn .7s cubic-bezier(.2,1.2,.4,1) both;
-    }
-    .cs-mark svg{width:52px;height:52px}
-    @keyframes csMarkIn{0%{transform:scale(.5) rotate(-8deg);opacity:0}60%{transform:scale(1.06) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
-    /* Wordmark */
-    .cs-logo{
-      font-family:'Playfair Display',Georgia,serif;
-      font-size:52px;font-weight:900;color:#fff;
-      letter-spacing:-1.5px;line-height:1;
-      margin-bottom:.6rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .2s both;
-    }
-    .cs-logo span{color:#e07b3f}
-    /* Live badge */
-    .cs-badge{
-      display:inline-flex;align-items:center;gap:7px;
-      background:rgba(255,255,255,.1);
-      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-      border:1px solid rgba(255,255,255,.18);
-      padding:6px 14px;border-radius:50px;
-      font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
-      color:rgba(255,255,255,.85);margin-bottom:1.75rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .35s both;
-    }
-    .cs-badge .cs-dot{
-      width:7px;height:7px;border-radius:50%;background:#7ec9a8;
-      box-shadow:0 0 0 0 rgba(126,201,168,.7);
-      animation:csPulse 2s infinite;
-    }
-    @keyframes csPulse{0%{box-shadow:0 0 0 0 rgba(126,201,168,.7)}70%{box-shadow:0 0 0 8px rgba(126,201,168,0)}100%{box-shadow:0 0 0 0 rgba(126,201,168,0)}}
-    /* Headline */
-    .cs-title{
-      font-family:'Playfair Display',Georgia,serif;
-      font-size:clamp(26px,5vw,36px);font-weight:700;color:#fff;
-      line-height:1.15;letter-spacing:-.5px;
-      margin-bottom:.85rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .45s both;
-    }
-    .cs-title em{font-style:normal;color:#e07b3f}
-    .cs-sub{
-      font-size:15px;color:rgba(255,255,255,.72);font-weight:300;
-      line-height:1.65;margin-bottom:2rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .55s both;
-    }
-    /* Email capture */
-    .cs-form{
-      display:flex;gap:8px;max-width:440px;margin:0 auto 1.5rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .65s both;
-    }
-    .cs-email{
-      flex:1;min-width:0;
-      background:rgba(255,255,255,.12);
-      border:1.5px solid rgba(255,255,255,.22);
-      border-radius:50px;
-      padding:13px 20px;
-      font-size:14px;color:#fff;
-      font-family:'DM Sans',sans-serif;
-      outline:none;
-      transition:border-color .15s,background .15s;
-    }
-    .cs-email::placeholder{color:rgba(255,255,255,.45)}
-    .cs-email:focus{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.16)}
-    .cs-btn{
-      background:#e07b3f;color:#fff;border:none;border-radius:50px;
-      padding:13px 22px;font-size:13.5px;font-weight:600;cursor:pointer;
-      font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;
-      box-shadow:0 8px 22px rgba(224,123,63,.38);
-      transition:all .18s ease;
-    }
-    .cs-btn:hover{background:#c9642a;transform:translateY(-1px);box-shadow:0 12px 28px rgba(224,123,63,.45)}
-    .cs-btn:active{transform:scale(.97)}
-    /* Value props */
-    .cs-props{
-      display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:2rem;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .75s both;
-    }
-    .cs-prop{
-      display:inline-flex;align-items:center;gap:6px;
-      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
-      border-radius:50px;padding:7px 14px;
-      font-size:12px;color:rgba(255,255,255,.82);font-weight:500;
-    }
-    .cs-prop-icon{font-size:13px}
-    /* Social links */
-    .cs-social{
-      display:flex;align-items:center;justify-content:center;gap:12px;
-      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .85s both;
-    }
-    .cs-social-label{font-size:12px;color:rgba(255,255,255,.45);font-weight:500}
-    .cs-social a{
-      display:inline-flex;align-items:center;justify-content:center;
-      width:36px;height:36px;border-radius:50%;
-      background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
-      color:rgba(255,255,255,.75);font-size:14px;
-      transition:background .15s,transform .15s;text-decoration:none;
-    }
-    .cs-social a:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
-    /* Success state */
-    .cs-success{
-      display:none;text-align:center;
-      animation:csFadeUp .4s cubic-bezier(.2,.7,.2,1) both;
-    }
-    .cs-success.show{display:block}
-    .cs-form.hide{display:none}
-    .cs-success-ico{font-size:40px;margin-bottom:.5rem}
-    .cs-success-msg{font-size:15px;color:rgba(255,255,255,.85);font-weight:500}
-    /* Admin preview link */
-    .cs-preview{
-      position:fixed;bottom:20px;right:20px;z-index:9999999;
-      background:rgba(0,0,0,.5);color:rgba(255,255,255,.6);
-      font-size:11px;padding:6px 12px;border-radius:50px;
-      border:1px solid rgba(255,255,255,.15);cursor:pointer;
-      font-family:'DM Sans',sans-serif;
-      transition:all .15s;text-decoration:none;
-    }
-    .cs-preview:hover{background:rgba(0,0,0,.7);color:#fff}
-    @keyframes csFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-    @media(max-width:480px){
-      .cs-logo{font-size:42px}
-      .cs-form{flex-direction:column}
-      .cs-btn{width:100%;text-align:center}
-      .cs-mark{width:72px;height:72px;border-radius:18px}
-      .cs-mark svg{width:42px;height:42px}
-    }
+/* ── Hero — animated gradient mesh (no photo, more alive) ────────── */
+.hero{
+  background:
+    radial-gradient(circle 700px at 18% 18%, rgba(26,92,69,.18) 0%, rgba(26,92,69,0) 60%),
+    radial-gradient(circle 600px at 82% 22%, rgba(217,120,71,.18) 0%, rgba(217,120,71,0) 60%),
+    radial-gradient(circle 800px at 60% 95%, rgba(46,142,90,.16) 0%, rgba(46,142,90,0) 65%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%) !important;
+  background-size: 130% 130%, 130% 130%, 130% 130%, auto !important;
+  background-position: 0% 0%, 100% 0%, 50% 100%, 0 0;
+  animation: heroMesh 18s ease-in-out infinite alternate;
+  padding: 4rem 1.5rem 2.5rem !important;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+@keyframes heroMesh{
+  0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+  50%  { background-position: 10% 25%, 88% 18%, 45% 92%, 0 0; }
+  100% { background-position: 5% 18%, 92% 28%, 55% 85%, 0 0; }
+}
+.hero::before, .hero::after, .hero-noise{ display:none !important }
+.hero-inner{ position:relative; z-index:2 }
+
+/* Floating decorative shapes — gentle drift, feels alive without distracting */
+.hero-shape{
+  position: absolute; pointer-events: none; z-index: 0;
+  border-radius: 50%; opacity: .25; filter: blur(1px);
+}
+.hero-shape-1{ width: 12px; height: 12px; background: var(--g); top: 22%; left: 8%; animation: drift 9s ease-in-out infinite; }
+.hero-shape-2{ width: 8px;  height: 8px;  background: var(--o); top: 38%; right: 11%; animation: drift 11s ease-in-out infinite reverse; }
+.hero-shape-3{ width: 14px; height: 14px; background: var(--g); top: 70%; left: 14%; animation: drift 13s ease-in-out infinite; animation-delay:-4s; }
+.hero-shape-4{ width: 10px; height: 10px; background: var(--o); top: 60%; right: 9%; animation: drift 10s ease-in-out infinite reverse; animation-delay:-3s; }
+.hero-shape-5{ width: 6px;  height: 6px;  background: var(--g); top: 18%; left: 75%; animation: drift 14s ease-in-out infinite; animation-delay:-7s; }
+.hero-shape-6{ width: 18px; height: 18px; background: rgba(46,142,90,.5); top: 50%; left: 4%; animation: drift 16s ease-in-out infinite; animation-delay:-2s; }
+@keyframes drift{
+  0%,100% { transform: translate(0,0); }
+  33%     { transform: translate(20px, -28px); }
+  66%     { transform: translate(-14px, 18px); }
+}
+
+/* Live activity ticker — gives the page energy + motivates engagement */
+.hero-ticker{
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,253,248,.92);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.6);
+  box-shadow: 0 6px 16px -8px rgba(31,36,33,.15);
+  padding: 7px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  color: var(--g);
+  font-weight: 600;
+  letter-spacing: .2px;
+  margin-bottom: 1rem;
+  animation: tickerIn .6s cubic-bezier(.2,.7,.2,1) both;
+}
+@keyframes tickerIn{ from{ opacity:0; transform: translateY(8px) } to{ opacity:1; transform: translateY(0) } }
+.hero-ticker .live-dot{
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #2aaa50;
+  box-shadow: 0 0 0 0 rgba(42,170,80,.6);
+  animation: pulse 2s infinite;
+}
+.hero-ticker-text{ color: var(--text); font-weight: 500; }
+.hero-ticker-text strong{ color: var(--g); font-weight: 700; }
+@media (prefers-reduced-motion: reduce){
+  .hero, .hero-shape{ animation: none !important; }
+}
+
+/* Old eyebrow hidden in favour of the live ticker */
+.hero-eyebrow{ display: none !important }
+
+.hero-h1{
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(44px, 7vw, 76px) !important;
+  line-height: 1.02 !important;
+  letter-spacing: -2px !important;
+  color: var(--text) !important;
+  margin-bottom: 1.25rem !important;
+  text-shadow: none;
+}
+.hero-h1 em{
+  font-style: normal !important;
+  color: var(--g) !important;
+  font-weight: 900 !important;
+}
+.hero-h1 em::after{ display:none !important }
+.hero-rot-w{ color: var(--o) !important; font-style: normal !important; font-weight: 900 !important; font-family: 'Playfair Display', serif !important }
+
+.hero-sub{
+  color: var(--muted) !important;
+  font-size: 16.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.65 !important;
+  max-width: 580px;
+  margin: 0 auto 2.5rem !important;
+}
+
+/* ── Search card — big rounded "Airbnb" pill style ───────────────── */
+.search-card{
+  background: var(--white) !important;
+  border-radius: 28px !important;
+  border: 1px solid var(--border) !important;
+  box-shadow:
+    0 28px 56px -22px rgba(31,36,33,.22),
+    0 10px 24px -12px rgba(31,36,33,.10) !important;
+  max-width: 760px !important;
+  overflow: hidden;
+}
+.stt-row{
+  background: var(--green-light) !important;   /* Heath Mist — soft sage that matches the brand */
+  border-radius: 0 !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 6px !important;
+  gap: 4px !important;
+}
+.stt{
+  border-radius: 50px !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+  font-size: 13.5px !important;
+  padding: 11px .5rem !important;
+  transition: all .2s ease;
+}
+.stt:hover:not(.active){
+  background: rgba(255,255,255,.6) !important;
+  color: var(--text) !important;
+}
+.stt.active{
+  background: var(--g) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 16px rgba(26,92,69,.30) !important;
+  border-radius: 50px !important;
+}
+
+.search-input-wrap{ margin: .25rem 0 }
+.search-inp{
+  border-radius: 50px !important;
+  height: 56px !important;
+  background: var(--white) !important;
+  border: 1.5px solid var(--border) !important;
+  padding: 0 1.25rem 0 50px !important;
+  font-size: 15px !important;
+  font-weight: 400;
+  transition: all .2s;
+}
+.search-inp:focus{
+  border-color: var(--g) !important;
+  background: var(--white) !important;
+  box-shadow: 0 0 0 4px rgba(26,92,69,.10) !important;
+}
+.search-ico-abs{ left: 18px !important }
+.search-ico-abs svg{ width: 19px !important; height: 19px !important; color: var(--muted) }
+.hero-loc-typer{ left: 50px !important; font-size: 15px; color: var(--muted) }
+
+.search-go{
+  background: var(--g) !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  height: 56px !important;
+  padding: 0 28px !important;
+  font-size: 14.5px !important; font-weight: 600 !important;
+  box-shadow: 0 8px 20px -6px rgba(26,92,69,.40) !important;
+  transition: all .2s ease;
+}
+.search-go:hover{ background: var(--gd) !important; transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(26,92,69,.45) !important }
+
+/* Quick filter pills — softer, more tactile */
+.qf-row{ padding: .85rem 1.1rem .25rem !important }
+.qf-row .qf-label{
+  font-size: 10.5px !important; color: var(--muted) !important;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  font-weight: 600 !important;
+}
+.qf-pill{
+  border-radius: 50px !important;
+  background: var(--paper-deep) !important;
+  border: 1px solid transparent !important;
+  font-weight: 500 !important;
+  font-size: 12.5px !important;
+  padding: 8px 14px !important;
+  color: var(--text) !important;
+  transition: all .15s;
+}
+.qf-pill:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important }
+.qf-pill.on{ background: var(--g) !important; border-color: var(--g) !important; color: #fff !important }
+.adv-toggle{ color: var(--g) !important; font-weight: 500; padding: .85rem 1rem 1rem !important; font-size: 13px !important }
+
+/* ── AI pill — softer, friendlier ───────────────────────────────── */
+.ai-pill{
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 18px 38px -18px rgba(31,36,33,.18), 0 4px 10px -4px rgba(31,36,33,.06) !important;
+}
+.ai-pill::before{ background: linear-gradient(90deg, transparent, var(--o) 30%, var(--g) 70%, transparent) !important }
+.ai-pill-head{ color: var(--g) !important; font-weight: 600 !important; letter-spacing: .4px }
+.ai-pill-tag{ background: var(--g) !important; letter-spacing: 1.4px }
+.ai-pill-inp{ border-radius: 50px !important; height: 44px !important; padding: 0 16px !important; background: var(--paper) !important; border: 1.5px solid transparent !important }
+.ai-pill-inp:focus{ border-color: var(--g) !important; background: var(--white) !important; box-shadow: 0 0 0 3px rgba(26,92,69,.08) !important }
+.ai-pill-go{
+  width: 44px !important; height: 44px !important;
+  background: var(--g) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 6px 16px -4px rgba(26,92,69,.40) !important;
+}
+.ai-pill-go:hover{ background: var(--gd) !important; transform: translateY(-1px) !important }
+.ai-chip{
+  background: var(--paper-deep) !important;
+  border: 1px solid transparent !important;
+  color: var(--text) !important;
+  font-weight: 500 !important;
+  font-size: 11.5px !important;
+  border-radius: 50px !important;
+}
+.ai-chip:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important; transform: translateY(-1px) }
+
+/* ── Stats strip → soft check-pill row ──────────────────────────── */
+.stats-strip{
+  background: transparent !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  padding: 1.5rem 1rem 2rem !important;
+  border: none !important;
+  overflow: visible !important;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.stats-strip .stat-cell{
+  flex: 0 0 auto !important;
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-right: 1px solid var(--border) !important;
+  border-radius: 50px !important;
+  padding: 10px 18px 10px 16px !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  transition: all .15s;
+  position: relative;
+}
+.stats-strip .stat-cell::after, .stats-strip .stat-cell::before{ display:none !important }
+.stats-strip .stat-cell:hover{ border-color: var(--g) !important; transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(31,36,33,.10) }
+.stats-strip .stat-n{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 17px !important; font-weight: 700 !important;
+  color: var(--g) !important;
+  letter-spacing: -.3px !important;
+  display: inline-flex !important;
+}
+.stats-strip .stat-n::before{
+  content: ''; width: 16px; height: 16px; flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-size: contain; background-repeat: no-repeat; background-position: center;
+  margin-right: 8px;
+}
+.stat-prefix, .stat-suffix{ color: var(--g) !important; font-weight: 700 }
+.stat-l{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12.5px !important;
+  color: var(--text) !important;
+  margin: 0 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 400 !important;
+}
+
+/* ── Counties — clean text grid with subtle accents ──────────────── */
+.counties-section{ padding: 3.5rem 1.25rem 3rem !important; max-width: 1180px !important; margin: 0 auto }
+.counties-head{
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-end !important;
+  gap: 1rem;
+  margin-bottom: 2rem !important;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.counties-title{
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(26px, 3.6vw, 36px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.6px !important;
+  color: var(--text) !important;
+  margin: 0 !important;
+}
+.counties-title::before{ display: none !important }
+.counties-all{
+  color: var(--g) !important;
+  font-weight: 600 !important;
+  font-size: 13.5px !important;
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: gap .2s ease;
+}
+.counties-all:hover{ gap: 9px }
+.counties-grid{
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: .85rem !important;
+}
+@media (max-width: 900px){ .counties-grid{ grid-template-columns: repeat(3, 1fr) !important } }
+@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .65rem !important } }
+
+.county-card{
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: .75rem !important;
+  background: var(--white) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 14px !important;
+  padding: 1.1rem 1.2rem !important;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif !important;
+  text-align: left !important;
+  background-image: none !important;
+  aspect-ratio: auto !important;
+  box-shadow: none !important;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.county-card::before, .county-card::after{ display: none !important; content: none !important; background: none !important; }
+.county-card:hover{
+  border-color: var(--g) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 24px -12px rgba(26,92,69,.18) !important;
+  background: var(--white) !important;
+}
+.county-card-stripe{ display: none !important }
+.county-card-name{
+  position: static !important;
+  font-family: 'Playfair Display', serif !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: var(--text) !important;
+  letter-spacing: -.2px !important;
+  text-shadow: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+}
+.county-card-meta{
+  position: static !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  color: var(--muted) !important;
+  text-shadow: none !important;
+  font-family: 'DM Sans', sans-serif !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+.county-card-meta::after{
+  content: '→';
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 14px;
+  color: var(--muted);
+  transition: transform .2s ease, color .2s ease;
+}
+.county-card:hover .county-card-meta{ color: var(--g) !important }
+.county-card:hover .county-card-meta::after{ transform: translateX(4px); color: var(--g) }
+
+/* Pin icon next to the name — small Irish-county locator vibe */
+.county-card-name::before{
+  content: '';
+  display: inline-block;
+  width: 22px; height: 22px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-bottom: 4px;
+  opacity: .8;
+}
+
+/* ── Section titles — sans-serif, friendly ───────────────────────── */
+.section-title{
+  font-family: 'Playfair Display', serif !important;
+  font-size: clamp(24px, 3.4vw, 32px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -.5px !important;
+  color: var(--text) !important;
+}
+.section-eyebrow{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 1.4px !important;
+  color: var(--g) !important;
+  font-weight: 600 !important;
+}
+.section-sub{
+  color: var(--muted) !important;
+  font-size: 14.5px !important;
+  font-weight: 400 !important;
+  line-height: 1.6;
+  max-width: 580px;
+}
+
+/* ── Tools section — modern asymmetric feature grid ──────────────── */
+.tools-section{
+  background: var(--white) !important;
+  border-radius: 32px;
+  margin: 1.5rem auto 2rem !important;
+  max-width: 1180px;
+  padding: 3rem 2rem !important;
+  border: 1px solid var(--border);
+}
+.tools-head{ margin-bottom: 2rem; max-width: 640px }
+.tools-head .section-eyebrow{ margin-bottom: .5rem }
+.tools-head .section-title{ margin-bottom: .5rem }
+.tools-grid{
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  gap: 1rem;
+}
+@media (max-width: 980px){ .tools-grid{ grid-template-columns: 1fr 1fr; } .tool-card-feature{ grid-column: 1 / -1; } }
+@media (max-width: 560px){ .tools-grid{ grid-template-columns: 1fr; } .tool-card-feature{ grid-column: 1; } }
+
+.tool-card{
+  position: relative;
+  display: flex; flex-direction: column;
+  gap: .6rem;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.4rem 1.4rem 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, border-color .25s, background .25s;
+  overflow: hidden;
+}
+.tool-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -18px rgba(31,36,33,.18);
+  border-color: var(--g);
+  background: var(--white);
+}
+.tool-card-icon{
+  width: 44px; height: 44px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: .25rem;
+  transition: transform .3s ease;
+}
+.tool-card:hover .tool-card-icon{ transform: scale(1.06) rotate(-3deg) }
+.tool-card-title{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px; font-weight: 700; color: var(--text);
+  letter-spacing: -.2px; line-height: 1.2;
+  margin: 0;
+}
+.tool-card-sub{
+  font-size: 13px; color: var(--muted);
+  line-height: 1.55; font-weight: 400; margin: 0;
+}
+.tool-card-cta{
+  margin-top: auto;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--g);
+  display: inline-flex; align-items: center; gap: 5px;
+  transition: gap .2s ease;
+}
+.tool-card:hover .tool-card-cta{ gap: 9px }
+
+/* Featured card — bigger, with decorative SVG background panel */
+.tool-card-feature{
+  position: relative;
+  grid-row: span 1;
+  display: flex; flex-direction: column;
+  padding: 0;
+  background: linear-gradient(135deg, #f7faf6 0%, #e9f4ef 100%);
+  border-color: var(--green-light);
+  min-height: 240px;
+}
+.tool-card-feature .tool-card-bg{
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+.tool-card-feature .tool-card-bg svg{ width: 100%; height: 100% }
+.tool-card-feature .tool-card-content{
+  position: relative; z-index: 1;
+  padding: 1.6rem 1.6rem 1.6rem;
+  display: flex; flex-direction: column; gap: .55rem;
+  margin-top: auto;
+}
+.tool-card-tag{
+  display: inline-block; align-self: flex-start;
+  background: var(--g); color: #fff;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase;
+  padding: 4px 10px; border-radius: 50px;
+  margin-bottom: .25rem;
+}
+.tool-card-feature .tool-card-title{ font-size: 22px; letter-spacing: -.4px; line-height: 1.15; }
+.tool-card-feature .tool-card-sub{ font-size: 14px; max-width: 360px }
+.tool-card-feature:hover{ background: linear-gradient(135deg, #f0f7ed 0%, #d9ebde 100%); border-color: var(--g) }
+
+/* ── Trust / testimonials — refreshed quote-card grid ────────────── */
+.trust-section{
+  background: var(--white) !important;
+  border-radius: 32px;
+  margin: 1rem auto 2rem !important;
+  max-width: 1180px;
+  padding: 3rem 2rem 3.5rem !important;
+  border: 1px solid var(--border);
+}
+.trust-head{ text-align: center; max-width: 620px; margin: 0 auto 2.25rem }
+.trust-head .section-eyebrow{ justify-content: center; display: inline-flex }
+.trust-head .section-sub{ margin-left: auto; margin-right: auto; }
+.trust-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 880px){ .trust-grid{ grid-template-columns: 1fr; gap: 1rem; } }
+.trust-card{
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  display: flex; flex-direction: column; gap: 1rem;
+  transition: transform .25s, box-shadow .25s, border-color .25s;
+  overflow: hidden;
+}
+.trust-card::after{
+  content:''; position:absolute; top:0; right:0; width: 120px; height: 120px;
+  background: radial-gradient(circle at top right, rgba(217,120,71,.10), transparent 65%);
+  pointer-events: none;
+}
+.trust-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 18px 36px -16px rgba(31,36,33,.16);
+  border-color: var(--g);
+}
+.trust-quote-mark{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 64px; line-height: .6; color: var(--o);
+  height: 32px;
+  font-weight: 900;
+}
+.trust-quote{
+  flex: 1;
+  font-size: 15px; line-height: 1.65;
+  color: var(--text);
+  font-weight: 400; font-style: italic;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -.1px;
+  margin: 0;
+}
+.trust-byline{
+  display: flex; align-items: center; gap: 12px;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  position: relative;
+}
+.trust-avatar{
+  width: 38px; height: 38px; border-radius: 50%;
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  flex-shrink: 0;
+}
+.trust-name{
+  font-size: 13.5px; font-weight: 600; color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+.trust-role{
+  font-size: 11.5px; color: var(--muted); font-weight: 400;
+  margin-top: 1px;
+}
+.trust-stars{
+  margin-left: auto;
+  color: var(--o);
+  font-size: 13px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px){
+  .tools-section, .trust-section{ padding: 1.75rem 1.25rem !important; border-radius: 22px; margin: 1rem 1rem 1.5rem !important }
+  .tool-card{ padding: 1.1rem 1.1rem 1.2rem }
+  .tool-card-feature .tool-card-content{ padding: 1.25rem }
+  .trust-head{ margin-bottom: 1.5rem }
+  .trust-card{ padding: 1.25rem }
+  .trust-quote{ font-size: 14.5px }
+}
+
+/* ── Why-pricing — refresh the dark band so it works with new theme ─ */
+.why-pricing{
+  background: linear-gradient(160deg, var(--g) 0%, var(--gd) 100%) !important;
+  border-radius: 32px;
+  margin: 2rem 1.5rem;
+  max-width: 1180px;
+  margin-left: auto; margin-right: auto;
+}
+.wp-val{ border-radius: 20px !important; transition: all .25s ease }
+.wp-val:hover{ background: rgba(255,255,255,.12) !important; transform: translateY(-4px) }
+.wp-price{ border-radius: 20px !important }
+.wp-price-feat{ box-shadow: 0 24px 56px -20px rgba(0,0,0,.40) !important }
+.wp-cta{ font-weight: 600 !important; border-radius: 50px !important }
+
+/* ── Listings grid — slightly more spacious ──────────────────────── */
+.listings-grid{ gap: 1rem !important }
+@media (min-width: 1024px){ .listings-grid{ gap: 1.25rem !important } }
+.prop-card{ border-radius: 18px !important; border: 1px solid var(--border) !important; transition: transform .25s, box-shadow .25s, border-color .25s }
+.prop-card:hover{ transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(31,36,33,.18); border-color: rgba(26,92,69,.20) }
+
+/* ── Mobile polish ───────────────────────────────────────────────── */
+@media (max-width: 640px){
+  .hero{ padding: 2.5rem 1rem 1.5rem !important; background-position: center !important }
+  .hero-h1{ font-size: clamp(36px, 10vw, 48px) !important; letter-spacing: -1px !important }
+  .hero-sub{ font-size: 14.5px !important; margin-bottom: 1.5rem !important }
+  .search-card{ border-radius: 24px !important }
+  .search-inp{ height: 50px !important }
+  .search-go{ height: 50px !important; padding: 0 20px !important; font-size: 13px !important }
+  .stats-strip{ padding: 1rem .75rem 1.5rem !important; gap: 8px !important }
+  .stats-strip .stat-cell{ padding: 8px 14px !important }
+  .stats-strip .stat-n{ font-size: 14.5px !important }
+  .stat-l{ font-size: 11.5px !important }
+  .counties-section{ padding: 1.75rem 1rem !important }
+  .county-card{ aspect-ratio: 4/5 }
+  .county-card-name{ font-size: 17px !important; bottom: 38px }
+  .county-card-meta{ font-size: 11.5px !important; bottom: 14px }
+}
 
 </style>
 </head>
 <body>
-
-<!-- ── Coming Soon Overlay ────────────────────────────────────────────── -->
-<!-- Remove this entire block (or set CS_HIDDEN cookie) to go live        -->
-<div class="cs-overlay" id="cs-overlay">
-  <div class="cs-inner">
-    <div class="cs-mark">
-      <svg viewBox="0 0 64 64" fill="none">
-        <path d="M14 30 L32 16 L50 30 L50 48 L40 48 L40 36 L24 36 L24 48 L14 48 Z"
-              fill="#1a5c45" stroke="#1a5c45" stroke-width="1.6" stroke-linejoin="round"/>
-        <rect x="40" y="18" width="5" height="6" rx="1" fill="#e07b3f"/>
-      </svg>
-    </div>
-    <div class="cs-logo">mov<span>in</span></div>
-    <div class="cs-badge"><span class="cs-dot"></span>Launching soon</div>
-    <h1 class="cs-title">Ireland's fairest<br>property marketplace <em>is coming</em></h1>
-    <p class="cs-sub">A friend got charged €200 just to list one property.<br>We thought that was wrong. So we built something better.</p>
-    <div class="cs-props">
-      <div class="cs-prop"><span class="cs-prop-icon">🏠</span>Free for private sellers</div>
-      <div class="cs-prop"><span class="cs-prop-icon">🇮🇪</span>All 32 counties</div>
-      <div class="cs-prop"><span class="cs-prop-icon">✅</span>No hidden fees</div>
-      <div class="cs-prop"><span class="cs-prop-icon">📱</span>Mobile first</div>
-    </div>
-    <div class="cs-form" id="cs-form">
-      <input class="cs-email" id="cs-email" type="email" placeholder="Enter your email to be notified" autocomplete="email"/>
-      <button class="cs-btn" onclick="csSubmit()">Notify me →</button>
-    </div>
-    <div class="cs-success" id="cs-success">
-      <div class="cs-success-ico">🎉</div>
-      <div class="cs-success-msg">You're on the list! We'll let you know when movin.ie goes live.</div>
-    </div>
-    <div class="cs-social">
-      <span class="cs-social-label">Follow for updates</span>
-      <a href="https://instagram.com/movin_ireland" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-      </a>
-      <a href="https://tiktok.com/@movin_ireland" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.79 1.53V6.79a4.85 4.85 0 0 1-1.02-.1z"/></svg>
-      </a>
-      <a href="https://x.com/movinireland" target="_blank" rel="noopener" title="X / Twitter" aria-label="X">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.25 2.25h6.93l4.263 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
-      </a>
-      <a href="https://linkedin.com/company/movin-technologies" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-      </a>
-    </div>
-  </div>
-</div>
-<!-- Preview link — only visible on the coming soon screen -->
-<a class="cs-preview" href="?preview=movin2026" id="cs-preview-link">🔒 Preview site</a>
-<script>
-(function(){
-  // Check for preview mode — allows you to bypass the coming soon screen
-  var PREVIEW_KEY = 'movin2026'
-  var params = new URLSearchParams(window.location.search)
-  var overlay = document.getElementById('cs-overlay')
-  var previewLink = document.getElementById('cs-preview-link')
-  if (!overlay) return
-  // If ?preview=movin2026 in URL → set cookie and hide overlay
-  if (params.get('preview') === PREVIEW_KEY) {
-    try { localStorage.setItem('movin_preview', PREVIEW_KEY) } catch(e){}
-    overlay.remove()
-    if (previewLink) previewLink.remove()
-    // Clean up URL
-    var url = window.location.href.replace(/[?&]preview=[^&]*/,'').replace(/\?$/,'')
-    window.history.replaceState({}, '', url)
-    return
-  }
-  // If preview cookie exists → hide overlay
-  try {
-    if (localStorage.getItem('movin_preview') === PREVIEW_KEY) {
-      overlay.remove()
-      if (previewLink) previewLink.remove()
-      return
-    }
-  } catch(e){}
-  // Otherwise show overlay and hide preview link from main page
-  if (previewLink) previewLink.style.display = 'flex'
-  // Prevent body scroll while overlay is showing
-  document.body.style.overflow = 'hidden'
-})()
-
-function csSubmit(){
-  var email = (document.getElementById('cs-email').value || '').trim()
-  if (!email || !email.includes('@')) {
-    document.getElementById('cs-email').focus()
-    document.getElementById('cs-email').style.borderColor = '#e07b3f'
-    return
-  }
-  // Send to backend
-  fetch(window.MOVIN_API_URL + '/api/waitlist', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: email })
-  }).catch(function(){})
-  // Show success regardless of response
-  document.getElementById('cs-form').classList.add('hide')
-  document.getElementById('cs-success').classList.add('show')
-}
-</script>
-
 
 <!-- PWA splash (only renders in installed app mode) -->
 <div class="pwa-splash" id="pwa-splash" aria-hidden="true">
@@ -1170,1129 +1624,4 @@ function csSubmit(){
       <!-- Rent dropdown — residential only, each links to a dedicated page -->
       <li class="nav-has-dropdown">
         <span>Rent <span class="ntd-caret">▾</span></span>
-        <div class="nav-tools-dropdown">
-          <a class="ntd-item" href="pages/house-for-rent.html">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-house"/></svg></span>
-            <div><div class="ntd-title">Houses to rent</div><div class="ntd-sub">Detached, semi-d, terrace</div></div>
-          </a>
-          <a class="ntd-item" href="pages/apartment-for-rent.html">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-apartment"/></svg></span>
-            <div><div class="ntd-title">Apartments to rent</div><div class="ntd-sub">City-centre &amp; suburban units</div></div>
-          </a>
-          <a class="ntd-item" href="pages/bungalow-for-rent.html">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-bungalow"/></svg></span>
-            <div><div class="ntd-title">Bungalows to rent</div><div class="ntd-sub">Single-storey rentals</div></div>
-          </a>
-          <a class="ntd-item" href="pages/sharing.html">
-            <span class="ntd-icon"><svg width="20" height="20" style="color:#1a5c45"><use href="/icons.svg#icon-user"/></svg></span>
-            <div><div class="ntd-title">Sharing &amp; rooms</div><div class="ntd-sub">Single rooms in shared homes</div></div>
-          </a>
-        </div>
-      </li>
-
-      <li onclick="go('pages/latest.html')">Latest</li>
-      <li onclick="go('pages/commercial.html')">Commercial</li>
-      <li onclick="go('pages/list.html')">List your property</li>
-      <li onclick="go('pages/tools.html')">Tools</li>
-      <li onclick="go('pages/contact.html')">Contact</li>
-    </ul>
-    <div class="nav-right">
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
-      <div id="nav-auth-area">
-        <a href="pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
-        <a href="pages/register.html" class="btn btn-primary btn-sm">Register</a>
-      </div>
-      <button class="nav-hamburger" onclick="toggleMobileMenu()">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</nav>
-
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-header">
-    <div class="mobile-menu-logo">mov<span>in</span></div>
-    <button class="mobile-menu-close" onclick="toggleMobileMenu()">✕</button>
-  </div>
-  <div class="mobile-menu-body">
-    <div class="mm-item" onclick="go('pages/search.html?listing_type=sale');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-house"/></svg></div>Buy a property</div>
-    <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
-    <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
-    <div class="mm-item" onclick="go('pages/commercial.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Commercial property</div>
-    <div class="mm-item" onclick="go('pages/latest.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-new-listing"/></svg></div>Latest listings</div>
-    <div class="mm-divider"></div>
-    <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
-    <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
-    <div class="mm-item" onclick="go('pages/tools.html#stamp');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-document"/></svg></div>Stamp duty</div>
-    <div class="mm-item" onclick="go('pages/tools.html#ftb');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-key"/></svg></div>First-time buyer</div>
-    <div class="mm-divider"></div>
-    <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>List your property</div>
-    <div class="mm-item" onclick="go('pages/contact.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg></div>Contact us</div>
-    <div class="mm-item" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
-    <div class="mm-divider"></div>
-    <div class="mm-item mm-theme-toggle" id="mm-theme-toggle" onclick="toggleTheme()"><div class="mm-icon" id="mm-theme-icon">🌙</div><span id="mm-theme-label">Dark mode</span></div>
-  </div>
-  <div class="mobile-menu-footer" id="mobile-menu-footer">
-    <a href="pages/login.html" class="btn btn-ghost">Sign in</a>
-    <a href="pages/register.html" class="btn btn-primary">Register free</a>
-  </div>
-</div>
-
-<div class="toast-wrap" id="toast-wrap"></div>
-
-<div class="page-body">
-<div class="hero">
-  <div class="hero-noise"></div>
-  <div class="hero-inner">
-    <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
-    <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
-    <p class="hero-sub">Smarter search, transparent pricing, and free listings for private sellers and landlords. From city centres to coastal hideaways — discover where you'll live next.</p>
-  </div>
-
-  <div class="search-card">
-    <div class="stt-row">
-      <div class="stt active" data-type="sale" onclick="selectType(this)">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
-        Buy
-      </div>
-      <div class="stt" data-type="rent" onclick="selectType(this)">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 14h6v6H9z"/></svg>
-        Rent
-      </div>
-      <div class="stt" data-type="share" onclick="selectType(this)">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 14h2a3 3 0 0 1 3 3v2"/></svg>
-        Sharing
-      </div>
-    </div>
-
-    <div class="search-main" style="position:relative">
-      <div class="search-input-wrap">
-        <span class="search-ico-abs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
-        <input class="search-inp" type="text" id="hero-loc"
-          placeholder=""
-          aria-label="Search homes by address, area, Eircode, school, transport hub or workplace"
-          autocomplete="off"
-          oninput="handleLoc(this.value)"
-          onkeydown="if(event.key==='Enter')doSearch()"/>
-        <!-- Typewriter overlay — cycles through search-prompt examples until the user starts typing.
-             Positioned inside .search-input-wrap so it can never overflow into the Search button. -->
-        <div class="hero-loc-typer" id="hero-loc-typer" aria-hidden="true">
-          <span class="typer-prefix">Search for</span><span class="typer-word"></span><span class="typer-cursor"></span>
-        </div>
-      </div>
-      <button class="search-go" onclick="doSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-        <span class="search-go-label">Search</span>
-      </button>
-      <div class="sugg-box" id="loc-sugg"></div>
-    </div>
-
-    <!-- Visible quick filter row — bigger, more prominent than the old advanced toggle -->
-    <div class="qf-row">
-      <span class="qf-label">Quick filters</span>
-      <button type="button" class="qf-pill" id="qf-beds-pill" onclick="cycleQF('beds')">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v6"/><path d="M3 18h18"/><path d="M7 9V6"/><path d="M17 9V6"/></svg>
-        <span id="qf-beds-label">Beds: any</span>
-      </button>
-      <button type="button" class="qf-pill" id="qf-price-pill" onclick="cycleQF('price')">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11a4 4 0 0 1 0 8H8"/><path d="M5 14h11a4 4 0 0 0 0-8"/><path d="M3 8h2"/><path d="M3 12h2"/></svg>
-        <span id="qf-price-label">Price: any</span>
-      </button>
-      <button type="button" class="qf-pill" id="qf-type-pill" onclick="cycleQF('type')">
-        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
-        <span id="qf-type-label">Any type</span>
-      </button>
-    </div>
-
-    <div class="chip-wrap" id="chip-wrap"></div>
-
-    <div class="adv-toggle" onclick="toggleAdv()">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 2h12M3 7h8M5 12h4" stroke="#1a5c45" stroke-width="1.5" stroke-linecap="round"/></svg>
-      Advanced search
-      <span class="adv-arrow" id="adv-arrow">▾</span>
-    </div>
-
-    <div class="adv-panel" id="adv-panel">
-      <div class="adv-grid">
-        <div class="adv-field">
-          <label><span id="adv-min-label">Min price</span></label>
-          <select class="adv-sel" id="adv-min"></select>
-        </div>
-        <div class="adv-field">
-          <label><span id="adv-max-label">Max price</span></label>
-          <select class="adv-sel" id="adv-max"></select>
-        </div>
-        <div class="adv-field"><label>Bedrooms</label>
-          <select class="adv-sel" id="adv-beds">
-            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option>
-            <option value="3">3+</option><option value="4">4+</option><option value="5">5+</option>
-          </select>
-        </div>
-        <div class="adv-field"><label>Bathrooms</label>
-          <select class="adv-sel" id="adv-baths">
-            <option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option>
-          </select>
-        </div>
-        <div class="adv-field"><label>Property type</label>
-          <select class="adv-sel" id="adv-ptype">
-            <option value="">Any type</option><option value="house">House</option><option value="apartment">Apartment</option>
-            <option value="bungalow">Bungalow</option><option value="site">Site / Land</option>
-          </select>
-        </div>
-        <div class="adv-field"><label>BER rating</label>
-          <select class="adv-sel" id="adv-ber">
-            <option value="">Any</option><option value="A1">A1</option><option value="A2">A2</option>
-            <option value="A3">A3</option><option value="B1">B1</option><option value="B2">B2</option>
-            <option value="B3">B3</option><option value="C1">C1</option>
-          </select>
-        </div>
-      </div>
-      <div class="features-label">Features</div>
-      <div class="feat-chips">
-        <div class="fc" data-key="parking" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-parking"/></svg> Parking</div>
-        <div class="fc" data-key="garden" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garden"/></svg> Garden</div>
-        <div class="fc" data-key="garage" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg> Garage</div>
-        <div class="fc" data-key="furnished" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-sofa"/></svg> Furnished</div>
-        <div class="fc" data-key="pets" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-pets"/></svg> Pet-friendly</div>
-        <div class="fc" data-key="alarm" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Alarm</div>
-        <div class="fc" data-key="wheelchair" onclick="this.classList.toggle('on')"><svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-wheelchair"/></svg> Accessible</div>
-      </div>
-      <button class="search-full-btn" onclick="doSearch()"><svg width="16" height="16" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg> Search properties</button>
-    </div>
-
-  </div>
-</div>
-
-<div class="stats-strip">
-  <div class="stat-cell"><div class="stat-n" data-count-target="0" id="stat-count">0</div><div class="stat-l">Live listings</div></div>
-  <div class="stat-cell"><div class="stat-n" data-count-target="32">0</div><div class="stat-l">Counties</div></div>
-  <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="0">0</span></div><div class="stat-l">Free for private sellers</div></div>
-  <div class="stat-cell"><div class="stat-n"><span style="font-size:18px">⭐</span></div><div class="stat-l">Agent plans available</div></div>
-</div>
-
-<!-- ── Browse by county — clean compact tiles ──────────────────────────── -->
-<section class="counties-section reveal" id="counties-showcase">
-  <div class="counties-head">
-    <h2 class="counties-title">Find homes by county</h2>
-    <a class="counties-all" href="pages/search.html">All 32 counties <span aria-hidden="true">→</span></a>
-  </div>
-  <div class="counties-grid">
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Dublin','Dublin')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Dublin</span>
-      <span class="county-card-meta"><span data-county-count="Dublin">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Cork','Cork')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Cork</span>
-      <span class="county-card-meta"><span data-county-count="Cork">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Galway','Galway')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Galway</span>
-      <span class="county-card-meta"><span data-county-count="Galway">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Meath','Meath')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Meath</span>
-      <span class="county-card-meta"><span data-county-count="Meath">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kildare','Kildare')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Kildare</span>
-      <span class="county-card-meta"><span data-county-count="Kildare">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Wicklow','Wicklow')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Wicklow</span>
-      <span class="county-card-meta"><span data-county-count="Wicklow">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Limerick','Limerick')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Limerick</span>
-      <span class="county-card-meta"><span data-county-count="Limerick">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kerry','Kerry')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Kerry</span>
-      <span class="county-card-meta"><span data-county-count="Kerry">View homes</span></span>
-    </button>
-  </div>
-</section>
-
-<div class="section reveal mobile-hide" style="background:#fff">
-  <div style="margin-bottom:1.75rem">
-    <div class="section-eyebrow">Where to next</div>
-    <h2 class="section-title">Smarter ways to find a home</h2>
-    <p class="section-sub">Tools that go beyond a basic search — built for how Irish people actually browse property today.</p>
-  </div>
-  <div class="qa-grid">
-    <div class="qa-card" onclick="go('pages/list.html')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>
-      <div class="qa-title">List your home</div>
-      <div class="qa-sub">Free for private sellers & landlords — no card required.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/map-search.html')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>
-      <div class="qa-title">Map search</div>
-      <div class="qa-sub">Pan and zoom Ireland — every live listing on a single map.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/drive-time.html')">
-      <div class="qa-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <div class="qa-title">Find by drive time</div>
-      <div class="qa-sub">Live near work, school, family — set a commute, see homes inside it.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-    <div class="qa-card" onclick="go('pages/tools.html#mortgage')">
-      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>
-      <div class="qa-title">Mortgage calculator</div>
-      <div class="qa-sub">See what you can borrow and what you'd repay each month.</div>
-      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
-    </div>
-  </div>
-</div>
-
-<div class="section reveal mobile-hide">
-  <div class="section-eyebrow">Just listed</div>
-  <div class="section-hdr">
-    <h2 class="section-title">Latest listings</h2>
-    <span class="see-all" onclick="go('pages/latest.html')">See all →</span>
-  </div>
-  <div class="listings-grid" id="featured-grid">
-    <div class="loading-wrap"><div class="spinner"></div></div>
-  </div>
-</div>
-
-<!-- Social proof first — buyers/sellers like to see this before the pitch -->
-<div class="section reveal mobile-hide" style="background:#fff">
-  <div class="section-eyebrow">Real stories</div>
-  <h2 class="section-title">Trusted across Ireland</h2>
-  <p class="section-sub">Thousands of homeowners, renters and agents already use Movin.</p>
-  <div class="test-scroll">
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. More enquiries in a day than on Daft in a month."</p><div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div></div>
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Free to list my rental — identical results to the big paid portals. Absolute no-brainer."</p><div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div></div>
-    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Found our forever home through Movin. The search is so much better than anything else."</p><div class="test-author">Aoife & Tadhg R.</div><div class="test-role">First-time buyers, Galway</div></div>
-  </div>
-</div>
-
-<!-- Why Movin + pricing + CTA — all in one cohesive section -->
-<section class="why-pricing reveal mobile-hide">
-  <div class="wp-inner">
-    <div class="wp-head">
-      <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
-      <h2 class="section-title" style="color:#fff">Built for Ireland.<br>Priced for everyone.</h2>
-      <p class="section-sub" style="color:rgba(255,255,255,.78)">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
-    </div>
-
-    <div class="wp-values">
-      <div class="wp-val">
-        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
-        <h3>Free for private sellers</h3>
-        <p>List for nothing. See how it performs before you pay a cent.</p>
-      </div>
-      <div class="wp-val">
-        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h11a4 4 0 0 1 0 8H8"/><path d="M5 14h11a4 4 0 0 0 0-8"/></svg></div>
-        <h3>Fair pricing</h3>
-        <p>Free for private sellers and landlords. Simple, transparent plans for estate agents.</p>
-      </div>
-      <div class="wp-val">
-        <div class="wp-val-ico"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
-        <h3>Modern & fast</h3>
-        <p>Built mobile-first. Clean, intuitive, works on any device.</p>
-      </div>
-    </div>
-
-    <div class="wp-prices">
-      <div class="wp-price">
-        <div class="wp-price-eyebrow">Private sellers &amp; landlords</div>
-        <div class="wp-price-num">Free</div>
-        <div class="wp-price-period">during our launch period</div>
-        <ul><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live, no card needed</li></ul>
-        <button class="wp-cta wp-cta-ghost" onclick="go('pages/list.html')">Start free →</button>
-      </div>
-      <div class="wp-price wp-price-feat">
-        <div class="wp-price-eyebrow">Estate agents &amp; agencies</div>
-        <div class="wp-price-num">Plans</div>
-        <div class="wp-price-period">single listings or unlimited subscription</div>
-        <ul><li>Single listing or unlimited subscription</li><li>Featured upgrade available</li><li>View &amp; enquiry analytics</li><li>Priority support</li></ul>
-        <button class="wp-cta wp-cta-primary" onclick="go('pages/terms-of-service.html#pricing')">See agent plans →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- The rich multi-column footer is rendered into <footer id="site-footer"> below by renderFooter() -->
-</div>
-
-<div class="tab-bar">
-  <button class="tab-item active" onclick="go('index.html')">
-    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-home"/></svg></div>Home
-  </button>
-  <button class="tab-item" onclick="go('pages/search.html')">
-    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-search"/></svg></div>Search
-  </button>
-  <button class="tab-list-item" onclick="go('pages/list.html')">
-    <div class="tab-list-circle"><svg width="22" height="22" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>
-    <span class="tab-list-label">List</span>
-  </button>
-  <button class="tab-item" onclick="go('pages/map-search.html')">
-    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map
-  </button>
-  <button class="tab-item" id="tab-account" onclick="go('pages/dashboard.html')">
-    <div class="tab-icon-wrap"><svg width="22" height="22" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-user"/></svg></div>Account
-  </button>
-</div>
-
-<script>
-window.MOVIN_API_URL='https://movin-backend-production-1fb3.up.railway.app'
-</script>
-<script src="js/icons.js"></script>
-<script src="js/api.js"></script>
-<script src="js/app.js"></script>
-<script>
-function go(u){window.location.href=u}
-function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
-let searchType='sale',searchCounty='',searchQuery=''
-
-// Daft-style price ranges — Buy uses lump sums, Rent and Sharing use monthly.
-// `min` and `max` arrays are independent so users can pick a sensible range.
-const PRICE_RANGES = {
-  sale: {
-    label: 'price',
-    min: [
-      {v:'',       l:'No min'},
-      {v:'50000',  l:'€50k'},
-      {v:'100000', l:'€100k'},
-      {v:'150000', l:'€150k'},
-      {v:'200000', l:'€200k'},
-      {v:'250000', l:'€250k'},
-      {v:'300000', l:'€300k'},
-      {v:'400000', l:'€400k'},
-      {v:'500000', l:'€500k'},
-      {v:'750000', l:'€750k'},
-      {v:'1000000',l:'€1m'}
-    ],
-    max: [
-      {v:'',       l:'No max'},
-      {v:'100000', l:'€100k'},
-      {v:'150000', l:'€150k'},
-      {v:'200000', l:'€200k'},
-      {v:'250000', l:'€250k'},
-      {v:'300000', l:'€300k'},
-      {v:'400000', l:'€400k'},
-      {v:'500000', l:'€500k'},
-      {v:'750000', l:'€750k'},
-      {v:'1000000',l:'€1m'},
-      {v:'1500000',l:'€1.5m'},
-      {v:'2000000',l:'€2m+'}
-    ]
-  },
-  rent: {
-    label: 'rent /mo',
-    min: [
-      {v:'',     l:'No min'},
-      {v:'500',  l:'€500'},
-      {v:'750',  l:'€750'},
-      {v:'1000', l:'€1,000'},
-      {v:'1250', l:'€1,250'},
-      {v:'1500', l:'€1,500'},
-      {v:'1750', l:'€1,750'},
-      {v:'2000', l:'€2,000'},
-      {v:'2500', l:'€2,500'},
-      {v:'3000', l:'€3,000'}
-    ],
-    max: [
-      {v:'',     l:'No max'},
-      {v:'750',  l:'€750'},
-      {v:'1000', l:'€1,000'},
-      {v:'1250', l:'€1,250'},
-      {v:'1500', l:'€1,500'},
-      {v:'1750', l:'€1,750'},
-      {v:'2000', l:'€2,000'},
-      {v:'2500', l:'€2,500'},
-      {v:'3000', l:'€3,000'},
-      {v:'4000', l:'€4,000'},
-      {v:'5000', l:'€5,000+'}
-    ]
-  },
-  share: {
-    label: 'rent /mo',
-    min: [
-      {v:'',    l:'No min'},
-      {v:'300', l:'€300'},
-      {v:'400', l:'€400'},
-      {v:'500', l:'€500'},
-      {v:'600', l:'€600'},
-      {v:'700', l:'€700'},
-      {v:'800', l:'€800'},
-      {v:'1000',l:'€1,000'}
-    ],
-    max: [
-      {v:'',    l:'No max'},
-      {v:'400', l:'€400'},
-      {v:'500', l:'€500'},
-      {v:'600', l:'€600'},
-      {v:'700', l:'€700'},
-      {v:'800', l:'€800'},
-      {v:'900', l:'€900'},
-      {v:'1000',l:'€1,000'},
-      {v:'1200',l:'€1,200'},
-      {v:'1500',l:'€1,500+'}
-    ]
-  }
-}
-
-function fillPriceSelects(type){
-  const cfg = PRICE_RANGES[type] || PRICE_RANGES.sale
-  const minSel = document.getElementById('adv-min')
-  const maxSel = document.getElementById('adv-max')
-  const minLbl = document.getElementById('adv-min-label')
-  const maxLbl = document.getElementById('adv-max-label')
-
-  // Repopulate the dropdowns and reset the selected value (the price you'd
-  // accept for €500k buy makes no sense as €500k/mo rent)
-  if (minSel) {
-    minSel.innerHTML = cfg.min.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
-    minSel.value = ''
-  }
-  if (maxSel) {
-    maxSel.innerHTML = cfg.max.map(o => `<option value="${o.v}">${o.l}</option>`).join('')
-    maxSel.value = ''
-  }
-  if (minLbl) minLbl.textContent = type === 'sale' ? 'Min price' : 'Min rent /mo'
-  if (maxLbl) maxLbl.textContent = type === 'sale' ? 'Max price' : 'Max rent /mo'
-}
-
-function selectType(el){
-  searchType = el.dataset.type
-  document.querySelectorAll('.stt').forEach(t => t.classList.remove('active'))
-  el.classList.add('active')
-  // Swap the advanced-panel prices to match
-  fillPriceSelects(searchType)
-  // Swap the quick-filter price pill options too
-  if (typeof QF_OPTIONS !== 'undefined' && typeof QF_PRICE_BY_TYPE !== 'undefined') {
-    QF_OPTIONS.price = QF_PRICE_BY_TYPE[searchType] || QF_PRICE_BY_TYPE.sale
-    QF_STATE.price = 0
-    const labelEl = document.getElementById('qf-price-label')
-    const pillEl  = document.getElementById('qf-price-pill')
-    if (labelEl) labelEl.textContent = QF_OPTIONS.price[0].l
-    if (pillEl)  pillEl.classList.remove('on')
-  }
-}
-function toggleAdv(){document.getElementById('adv-panel').classList.toggle('open');document.getElementById('adv-arrow').classList.toggle('open')}
-const DD=[{code:'D1',name:'Dublin 1',area:'City Centre'},{code:'D2',name:'Dublin 2',area:'City Centre South'},{code:'D3',name:'Dublin 3',area:'Clontarf, Fairview'},{code:'D4',name:'Dublin 4',area:'Ballsbridge, Donnybrook'},{code:'D5',name:'Dublin 5',area:'Artane, Coolock'},{code:'D6',name:'Dublin 6',area:'Ranelagh, Rathmines'},{code:'D6W',name:'Dublin 6W',area:'Templeogue, Terenure'},{code:'D7',name:'Dublin 7',area:'Cabra, Phibsborough'},{code:'D8',name:'Dublin 8',area:'Inchicore, Kilmainham'},{code:'D9',name:'Dublin 9',area:'Drumcondra, Glasnevin'},{code:'D10',name:'Dublin 10',area:'Ballyfermot'},{code:'D11',name:'Dublin 11',area:'Finglas, Ballymun'},{code:'D12',name:'Dublin 12',area:'Crumlin, Kimmage'},{code:'D13',name:'Dublin 13',area:'Baldoyle, Howth'},{code:'D14',name:'Dublin 14',area:'Dundrum, Rathfarnham'},{code:'D15',name:'Dublin 15',area:'Blanchardstown'},{code:'D16',name:'Dublin 16',area:'Ballinteer, Knocklyon'},{code:'D18',name:'Dublin 18',area:'Foxrock, Sandyford'},{code:'D20',name:'Dublin 20',area:'Chapelizod'},{code:'D22',name:'Dublin 22',area:'Clondalkin'},{code:'D24',name:'Dublin 24',area:'Firhouse, Tallaght'}]
-const COUNTIES=['Dublin','Cork','Galway','Limerick','Waterford','Kerry','Meath','Kildare','Wicklow','Wexford','Kilkenny','Clare','Tipperary','Donegal','Mayo','Sligo','Leitrim','Roscommon','Longford','Westmeath','Offaly','Laois','Carlow','Louth','Monaghan','Cavan']
-function handleLoc(val){
-  const box=document.getElementById('loc-sugg')
-  if(!val||val.length<1){box.classList.remove('open');return}
-  const q=val.toUpperCase().trim(),results=[]
-  DD.forEach(d=>{if(d.code.startsWith(q)||d.name.toUpperCase().includes(q))results.push({type:'district',...d})})
-  if(/^[A-Z][0-9]{0,2}/.test(q)&&!results.length)results.push({type:'eircode',code:val.toUpperCase(),name:'Eircode: '+val.toUpperCase(),area:'Search by Eircode'})
-  COUNTIES.forEach(c=>{if(c.toUpperCase().startsWith(q)||c.toUpperCase().includes(q))results.push({type:'county',code:c,name:c,area:'County'})})
-  if(!results.length){box.classList.remove('open');return}
-  box.innerHTML=results.slice(0,5).map(r=>`<div class="sugg-item" onclick="selectLoc(${JSON.stringify(r).replace(/"/g,'&quot;')})"><span>${r.type==='county'?'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>':r.type==='eircode'?'<svg width="14" height="14" style="color:#888;vertical-align:middle"><use href="/icons.svg#icon-search"/></svg>':'<svg width="14" height="14" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-location"/></svg>'}</span><div><div class="sugg-main">${r.name}</div><div class="sugg-sub">${r.area}</div></div><span class="sugg-tag">${r.type==='district'?'Dublin':r.type==='eircode'?'Eircode':'County'}</span></div>`).join('')
-  box.classList.add('open')
-}
-function selectLoc(item){
-  document.getElementById('loc-sugg').classList.remove('open')
-  document.getElementById('hero-loc').value=item.name
-  searchCounty=item.type==='county'?item.code:(item.type==='district'?'Dublin':'')
-  searchQuery=item.name
-  showChip(item.name)
-}
-function showChip(label){document.getElementById('chip-wrap').innerHTML=`<span class="search-chip">📍 ${label}<button class="chip-x" onclick="clearSearch()">×</button></span>`}
-function clearSearch(){searchQuery='';searchCounty='';document.getElementById('hero-loc').value='';document.getElementById('chip-wrap').innerHTML=''}
-document.addEventListener('click',e=>{if(!e.target.closest('.search-main'))document.getElementById('loc-sugg')?.classList.remove('open')})
-// When the user picks a place from the Google Places dropdown we capture
-// its lat/lng so search.html can sort listings by distance to it.
-let searchOrigin = null   // { lat, lng, label } or null
-
-// Quick filter pills — cycle through preset options on tap
-const QF_PRICE_BY_TYPE = {
-  sale:  [{v:'', l:'Price: any'},     {v:'200000',l:'Up to €200k'},   {v:'300000',l:'Up to €300k'},   {v:'500000',l:'Up to €500k'},   {v:'750000',l:'Up to €750k'},   {v:'1000000',l:'Up to €1m'}],
-  rent:  [{v:'', l:'Rent: any'},      {v:'1000',  l:'Up to €1k/mo'},  {v:'1500',  l:'Up to €1.5k/mo'},{v:'2000',  l:'Up to €2k/mo'},  {v:'2500',  l:'Up to €2.5k/mo'},{v:'3000',  l:'Up to €3k/mo'}, {v:'4000',l:'Up to €4k/mo'}],
-  share: [{v:'', l:'Rent: any'},      {v:'500',   l:'Up to €500/mo'}, {v:'700',   l:'Up to €700/mo'}, {v:'900',   l:'Up to €900/mo'}, {v:'1100',  l:'Up to €1.1k/mo'},{v:'1500',  l:'Up to €1.5k/mo'}]
-}
-const QF_OPTIONS = {
-  beds:  [{v:'',  l:'Beds: any'},  {v:'1',l:'1+ beds'}, {v:'2',l:'2+ beds'}, {v:'3',l:'3+ beds'}, {v:'4',l:'4+ beds'}, {v:'5',l:'5+ beds'}],
-  price: QF_PRICE_BY_TYPE.sale.slice(),
-  type:  [{v:'',  l:'Any type'},   {v:'house',l:'House'}, {v:'apartment',l:'Apartment'}, {v:'bungalow',l:'Bungalow'}, {v:'site',l:'Site / Land'}]
-}
-const QF_STATE = { beds:0, price:0, type:0 }
-function cycleQF(key){
-  const opts = QF_OPTIONS[key]; if (!opts) return
-  QF_STATE[key] = (QF_STATE[key] + 1) % opts.length
-  const cur = opts[QF_STATE[key]]
-  const labelEl = document.getElementById('qf-' + key + '-label')
-  const pillEl  = document.getElementById('qf-' + key + '-pill')
-  if (labelEl) labelEl.textContent = cur.l
-  if (pillEl)  pillEl.classList.toggle('on', !!cur.v)
-}
-window.cycleQF = cycleQF
-function readQF(key){
-  const opts = QF_OPTIONS[key]; return opts ? opts[QF_STATE[key]].v : ''
-}
-
-function doSearch(){
-  document.getElementById('loc-sugg').classList.remove('open')
-  const p=new URLSearchParams()
-  p.set('listing_type',searchType)
-  if(searchCounty)p.set('county',searchCounty)
-  const q=document.getElementById('hero-loc').value
-  if(q&&!searchCounty)p.set('q',q)
-
-  // Quick-filter pills override the advanced panel when both are set
-  const qfBeds  = readQF('beds')
-  const qfMax   = readQF('price')
-  const qfType  = readQF('type')
-
-  const minP=document.getElementById('adv-min').value
-  const maxP=document.getElementById('adv-max').value
-  const beds=document.getElementById('adv-beds').value
-  const baths=document.getElementById('adv-baths').value
-  const ptype=document.getElementById('adv-ptype').value
-  const ber=document.getElementById('adv-ber').value
-  if(minP)p.set('min_price',minP)
-  const finalMax = qfMax || maxP
-  if(finalMax)p.set('max_price',finalMax)
-  const finalBeds = qfBeds || beds
-  if(finalBeds)p.set('bedrooms',finalBeds)
-  if(baths)p.set('bathrooms',baths)
-  const finalType = qfType || ptype
-  if(finalType)p.set('property_type',finalType)
-  if(ber)p.set('ber',ber)
-  document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
-  // Pass the picked place's coordinates so search.html can show distance + sort closest-first
-  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
-    p.set('lat',  searchOrigin.lat)
-    p.set('lng',  searchOrigin.lng)
-    p.set('near', searchOrigin.label || q || '')
-  }
-  window.location.href='pages/search.html?'+p.toString()
-}
-function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);searchOrigin=null;doSearch()}
-
-// ── AI search (Groq-powered natural-language → filters) ─────────────────
-function aiSearchExample(el){
-  var inp = document.getElementById('ai-search-inp')
-  if (!inp) return
-  inp.value = el.textContent.trim()
-  inp.focus()
-}
-
-function _aiSetStatus(msg, isError){
-  var el = document.getElementById('ai-search-status')
-  if (!el) return
-  el.textContent = msg || ''
-  el.classList.toggle('show',  !!msg)
-  el.classList.toggle('error', !!isError)
-}
-
-async function runAiSearch(){
-  var inp = document.getElementById('ai-search-inp')
-  var btn = document.getElementById('ai-search-go')
-  if (!inp || !btn) return
-  var q = (inp.value || '').trim()
-  if (!q) { inp.focus(); return }
-  if (q.length < 4) { _aiSetStatus('Please type a longer query.', true); return }
-
-  var origLabel = btn.innerHTML
-  btn.disabled = true
-  btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span> Thinking…'
-  _aiSetStatus('Understanding your search…', false)
-
-  try {
-    var res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: q })
-    })
-    var data = await res.json()
-    if (!res.ok) throw new Error(data.error || 'AI search failed')
-
-    var filters = data.filters || {}
-    var p = new URLSearchParams()
-    if (filters.listing_type)  p.set('listing_type',  filters.listing_type)
-    if (filters.property_type) p.set('property_type', filters.property_type)
-    if (filters.bedrooms)      p.set('bedrooms',      filters.bedrooms)
-    if (filters.min_price)     p.set('min_price',     filters.min_price)
-    if (filters.max_price)     p.set('max_price',     filters.max_price)
-    if (filters.county)        p.set('county',        filters.county)
-    if (filters.q)             p.set('q',             filters.q)
-
-    if (![...p.keys()].length) {
-      _aiSetStatus('Could not extract filters from that. Try being more specific.', true)
-      btn.disabled = false; btn.innerHTML = origLabel
-      return
-    }
-
-    _aiSetStatus(data.summary || 'Searching…', false)
-    setTimeout(function(){
-      window.location.href = 'pages/search.html?' + p.toString()
-    }, 250)
-  } catch (err) {
-    _aiSetStatus('Could not run AI search: ' + (err.message || err), true)
-    btn.disabled = false
-    btn.innerHTML = origLabel
-  }
-}
-
-// ── Google Places autocomplete on the hero search input ─────────────────
-// Loaded asynchronously below; this becomes the picker for any address /
-// university / Eircode / town in Ireland, and captures lat/lng so the
-// results page can show "X km away" on each listing.
-window.initHeroSearch = function(){
-  if (!window.google || !google.maps || !google.maps.places) return
-  const input = document.getElementById('hero-loc')
-  if (!input || input.dataset.acBound) return
-  input.dataset.acBound = '1'
-  document.body.classList.add('hero-places-ready')
-  // Suppress the existing custom dropdown — Places replaces it
-  const sugg = document.getElementById('loc-sugg')
-  if (sugg) sugg.classList.remove('open')
-  window.handleLoc = function(){}
-
-  const ac = new google.maps.places.Autocomplete(input, {
-    componentRestrictions: { country: 'ie' },
-    fields: ['geometry','name','formatted_address','address_components','types']
-  })
-  ac.addListener('place_changed', function(){
-    const place = ac.getPlace()
-    if (!place) return
-    applyHeroPlace(place)
-  })
-
-  // Enter without picking a suggestion → geocode the typed text
-  input.addEventListener('keydown', function(e){
-    if (e.key !== 'Enter') return
-    if (document.querySelector('.pac-container .pac-item-selected')) return
-    const v = (input.value || '').trim()
-    if (!v) return
-    const gc = window._heroGeo = window._heroGeo || new google.maps.Geocoder()
-    gc.geocode({ address: v, componentRestrictions: { country: 'IE' } }, function(results, status){
-      if (status === 'OK' && results && results[0]) applyHeroPlace(results[0])
-      else doSearch()
-    })
-  })
-}
-
-function applyHeroPlace(place){
-  const comp = place.address_components || []
-  const pick = (t) => { const c = comp.find(x => x.types.indexOf(t) !== -1); return c ? c.long_name : '' }
-  const county   = (pick('administrative_area_level_1') || pick('administrative_area_level_2')).replace(/^County\s+/i, '')
-  const locality = pick('locality') || pick('postal_town') || pick('sublocality_level_1') || ''
-  const postcode = pick('postal_code')
-  const label = (place.name && place.formatted_address && place.formatted_address.indexOf(place.name) !== 0)
-    ? place.name + ' — ' + place.formatted_address
-    : (place.formatted_address || place.name || document.getElementById('hero-loc').value)
-
-  // Capture coordinates for distance-aware results
-  if (place.geometry && place.geometry.location){
-    const loc = place.geometry.location
-    searchOrigin = {
-      lat:   typeof loc.lat === 'function' ? loc.lat() : loc.lat,
-      lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
-      label: label
-    }
-  }
-
-  // Update the input + visible chip + state used by doSearch()
-  document.getElementById('hero-loc').value = label
-  searchQuery  = label
-  searchCounty = county || ''
-  // Pretty Dublin postcode handling: "Dublin 6" gets sent as the q since the
-  // backend expects a county filter for Dublin not a district code
-  const dub = (locality || place.name || '').match(/^Dublin\s+(\d+W?)$/i)
-  if (dub) { searchCounty = 'Dublin'; searchQuery = label }
-  if (postcode && /^[A-Z0-9]{3}\s?[A-Z0-9]{4}$/i.test(postcode.trim())) searchQuery = postcode.toUpperCase()
-  showChip(label)
-  // Don't auto-submit — just like Bayut, picking the place primes the search
-  // and the user clicks Search (or hits Enter again) when ready
-}
-async function loadFeatured(){
-  const grid=document.getElementById('featured-grid')
-  try{
-    // Pull a wider net so we can mix residential + commercial, then filter to last 7 days
-    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000)
-    const seen = {}
-    let pool = []
-    let total = 0
-
-    async function pull(params){
-      try{
-        const r = await window.API.listings.search(params)
-        if (r && Array.isArray(r.listings)){
-          if (r.total) total = Math.max(total, r.total)
-          r.listings.forEach(l => { if (!seen[l.id]) { seen[l.id]=1; pool.push(l) } })
-        }
-      } catch(_) {}
-    }
-
-    await pull({sort:'newest',limit:60})
-    // Sprinkle in commercial property types that may not surface in the default newest sort
-    await Promise.all(['office','retail','industrial','hospitality','warehouse','land','commercial']
-      .map(t => pull({sort:'newest',limit:20,property_type:t})))
-
-    var statCountEl = document.getElementById('stat-count')
-    var statTotal   = total > 0 ? total : pool.length
-    statCountEl.dataset.countTarget = statTotal
-    statCountEl.dataset.countSuffix = '+'
-    if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
-
-    // Tally per-county counts so the Browse-by-county tiles can show real numbers
-    var countyTotals = {}
-    pool.forEach(function(l){
-      if (l && l.county) countyTotals[l.county] = (countyTotals[l.county] || 0) + 1
-    })
-    document.querySelectorAll('[data-county-count]').forEach(function(el){
-      var c = el.getAttribute('data-county-count')
-      var n = countyTotals[c] || 0
-      el.textContent = n > 0 ? (n + ' home' + (n === 1 ? '' : 's')) : 'Browse →'
-      // Bubble up to the parent card so the meta colour can turn green
-      var card = el.closest('.county-card')
-      if (card) card.setAttribute('data-has-count', n > 0 ? '1' : '0')
-    })
-
-    const fresh = pool
-      .filter(l => l.created_at && new Date(l.created_at) >= sevenDaysAgo)
-      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 4)
-
-    if (!fresh.length){
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">No listings yet — <a href="pages/list.html" style="color:#1a5c45;font-weight:500">be the first!</a></div>'
-      return
-    }
-    grid.innerHTML = fresh.map(l => buildPropertyCard(l)).join('')
-  }catch(e){
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">Could not load listings.</div>'
-  }
-}
-function updateNav(){
-  if(!window.API||!window.API.auth.isLoggedIn())return
-  const user=window.API.getUser()
-  document.getElementById('nav-auth-area').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary btn-sm">${user?.name?.split(' ')[0]||'Account'}</a>`
-  document.getElementById('mobile-menu-footer').innerHTML=`<a href="pages/dashboard.html" class="btn btn-primary" style="flex:1;justify-content:center">My dashboard →</a>`
-}
-// ── Typewriter placeholder for the hero search ────────────────────────────
-// Cycles through example search prompts (Eircode, area, train station, …)
-// until the user focuses or types. Inspired by Zoopla's homepage.
-;(function(){
-  var input  = document.getElementById('hero-loc')
-  var typer  = document.getElementById('hero-loc-typer')
-  if (!input || !typer) return
-  var wordEl = typer.querySelector('.typer-word')
-
-  var PHRASES = [
-    'an Eircode (e.g. D02 EH73)',
-    'an area (e.g. Rathmines)',
-    'a train station (e.g. Heuston)',
-    'a school (e.g. UCD, Trinity)',
-    'a town (e.g. Galway)',
-    'a county (e.g. Cork)',
-    'a hospital (e.g. St Vincent’s)',
-    'a workplace (e.g. Google Dublin)'
-  ]
-
-  var idx     = 0
-  var charIdx = 0
-  var deleting = false
-  var stopped  = false
-  var timer    = null
-
-  function setHidden(h){ typer.classList.toggle('hide', h) }
-  function isOccupied(){ return !!input.value || document.activeElement === input }
-
-  function tick(){
-    if (stopped) return
-    if (isOccupied()) {
-      setHidden(true)
-      timer = setTimeout(tick, 600)
-      return
-    }
-    setHidden(false)
-
-    var current = PHRASES[idx]
-
-    if (!deleting) {
-      // Typing forward
-      charIdx++
-      wordEl.textContent = current.slice(0, charIdx)
-      if (charIdx === current.length) {
-        deleting = true
-        timer = setTimeout(tick, 1700)   // hold the full phrase
-        return
-      }
-      // Slight randomness for a natural feel
-      timer = setTimeout(tick, 55 + Math.random() * 45)
-    } else {
-      // Deleting
-      charIdx--
-      wordEl.textContent = current.slice(0, Math.max(0, charIdx))
-      if (charIdx <= 0) {
-        deleting = false
-        idx = (idx + 1) % PHRASES.length
-        timer = setTimeout(tick, 280)    // tiny pause before next word
-        return
-      }
-      timer = setTimeout(tick, 28)
-    }
-  }
-
-  // Permanently stop the loop the moment the user actually engages with
-  // the input — feels less like a busy gif and more like a thoughtful hint.
-  function stop(){
-    if (stopped) return
-    stopped = true
-    clearTimeout(timer)
-    setHidden(true)
-  }
-  input.addEventListener('focus', stop)
-  input.addEventListener('input', function(){ if (input.value) stop() })
-
-  // If the user picks the input but doesn't type and blurs again, restart
-  input.addEventListener('blur', function(){
-    if (stopped && !input.value) {
-      stopped  = false
-      charIdx  = 0
-      deleting = false
-      setHidden(false)
-      timer = setTimeout(tick, 200)
-    }
-  })
-
-  // Kick off shortly after first paint so it doesn't compete with the hero
-  // entrance animation
-  timer = setTimeout(tick, 700)
-})()
-
-// Initial price options for Buy (the default selected mode)
-fillPriceSelects('sale')
-
-// ── Count-up animator ───────────────────────────────────────────────────
-// Animates any element with data-count-target from 0 to its target when it
-// scrolls into view. Honors prefers-reduced-motion.
-function startCountUpFor(el){
-  if (!el || el.dataset.countDone === '1') return
-  var target = parseFloat(el.dataset.countTarget || '0')
-  if (!Number.isFinite(target)) return
-  var suffix = el.dataset.countSuffix || ''
-  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  var isFloat = String(target).indexOf('.') >= 0
-  var format = function(n){
-    if (isFloat) return n.toFixed(2)
-    return Math.round(n).toLocaleString('en-IE')
-  }
-  if (prefersReduced || target === 0){
-    el.textContent = format(target) + suffix
-    el.dataset.countDone = '1'
-    return
-  }
-  el.dataset.countDone = '1'
-  var duration = 1300
-  var start = null
-  var ease = function(t){ return 1 - Math.pow(1 - t, 3) }
-  function step(ts){
-    if (start === null) start = ts
-    var p = Math.min((ts - start) / duration, 1)
-    el.textContent = format(target * ease(p)) + suffix
-    if (p < 1) requestAnimationFrame(step)
-  }
-  requestAnimationFrame(step)
-}
-
-;(function setupCountUp(){
-  var els = document.querySelectorAll('[data-count-target]')
-  if (!els.length) return
-  if (!('IntersectionObserver' in window)){
-    els.forEach(startCountUpFor); return
-  }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting){
-        startCountUpFor(e.target)
-        io.unobserve(e.target)
-      }
-    })
-  }, { threshold: 0.4 })
-  els.forEach(function(el){ io.observe(el) })
-})()
-
-// ── Scroll reveal: fade-up sections as they enter the viewport ─────────
-;(function setupScrollReveal(){
-  var els = document.querySelectorAll('.reveal')
-  if (!els.length) return
-  if (!('IntersectionObserver' in window)){
-    els.forEach(function(el){ el.classList.add('revealed') }); return
-  }
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting){
-        e.target.classList.add('revealed')
-        io.unobserve(e.target)
-      }
-    })
-  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' })
-  els.forEach(function(el){ io.observe(el) })
-})()
-
-// ── Animated headline word cycler ──────────────────────────────────────
-// Cycles through words inside <span class="hero-rot"> on a 2.6s rhythm.
-// Uses CSS classes "on" / "out" so transitions are GPU-accelerated.
-;(function rotateHeadlineWord(){
-  var rot = document.getElementById('hero-rot')
-  if (!rot) return
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  var words = rot.querySelectorAll('.hero-rot-w')
-  if (words.length < 2) return
-  var i = 0
-  setInterval(function(){
-    var cur = words[i]
-    i = (i + 1) % words.length
-    var next = words[i]
-    cur.classList.remove('on'); cur.classList.add('out')
-    next.classList.remove('out'); next.classList.add('on')
-    setTimeout(function(){ cur.classList.remove('out') }, 600)
-  }, 2400)
-})()
-
-// ── 3D tilt-on-hover for property cards ────────────────────────────────
-// Lightweight (no library). Only active on devices with a real pointer.
-;(function tiltCards(){
-  if (matchMedia('(hover: none)').matches) return
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  var grid = document.getElementById('featured-grid')
-  if (!grid) return
-  var max = 6   // max tilt in degrees
-  function bind(card){
-    if (card.dataset.tiltBound) return
-    card.dataset.tiltBound = '1'
-    card.classList.add('tiltable')
-    card.addEventListener('pointermove', function(e){
-      var r = card.getBoundingClientRect()
-      var px = (e.clientX - r.left) / r.width  - .5  // -0.5..0.5
-      var py = (e.clientY - r.top)  / r.height - .5
-      var rx = (-py * max).toFixed(2)
-      var ry = ( px * max).toFixed(2)
-      card.style.transform = 'perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) translateY(-4px)'
-    })
-    card.addEventListener('pointerleave', function(){
-      card.style.transform = ''
-    })
-  }
-  // Bind whatever's already there + watch for newly added cards (the listings
-  // grid is populated async after fetch).
-  grid.querySelectorAll('.prop-card').forEach(bind)
-  var mo = new MutationObserver(function(mut){
-    mut.forEach(function(m){
-      m.addedNodes && m.addedNodes.forEach(function(n){
-        if (n.nodeType === 1) {
-          if (n.classList && n.classList.contains('prop-card')) bind(n)
-          n.querySelectorAll && n.querySelectorAll('.prop-card').forEach(bind)
-        }
-      })
-    })
-  })
-  mo.observe(grid, { childList:true, subtree:true })
-})()
-
-// ── Magnetic hover on primary CTAs ─────────────────────────────────────
-;(function magneticButtons(){
-  if (matchMedia('(hover: none)').matches) return
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  var sels = ['.search-go','.wp-cta-primary','.qa-card','.cta-banner .btn']
-  document.querySelectorAll(sels.join(',')).forEach(function(el){
-    el.classList.add('btn-magnetic')
-    var strength = 8
-    el.addEventListener('pointermove', function(e){
-      var r = el.getBoundingClientRect()
-      var x = (e.clientX - (r.left + r.width/2))  / r.width  * strength
-      var y = (e.clientY - (r.top  + r.height/2)) / r.height * strength
-      el.style.transform = 'translate('+x.toFixed(1)+'px,'+y.toFixed(1)+'px)'
-    })
-    el.addEventListener('pointerleave', function(){ el.style.transform = '' })
-  })
-})()
-
-// ── Stagger county chip cascade once they enter view ───────────────────
-;(function staggerCounties(){
-  var sec = document.getElementById('counties-showcase') || document.querySelector('.counties-section')
-  if (!sec || !('IntersectionObserver' in window)) return
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){
-      if (e.isIntersecting){
-        var chips = sec.querySelectorAll('.ac-chip, .county-chip, [data-county-chip]')
-        chips.forEach(function(c, i){ c.style.transitionDelay = (i*30) + 'ms' })
-        sec.classList.add('revealed')
-        io.disconnect()
-      }
-    })
-  }, { threshold: 0.15 })
-  io.observe(sec)
-})()
-
-// ── Stats strip — arm the underline tick once visible ──────────────────
-;(function armStats(){
-  var s = document.querySelector('.stats-strip')
-  if (!s || !('IntersectionObserver' in window)) return
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if (e.isIntersecting){ s.classList.add('armed'); io.disconnect() } })
-  }, { threshold: 0.5 })
-  io.observe(s)
-})()
-
-// ── Floating scroll-to-top button ──────────────────────────────────────
-;(function scrollTopBtn(){
-  var btn = document.createElement('button')
-  btn.type = 'button'
-  btn.className = 'scroll-top-btn'
-  btn.setAttribute('aria-label', 'Back to top')
-  btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>'
-  btn.addEventListener('click', function(){
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  })
-  document.body.appendChild(btn)
-  var visible = false
-  function onScroll(){
-    var should = window.scrollY > 600
-    if (should !== visible){
-      visible = should
-      btn.classList.toggle('show', should)
-    }
-  }
-  window.addEventListener('scroll', onScroll, { passive: true })
-  onScroll()
-})()
-
-loadFeatured()
-updateNav()
-// Render the shared rich multi-column footer (Buy / Rent / Tools / Company / Neighbourhoods / Counties).
-// Defer until DOMContentLoaded so the <footer id="site-footer"> element below
-// has actually been parsed before we try to populate it.
-function _renderFooterNow(){ if (typeof renderFooter === 'function') renderFooter() }
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _renderFooterNow)
-else _renderFooterNow()
-
-// Hide PWA splash once page is interactive (and only matters in standalone mode)
-;(function(){
-  var splash = document.getElementById('pwa-splash')
-  if (!splash) return
-  function hide(){ splash.classList.add('hide'); setTimeout(function(){ splash.remove() }, 600) }
-  if (document.documentElement.classList.contains('pwa-standalone')) {
-    if (document.readyState === 'complete') setTimeout(hide, 700)
-    else window.addEventListener('load', function(){ setTimeout(hide, 700) })
-  } else {
-    splash.remove()
-  }
-})()
-</script>
-
-<!-- Google Maps + Places (loaded last so it can call window.initHeroSearch) -->
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initHeroSearch&v=weekly"
-  async defer></script>
-
-<footer class="site-footer" id="site-footer"></footer>
-</body>
-</html>
+...
