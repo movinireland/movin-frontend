@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
 <title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
 <meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Free for private sellers and landlords (launch period)."/>
-<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, Eircode property search, Movin.ie"/>
+<meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, daft alternative, myhome alternative, Eircode property search"/>
 <meta name="author" content="Movin Technologies Ltd"/>
 <meta name="robots" content="index, follow, max-image-preview:large"/>
 <link rel="canonical" href="https://movin.ie/"/>
@@ -92,8 +92,8 @@
   <meta name="apple-mobile-web-app-title" content="Movin"/><style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-body{font-family:'DM Sans',sans-serif;background:#faf7f0;color:#1f2421;overflow-x:hidden;line-height:1.55}
-:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e3ebe1;--o:#d97847;--border:#dad6c8;--white:#fffdf8;--text:#1f2421;--muted:#737069;--paper:#faf7f0;--paper-deep:#f3eee0;--orange-soft:#fbe9da;--safe-b:env(safe-area-inset-bottom,0px);--nav-h:56px}
+body{font-family:'DM Sans',sans-serif;background:#f5f5f5;color:#111;overflow-x:hidden}
+:root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#e8e4dc;--white:#fff;--text:#111;--muted:#888;--safe-b:env(safe-area-inset-bottom,0px);--nav-h:56px}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--white:#1a1a1a;--text:#e8e8e8;--border:#2a2a2a;--muted:#666;--gl:#0d2e1e;background:#0f0f0f}}
 [data-theme="dark"]{--white:#1a1a1a;--text:#e8e8e8;--border:#2a2a2a;--muted:#666;--gl:#0d2e1e}
 [data-theme="dark"] body,[data-theme="dark"]{background:#0f0f0f;color:#e8e8e8}
@@ -312,77 +312,6 @@ button,input,select{font-family:inherit}
 .area-chips::-webkit-scrollbar{display:none}
 .ac{border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:12px;background:#fafaf8;color:#555;white-space:nowrap;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent;transition:all .15s}
 .ac:active,.ac:hover{background:var(--g);color:#fff;border-color:var(--g)}
-/* ── Compact AI search pill ─────────────────────────────────────────── */
-.ai-pill{
-  max-width:720px; margin:1rem auto 0; padding:.85rem 1rem;
-  background:rgba(255,255,255,.94);
-  -webkit-backdrop-filter:saturate(180%) blur(14px); backdrop-filter:saturate(180%) blur(14px);
-  border:1px solid rgba(255,255,255,.85); border-radius:18px;
-  box-shadow:0 14px 36px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.04);
-  position:relative; z-index:2;
-  animation:aiPillIn .55s cubic-bezier(.2,.7,.2,1) .15s both;
-}
-@keyframes aiPillIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-.ai-pill::before{
-  /* subtle gradient sheen on the top edge */
-  content:''; position:absolute; left:14%; right:14%; top:-1px; height:2px;
-  background:linear-gradient(90deg, transparent, #e07b3f 30%, #1a5c45 70%, transparent);
-  border-radius:2px; opacity:.55;
-}
-.ai-pill-head{
-  display:flex; align-items:center; gap:8px; margin-bottom:.55rem;
-  font-size:12px; color:var(--g,#1a5c45); font-weight:600; letter-spacing:.3px;
-}
-.ai-pill-spark{ font-size:13px; line-height:1 }
-.ai-pill-label{ flex:1 }
-.ai-pill-tag{
-  font-size:9.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase;
-  padding:2px 8px; border-radius:50px;
-  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff;
-}
-.ai-pill-row{ display:flex; gap:8px; align-items:stretch }
-.ai-pill-inp{
-  flex:1; min-width:0; border:1.5px solid var(--border,#e8e4dc); border-radius:12px;
-  padding:11px 14px; font-size:14px; background:#fff; color:#222; outline:none;
-  transition:border-color .15s, box-shadow .15s; font-family:inherit;
-}
-.ai-pill-inp::placeholder{ color:#9aa19c }
-.ai-pill-inp:focus{ border-color:#1a5c45; box-shadow:0 0 0 3px rgba(26,92,69,.12) }
-.ai-pill-go{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:46px; height:auto;
-  background:linear-gradient(135deg,#1a5c45,#0e3d2e); color:#fff; border:none; border-radius:12px;
-  cursor:pointer; font-family:inherit; flex-shrink:0;
-  transition:transform .15s, box-shadow .18s;
-  box-shadow:0 6px 16px rgba(26,92,69,.25);
-}
-.ai-pill-go:hover{ transform:translateY(-1px); box-shadow:0 9px 22px rgba(26,92,69,.35) }
-.ai-pill-go:active{ transform:scale(.96) }
-.ai-pill-go:disabled{ opacity:.7; cursor:wait; transform:none; box-shadow:none }
-.ai-pill-go svg{ width:16px; height:16px; stroke:#fff; fill:none }
-.ai-pill-examples{
-  margin-top:.65rem; display:flex; gap:6px; flex-wrap:wrap;
-}
-.ai-chip{
-  font-size:11.5px; padding:5px 11px; border-radius:50px;
-  background:rgba(26,92,69,.07); color:#1a5c45; border:1px solid rgba(26,92,69,.14);
-  cursor:pointer; font-family:inherit;
-  transition:background .15s, border-color .15s, transform .15s;
-}
-.ai-chip:hover{ background:rgba(26,92,69,.14); border-color:rgba(26,92,69,.30); transform:translateY(-1px) }
-.ai-chip:active{ transform:scale(.97) }
-
-@media (max-width:560px){
-  .ai-pill{ margin:.85rem 1rem 0; padding:.7rem .85rem }
-  .ai-pill-inp{ font-size:13.5px; padding:10px 12px }
-  .ai-pill-go{ width:42px }
-  .ai-pill-examples .ai-chip{ font-size:11px }
-}
-[data-theme="dark"] .ai-pill{ background:rgba(26,26,26,.92); border-color:rgba(255,255,255,.06) }
-[data-theme="dark"] .ai-pill-inp{ background:#0f0f0f; border-color:#2a2a2a; color:#e8e8e8 }
-[data-theme="dark"] .ai-pill-head{ color:#7ec9a8 }
-[data-theme="dark"] .ai-chip{ background:rgba(126,201,168,.10); color:#7ec9a8; border-color:rgba(126,201,168,.22) }
-
 .stats-strip{display:flex;background:var(--gd);overflow-x:auto}
 .stats-strip::-webkit-scrollbar{display:none}
 .stat-cell{flex:1;min-width:80px;padding:1rem .5rem;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
@@ -934,647 +863,264 @@ body.hero-places-ready .sugg-box{display:none !important}
   opacity:1; transform:translateY(0);
 }
 
-/* ════════════════════════════════════════════════════════════════════
-   MODERN MARKETPLACE — Option 2 (Airbnb / Stripe clean)
-   Friendly, functional, photo-led. Big rounded surfaces, soft shadows,
-   sans-serif everywhere, generous whitespace. Photos do the talking.
-   ════════════════════════════════════════════════════════════════════ */
 
-/* ── Hero — animated gradient mesh (no photo, more alive) ────────── */
-.hero{
-  background:
-    radial-gradient(circle 700px at 18% 18%, rgba(26,92,69,.18) 0%, rgba(26,92,69,0) 60%),
-    radial-gradient(circle 600px at 82% 22%, rgba(217,120,71,.18) 0%, rgba(217,120,71,0) 60%),
-    radial-gradient(circle 800px at 60% 95%, rgba(46,142,90,.16) 0%, rgba(46,142,90,0) 65%),
-    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%) !important;
-  background-size: 130% 130%, 130% 130%, 130% 130%, auto !important;
-  background-position: 0% 0%, 100% 0%, 50% 100%, 0 0;
-  animation: heroMesh 18s ease-in-out infinite alternate;
-  padding: 4rem 1.5rem 2.5rem !important;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-@keyframes heroMesh{
-  0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
-  50%  { background-position: 10% 25%, 88% 18%, 45% 92%, 0 0; }
-  100% { background-position: 5% 18%, 92% 28%, 55% 85%, 0 0; }
-}
-.hero::before, .hero::after, .hero-noise{ display:none !important }
-.hero-inner{ position:relative; z-index:2 }
-
-/* Floating decorative shapes — gentle drift, feels alive without distracting */
-.hero-shape{
-  position: absolute; pointer-events: none; z-index: 0;
-  border-radius: 50%; opacity: .25; filter: blur(1px);
-}
-.hero-shape-1{ width: 12px; height: 12px; background: var(--g); top: 22%; left: 8%; animation: drift 9s ease-in-out infinite; }
-.hero-shape-2{ width: 8px;  height: 8px;  background: var(--o); top: 38%; right: 11%; animation: drift 11s ease-in-out infinite reverse; }
-.hero-shape-3{ width: 14px; height: 14px; background: var(--g); top: 70%; left: 14%; animation: drift 13s ease-in-out infinite; animation-delay:-4s; }
-.hero-shape-4{ width: 10px; height: 10px; background: var(--o); top: 60%; right: 9%; animation: drift 10s ease-in-out infinite reverse; animation-delay:-3s; }
-.hero-shape-5{ width: 6px;  height: 6px;  background: var(--g); top: 18%; left: 75%; animation: drift 14s ease-in-out infinite; animation-delay:-7s; }
-.hero-shape-6{ width: 18px; height: 18px; background: rgba(46,142,90,.5); top: 50%; left: 4%; animation: drift 16s ease-in-out infinite; animation-delay:-2s; }
-@keyframes drift{
-  0%,100% { transform: translate(0,0); }
-  33%     { transform: translate(20px, -28px); }
-  66%     { transform: translate(-14px, 18px); }
-}
-
-/* Live activity ticker — gives the page energy + motivates engagement */
-.hero-ticker{
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(255,253,248,.92);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,.6);
-  box-shadow: 0 6px 16px -8px rgba(31,36,33,.15);
-  padding: 7px 14px;
-  border-radius: 50px;
-  font-size: 12px;
-  color: var(--g);
-  font-weight: 600;
-  letter-spacing: .2px;
-  margin-bottom: 1rem;
-  animation: tickerIn .6s cubic-bezier(.2,.7,.2,1) both;
-}
-@keyframes tickerIn{ from{ opacity:0; transform: translateY(8px) } to{ opacity:1; transform: translateY(0) } }
-.hero-ticker .live-dot{
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #2aaa50;
-  box-shadow: 0 0 0 0 rgba(42,170,80,.6);
-  animation: pulse 2s infinite;
-}
-.hero-ticker-text{ color: var(--text); font-weight: 500; }
-.hero-ticker-text strong{ color: var(--g); font-weight: 700; }
-@media (prefers-reduced-motion: reduce){
-  .hero, .hero-shape{ animation: none !important; }
-}
-
-/* Old eyebrow hidden in favour of the live ticker */
-.hero-eyebrow{ display: none !important }
-
-.hero-h1{
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-weight: 700 !important;
-  font-size: clamp(44px, 7vw, 76px) !important;
-  line-height: 1.02 !important;
-  letter-spacing: -2px !important;
-  color: var(--text) !important;
-  margin-bottom: 1.25rem !important;
-  text-shadow: none;
-}
-.hero-h1 em{
-  font-style: normal !important;
-  color: var(--g) !important;
-  font-weight: 900 !important;
-}
-.hero-h1 em::after{ display:none !important }
-.hero-rot-w{ color: var(--o) !important; font-style: normal !important; font-weight: 900 !important; font-family: 'Playfair Display', serif !important }
-
-.hero-sub{
-  color: var(--muted) !important;
-  font-size: 16.5px !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  max-width: 580px;
-  margin: 0 auto 2.5rem !important;
-}
-
-/* ── Search card — big rounded "Airbnb" pill style ───────────────── */
-.search-card{
-  background: var(--white) !important;
-  border-radius: 28px !important;
-  border: 1px solid var(--border) !important;
-  box-shadow:
-    0 28px 56px -22px rgba(31,36,33,.22),
-    0 10px 24px -12px rgba(31,36,33,.10) !important;
-  max-width: 760px !important;
-  overflow: hidden;
-}
-.stt-row{
-  background: var(--green-light) !important;   /* Heath Mist — soft sage that matches the brand */
-  border-radius: 0 !important;
-  border-bottom: 1px solid var(--border) !important;
-  padding: 6px !important;
-  gap: 4px !important;
-}
-.stt{
-  border-radius: 50px !important;
-  font-weight: 500 !important;
-  color: var(--muted) !important;
-  font-size: 13.5px !important;
-  padding: 11px .5rem !important;
-  transition: all .2s ease;
-}
-.stt:hover:not(.active){
-  background: rgba(255,255,255,.6) !important;
-  color: var(--text) !important;
-}
-.stt.active{
-  background: var(--g) !important;
-  color: #fff !important;
-  box-shadow: 0 6px 16px rgba(26,92,69,.30) !important;
-  border-radius: 50px !important;
-}
-
-.search-input-wrap{ margin: .25rem 0 }
-.search-inp{
-  border-radius: 50px !important;
-  height: 56px !important;
-  background: var(--white) !important;
-  border: 1.5px solid var(--border) !important;
-  padding: 0 1.25rem 0 50px !important;
-  font-size: 15px !important;
-  font-weight: 400;
-  transition: all .2s;
-}
-.search-inp:focus{
-  border-color: var(--g) !important;
-  background: var(--white) !important;
-  box-shadow: 0 0 0 4px rgba(26,92,69,.10) !important;
-}
-.search-ico-abs{ left: 18px !important }
-.search-ico-abs svg{ width: 19px !important; height: 19px !important; color: var(--muted) }
-.hero-loc-typer{ left: 50px !important; font-size: 15px; color: var(--muted) }
-
-.search-go{
-  background: var(--g) !important;
-  color: #fff !important;
-  border-radius: 50px !important;
-  height: 56px !important;
-  padding: 0 28px !important;
-  font-size: 14.5px !important; font-weight: 600 !important;
-  box-shadow: 0 8px 20px -6px rgba(26,92,69,.40) !important;
-  transition: all .2s ease;
-}
-.search-go:hover{ background: var(--gd) !important; transform: translateY(-1px); box-shadow: 0 12px 26px -6px rgba(26,92,69,.45) !important }
-
-/* Quick filter pills — softer, more tactile */
-.qf-row{ padding: .85rem 1.1rem .25rem !important }
-.qf-row .qf-label{
-  font-size: 10.5px !important; color: var(--muted) !important;
-  text-transform: uppercase; letter-spacing: 1.4px;
-  font-weight: 600 !important;
-}
-.qf-pill{
-  border-radius: 50px !important;
-  background: var(--paper-deep) !important;
-  border: 1px solid transparent !important;
-  font-weight: 500 !important;
-  font-size: 12.5px !important;
-  padding: 8px 14px !important;
-  color: var(--text) !important;
-  transition: all .15s;
-}
-.qf-pill:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important }
-.qf-pill.on{ background: var(--g) !important; border-color: var(--g) !important; color: #fff !important }
-.adv-toggle{ color: var(--g) !important; font-weight: 500; padding: .85rem 1rem 1rem !important; font-size: 13px !important }
-
-/* ── AI pill — softer, friendlier ───────────────────────────────── */
-.ai-pill{
-  background: var(--white) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 18px 38px -18px rgba(31,36,33,.18), 0 4px 10px -4px rgba(31,36,33,.06) !important;
-}
-.ai-pill::before{ background: linear-gradient(90deg, transparent, var(--o) 30%, var(--g) 70%, transparent) !important }
-.ai-pill-head{ color: var(--g) !important; font-weight: 600 !important; letter-spacing: .4px }
-.ai-pill-tag{ background: var(--g) !important; letter-spacing: 1.4px }
-.ai-pill-inp{ border-radius: 50px !important; height: 44px !important; padding: 0 16px !important; background: var(--paper) !important; border: 1.5px solid transparent !important }
-.ai-pill-inp:focus{ border-color: var(--g) !important; background: var(--white) !important; box-shadow: 0 0 0 3px rgba(26,92,69,.08) !important }
-.ai-pill-go{
-  width: 44px !important; height: 44px !important;
-  background: var(--g) !important;
-  border-radius: 50% !important;
-  box-shadow: 0 6px 16px -4px rgba(26,92,69,.40) !important;
-}
-.ai-pill-go:hover{ background: var(--gd) !important; transform: translateY(-1px) !important }
-.ai-chip{
-  background: var(--paper-deep) !important;
-  border: 1px solid transparent !important;
-  color: var(--text) !important;
-  font-weight: 500 !important;
-  font-size: 11.5px !important;
-  border-radius: 50px !important;
-}
-.ai-chip:hover{ background: var(--green-light) !important; border-color: var(--g) !important; color: var(--g) !important; transform: translateY(-1px) }
-
-/* ── Stats strip → soft check-pill row ──────────────────────────── */
-.stats-strip{
-  background: transparent !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  padding: 1.5rem 1rem 2rem !important;
-  border: none !important;
-  overflow: visible !important;
-  max-width: 1100px;
-  margin: 0 auto;
-}
-.stats-strip .stat-cell{
-  flex: 0 0 auto !important;
-  background: var(--white) !important;
-  border: 1px solid var(--border) !important;
-  border-right: 1px solid var(--border) !important;
-  border-radius: 50px !important;
-  padding: 10px 18px 10px 16px !important;
-  display: inline-flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 10px !important;
-  min-width: 0 !important;
-  transition: all .15s;
-  position: relative;
-}
-.stats-strip .stat-cell::after, .stats-strip .stat-cell::before{ display:none !important }
-.stats-strip .stat-cell:hover{ border-color: var(--g) !important; transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(31,36,33,.10) }
-.stats-strip .stat-n{
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 17px !important; font-weight: 700 !important;
-  color: var(--g) !important;
-  letter-spacing: -.3px !important;
-  display: inline-flex !important;
-}
-.stats-strip .stat-n::before{
-  content: ''; width: 16px; height: 16px; flex-shrink: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
-  background-size: contain; background-repeat: no-repeat; background-position: center;
-  margin-right: 8px;
-}
-.stat-prefix, .stat-suffix{ color: var(--g) !important; font-weight: 700 }
-.stat-l{
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 12.5px !important;
-  color: var(--text) !important;
-  margin: 0 !important;
-  text-transform: none !important;
-  letter-spacing: 0 !important;
-  font-weight: 400 !important;
-}
-
-/* ── Counties — clean text grid with subtle accents ──────────────── */
-.counties-section{ padding: 3.5rem 1.25rem 3rem !important; max-width: 1180px !important; margin: 0 auto }
-.counties-head{
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-end !important;
-  gap: 1rem;
-  margin-bottom: 2rem !important;
-  flex-wrap: wrap;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
-}
-.counties-title{
-  font-family: 'Playfair Display', serif !important;
-  font-size: clamp(26px, 3.6vw, 36px) !important;
-  font-weight: 700 !important;
-  letter-spacing: -.6px !important;
-  color: var(--text) !important;
-  margin: 0 !important;
-}
-.counties-title::before{ display: none !important }
-.counties-all{
-  color: var(--g) !important;
-  font-weight: 600 !important;
-  font-size: 13.5px !important;
-  display: inline-flex; align-items: center; gap: 5px;
-  transition: gap .2s ease;
-}
-.counties-all:hover{ gap: 9px }
-.counties-grid{
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: .85rem !important;
-}
-@media (max-width: 900px){ .counties-grid{ grid-template-columns: repeat(3, 1fr) !important } }
-@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .65rem !important } }
-
-.county-card{
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: .75rem !important;
-  background: var(--white) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 14px !important;
-  padding: 1.1rem 1.2rem !important;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif !important;
-  text-align: left !important;
-  background-image: none !important;
-  aspect-ratio: auto !important;
-  box-shadow: none !important;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
-}
-.county-card::before, .county-card::after{ display: none !important; content: none !important; background: none !important; }
-.county-card:hover{
-  border-color: var(--g) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 24px -12px rgba(26,92,69,.18) !important;
-  background: var(--white) !important;
-}
-.county-card-stripe{ display: none !important }
-.county-card-name{
-  position: static !important;
-  font-family: 'Playfair Display', serif !important;
-  font-size: 17px !important;
-  font-weight: 700 !important;
-  color: var(--text) !important;
-  letter-spacing: -.2px !important;
-  text-shadow: none !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 2px !important;
-}
-.county-card-meta{
-  position: static !important;
-  font-size: 11.5px !important;
-  font-weight: 500 !important;
-  color: var(--muted) !important;
-  text-shadow: none !important;
-  font-family: 'DM Sans', sans-serif !important;
-  display: flex !important;
-  align-items: center !important;
-  flex-shrink: 0 !important;
-}
-.county-card-meta::after{
-  content: '→';
-  display: inline-block;
-  margin-left: 6px;
-  font-size: 14px;
-  color: var(--muted);
-  transition: transform .2s ease, color .2s ease;
-}
-.county-card:hover .county-card-meta{ color: var(--g) !important }
-.county-card:hover .county-card-meta::after{ transform: translateX(4px); color: var(--g) }
-
-/* Pin icon next to the name — small Irish-county locator vibe */
-.county-card-name::before{
-  content: '';
-  display: inline-block;
-  width: 22px; height: 22px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-bottom: 4px;
-  opacity: .8;
-}
-
-/* ── Section titles — sans-serif, friendly ───────────────────────── */
-.section-title{
-  font-family: 'Playfair Display', serif !important;
-  font-size: clamp(24px, 3.4vw, 32px) !important;
-  font-weight: 700 !important;
-  letter-spacing: -.5px !important;
-  color: var(--text) !important;
-}
-.section-eyebrow{
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 11px !important;
-  letter-spacing: 1.4px !important;
-  color: var(--g) !important;
-  font-weight: 600 !important;
-}
-.section-sub{
-  color: var(--muted) !important;
-  font-size: 14.5px !important;
-  font-weight: 400 !important;
-  line-height: 1.6;
-  max-width: 580px;
-}
-
-/* ── Tools section — modern asymmetric feature grid ──────────────── */
-.tools-section{
-  background: var(--white) !important;
-  border-radius: 32px;
-  margin: 1.5rem auto 2rem !important;
-  max-width: 1180px;
-  padding: 3rem 2rem !important;
-  border: 1px solid var(--border);
-}
-.tools-head{ margin-bottom: 2rem; max-width: 640px }
-.tools-head .section-eyebrow{ margin-bottom: .5rem }
-.tools-head .section-title{ margin-bottom: .5rem }
-.tools-grid{
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr 1fr;
-  grid-template-rows: auto;
-  gap: 1rem;
-}
-@media (max-width: 980px){ .tools-grid{ grid-template-columns: 1fr 1fr; } .tool-card-feature{ grid-column: 1 / -1; } }
-@media (max-width: 560px){ .tools-grid{ grid-template-columns: 1fr; } .tool-card-feature{ grid-column: 1; } }
-
-.tool-card{
-  position: relative;
-  display: flex; flex-direction: column;
-  gap: .6rem;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 1.4rem 1.4rem 1.5rem;
-  text-decoration: none;
-  color: inherit;
-  transition: transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s, border-color .25s, background .25s;
-  overflow: hidden;
-}
-.tool-card:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 18px 36px -18px rgba(31,36,33,.18);
-  border-color: var(--g);
-  background: var(--white);
-}
-.tool-card-icon{
-  width: 44px; height: 44px; border-radius: 12px;
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-bottom: .25rem;
-  transition: transform .3s ease;
-}
-.tool-card:hover .tool-card-icon{ transform: scale(1.06) rotate(-3deg) }
-.tool-card-title{
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 17px; font-weight: 700; color: var(--text);
-  letter-spacing: -.2px; line-height: 1.2;
-  margin: 0;
-}
-.tool-card-sub{
-  font-size: 13px; color: var(--muted);
-  line-height: 1.55; font-weight: 400; margin: 0;
-}
-.tool-card-cta{
-  margin-top: auto;
-  font-size: 12.5px; font-weight: 600;
-  color: var(--g);
-  display: inline-flex; align-items: center; gap: 5px;
-  transition: gap .2s ease;
-}
-.tool-card:hover .tool-card-cta{ gap: 9px }
-
-/* Featured card — bigger, with decorative SVG background panel */
-.tool-card-feature{
-  position: relative;
-  grid-row: span 1;
-  display: flex; flex-direction: column;
-  padding: 0;
-  background: linear-gradient(135deg, #f7faf6 0%, #e9f4ef 100%);
-  border-color: var(--green-light);
-  min-height: 240px;
-}
-.tool-card-feature .tool-card-bg{
-  position: absolute; inset: 0; pointer-events: none; z-index: 0;
-}
-.tool-card-feature .tool-card-bg svg{ width: 100%; height: 100% }
-.tool-card-feature .tool-card-content{
-  position: relative; z-index: 1;
-  padding: 1.6rem 1.6rem 1.6rem;
-  display: flex; flex-direction: column; gap: .55rem;
-  margin-top: auto;
-}
-.tool-card-tag{
-  display: inline-block; align-self: flex-start;
-  background: var(--g); color: #fff;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.6px;
-  text-transform: uppercase;
-  padding: 4px 10px; border-radius: 50px;
-  margin-bottom: .25rem;
-}
-.tool-card-feature .tool-card-title{ font-size: 22px; letter-spacing: -.4px; line-height: 1.15; }
-.tool-card-feature .tool-card-sub{ font-size: 14px; max-width: 360px }
-.tool-card-feature:hover{ background: linear-gradient(135deg, #f0f7ed 0%, #d9ebde 100%); border-color: var(--g) }
-
-/* ── Trust / testimonials — refreshed quote-card grid ────────────── */
-.trust-section{
-  background: var(--white) !important;
-  border-radius: 32px;
-  margin: 1rem auto 2rem !important;
-  max-width: 1180px;
-  padding: 3rem 2rem 3.5rem !important;
-  border: 1px solid var(--border);
-}
-.trust-head{ text-align: center; max-width: 620px; margin: 0 auto 2.25rem }
-.trust-head .section-eyebrow{ justify-content: center; display: inline-flex }
-.trust-head .section-sub{ margin-left: auto; margin-right: auto; }
-.trust-grid{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-@media (max-width: 880px){ .trust-grid{ grid-template-columns: 1fr; gap: 1rem; } }
-.trust-card{
-  position: relative;
-  background: var(--paper);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 1.75rem 1.5rem 1.5rem;
-  display: flex; flex-direction: column; gap: 1rem;
-  transition: transform .25s, box-shadow .25s, border-color .25s;
-  overflow: hidden;
-}
-.trust-card::after{
-  content:''; position:absolute; top:0; right:0; width: 120px; height: 120px;
-  background: radial-gradient(circle at top right, rgba(217,120,71,.10), transparent 65%);
-  pointer-events: none;
-}
-.trust-card:hover{
-  transform: translateY(-3px);
-  box-shadow: 0 18px 36px -16px rgba(31,36,33,.16);
-  border-color: var(--g);
-}
-.trust-quote-mark{
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 64px; line-height: .6; color: var(--o);
-  height: 32px;
-  font-weight: 900;
-}
-.trust-quote{
-  flex: 1;
-  font-size: 15px; line-height: 1.65;
-  color: var(--text);
-  font-weight: 400; font-style: italic;
-  font-family: 'Playfair Display', Georgia, serif;
-  letter-spacing: -.1px;
-  margin: 0;
-}
-.trust-byline{
-  display: flex; align-items: center; gap: 12px;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-  position: relative;
-}
-.trust-avatar{
-  width: 38px; height: 38px; border-radius: 50%;
-  color: #fff;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px; font-weight: 600;
-  flex-shrink: 0;
-}
-.trust-name{
-  font-size: 13.5px; font-weight: 600; color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-}
-.trust-role{
-  font-size: 11.5px; color: var(--muted); font-weight: 400;
-  margin-top: 1px;
-}
-.trust-stars{
-  margin-left: auto;
-  color: var(--o);
-  font-size: 13px;
-  letter-spacing: 1px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 640px){
-  .tools-section, .trust-section{ padding: 1.75rem 1.25rem !important; border-radius: 22px; margin: 1rem 1rem 1.5rem !important }
-  .tool-card{ padding: 1.1rem 1.1rem 1.2rem }
-  .tool-card-feature .tool-card-content{ padding: 1.25rem }
-  .trust-head{ margin-bottom: 1.5rem }
-  .trust-card{ padding: 1.25rem }
-  .trust-quote{ font-size: 14.5px }
-}
-
-/* ── Why-pricing — refresh the dark band so it works with new theme ─ */
-.why-pricing{
-  background: linear-gradient(160deg, var(--g) 0%, var(--gd) 100%) !important;
-  border-radius: 32px;
-  margin: 2rem 1.5rem;
-  max-width: 1180px;
-  margin-left: auto; margin-right: auto;
-}
-.wp-val{ border-radius: 20px !important; transition: all .25s ease }
-.wp-val:hover{ background: rgba(255,255,255,.12) !important; transform: translateY(-4px) }
-.wp-price{ border-radius: 20px !important }
-.wp-price-feat{ box-shadow: 0 24px 56px -20px rgba(0,0,0,.40) !important }
-.wp-cta{ font-weight: 600 !important; border-radius: 50px !important }
-
-/* ── Listings grid — slightly more spacious ──────────────────────── */
-.listings-grid{ gap: 1rem !important }
-@media (min-width: 1024px){ .listings-grid{ gap: 1.25rem !important } }
-.prop-card{ border-radius: 18px !important; border: 1px solid var(--border) !important; transition: transform .25s, box-shadow .25s, border-color .25s }
-.prop-card:hover{ transform: translateY(-3px); box-shadow: 0 20px 40px -16px rgba(31,36,33,.18); border-color: rgba(26,92,69,.20) }
-
-/* ── Mobile polish ───────────────────────────────────────────────── */
-@media (max-width: 640px){
-  .hero{ padding: 2.5rem 1rem 1.5rem !important; background-position: center !important }
-  .hero-h1{ font-size: clamp(36px, 10vw, 48px) !important; letter-spacing: -1px !important }
-  .hero-sub{ font-size: 14.5px !important; margin-bottom: 1.5rem !important }
-  .search-card{ border-radius: 24px !important }
-  .search-inp{ height: 50px !important }
-  .search-go{ height: 50px !important; padding: 0 20px !important; font-size: 13px !important }
-  .stats-strip{ padding: 1rem .75rem 1.5rem !important; gap: 8px !important }
-  .stats-strip .stat-cell{ padding: 8px 14px !important }
-  .stats-strip .stat-n{ font-size: 14.5px !important }
-  .stat-l{ font-size: 11.5px !important }
-  .counties-section{ padding: 1.75rem 1rem !important }
-  .county-card{ aspect-ratio: 4/5 }
-  .county-card-name{ font-size: 17px !important; bottom: 38px }
-  .county-card-meta{ font-size: 11.5px !important; bottom: 14px }
-}
+    /* ── Coming Soon Overlay ─────────────────────────────────────── */
+    .cs-overlay{
+      position:fixed;inset:0;z-index:999999;
+      background:linear-gradient(160deg,#1a5c45 0%,#0e3d2e 55%,#081f17 100%);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:2rem 1.5rem;overflow:hidden;
+    }
+    .cs-overlay::before{
+      content:'';position:absolute;width:700px;height:700px;border-radius:50%;
+      background:radial-gradient(circle,rgba(224,123,63,.18) 0%,transparent 65%);
+      top:-280px;right:-220px;pointer-events:none;
+      animation:csBlobA 14s ease-in-out infinite;
+    }
+    .cs-overlay::after{
+      content:'';position:absolute;width:560px;height:560px;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.07) 0%,transparent 65%);
+      bottom:-240px;left:-180px;pointer-events:none;
+      animation:csBlobB 17s ease-in-out infinite;
+    }
+    @keyframes csBlobA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,40px) scale(1.08)}}
+    @keyframes csBlobB{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.06)}}
+    .cs-inner{position:relative;z-index:2;max-width:520px;width:100%;text-align:center}
+    /* Logo mark */
+    .cs-mark{
+      width:88px;height:88px;border-radius:22px;
+      background:linear-gradient(135deg,#fff 0%,#f0f7f4 100%);
+      display:inline-flex;align-items:center;justify-content:center;
+      margin-bottom:1.75rem;
+      box-shadow:0 24px 56px rgba(0,0,0,.28),0 0 0 6px rgba(255,255,255,.08);
+      animation:csMarkIn .7s cubic-bezier(.2,1.2,.4,1) both;
+    }
+    .cs-mark svg{width:52px;height:52px}
+    @keyframes csMarkIn{0%{transform:scale(.5) rotate(-8deg);opacity:0}60%{transform:scale(1.06) rotate(2deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+    /* Wordmark */
+    .cs-logo{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:52px;font-weight:900;color:#fff;
+      letter-spacing:-1.5px;line-height:1;
+      margin-bottom:.6rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .2s both;
+    }
+    .cs-logo span{color:#e07b3f}
+    /* Live badge */
+    .cs-badge{
+      display:inline-flex;align-items:center;gap:7px;
+      background:rgba(255,255,255,.1);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(255,255,255,.18);
+      padding:6px 14px;border-radius:50px;
+      font-size:11px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;
+      color:rgba(255,255,255,.85);margin-bottom:1.75rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .35s both;
+    }
+    .cs-badge .cs-dot{
+      width:7px;height:7px;border-radius:50%;background:#7ec9a8;
+      box-shadow:0 0 0 0 rgba(126,201,168,.7);
+      animation:csPulse 2s infinite;
+    }
+    @keyframes csPulse{0%{box-shadow:0 0 0 0 rgba(126,201,168,.7)}70%{box-shadow:0 0 0 8px rgba(126,201,168,0)}100%{box-shadow:0 0 0 0 rgba(126,201,168,0)}}
+    /* Headline */
+    .cs-title{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:clamp(26px,5vw,36px);font-weight:700;color:#fff;
+      line-height:1.15;letter-spacing:-.5px;
+      margin-bottom:.85rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .45s both;
+    }
+    .cs-title em{font-style:normal;color:#e07b3f}
+    .cs-sub{
+      font-size:15px;color:rgba(255,255,255,.72);font-weight:300;
+      line-height:1.65;margin-bottom:2rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .55s both;
+    }
+    /* Email capture */
+    .cs-form{
+      display:flex;gap:8px;max-width:440px;margin:0 auto 1.5rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .65s both;
+    }
+    .cs-email{
+      flex:1;min-width:0;
+      background:rgba(255,255,255,.12);
+      border:1.5px solid rgba(255,255,255,.22);
+      border-radius:50px;
+      padding:13px 20px;
+      font-size:14px;color:#fff;
+      font-family:'DM Sans',sans-serif;
+      outline:none;
+      transition:border-color .15s,background .15s;
+    }
+    .cs-email::placeholder{color:rgba(255,255,255,.45)}
+    .cs-email:focus{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.16)}
+    .cs-btn{
+      background:#e07b3f;color:#fff;border:none;border-radius:50px;
+      padding:13px 22px;font-size:13.5px;font-weight:600;cursor:pointer;
+      font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0;
+      box-shadow:0 8px 22px rgba(224,123,63,.38);
+      transition:all .18s ease;
+    }
+    .cs-btn:hover{background:#c9642a;transform:translateY(-1px);box-shadow:0 12px 28px rgba(224,123,63,.45)}
+    .cs-btn:active{transform:scale(.97)}
+    /* Value props */
+    .cs-props{
+      display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:2rem;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .75s both;
+    }
+    .cs-prop{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+      border-radius:50px;padding:7px 14px;
+      font-size:12px;color:rgba(255,255,255,.82);font-weight:500;
+    }
+    .cs-prop-icon{font-size:13px}
+    /* Social links */
+    .cs-social{
+      display:flex;align-items:center;justify-content:center;gap:12px;
+      animation:csFadeUp .6s cubic-bezier(.2,.7,.2,1) .85s both;
+    }
+    .cs-social-label{font-size:12px;color:rgba(255,255,255,.45);font-weight:500}
+    .cs-social a{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:36px;height:36px;border-radius:50%;
+      background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+      color:rgba(255,255,255,.75);font-size:14px;
+      transition:background .15s,transform .15s;text-decoration:none;
+    }
+    .cs-social a:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+    /* Success state */
+    .cs-success{
+      display:none;text-align:center;
+      animation:csFadeUp .4s cubic-bezier(.2,.7,.2,1) both;
+    }
+    .cs-success.show{display:block}
+    .cs-form.hide{display:none}
+    .cs-success-ico{font-size:40px;margin-bottom:.5rem}
+    .cs-success-msg{font-size:15px;color:rgba(255,255,255,.85);font-weight:500}
+    /* Admin preview link */
+    .cs-preview{
+      position:fixed;bottom:20px;right:20px;z-index:9999999;
+      background:rgba(0,0,0,.5);color:rgba(255,255,255,.6);
+      font-size:11px;padding:6px 12px;border-radius:50px;
+      border:1px solid rgba(255,255,255,.15);cursor:pointer;
+      font-family:'DM Sans',sans-serif;
+      transition:all .15s;text-decoration:none;
+    }
+    .cs-preview:hover{background:rgba(0,0,0,.7);color:#fff}
+    @keyframes csFadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:480px){
+      .cs-logo{font-size:42px}
+      .cs-form{flex-direction:column}
+      .cs-btn{width:100%;text-align:center}
+      .cs-mark{width:72px;height:72px;border-radius:18px}
+      .cs-mark svg{width:42px;height:42px}
+    }
 
 </style>
 </head>
 <body>
+
+<!-- ── Coming Soon Overlay ────────────────────────────────────────────── -->
+<!-- Remove this entire block (or set CS_HIDDEN cookie) to go live        -->
+<div class="cs-overlay" id="cs-overlay">
+  <div class="cs-inner">
+    <div class="cs-mark">
+      <svg viewBox="0 0 64 64" fill="none">
+        <path d="M14 30 L32 16 L50 30 L50 48 L40 48 L40 36 L24 36 L24 48 L14 48 Z"
+              fill="#1a5c45" stroke="#1a5c45" stroke-width="1.6" stroke-linejoin="round"/>
+        <rect x="40" y="18" width="5" height="6" rx="1" fill="#e07b3f"/>
+      </svg>
+    </div>
+    <div class="cs-logo">mov<span>in</span></div>
+    <div class="cs-badge"><span class="cs-dot"></span>Launching soon</div>
+    <h1 class="cs-title">Ireland's fairest<br>property marketplace <em>is coming</em></h1>
+    <p class="cs-sub">A friend got charged €200 just to list one property.<br>We thought that was wrong. So we built something better.</p>
+    <div class="cs-props">
+      <div class="cs-prop"><span class="cs-prop-icon">🏠</span>Free for private sellers</div>
+      <div class="cs-prop"><span class="cs-prop-icon">🇮🇪</span>All 32 counties</div>
+      <div class="cs-prop"><span class="cs-prop-icon">✅</span>No hidden fees</div>
+      <div class="cs-prop"><span class="cs-prop-icon">📱</span>Mobile first</div>
+    </div>
+    <div class="cs-form" id="cs-form">
+      <input class="cs-email" id="cs-email" type="email" placeholder="Enter your email to be notified" autocomplete="email"/>
+      <button class="cs-btn" onclick="csSubmit()">Notify me →</button>
+    </div>
+    <div class="cs-success" id="cs-success">
+      <div class="cs-success-ico">🎉</div>
+      <div class="cs-success-msg">You're on the list! We'll let you know when movin.ie goes live.</div>
+    </div>
+    <div class="cs-social">
+      <span class="cs-social-label">Follow for updates</span>
+      <a href="https://instagram.com/movin_ireland" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="https://tiktok.com/@movin_ireland" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.79 1.53V6.79a4.85 4.85 0 0 1-1.02-.1z"/></svg>
+      </a>
+      <a href="https://x.com/movinireland" target="_blank" rel="noopener" title="X / Twitter" aria-label="X">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L2.25 2.25h6.93l4.263 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      </a>
+      <a href="https://linkedin.com/company/movin-technologies" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+<!-- Preview link — only visible on the coming soon screen -->
+<a class="cs-preview" href="?preview=movin2026" id="cs-preview-link">🔒 Preview site</a>
+<script>
+(function(){
+  // Check for preview mode — allows you to bypass the coming soon screen
+  var PREVIEW_KEY = 'movin2026'
+  var params = new URLSearchParams(window.location.search)
+  var overlay = document.getElementById('cs-overlay')
+  var previewLink = document.getElementById('cs-preview-link')
+  if (!overlay) return
+  // If ?preview=movin2026 in URL → set cookie and hide overlay
+  if (params.get('preview') === PREVIEW_KEY) {
+    try { localStorage.setItem('movin_preview', PREVIEW_KEY) } catch(e){}
+    overlay.remove()
+    if (previewLink) previewLink.remove()
+    // Clean up URL
+    var url = window.location.href.replace(/[?&]preview=[^&]*/,'').replace(/\?$/,'')
+    window.history.replaceState({}, '', url)
+    return
+  }
+  // If preview cookie exists → hide overlay
+  try {
+    if (localStorage.getItem('movin_preview') === PREVIEW_KEY) {
+      overlay.remove()
+      if (previewLink) previewLink.remove()
+      return
+    }
+  } catch(e){}
+  // Otherwise show overlay and hide preview link from main page
+  if (previewLink) previewLink.style.display = 'flex'
+  // Prevent body scroll while overlay is showing
+  document.body.style.overflow = 'hidden'
+})()
+
+function csSubmit(){
+  var email = (document.getElementById('cs-email').value || '').trim()
+  if (!email || !email.includes('@')) {
+    document.getElementById('cs-email').focus()
+    document.getElementById('cs-email').style.borderColor = '#e07b3f'
+    return
+  }
+  // Send to backend
+  fetch(window.MOVIN_API_URL + '/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).catch(function(){})
+  // Show success regardless of response
+  document.getElementById('cs-form').classList.add('hide')
+  document.getElementById('cs-success').classList.add('show')
+}
+</script>
+
 
 <!-- PWA splash (only renders in installed app mode) -->
 <div class="pwa-splash" id="pwa-splash" aria-hidden="true">
@@ -1673,7 +1219,7 @@ body.hero-places-ready .sugg-box{display:none !important}
     <div class="mm-item" onclick="go('pages/search.html?listing_type=rent');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-apartment"/></svg></div>Rent a property</div>
     <div class="mm-item" onclick="go('pages/map-search.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>Map search</div>
     <div class="mm-item" onclick="go('pages/commercial.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Commercial property</div>
-    <div class="mm-item" onclick="go('pages/latest.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bell"/></svg></div>Latest listings</div>
+    <div class="mm-item" onclick="go('pages/latest.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-new-listing"/></svg></div>Latest listings</div>
     <div class="mm-divider"></div>
     <div class="mm-item" onclick="go('pages/tools.html#mortgage');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>Mortgage calculator</div>
     <div class="mm-item" onclick="go('pages/tools.html#valuation');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>Home valuation</div>
@@ -1682,7 +1228,7 @@ body.hero-places-ready .sugg-box{display:none !important}
     <div class="mm-divider"></div>
     <div class="mm-item" onclick="go('pages/list.html');toggleMobileMenu()"><div class="mm-icon" style="background:#fdf0e6"><svg width="18" height="18" style="color:#e07b3f;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-plus"/></svg></div>List your property</div>
     <div class="mm-item" onclick="go('pages/contact.html');toggleMobileMenu()"><div class="mm-icon"><svg width="18" height="18" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-message"/></svg></div>Contact us</div>
-    <div class="mm-item mm-admin-only" id="mm-admin-link" style="display:none" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
+    <div class="mm-item" onclick="go('pages/admin/index.html');toggleMobileMenu()"><div class="mm-icon" style="background:#f5f2ec"><svg width="18" height="18" style="color:#555;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-settings"/></svg></div>Admin panel</div>
     <div class="mm-divider"></div>
     <div class="mm-item mm-theme-toggle" id="mm-theme-toggle" onclick="toggleTheme()"><div class="mm-icon" id="mm-theme-icon">🌙</div><span id="mm-theme-label">Dark mode</span></div>
   </div>
@@ -1697,19 +1243,8 @@ body.hero-places-ready .sugg-box{display:none !important}
 <div class="page-body">
 <div class="hero">
   <div class="hero-noise"></div>
-  <!-- Floating decorative shapes — pure CSS animation, no JS needed -->
-  <span class="hero-shape hero-shape-1" aria-hidden="true"></span>
-  <span class="hero-shape hero-shape-2" aria-hidden="true"></span>
-  <span class="hero-shape hero-shape-3" aria-hidden="true"></span>
-  <span class="hero-shape hero-shape-4" aria-hidden="true"></span>
-  <span class="hero-shape hero-shape-5" aria-hidden="true"></span>
-  <span class="hero-shape hero-shape-6" aria-hidden="true"></span>
-
   <div class="hero-inner">
-    <div class="hero-ticker" id="hero-ticker">
-      <span class="live-dot"></span>
-      <span class="hero-ticker-text"><strong id="hero-ticker-num">—</strong> new homes listed this week</span>
-    </div>
+    <p class="hero-eyebrow"><span class="pulse-dot"></span>Live across all 32 counties · Updated daily</p>
     <h1 class="hero-h1">Find your next<br><span class="hero-rot" id="hero-rot" aria-live="polite"><span class="hero-rot-w on">home</span><span class="hero-rot-w">apartment</span><span class="hero-rot-w">house</span><span class="hero-rot-w">share</span></span> in <em>Ireland</em></h1>
     <p class="hero-sub">Smarter search, transparent pricing, and free listings for private sellers and landlords. From city centres to coastal hideaways — discover where you'll live next.</p>
   </div>
@@ -1726,7 +1261,7 @@ body.hero-places-ready .sugg-box{display:none !important}
       </div>
       <div class="stt" data-type="share" onclick="selectType(this)">
         <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 14h2a3 3 0 0 1 3 3v2"/></svg>
-        Room
+        Sharing
       </div>
     </div>
 
@@ -1826,35 +1361,13 @@ body.hero-places-ready .sugg-box{display:none !important}
     </div>
 
   </div>
-
-  <!-- ── Compact AI search pill — sits beneath the main search card ─────── -->
-  <div class="ai-pill" id="ai-pill">
-    <div class="ai-pill-head">
-      <span class="ai-pill-spark" aria-hidden="true">✨</span>
-      <span class="ai-pill-label">Ask anything</span>
-      <span class="ai-pill-tag">AI</span>
-    </div>
-    <form class="ai-pill-row" onsubmit="event.preventDefault();heroAskAi()">
-      <input class="ai-pill-inp" id="ai-pill-inp" type="text"
-        placeholder="e.g. 3-bed family home in Dublin under €500k near a good school"
-        aria-label="AI search" maxlength="500"/>
-      <button class="ai-pill-go" id="ai-pill-go" type="submit" aria-label="Run AI search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </button>
-    </form>
-    <div class="ai-pill-examples" id="ai-pill-examples">
-      <button type="button" class="ai-chip" onclick="useAiExample(this)">2-bed apartment to rent in Cork under €1800</button>
-      <button type="button" class="ai-chip" onclick="useAiExample(this)">house with garden in Galway</button>
-      <button type="button" class="ai-chip" onclick="useAiExample(this)">share a room in Dublin near LUAS</button>
-    </div>
-  </div>
 </div>
 
 <div class="stats-strip">
   <div class="stat-cell"><div class="stat-n" data-count-target="0" id="stat-count">0</div><div class="stat-l">Live listings</div></div>
   <div class="stat-cell"><div class="stat-n" data-count-target="32">0</div><div class="stat-l">Counties</div></div>
   <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="0">0</span></div><div class="stat-l">Free for private sellers</div></div>
-  <div class="stat-cell"><div class="stat-n"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="stat-l">Agent plans available</div></div>
+  <div class="stat-cell"><div class="stat-n"><span style="font-size:18px">⭐</span></div><div class="stat-l">Agent plans available</div></div>
 </div>
 
 <!-- ── Browse by county — clean compact tiles ──────────────────────────── -->
@@ -1907,54 +1420,39 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </section>
 
-<!-- Tools row — clean modern feature cards -->
-<section class="section reveal mobile-hide tools-section">
-  <div class="tools-head">
-    <div class="section-eyebrow">Tools to find faster</div>
-    <h2 class="section-title">Everything you need in one place</h2>
-    <p class="section-sub">Search by map, drive-time, AI chat or postcode. Calculate your mortgage. List your property in minutes.</p>
+<div class="section reveal mobile-hide" style="background:#fff">
+  <div style="margin-bottom:1.75rem">
+    <div class="section-eyebrow">Where to next</div>
+    <h2 class="section-title">Smarter ways to find a home</h2>
+    <p class="section-sub">Tools that go beyond a basic search — built for how Irish people actually browse property today.</p>
   </div>
-  <div class="tools-grid">
-    <a class="tool-card tool-card-feature" href="pages/map-search.html">
-      <div class="tool-card-bg" aria-hidden="true">
-        <svg viewBox="0 0 220 160" preserveAspectRatio="xMidYMid slice" fill="none"><defs><linearGradient id="tg1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#1a5c45" stop-opacity=".18"/><stop offset="1" stop-color="#1a5c45" stop-opacity="0"/></linearGradient></defs><rect width="220" height="160" fill="url(#tg1)"/><path d="M10 70 Q60 30 110 60 T210 50 L210 160 L10 160 Z" fill="#1a5c45" fill-opacity=".12"/><circle cx="60" cy="60" r="5" fill="#1a5c45"/><circle cx="120" cy="80" r="5" fill="#e07b3f"/><circle cx="170" cy="50" r="5" fill="#1a5c45"/><path d="M60 60 Q90 100 120 80 T170 50" stroke="#1a5c45" stroke-width="1.5" stroke-dasharray="3 3"/></svg>
-      </div>
-      <div class="tool-card-content">
-        <span class="tool-card-tag">Featured</span>
-        <h3 class="tool-card-title">Browse the whole island on a map</h3>
-        <p class="tool-card-sub">Pan, zoom and filter every live listing across Ireland. Pin saved areas, set search alerts.</p>
-        <span class="tool-card-cta">Open map search <span aria-hidden="true">→</span></span>
-      </div>
-    </a>
-
-    <a class="tool-card" href="pages/drive-time.html">
-      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
-      <h3 class="tool-card-title">Find by drive time</h3>
-      <p class="tool-card-sub">Live within a 30-minute drive of work, school or family.</p>
-      <span class="tool-card-cta">Try it <span aria-hidden="true">→</span></span>
-    </a>
-
-    <a class="tool-card" href="pages/tools.html#mortgage">
-      <div class="tool-card-icon" style="background:#e9f4ef;color:#1a5c45">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18"/><path d="M8 16h2M14 16h2"/></svg>
-      </div>
-      <h3 class="tool-card-title">Mortgage calculator</h3>
-      <p class="tool-card-sub">Estimate monthly repayments and what you can borrow.</p>
-      <span class="tool-card-cta">Calculate <span aria-hidden="true">→</span></span>
-    </a>
-
-    <a class="tool-card" href="pages/list.html">
-      <div class="tool-card-icon" style="background:#fdf0e6;color:#e07b3f">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M12 14v6"/><path d="M9 17h6"/></svg>
-      </div>
-      <h3 class="tool-card-title">List your property</h3>
-      <p class="tool-card-sub">Free for private sellers & landlords. No card required.</p>
-      <span class="tool-card-cta">Get started <span aria-hidden="true">→</span></span>
-    </a>
+  <div class="qa-grid">
+    <div class="qa-card" onclick="go('pages/list.html')">
+      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-house"/></svg></div>
+      <div class="qa-title">List your home</div>
+      <div class="qa-sub">Free for private sellers & landlords — no card required.</div>
+      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+    </div>
+    <div class="qa-card" onclick="go('pages/map-search.html')">
+      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-map"/></svg></div>
+      <div class="qa-title">Map search</div>
+      <div class="qa-sub">Pan and zoom Ireland — every live listing on a single map.</div>
+      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+    </div>
+    <div class="qa-card" onclick="go('pages/drive-time.html')">
+      <div class="qa-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="qa-title">Find by drive time</div>
+      <div class="qa-sub">Live near work, school, family — set a commute, see homes inside it.</div>
+      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+    </div>
+    <div class="qa-card" onclick="go('pages/tools.html#mortgage')">
+      <div class="qa-icon"><svg width="22" height="22" style="color:#1a5c45" aria-hidden="true"><use href="/icons.svg#icon-calculator"/></svg></div>
+      <div class="qa-title">Mortgage calculator</div>
+      <div class="qa-sub">See what you can borrow and what you'd repay each month.</div>
+      <div class="qa-arrow"><svg viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg></div>
+    </div>
   </div>
-</section>
+</div>
 
 <div class="section reveal mobile-hide">
   <div class="section-eyebrow">Just listed</div>
@@ -1967,60 +1465,25 @@ body.hero-places-ready .sugg-box{display:none !important}
   </div>
 </div>
 
-<!-- Social proof — refreshed editorial card grid -->
-<section class="section reveal mobile-hide trust-section">
-  <div class="trust-head">
-    <div class="section-eyebrow">From the community</div>
-    <h2 class="section-title">Why Movin works for Irish homeowners</h2>
-    <p class="section-sub">Real stories from people who've sold, rented and found their next place on Movin.ie.</p>
+<!-- Social proof first — buyers/sellers like to see this before the pitch -->
+<div class="section reveal mobile-hide" style="background:#fff">
+  <div class="section-eyebrow">Real stories</div>
+  <h2 class="section-title">Trusted across Ireland</h2>
+  <p class="section-sub">Thousands of homeowners, renters and agents already use Movin.</p>
+  <div class="test-scroll">
+    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Sold my Dublin 8 terrace in 3 weeks. More enquiries in a day than on Daft in a month."</p><div class="test-author">Siobhán M.</div><div class="test-role">Homeowner, Dublin 8</div></div>
+    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Free to list my rental — identical results to the big paid portals. Absolute no-brainer."</p><div class="test-author">Ciarán B.</div><div class="test-role">Landlord, Cork</div></div>
+    <div class="test-card"><div class="test-stars">★★★★★</div><p class="test-text">"Found our forever home through Movin. The search is so much better than anything else."</p><div class="test-author">Aoife & Tadhg R.</div><div class="test-role">First-time buyers, Galway</div></div>
   </div>
-  <div class="trust-grid">
-    <article class="trust-card">
-      <div class="trust-quote-mark">"</div>
-      <p class="trust-quote">Sold my Dublin 8 terrace in three weeks. The dashboard made it easy to track every viewing and reply to enquiries from one place.</p>
-      <div class="trust-byline">
-        <div class="trust-avatar" style="background:#1a5c45">SM</div>
-        <div>
-          <div class="trust-name">Siobhán M.</div>
-          <div class="trust-role">Homeowner · Dublin 8</div>
-        </div>
-        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
-      </div>
-    </article>
-    <article class="trust-card">
-      <div class="trust-quote-mark">"</div>
-      <p class="trust-quote">Free to list my rental and the enquiries came in straight away. Saved a fortune compared to the paid portals and the results were honestly better.</p>
-      <div class="trust-byline">
-        <div class="trust-avatar" style="background:#e07b3f">CB</div>
-        <div>
-          <div class="trust-name">Ciarán B.</div>
-          <div class="trust-role">Landlord · Cork</div>
-        </div>
-        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
-      </div>
-    </article>
-    <article class="trust-card">
-      <div class="trust-quote-mark">"</div>
-      <p class="trust-quote">Found our forever home through Movin. The map search and drive-time tools made it so much easier to figure out where we actually wanted to live.</p>
-      <div class="trust-byline">
-        <div class="trust-avatar" style="background:#2a7d5c">AR</div>
-        <div>
-          <div class="trust-name">Aoife &amp; Tadhg R.</div>
-          <div class="trust-role">First-time buyers · Galway</div>
-        </div>
-        <div class="trust-stars" aria-label="5 stars">★★★★★</div>
-      </div>
-    </article>
-  </div>
-</section>
+</div>
 
 <!-- Why Movin + pricing + CTA — all in one cohesive section -->
 <section class="why-pricing reveal mobile-hide">
   <div class="wp-inner">
     <div class="wp-head">
       <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
-      <h2 class="section-title" style="color:#e07b3f !important">Built for Ireland.<br>Priced for everyone.</h2>
-      <p class="section-sub" style="color:#ffffff !important">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
+      <h2 class="section-title" style="color:#fff">Built for Ireland.<br>Priced for everyone.</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,.78)">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
     </div>
 
     <div class="wp-values">
@@ -2093,7 +1556,7 @@ function go(u){window.location.href=u}
 function toggleMobileMenu(){const m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':''}
 let searchType='sale',searchCounty='',searchQuery=''
 
-// Price ranges — Buy uses lump sums, Rent and Sharing use monthly.
+// Daft-style price ranges — Buy uses lump sums, Rent and Sharing use monthly.
 // `min` and `max` arrays are independent so users can pick a sensible range.
 const PRICE_RANGES = {
   sale: {
@@ -2272,127 +1735,12 @@ function readQF(key){
   const opts = QF_OPTIONS[key]; return opts ? opts[QF_STATE[key]].v : ''
 }
 
-// ── Smart query router ──────────────────────────────────────────────────
-// Decides if a query is "natural language" and should go through Groq, or
-// if it's a simple location/Eircode and can skip the AI roundtrip.
-// Anything with descriptors (numbers, beds, price words, intent verbs) → AI.
-function _looksLikeNaturalLanguage(q){
-  q = (q || '').trim().toLowerCase()
-  if (q.length < 8) return false                        // too short to be a sentence
-  if (q.split(/\s+/).length >= 4) return true           // 4+ words → conversational
-  if (/\d/.test(q) && /(bed|bath|m2|sqm|sq\s?m)/.test(q)) return true
-  if (/(under|over|around|less|more)\s*\d|€|k\b|thousand|million/.test(q)) return true
-  if (/(rent|buy|sale|let|sharing|share|to let|for sale)/.test(q)) return true
-  if (/(near|close to|next to|beside|walking distance|drive to)/.test(q)) return true
-  return false
-}
-
-// ── Compact AI pill handler (sits below the main search card) ──────────
-function useAiExample(btn){
-  const inp = document.getElementById('ai-pill-inp')
-  if (!inp || !btn) return
-  inp.value = btn.textContent.trim()
-  inp.focus()
-}
-async function heroAskAi(){
-  const inp = document.getElementById('ai-pill-inp')
-  if (!inp) return
-  const q = (inp.value || '').trim()
-  if (q.length < 4) { inp.focus(); return }
-  // Reuse the universal AI runner — same spinner, same fallback.
-  const pillBtn = document.getElementById('ai-pill-go')
-  const origHTML = pillBtn ? pillBtn.innerHTML : ''
-  if (pillBtn) {
-    pillBtn.disabled = true
-    pillBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
-  }
-  try {
-    await _runAiThenRedirect(q)
-  } finally {
-    if (pillBtn) { pillBtn.disabled = false; pillBtn.innerHTML = origHTML }
-  }
-}
-
-async function _runAiThenRedirect(q){
-  const goBtn = document.querySelector('.search-go')
-  const origHTML = goBtn ? goBtn.innerHTML : ''
-  if (goBtn) {
-    goBtn.disabled = true
-    goBtn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span>'
-  }
-  try {
-    const res = await fetch(window.MOVIN_API_URL + '/api/ai/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query: q })
-    })
-    const data = await res.json()
-    if (!res.ok) throw new Error(data.error || 'AI search failed')
-    const f = data.filters || {}
-    const p = new URLSearchParams()
-    if (f.listing_type)  p.set('listing_type',  f.listing_type)
-    else                  p.set('listing_type',  searchType)
-    if (f.property_type) p.set('property_type', f.property_type)
-    if (f.bedrooms)      p.set('bedrooms',      f.bedrooms)
-    if (f.min_price)     p.set('min_price',     f.min_price)
-    if (f.max_price)     p.set('max_price',     f.max_price)
-    if (f.county)        p.set('county',        f.county)
-    if (f.q)             p.set('q',             f.q)
-    p.set('ai', '1')                                    // marker — search.html could show "AI search for: …"
-    if (data.summary) p.set('ai_summary', data.summary)
-    window.location.href = 'pages/search.html?' + p.toString()
-  } catch (err) {
-    // AI failed — fall back gracefully to traditional search with raw text
-    console.warn('AI route failed, falling back:', err && err.message)
-    _doDirectSearch(q)
-    if (goBtn) { goBtn.disabled = false; goBtn.innerHTML = origHTML }
-  }
-}
-
-function _doDirectSearch(qOverride){
-  const p=new URLSearchParams()
-  p.set('listing_type',searchType)
-  if(searchCounty)p.set('county',searchCounty)
-  const q = qOverride !== undefined ? qOverride : document.getElementById('hero-loc').value
-  if(q&&!searchCounty)p.set('q',q)
-  const qfBeds  = readQF('beds')
-  const qfMax   = readQF('price')
-  const qfType  = readQF('type')
-  const minP=document.getElementById('adv-min').value
-  const maxP=document.getElementById('adv-max').value
-  const beds=document.getElementById('adv-beds').value
-  const baths=document.getElementById('adv-baths').value
-  const ptype=document.getElementById('adv-ptype').value
-  const ber=document.getElementById('adv-ber').value
-  if(minP)p.set('min_price',minP)
-  const finalMax = qfMax || maxP
-  if(finalMax)p.set('max_price',finalMax)
-  const finalBeds = qfBeds || beds
-  if(finalBeds)p.set('bedrooms',finalBeds)
-  if(baths)p.set('bathrooms',baths)
-  const finalType = qfType || ptype
-  if(finalType)p.set('property_type',finalType)
-  if(ber)p.set('ber',ber)
-  document.querySelectorAll('.fc.on').forEach(c=>p.set(c.dataset.key,'1'))
-  if (searchOrigin && isFinite(searchOrigin.lat) && isFinite(searchOrigin.lng)) {
-    p.set('lat',  searchOrigin.lat)
-    p.set('lng',  searchOrigin.lng)
-    p.set('near', searchOrigin.label || q || '')
-  }
-  window.location.href='pages/search.html?'+p.toString()
-}
-
 function doSearch(){
   document.getElementById('loc-sugg').classList.remove('open')
-  const q = (document.getElementById('hero-loc').value || '').trim()
-  // Route to AI when the query reads like natural language. Direct search
-  // (faster, no network roundtrip) handles short/locational queries.
-  if (q && !searchCounty && _looksLikeNaturalLanguage(q)) {
-    return _runAiThenRedirect(q)
-  }
   const p=new URLSearchParams()
   p.set('listing_type',searchType)
   if(searchCounty)p.set('county',searchCounty)
+  const q=document.getElementById('hero-loc').value
   if(q&&!searchCounty)p.set('q',q)
 
   // Quick-filter pills override the advanced panel when both are set
@@ -2592,14 +1940,6 @@ async function loadFeatured(){
     statCountEl.dataset.countTarget = statTotal
     statCountEl.dataset.countSuffix = '+'
     if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
-
-    // Live ticker — count listings created in the past 7 days
-    var tickerEl = document.getElementById('hero-ticker-num')
-    if (tickerEl) {
-      var weekAgo = Date.now() - 7 * 86400000
-      var freshCount = pool.filter(function(l){ return l && l.created_at && new Date(l.created_at).getTime() >= weekAgo }).length
-      tickerEl.textContent = freshCount > 0 ? freshCount : statTotal
-    }
 
     // Tally per-county counts so the Browse-by-county tiles can show real numbers
     var countyTotals = {}
