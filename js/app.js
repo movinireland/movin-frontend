@@ -1754,19 +1754,9 @@ function renderFooter() {
         '</a>' +
       '</div>' +
 
-      // App download — Apple + Google Play. Replace href="#" once you have
-      // the real App Store / Play Store URLs.
-      '<div class="footer-apps">' +
-        '<span class="footer-apps-label">Get the app</span>' +
-        '<a class="footer-app-btn" href="#" aria-label="Download on the App Store" data-store="apple" target="_blank" rel="noopener">' +
-          '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.36 12.33a4.36 4.36 0 0 1 2.08-3.65 4.46 4.46 0 0 0-3.5-1.9c-1.48-.16-2.9.88-3.65.88-.77 0-1.91-.86-3.16-.84a4.69 4.69 0 0 0-3.95 2.41c-1.7 2.94-.43 7.28 1.22 9.66.8 1.16 1.76 2.47 3.01 2.42 1.22-.05 1.68-.78 3.15-.78 1.47 0 1.88.78 3.16.76 1.31-.02 2.13-1.18 2.93-2.35.93-1.35 1.31-2.66 1.32-2.73a4.24 4.24 0 0 1-2.61-3.88zM14.07 5.31a4.31 4.31 0 0 0 .99-3.07 4.4 4.4 0 0 0-2.84 1.47 4.11 4.11 0 0 0-1.01 2.97c1.13.09 2.28-.57 2.86-1.37z"/></svg>' +
-          '<span><span class="fa-pre">Download on the</span><span class="fa-store">App Store</span></span>' +
-        '</a>' +
-        '<a class="footer-app-btn" href="#" aria-label="Get it on Google Play" data-store="google" target="_blank" rel="noopener">' +
-          '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#34a853" d="M3.6 20.36L13.07 12 3.6 3.64A2 2 0 0 0 3 5.07v13.86c0 .56.23 1.06.6 1.43z"/><path fill="#fbbc04" d="M16.49 8.83L13.07 12l3.42 3.17 4.18-2.46c1.1-.65 1.1-2.27 0-2.91l-4.18-2.97z"/><path fill="#ea4335" d="M3.6 20.36c.45.45 1.16.5 1.66.16L16.49 15.17 13.07 12 3.6 20.36z"/><path fill="#4285f4" d="M13.07 12L3.6 3.64a1.45 1.45 0 0 1 1.66.16L16.49 8.83 13.07 12z"/></svg>' +
-          '<span><span class="fa-pre">Get it on</span><span class="fa-store">Google Play</span></span>' +
-        '</a>' +
-      '</div>' +
+      // App download buttons hidden until App Store / Play Store URLs are ready.
+      // To bring them back: uncomment the block below and drop real hrefs in.
+      // '<div class="footer-apps">…</div>' +
       '<div class="footer-bottom">' +
         '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Limited · Republic of Ireland</div>' +
         '<div class="footer-legal">' +
