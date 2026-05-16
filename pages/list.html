@@ -626,8 +626,95 @@
     window.pickCategory  = pickCategory
     window.resetCategory = resetCategory
 
+    // ── Edit mode ─────────────────────────────────────────────────────────
+    // ?edit=<id> loads an existing listing, pre-fills the form, and switches
+    // the publish action to an update (which sends it back for admin review).
+    window.EDIT_LISTING_ID = null
+    var COMMERCIAL_TYPES = ['office','retail','industrial','warehouse','hospitality','restaurant','cafe','pub','salon','gym','land','commercial']
+
+    function setVal(id, v){ var el = document.getElementById(id); if (el != null && v != null && v !== undefined) el.value = v }
+    function setChk(id, v){ var el = document.getElementById(id); if (el) el.checked = !!v }
+
+    async function loadForEdit(id){
+      try {
+        document.getElementById('cat-gate').style.display = 'none'
+        var L = await API.listings.get(id)
+        if (!L || !L.id) throw new Error('Listing not found')
+        var listing = L.listing || L   // endpoint may wrap or not
+
+        var isCom = COMMERCIAL_TYPES.indexOf((listing.property_type||'').toLowerCase()) > -1
+        pickCategory(isCom ? 'commercial' : 'residential')
+
+        // Step 1 — basics
+        setVal('title', listing.title)
+        setVal('description', listing.description)
+        setVal('listing_type', listing.listing_type)
+        if (listing.property_style) setVal('property_style', listing.property_style)
+        // Activate the matching property-type button
+        var grid = document.getElementById(isCom ? 'type-grid-commercial' : 'type-grid-residential')
+        if (grid) {
+          grid.querySelectorAll('.type-btn').forEach(function(b){
+            b.classList.toggle('on', (b.dataset.val||'').toLowerCase() === (listing.property_type||'').toLowerCase())
+          })
+        }
+        // Step 2 — location
+        setVal('address_line1', listing.address_line1)
+        setVal('address_area', listing.address_area)
+        setVal('county', listing.county)
+        setVal('eircode', listing.eircode)
+        setVal('latitude', listing.latitude)
+        setVal('longitude', listing.longitude)
+        var ev = document.getElementById('eircode-vis')
+        if (ev) {
+          var show = listing.eircode_visible !== false
+          ev.classList.toggle('on', show)
+          ev.setAttribute('aria-checked', show ? 'true' : 'false')
+        }
+        // Step 3 — specs
+        setVal('price', listing.price)
+        setVal('bedrooms', listing.bedrooms)
+        setVal('bathrooms', listing.bathrooms)
+        setVal('floor_size_m2', listing.floor_size_m2)
+        setVal('ber_rating', listing.ber_rating)
+        setChk('f-parking', listing.parking)
+        setChk('f-garden', listing.garden)
+        setChk('f-garage', listing.garage)
+        setChk('f-alarm', listing.alarm)
+        setChk('f-wheelchair', listing.wheelchair)
+        setChk('f-ensuite', listing.ensuite)
+        if (listing.available_from) setVal('available_from', String(listing.available_from).slice(0,10))
+        if (typeof refreshListingTypeFields === 'function') refreshListingTypeFields()
+
+        // Plan
+        var planOpt = document.querySelector('.plan-opt[data-plan="' + (listing.plan||'standard') + '"]')
+        if (planOpt) {
+          document.querySelectorAll('.plan-opt').forEach(function(x){ x.classList.remove('on') })
+          planOpt.classList.add('on')
+        }
+
+        // Switch UI into "edit" mode
+        window.EDIT_LISTING_ID = listing.id
+        var pb = document.getElementById('publish-btn')
+        if (pb) pb.innerHTML = '<svg width="18" height="18" style="color:#fff;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-approve"/></svg> Save changes'
+        var hb = document.getElementById('hero-badge')
+        if (hb) hb.innerHTML = '✎ Editing your listing — changes go back for review'
+        var ht = document.getElementById('hero-title')
+        if (ht) ht.innerHTML = 'Edit your <em>listing</em>'
+        // Photo hint — existing photos stay unless they add new ones
+        var fa = document.getElementById('form-alert')
+        if (fa) fa.innerHTML = '<div class="alert" style="background:#e3ebe1;color:#1a5c45;border:1px solid #c8dfd4;border-radius:10px;padding:.75rem 1rem;font-size:13px">You\'re editing an existing listing. Your photos are kept — only add new ones if you want to replace/extend the gallery. Saved changes are re-checked by our team before going live again.</div>'
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } catch (e) {
+        document.getElementById('cat-gate').style.display = ''
+        if (window.toast) toast(e.message || 'Could not load that listing for editing', 'err')
+      }
+    }
+    window.loadForEdit = loadForEdit
+
     ;(function(){
       var p = new URLSearchParams(location.search)
+      var editId = p.get('edit')
+      if (editId) { loadForEdit(editId); return }
       var c = (p.get('category') || p.get('cat') || '').toLowerCase()
       if (c === 'commercial' || c === 'residential') pickCategory(c)
     })()
@@ -927,6 +1014,28 @@
           ensuite:         !!(document.getElementById('f-ensuite') && document.getElementById('f-ensuite').checked),
           available_from:  document.getElementById('available_from') && document.getElementById('available_from').value || null,
           plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',
+        }
+
+        // ── Edit mode: update the existing listing instead of creating ────
+        if (window.EDIT_LISTING_ID) {
+          await API.listings.update(window.EDIT_LISTING_ID, payload)
+          createdListingId = window.EDIT_LISTING_ID
+
+          var editFiles = []
+          if (selectedPhotos[primaryIndex]) editFiles.push(selectedPhotos[primaryIndex])
+          selectedPhotos.forEach(function(f, i) { if (f && i !== primaryIndex) editFiles.push(f) })
+          if (editFiles.length > 0) {
+            btn.textContent = 'Uploading photos…'
+            try { await API.photos.upload(createdListingId, editFiles) }
+            catch(e) { console.warn('Photo upload failed:', e.message) }
+          }
+          toast('✓ Changes saved — your listing is back in review and will be live again shortly.')
+          if (window.LIST_AGENT_RETURN) {
+            window.location.href = 'agent-dashboard.html?tab=listings'
+          } else {
+            window.location.href = 'dashboard.html'
+          }
+          return
         }
 
         var res = await API.listings.create(payload)
