@@ -792,9 +792,9 @@ body.hero-places-ready .sugg-box{display:none !important}
 @media(min-width:560px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:.75rem}}
 @media(min-width:900px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:1rem}}
 .county-card{
-  position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;
-  background:#fff;border:1px solid var(--border);border-radius:14px;
-  padding:1rem 1.1rem 1rem 1.4rem;cursor:pointer;font-family:inherit;text-align:left;
+  position:relative;display:flex;flex-direction:column;gap:.85rem;
+  background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;
+  padding:1.1rem 1.1rem 1.1rem 1.4rem;font-family:inherit;text-align:left;
   transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease;
   -webkit-tap-highlight-color:transparent;overflow:hidden;
 }
@@ -805,19 +805,33 @@ body.hero-places-ready .sugg-box{display:none !important}
 }
 .county-card:hover{
   transform:translateY(-3px);
-  box-shadow:0 14px 30px rgba(26,92,69,.08), 0 4px 10px rgba(0,0,0,.04);
-  border-color:rgba(26,92,69,.18);
+  box-shadow:0 14px 30px rgba(26,92,69,.10), 0 4px 10px rgba(0,0,0,.04);
+  border-color:rgba(26,92,69,.20);
 }
 .county-card:hover .county-card-stripe{ width:5px; top:0; bottom:0; border-radius:0 4px 4px 0 }
-.county-card:active{ transform:translateY(-1px) scale(.99) }
+.county-card-top{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;flex-wrap:wrap
+}
 .county-card-name{
   font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size:18px;font-weight:700;color:#111;letter-spacing:-.2px;line-height:1.1
+  font-size:18px;font-weight:700;color:var(--text,#111);letter-spacing:-.2px;line-height:1.1
 }
 .county-card-meta{
-  font-size:12px;color:#888;font-weight:400;display:inline-flex;align-items:center;gap:4px
+  font-size:11.5px;color:var(--muted,#888);font-weight:400;display:inline-flex;align-items:center;gap:4px
 }
-.county-card[data-has-count="1"] .county-card-meta{ color:var(--g);font-weight:500 }
+.county-card[data-has-count="1"] .county-card-meta{ color:var(--g);font-weight:600 }
+.county-card-acts{ display:flex;gap:8px }
+.county-act{
+  flex:1;border:1.5px solid var(--border);border-radius:50px;
+  padding:8px 10px;font-size:13px;font-weight:600;font-family:inherit;
+  cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;
+  background:var(--paper-deep,#f3eee0);color:var(--text,#1f2421)
+}
+.county-act.buy{ background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 6px 14px -6px rgba(26,92,69,.45) }
+.county-act.buy:hover{ background:var(--gd);transform:translateY(-1px);box-shadow:0 9px 20px -6px rgba(26,92,69,.5) }
+.county-act.rent{ background:transparent;color:var(--g);border-color:var(--g) }
+.county-act.rent:hover{ background:var(--gl);transform:translateY(-1px) }
+.county-act:active{ transform:scale(.96) }
 
 /* Cascade reveal — staggered by JS via transition-delay */
 .counties-section .county-card{opacity:0;transform:translateY(10px);transition:opacity .45s cubic-bezier(.2,.7,.2,1), transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease}
@@ -1970,48 +1984,7 @@ body.hero-places-ready .sugg-box{display:none !important}
     <h2 class="counties-title">Find homes by county</h2>
     <a class="counties-all" href="pages/search.html">All 32 counties <span aria-hidden="true">→</span></a>
   </div>
-  <div class="counties-grid">
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Dublin','Dublin')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Dublin</span>
-      <span class="county-card-meta"><span data-county-count="Dublin">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Cork','Cork')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Cork</span>
-      <span class="county-card-meta"><span data-county-count="Cork">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Galway','Galway')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Galway</span>
-      <span class="county-card-meta"><span data-county-count="Galway">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Meath','Meath')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Meath</span>
-      <span class="county-card-meta"><span data-county-count="Meath">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kildare','Kildare')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Kildare</span>
-      <span class="county-card-meta"><span data-county-count="Kildare">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Wicklow','Wicklow')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Wicklow</span>
-      <span class="county-card-meta"><span data-county-count="Wicklow">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Limerick','Limerick')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Limerick</span>
-      <span class="county-card-meta"><span data-county-count="Limerick">View homes</span></span>
-    </button>
-    <button type="button" class="county-card" data-county-chip onclick="quickSearch('Kerry','Kerry')">
-      <span class="county-card-stripe"></span>
-      <span class="county-card-name">Kerry</span>
-      <span class="county-card-meta"><span data-county-count="Kerry">View homes</span></span>
-    </button>
-  </div>
+  <div class="counties-grid" id="counties-grid"></div>
 </section>
 
 <!-- Tools row — clean modern feature cards -->
@@ -2532,6 +2505,32 @@ function doSearch(){
   window.location.href='pages/search.html?'+p.toString()
 }
 function quickSearch(county,label){searchCounty=county;document.getElementById('hero-loc').value=label;showChip(label);searchOrigin=null;doSearch()}
+
+// ── Find homes by county — Buy / Rent quick-actions per county ──────────
+function countyGo(county, type){
+  // type: 'sale' (Buy) or 'rent' (Rent) → search page filtered by county
+  location.href = 'pages/search.html?listing_type=' + type +
+                  '&county=' + encodeURIComponent(county)
+}
+window.countyGo = countyGo
+;(function renderCountyCards(){
+  var grid = document.getElementById('counties-grid')
+  if (!grid) return
+  var counties = ['Dublin','Cork','Galway','Meath','Kildare','Wicklow','Limerick','Kerry']
+  grid.innerHTML = counties.map(function(c){
+    return '<div class="county-card" data-county-chip>' +
+      '<span class="county-card-stripe"></span>' +
+      '<div class="county-card-top">' +
+        '<span class="county-card-name">' + c + '</span>' +
+        '<span class="county-card-meta"><span data-county-count="' + c + '">View homes</span></span>' +
+      '</div>' +
+      '<div class="county-card-acts">' +
+        '<button type="button" class="county-act buy"  onclick="countyGo(\'' + c + '\',\'sale\')">Buy</button>' +
+        '<button type="button" class="county-act rent" onclick="countyGo(\'' + c + '\',\'rent\')">Rent</button>' +
+      '</div>' +
+    '</div>'
+  }).join('')
+})()
 
 // ── AI search (Groq-powered natural-language → filters) ─────────────────
 function aiSearchExample(el){
