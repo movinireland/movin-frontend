@@ -367,6 +367,20 @@
         var payBtn = l.status === 'pending_payment'
           ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\')">Pay to publish</button>'
           : ''
+        // Status control — only for live listings. Sale listings can be marked
+        // "Sale agreed"; rent/share listings "Let agreed". Revertible.
+        var statusCtrl = ''
+        if (['active','sale_agreed','let_agreed'].indexOf(l.status) > -1) {
+          var isRenty = (l.listing_type === 'rent' || l.listing_type === 'share')
+          var agreedVal = isRenty ? 'let_agreed' : 'sale_agreed'
+          var agreedLbl = isRenty ? 'Let agreed' : 'Sale agreed'
+          statusCtrl =
+            '<select class="btn btn-ghost btn-sm" style="padding:6px 10px;cursor:pointer" ' +
+              'onchange="changeListingStatus(\'' + l.id + '\', this.value, this)">' +
+              '<option value="active"' + (l.status==='active'?' selected':'') + '>Available</option>' +
+              '<option value="' + agreedVal + '"' + (l.status===agreedVal?' selected':'') + '>' + agreedLbl + '</option>' +
+            '</select>'
+        }
         return '<div class="listing-row">' +
           '<div class="listing-thumb">' + thumb + '</div>' +
           '<div class="listing-info">' +
@@ -381,6 +395,8 @@
           '<div class="listing-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
           '<div class="listing-actions">' +
             '<a href="listing.html?id=' + l.id + '" class="btn btn-ghost btn-sm">View</a>' +
+            '<a href="list.html?edit=' + l.id + '" class="btn btn-ghost btn-sm">Edit</a>' +
+            statusCtrl +
             payBtn +
             '<button class="btn btn-sm" style="background:#fdf2f2;color:#b91c1c;border:1px solid #fecaca" onclick="deleteListing(\'' + l.id + '\',this)">Delete</button>' +
           '</div>' +
@@ -502,8 +518,42 @@
     } catch(e) { alert('Payment error: ' + e.message) }
   }
 
+  // ── Styled confirm modal (replaces window.confirm) ───────────────────
+  function movinConfirm(opts){
+    return new Promise(function(resolve){
+      var bg = document.createElement('div')
+      bg.style.cssText = 'position:fixed;inset:0;z-index:10000;background:rgba(15,15,12,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:1.25rem;animation:mcFade .18s ease'
+      bg.innerHTML =
+        '<div style="background:var(--white,#fff);border:1px solid var(--border,#e8e4dc);border-radius:18px;max-width:380px;width:100%;padding:1.75rem;box-shadow:0 30px 60px -24px rgba(0,0,0,.4);animation:mcPop .22s cubic-bezier(.2,.7,.2,1)">' +
+          '<div style="font-family:\'Playfair Display\',Georgia,serif;font-size:18px;font-weight:700;color:var(--text,#111);margin-bottom:.5rem">' + (opts.title||'Are you sure?') + '</div>' +
+          '<div style="font-size:13.5px;color:var(--muted,#888);line-height:1.6;margin-bottom:1.5rem">' + (opts.body||'') + '</div>' +
+          '<div style="display:flex;gap:8px;justify-content:flex-end">' +
+            '<button id="mc-cancel" class="btn btn-ghost btn-sm" style="padding:9px 16px">' + (opts.cancel||'Cancel') + '</button>' +
+            '<button id="mc-ok" class="btn btn-sm" style="padding:9px 18px;background:' + (opts.danger?'#c5443d':'var(--green,#1a5c45)') + ';color:#fff;border:none">' + (opts.ok||'Confirm') + '</button>' +
+          '</div>' +
+        '</div>'
+      if (!document.getElementById('mc-anim')) {
+        var st = document.createElement('style'); st.id='mc-anim'
+        st.textContent='@keyframes mcFade{from{opacity:0}to{opacity:1}}@keyframes mcPop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}'
+        document.head.appendChild(st)
+      }
+      document.body.appendChild(bg)
+      function close(v){ bg.remove(); resolve(v) }
+      bg.querySelector('#mc-ok').onclick = function(){ close(true) }
+      bg.querySelector('#mc-cancel').onclick = function(){ close(false) }
+      bg.onclick = function(e){ if (e.target === bg) close(false) }
+      document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ document.removeEventListener('keydown',esc); close(false) } })
+    })
+  }
+
   async function deleteListing(id, btn) {
-    if (!confirm('Delete this listing? This cannot be undone.')) return
+    var ok = await movinConfirm({
+      title: 'Delete this listing?',
+      body:  'This permanently removes the property and all its enquiries. This cannot be undone.',
+      ok:    'Delete listing',
+      danger: true
+    })
+    if (!ok) return
     btn.textContent = '…'; btn.disabled = true
     try {
       var token = localStorage.getItem('movin_token')
@@ -518,6 +568,29 @@
       btn.disabled = false
     }
   }
+
+  async function changeListingStatus(id, status, sel) {
+    var prev = sel.dataset.prev || 'active'
+    sel.disabled = true
+    try {
+      var token = localStorage.getItem('movin_token')
+      var r = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+        method: 'PUT',
+        headers: { 'Content-Type':'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ status: status })
+      })
+      if (!r.ok) { var d = await r.json(); throw new Error(d.error||'Could not update') }
+      sel.dataset.prev = status
+      if (window.toast) toast(status.indexOf('agreed')>-1 ? 'Marked as agreed' : 'Marked available', 'ok')
+      loadListings()
+    } catch(e) {
+      if (window.toast) toast(e.message || 'Could not update status', 'err')
+      sel.value = prev
+    } finally {
+      sel.disabled = false
+    }
+  }
+  window.changeListingStatus = changeListingStatus
 
   async function saveProfile(e) {
     e.preventDefault()

@@ -319,8 +319,15 @@
           <div class="form-hint">Be descriptive — good titles get more clicks</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Description <span class="req">*</span></label>
-          <textarea class="form-input form-textarea" id="description" style="min-height:130px" placeholder="Describe your property — location, features, condition, what makes it special…"></textarea>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
+            <label class="form-label" style="margin:0">Description <span class="req">*</span></label>
+            <button type="button" id="ai-rewrite-btn" onclick="aiRewriteDescription()"
+              style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#1a5c45,#0e3d2e);color:#fff;border:none;border-radius:50px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s">
+              <span style="font-size:13px">✨</span> Rewrite with AI
+            </button>
+          </div>
+          <textarea class="form-input form-textarea" id="description" style="min-height:130px;margin-top:.5rem" placeholder="Describe your property — location, features, condition, what makes it special… then tap ‘Rewrite with AI’ to polish it."></textarea>
+          <div class="form-hint" id="ai-rewrite-hint">Write rough notes, then let AI turn them into a polished, customer-attracting description. It never invents facts.</div>
         </div>
         <div class="form-group">
           <label class="form-label">Asking price (€) <span class="req">*</span></label>
@@ -707,6 +714,54 @@
         b.classList.add('on')
       })
     })
+
+    // ── AI description rewriter ───────────────────────────────────────────
+    async function aiRewriteDescription(){
+      var ta   = document.getElementById('description')
+      var btn  = document.getElementById('ai-rewrite-btn')
+      var hint = document.getElementById('ai-rewrite-hint')
+      var text = (ta.value || '').trim()
+      if (text.length < 12) {
+        ta.focus()
+        hint.textContent = 'Add a few words about the property first — even rough notes work.'
+        hint.style.color = '#c5443d'
+        return
+      }
+      var orig = btn.innerHTML
+      btn.disabled = true
+      btn.innerHTML = '<span style="display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span> Writing…'
+      hint.style.color = ''
+      hint.textContent = 'Polishing your description…'
+      try {
+        var actGrid = document.getElementById('type-grid-' + listingCategory)
+        var activeBtn = actGrid && actGrid.querySelector('.type-btn.on')
+        var res = await fetch(window.MOVIN_API_URL + '/api/ai/rewrite-description', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            property_type: (activeBtn && activeBtn.dataset.val) || '',
+            listing_type:  document.getElementById('listing_type').value || '',
+            bedrooms:      (document.getElementById('bedrooms')||{}).value || '',
+            county:        (document.getElementById('county')||{}).value || ''
+          })
+        })
+        var data = await res.json()
+        if (!res.ok) throw new Error(data.error || 'Could not rewrite')
+        ta.value = data.description
+        ta.style.transition = 'background .4s'
+        ta.style.background = '#eafaf0'
+        setTimeout(function(){ ta.style.background = '' }, 700)
+        hint.textContent = '✨ Rewritten. Feel free to tweak it — you can rewrite again any time.'
+      } catch(e) {
+        hint.style.color = '#c5443d'
+        hint.textContent = (e.message || 'AI rewrite failed') + ' — your text is unchanged.'
+      } finally {
+        btn.disabled = false
+        btn.innerHTML = orig
+      }
+    }
+    window.aiRewriteDescription = aiRewriteDescription
 
     function refreshListingTypeFields(){
       var t = document.getElementById('listing_type').value
