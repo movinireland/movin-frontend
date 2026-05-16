@@ -1,8 +1,6 @@
 {
-  "cleanUrls": true,
   "rewrites": [
-    { "source": "/property/:slug", "destination": "/pages/listing.html" },
-    { "source": "/property/:slug/", "destination": "/pages/listing.html" }
+    { "source": "/property/:slug*", "destination": "/pages/listing.html" }
   ],
   "headers": [
     {
