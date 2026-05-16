@@ -593,7 +593,20 @@
   <script src="../js/app.js"></script>
   <script>
     renderNav()
-    const listingId = new URLSearchParams(window.location.search).get('id')
+    // Resolve the listing ID from either:
+    //  • the legacy query param  ?id=<uuid>
+    //  • the SEO path  /property/<slug>-<uuid>   (Vercel rewrites this here)
+    function resolveListingId(){
+      var q = new URLSearchParams(window.location.search).get('id')
+      if (q) return q
+      var m = window.location.pathname.match(/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})/)
+      if (m) return m[1]
+      // Fallback: last path segment after the final hyphen-block
+      var seg = window.location.pathname.split('/').filter(Boolean).pop() || ''
+      var tail = seg.match(/[0-9a-fA-F-]{20,}$/)
+      return tail ? tail[0] : null
+    }
+    const listingId = resolveListingId()
 
     function loadGoogleMaps() {
       return new Promise(resolve => {
@@ -1472,8 +1485,18 @@
 
         document.title = L.title + ' – Movin.ie'
 
-        // SEO: Open Graph + canonical
-        var canonUrl = 'https://movin.ie/pages/listing.html?id=' + L.id
+        // SEO: clean canonical URL  /property/<slug>-<uuid>
+        var cleanPath = (typeof listingUrl === 'function')
+          ? listingUrl(L)
+          : '/property/' + L.id
+        var canonUrl  = 'https://movin.ie' + cleanPath
+        // If the visitor arrived on the legacy ?id= URL, swap the address bar
+        // to the clean canonical one without reloading (keeps SEO + UX tidy).
+        try {
+          if (location.pathname.indexOf('/property/') !== 0 && window.history && history.replaceState) {
+            history.replaceState(null, '', cleanPath + location.hash)
+          }
+        } catch (_) {}
         document.getElementById('og-title').content = L.title + ' – ' + fmtPrice(L.price, L.listing_type) + ' | Movin.ie'
         document.getElementById('og-desc').content  = L.description ? L.description.substring(0, 160) : 'View this property on Movin.ie'
         document.getElementById('og-url').content   = canonUrl

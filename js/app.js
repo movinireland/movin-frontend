@@ -1543,6 +1543,31 @@ document.addEventListener('click', e => {
   }
 })
 // ── Property card HTML builder ────────────────────────────────────────────────
+// ── SEO-friendly listing URLs ─────────────────────────────────────────────────
+// Turns "Bright 3-bed semi-detached, Rathmines" + "Dublin" + id into
+//   /property/bright-3-bed-semi-detached-rathmines-dublin-<uuid>
+// Google reads the front-loaded keywords; the trailing UUID makes it
+// unambiguous and lets listing.html resolve it without a DB slug lookup.
+function movinSlugify(s){
+  return String(s == null ? '' : s)
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 70)
+    .replace(/-+$/g, '')
+}
+function listingUrl(listing){
+  if (!listing || !listing.id) return '/'
+  var slug = movinSlugify(
+    (listing.title || 'property') + '-' +
+    (listing.county || listing.address_area || 'ireland')
+  )
+  return '/property/' + (slug ? slug + '-' : '') + listing.id
+}
+window.movinSlugify = movinSlugify
+window.listingUrl   = listingUrl
+
 function buildPropertyCard(listing, savedIds = []) {
   // Absolute path — listing.html and neighbourhood.html always live under /pages/
   const root = '/pages/'
@@ -1582,7 +1607,7 @@ function buildPropertyCard(listing, savedIds = []) {
     : ''
 
   return `
-    <div class="prop-card" onclick="window.location.href='${root}listing.html?id=${listing.id}'">
+    <div class="prop-card" onclick="window.location.href='${listingUrl(listing)}'">
       <div class="prop-card-img" style="height:175px">
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" onload="this.classList.add('loaded')" style="width:100%;height:100%;object-fit:cover;display:block"/>`
@@ -1780,8 +1805,7 @@ function renderRecentlyViewed(containerId, excludeId) {
     el.innerHTML = rv.map(function(x) {
       var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
       var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
-      var root = '/pages/'   // absolute — listing.html lives under /pages/
-      return '<div onclick="window.location.href=\'' + root + 'listing.html?id=' + x.id + '\'" style="flex:0 0 140px;background:var(--white,#fff);border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
+      return '<div onclick="window.location.href=\'' + listingUrl(x) + '\'" style="flex:0 0 140px;background:var(--white,#fff);border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
         '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
         '<div style="padding:.6rem">' +
           '<div style="font-size:11px;font-weight:500;color:var(--text,#111);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.title + '</div>' +
@@ -1804,8 +1828,7 @@ function renderRecentlyViewed(containerId, excludeId) {
     el.innerHTML = rv.map(function(x) {
       var photo = x.photo ? (x.photo.startsWith('http') ? x.photo : window.MOVIN_API_URL + x.photo) : null
       var thumb = photo ? '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover" loading="lazy"/>' : '<span style="font-size:22px">🏡</span>'
-      var root = '/pages/'   // absolute — listing.html lives under /pages/
-      return '<div onclick="window.location.href=\'' + root + 'listing.html?id=' + x.id + '\'" style="flex:0 0 140px;background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
+      return '<div onclick="window.location.href=\'' + listingUrl(x) + '\'" style="flex:0 0 140px;background:#fff;border:1px solid #e8e4dc;border-radius:12px;overflow:hidden;cursor:pointer">' +
         '<div style="height:90px;overflow:hidden;background:#e9f4ef;display:flex;align-items:center;justify-content:center">' + thumb + '</div>' +
         '<div style="padding:.6rem">' +
           '<div style="font-size:11px;font-weight:500;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + x.title + '</div>' +
