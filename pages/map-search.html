@@ -98,6 +98,93 @@
   body.view-map .ms-list{display:none}
   body.view-map .ms-shell{grid-template-columns:1fr}
   body.view-map .ms-map-wrap{height:calc(100vh - var(--ms-bar-h, 92px));position:relative;top:0}
+
+  /* ════════════════════════════════════════════════════════════════════
+     MODERN MARKETPLACE — map page (matches homepage & search)
+     ════════════════════════════════════════════════════════════════════ */
+  :root{
+    --g:#1a5c45;--gd:#0e3d2e;--gl:#e3ebe1;--o:#d97847;
+    --border:#dad6c8;--paper:#faf7f0;--paper-deep:#f3eee0;--white:#fffdf8;
+    --text:#1f2421;--muted:#737069;
+  }
+  body{ background:var(--paper); color:var(--text); font-family:'DM Sans',sans-serif }
+  .ms-bar{ background:rgba(255,253,248,.92) !important; box-shadow:0 2px 20px -10px rgba(31,36,33,.12) !important }
+  .ms-back{ background:var(--gl); color:var(--g); border-color:rgba(26,92,69,.20) }
+  .ms-tabs{ background:var(--paper-deep) }
+  .ms-tab.on{ background:var(--g); box-shadow:0 4px 12px -4px rgba(26,92,69,.40) }
+  .ms-search{ background:var(--white); border-color:var(--border); color:var(--text); border-radius:50px }
+  .ms-search:focus{ border-color:var(--g); box-shadow:0 0 0 4px rgba(26,92,69,.10) }
+  .ms-pill{ background:var(--white); border-color:var(--border); color:var(--text) }
+  .ms-pill:hover{ border-color:var(--g); color:var(--g) }
+  .ms-pill.accent{ background:linear-gradient(135deg,var(--g),var(--gd)); color:#fff }
+  .ms-toggle{ background:var(--paper-deep) }
+  .ms-list{ background:var(--paper) }
+  .ms-list-hdr{ background:transparent; border-bottom:1px solid var(--border) }
+  .ms-sort{ background:var(--white); border:1.5px solid var(--border); border-radius:50px; color:var(--text) }
+
+  /* List cards → Modern Marketplace */
+  .ms-card{
+    background:var(--white) !important;
+    border:1px solid var(--border) !important;
+    border-radius:16px !important;
+    overflow:hidden;
+    transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s, border-color .22s !important;
+  }
+  .ms-card:hover, .ms-card.active{
+    transform:translateY(-2px);
+    box-shadow:0 16px 32px -16px rgba(31,36,33,.20) !important;
+    border-color:rgba(26,92,69,.30) !important;
+  }
+  .ms-card-price{ color:var(--g) !important; font-weight:800 !important }
+  .ms-card-title{ color:var(--text) !important }
+
+  /* ── Floating map/list toggle (mobile only) ──────────────────────── */
+  .ms-fab{
+    display:none;
+    position:fixed; left:50%;
+    /* Sit clear above the global mobile tab-bar (~64px + safe area) */
+    bottom:calc(94px + env(safe-area-inset-bottom,0px));
+    transform:translateX(-50%);
+    z-index:120;
+    background:var(--g); color:#fff;
+    border:none; border-radius:50px;
+    padding:13px 24px;
+    font-family:inherit; font-size:14px; font-weight:600;
+    display:none; align-items:center; gap:9px;
+    box-shadow:0 12px 30px -8px rgba(26,92,69,.55);
+    cursor:pointer; -webkit-tap-highlight-color:transparent;
+    transition:transform .15s, box-shadow .2s;
+  }
+  .ms-fab svg{ width:17px; height:17px; stroke:#fff; fill:none }
+  .ms-fab:active{ transform:translateX(-50%) scale(.96) }
+  .ms-fab .ms-fab-count{ background:rgba(255,255,255,.22); border-radius:50px; padding:1px 9px; font-size:12px }
+
+  @media (max-width:640px){
+    .ms-bar{ padding:.7rem .9rem .65rem !important }
+    .ms-logo{ display:none }                 /* nav already has the logo */
+    .ms-bar .ms-row:first-child{ gap:.5rem }
+    .ms-search{ height:46px; font-size:14px }
+    /* Hide the in-bar 3-way toggle — replaced by the floating FAB */
+    #view-toggle{ display:none !important }
+    /* Map fills the screen under the bar */
+    body.view-map .ms-map-wrap{ height:calc(100vh - var(--ms-bar-h,108px)) !important }
+    body.view-list .ms-list{ max-height:none }
+    .ms-fab{ display:inline-flex !important }
+    /* List view on mobile = clean stacked cards on cream paper */
+    .ms-row-list{ padding:.85rem !important; gap:.85rem !important; display:flex; flex-direction:column }
+    .ms-card{ width:100% !important; flex-direction:row !important }
+    .ms-card-img{ width:130px !important; flex-shrink:0 }
+    .ms-list-hdr{ padding:.85rem 1rem !important; position:sticky; top:0; background:var(--paper); z-index:5 }
+    .ms-research-btn{ border-radius:50px !important; box-shadow:0 8px 20px -6px rgba(26,92,69,.4) !important }
+  }
+
+  /* Dark mode */
+  [data-theme="dark"] body{ background:#14130f; color:#f1ebdc }
+  [data-theme="dark"] .ms-bar{ background:rgba(28,27,22,.92) !important; border-bottom-color:#38342a }
+  [data-theme="dark"] .ms-search,[data-theme="dark"] .ms-pill,
+  [data-theme="dark"] .ms-card,[data-theme="dark"] .ms-sort{ background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important }
+  [data-theme="dark"] .ms-list{ background:#14130f }
+  [data-theme="dark"] .ms-card-title{ color:#f1ebdc !important }
   @media(max-width:900px){
     body.view-map .ms-map-wrap{height:calc(100vh - var(--ms-bar-h, 92px) - 76px)}
   }
@@ -546,8 +633,35 @@
     document.body.classList.add('view-' + v)
     document.querySelectorAll('#view-toggle button').forEach(function(b){ b.classList.toggle('on', b.dataset.view === v) })
     if (gmap) setTimeout(function(){ google.maps.event.trigger(gmap, 'resize') }, 80)
+    syncFab()
   }
   window.setView = setView
+
+  // ── Floating mobile map/list toggle ────────────────────────────────────
+  function syncFab(){
+    var fab = document.getElementById('ms-fab')
+    if (!fab) return
+    var onMap = document.body.classList.contains('view-map')
+    fab.querySelector('.ms-fab-label').textContent = onMap ? 'List' : 'Map'
+    fab.querySelector('.ms-fab-ico').innerHTML = onMap
+      ? '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>'
+      : '<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 8 3 16 6 23 3 23 18 16 21 8 18 1 21 1 6"/><line x1="8" y1="3" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="21"/></svg>'
+  }
+  function toggleMobileView(){
+    setView(document.body.classList.contains('view-map') ? 'list' : 'map')
+  }
+  window.toggleMobileView = toggleMobileView
+  // Keep the FAB result count in sync
+  ;(function watchCount(){
+    var src = document.getElementById('result-count')
+    var fabC = function(){
+      var n = (src && src.textContent || '').match(/\d[\d,]*/)
+      var c = document.querySelector('#ms-fab .ms-fab-count')
+      if (c) c.textContent = n ? n[0] : ''
+    }
+    if (src && 'MutationObserver' in window) new MutationObserver(fabC).observe(src, { childList:true, subtree:true })
+    setTimeout(fabC, 1200)
+  })()
 
   // ── Update CSS var for top-bar height (so the shell sizes correctly) ────
   function syncBarHeight(){
@@ -931,6 +1045,13 @@
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=initMap&v=weekly"
   async defer></script>
+
+<!-- Floating map/list toggle — mobile only -->
+<button class="ms-fab" id="ms-fab" type="button" onclick="toggleMobileView()" aria-label="Toggle map and list view">
+  <span class="ms-fab-ico"></span>
+  <span class="ms-fab-label">List</span>
+  <span class="ms-fab-count"></span>
+</button>
 
 </body>
 </html>
