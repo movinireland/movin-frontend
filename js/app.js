@@ -1746,8 +1746,9 @@ function renderFooter() {
     [root + 'pages/terms-of-service.html',  'Terms of service']
   ]
   var proLinks = [
+    [root + 'pages/agent-signup.html', 'For estate agents'],
     [root + 'pages/agent-dashboard.html', 'Agent dashboard'],
-    [root + 'pages/register.html?account_type=agent', 'List as an agent'],
+    [root + 'pages/bulk-upload.html', 'Bulk upload listings'],
     [root + 'pages/login.html?redirect=' + encodeURIComponent('/pages/agent-dashboard.html'), 'Agent sign in']
   ]
 

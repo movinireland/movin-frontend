@@ -83,16 +83,104 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
 .alert-info{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe}
 .spinner{width:20px;height:20px;border-radius:50%;border:2px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
 @keyframes spin{to{transform:rotate(360deg)}}
-@media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.mobile-nav{display:flex!important}}
-.mobile-nav{display:none;background:var(--gd);padding:.75rem 1rem;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.mobile-nav::-webkit-scrollbar{display:none}
-.mn-item{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.mn-item.active{background:rgba(255,255,255,.2);color:#fff}
 .section{display:none}
 .section.active{display:block}
+
+/* ── Mobile admin: hamburger top-bar + off-canvas drawer ─────────────────
+   The full sidebar (every section) slides in — mobile keeps ALL the
+   features desktop has, just behind a hamburger. */
+.admin-topbar{display:none}
+.admin-scrim{display:none}
+.mobile-nav{display:none}            /* old pill bar retired on every size */
+
+@media(max-width:768px){
+  /* Top bar */
+  .admin-topbar{
+    display:flex;align-items:center;gap:10px;
+    position:sticky;top:0;z-index:60;
+    background:var(--gd);color:#fff;padding:10px 12px;
+  }
+  .at-burger,.at-set{
+    width:44px;height:44px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,.12);border:none;border-radius:10px;
+    color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;
+    transition:background .15s
+  }
+  .at-burger:active,.at-set:active{background:rgba(255,255,255,.22)}
+  .at-burger svg,.at-set svg{width:22px;height:22px;stroke:#fff;fill:none}
+  .at-title{
+    flex:1;font-family:'Playfair Display',Georgia,serif;
+    font-weight:900;font-size:18px;color:#fff
+  }
+  .at-title span{color:var(--o)}
+
+  /* Sidebar → slide-in drawer */
+  .sidebar{
+    display:flex!important;width:272px;
+    transform:translateX(-100%);
+    transition:transform .28s cubic-bezier(.2,.7,.2,1);
+    box-shadow:0 0 48px rgba(0,0,0,.45)
+  }
+  body.admin-menu-open .sidebar{transform:translateX(0)}
+  .admin-scrim{
+    display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);
+    z-index:49;opacity:0;pointer-events:none;transition:opacity .25s
+  }
+  body.admin-menu-open .admin-scrim{opacity:1;pointer-events:auto}
+  body.admin-menu-open{overflow:hidden}
+
+  /* Touch targets — 44px min, 16px inputs (stops iOS auto-zoom) */
+  .nav-item{padding:13px 1.25rem;font-size:15px;min-height:44px}
+  .nav-item-icon{font-size:18px;width:24px}
+  .nav-section-label{font-size:11px}
+  .btn{min-height:44px;font-size:15px;padding:11px 18px}
+  .btn-sm{min-height:42px;font-size:14px}
+  .form-input,.form-select,.form-textarea{min-height:44px;font-size:16px}
+  .form-textarea{min-height:120px}
+
+  /* Layout */
+  .main{margin-left:0;padding:1rem}
+  .topbar{margin-bottom:1rem}
+  .topbar-title{font-size:19px}
+  .topbar-right{width:100%}
+  .topbar-right .btn{flex:1}
+  .stat-card-n{font-size:24px}
+
+  /* Tables scroll horizontally; header stays, text no-wrap */
+  .card-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .card-body::-webkit-scrollbar{height:6px}
+  .card-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  .table{min-width:640px;white-space:nowrap}
+  .table th{position:sticky;top:0;background:#fafaf8;z-index:1}
+  /* "swipe to see more" affordance on cards that hold a wide table */
+  .content-card.has-wide-table{position:relative}
+  .content-card.has-wide-table::after{
+    content:'← swipe table →';display:block;
+    font-size:11px;color:#999;text-align:center;
+    padding:6px;background:#faf8f2;border-top:1px solid var(--border)
+  }
+}
+@media(min-width:769px){
+  .admin-topbar,.admin-scrim{display:none!important}
+  .sidebar{transform:none!important}
+}
 </style>
 </head>
 <body>
+
+<!-- Mobile top bar — hamburger + title + quick settings -->
+<div class="admin-topbar">
+  <button class="at-burger" id="at-burger" aria-label="Open menu" onclick="toggleAdminMenu()">
+    <svg viewBox="0 0 24 24" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="at-title">mov<span>in</span> Admin</div>
+  <button class="at-set" aria-label="Settings" onclick="switchSection('settings',null);closeAdminMenu()">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+</div>
+<div class="admin-scrim" id="admin-scrim" onclick="closeAdminMenu()"></div>
+
 <div class="layout">
   <div class="sidebar">
     <div class="sidebar-logo">mov<span>in</span><small>Admin Panel</small></div>
@@ -125,17 +213,6 @@ body{font-family:'DM Sans',sans-serif;background:#f0ede6;color:#111;min-height:1
     </nav>
   </div>
 
-  <div class="mobile-nav">
-    <div class="mn-item active" onclick="switchSection('dashboard',this)">📊 Dashboard</div>
-    <div class="mn-item" onclick="switchSection('listings',this)">🏠 Listings</div>
-    <div class="mn-item" onclick="switchSection('users',this)">👥 Users</div>
-    <div class="mn-item" onclick="switchSection('enquiries',this)">📨 Enquiries</div>
-    <div class="mn-item" onclick="switchSection('payments',this)">💳 Payments</div>
-    <div class="mn-item" onclick="switchSection('reviews',this)">⭐ Reviews</div>
-    <div class="mn-item" onclick="switchSection('alerts',this)">🔔 Alerts</div>
-    <div class="mn-item" onclick="switchSection('notifications',this)">📣 Notify</div>
-    <div class="mn-item" onclick="window.location.href='../../index.html'">↩ Site</div>
-  </div>
 
   <main class="main">
 
@@ -495,11 +572,33 @@ function checkAdminAuth() {
 }
 
 // ── Section switching ─────────────────────────────────────
+// ── Mobile drawer ──────────────────────────────────────────────────────
+function toggleAdminMenu(){ document.body.classList.toggle('admin-menu-open') }
+function closeAdminMenu(){ document.body.classList.remove('admin-menu-open') }
+window.toggleAdminMenu = toggleAdminMenu
+window.closeAdminMenu  = closeAdminMenu
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeAdminMenu()
+})
+
+// Tag any card whose table is wider than the viewport so the
+// "← swipe table →" hint shows (mobile only, CSS-driven).
+function markScrollableTables(){
+  document.querySelectorAll('.content-card').forEach(function(card){
+    var t = card.querySelector('.table')
+    var b = card.querySelector('.card-body')
+    if (t && b) card.classList.toggle('has-wide-table', t.scrollWidth > b.clientWidth + 4)
+  })
+}
+window.addEventListener('resize', markScrollableTables)
+
 function switchSection(id, navEl) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.nav-item,.mn-item').forEach(n => n.classList.remove('active'))
   document.getElementById('section-' + id).classList.add('active')
   if (navEl) navEl.classList.add('active')
+  // On phones, picking a section closes the drawer so content is visible
+  closeAdminMenu()
   loadSection(id)
 }
 
@@ -511,6 +610,8 @@ async function loadSection(id) {
     case 'users':         await loadUsers(); break
     case 'notifications': await loadNotifications(); break
   }
+  // Re-evaluate which tables overflow once fresh content is in the DOM
+  setTimeout(markScrollableTables, 80)
 }
 
 // ── Notifications (admin broadcast) ───────────────────────

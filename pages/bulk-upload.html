@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()</script>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bulk Upload Listings – Movin.ie</title>
+<meta name="robots" content="noindex"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/favicon.svg"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<meta name="theme-color" content="#1a5c45"/>
+<style>
+  :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#dad6c8;--paper:#faf7f0;--text:#1f2421;--muted:#737069}
+  *{box-sizing:border-box}
+  body{background:var(--paper)}
+  .bu-wrap{max-width:820px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  .bu-head{margin-bottom:1.75rem}
+  .bu-head h1{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:clamp(1.7rem,4vw,2.4rem);color:var(--gd);margin:0 0 .5rem}
+  .bu-head p{color:var(--muted);font-size:1rem;line-height:1.6;margin:0;max-width:60ch}
+  .bu-card{background:var(--white,#fffdf8);border:1px solid var(--border);border-radius:18px;padding:1.75rem;margin-bottom:1.25rem}
+  .bu-card h2{font-size:1.05rem;color:var(--gd);margin:0 0 .9rem;font-weight:600;display:flex;align-items:center;gap:.55rem}
+  .bu-num{width:28px;height:28px;border-radius:50%;background:var(--g);color:#fff;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+  .bu-card p,.bu-card li{color:var(--muted);font-size:.93rem;line-height:1.65}
+  .bu-card ul{margin:.5rem 0 0;padding-left:1.2rem}
+  .bu-btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:500;font-size:14px;padding:.8rem 1.4rem;border-radius:999px;text-decoration:none;cursor:pointer;border:0;transition:transform .12s,box-shadow .15s;font-family:inherit}
+  .bu-btn:hover{transform:translateY(-1px)}
+  .bu-btn-primary{background:var(--o);color:#fff;box-shadow:0 8px 22px rgba(224,123,63,.35)}
+  .bu-btn-primary:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:none}
+  .bu-btn-ghost{background:var(--gl);color:var(--g);border:1.5px solid #c8dfd4}
+  .bu-file{display:block;margin-top:.85rem}
+  .bu-file label{font-size:.85rem;font-weight:600;color:var(--text);display:block;margin-bottom:.35rem}
+  .bu-file input[type=file]{width:100%;font-size:14px;padding:.7rem;border:1.5px dashed var(--border);border-radius:12px;background:var(--paper);cursor:pointer}
+  code{background:var(--gl);color:var(--gd);padding:.1rem .4rem;border-radius:6px;font-size:.85em}
+  table.bu-cols{width:100%;border-collapse:collapse;margin-top:.85rem;font-size:.82rem}
+  table.bu-cols th,table.bu-cols td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--border);color:var(--text)}
+  table.bu-cols th{color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;font-size:.7rem}
+  .req{color:var(--o);font-weight:700}
+  #bu-alert{margin:1rem 0}
+  .bu-msg{border-radius:12px;padding:.85rem 1.1rem;font-size:.9rem;line-height:1.5}
+  .bu-msg.ok{background:#ecfdf3;border:1px solid #aee5c3;color:#1a7f4b}
+  .bu-msg.err{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+  .bu-results{margin-top:1rem;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .bu-rrow{display:flex;gap:.75rem;padding:.7rem 1rem;border-bottom:1px solid var(--border);font-size:.86rem;align-items:flex-start}
+  .bu-rrow:last-child{border-bottom:0}
+  .bu-rrow .badge{flex-shrink:0;font-size:.72rem;font-weight:700;padding:.15rem .55rem;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+  .badge.good{background:#ecfdf3;color:#1a7f4b}
+  .badge.warn{background:#fff4e5;color:#b45309}
+  .badge.bad{background:#fef2f2;color:#dc2626}
+  .bu-rrow .det{color:var(--muted);min-width:0}
+  .bu-rrow .det b{color:var(--text)}
+  .bu-gate{text-align:center;padding:3rem 1rem}
+  .bu-gate h2{font-family:'Playfair Display',serif;color:var(--gd);font-size:1.4rem;margin:0 0 .6rem}
+  .bu-gate p{color:var(--muted);margin:0 0 1.5rem}
+  [data-theme="dark"] body{background:#0f1411}
+  [data-theme="dark"] .bu-card{background:#16201a;border-color:#26352b}
+  [data-theme="dark"] .bu-card h2,[data-theme="dark"] .bu-head h1,[data-theme="dark"] table.bu-cols td{color:#e8e8e8}
+</style>
+</head>
+<body>
+<nav class="nav" id="main-nav"></nav>
+
+<div class="bu-wrap">
+  <div class="bu-head">
+    <h1>Bulk upload your listings</h1>
+    <p>Add your whole portfolio in one go: fill a CSV (one property per row) and zip the photos it references. We'll create every valid listing and attach its images automatically.</p>
+  </div>
+
+  <!-- Access gate (shown if not an agent) -->
+  <div id="bu-gate" class="bu-card bu-gate" style="display:none">
+    <h2 style="justify-content:center">Agents only</h2>
+    <p id="bu-gate-msg">Bulk upload is available to agent accounts. Create an agent account to use it.</p>
+    <a class="bu-btn bu-btn-primary" href="agent-signup.html">Become an agent →</a>
+  </div>
+
+  <!-- Main flow (shown to agents) -->
+  <div id="bu-main" style="display:none">
+    <div class="bu-card">
+      <h2><span class="bu-num">1</span> Download the CSV template</h2>
+      <p>Each row is one property. Keep the header row. Boolean columns accept <code>yes</code>/<code>no</code>. The <code>images</code> column lists the photo filenames for that row, separated by semicolons (the first becomes the main photo).</p>
+      <table class="bu-cols">
+        <thead><tr><th>Required</th><th>Optional</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req">title, description, listing_type, property_type, price, county, address_line1</span></td>
+            <td>address_area, eircode, bedrooms, bathrooms, floor_size_m2, ber_rating, property_style, parking, garden, garage, alarm, wheelchair, is_auction, is_new_dev, available_from, ensuite, plan, images</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:.6rem"><code>listing_type</code>: sale · rent · share &nbsp;|&nbsp; <code>property_type</code>: house · apartment · bungalow · site · office · retail · industrial · land · commercial &nbsp;|&nbsp; <code>plan</code>: standard · featured</p>
+      <div style="margin-top:1rem">
+        <button class="bu-btn bu-btn-ghost" id="bu-tpl">⬇ Download template (.csv)</button>
+      </div>
+    </div>
+
+    <div class="bu-card">
+      <h2><span class="bu-num">2</span> Prepare your photos</h2>
+      <p>Put all photos into a single <code>.zip</code> file. Filenames must match exactly what you put in the <code>images</code> column (e.g. <code>rathmines-front.jpg</code>). Supported: JPG, PNG, WebP, GIF, HEIC. Photos are optional — rows without images still create a listing.</p>
+    </div>
+
+    <div class="bu-card">
+      <h2><span class="bu-num">3</span> Upload</h2>
+      <p>Up to <b>100 listings</b> per upload. Listings follow normal pricing and go to review before publishing.</p>
+      <div class="bu-file">
+        <label for="bu-csv">CSV file <span class="req">*</span></label>
+        <input type="file" id="bu-csv" accept=".csv,text/csv"/>
+      </div>
+      <div class="bu-file">
+        <label for="bu-zip">Photos ZIP (optional)</label>
+        <input type="file" id="bu-zip" accept=".zip,application/zip,application/x-zip-compressed"/>
+      </div>
+      <div id="bu-alert"></div>
+      <div style="margin-top:1rem">
+        <button class="bu-btn bu-btn-primary" id="bu-go">Upload &amp; create listings</button>
+      </div>
+      <div id="bu-results"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav();
+
+  (async function init(){
+    if (!API.auth.isLoggedIn()) {
+      window.location.href = '/pages/login.html?next=/pages/bulk-upload.html'
+      return
+    }
+    var me
+    try { me = await API.auth.me() } catch(e){ me = API.getUser() || {} }
+    var role = (me && me.role) || ''
+    if (role !== 'agent' && role !== 'admin') {
+      document.getElementById('bu-gate').style.display = 'block'
+      return
+    }
+    document.getElementById('bu-main').style.display = 'block'
+  })()
+
+  document.getElementById('bu-tpl').addEventListener('click', function(){
+    // Template is a public GET; open directly so the browser downloads it.
+    window.location.href = API.bulk.templateUrl()
+  })
+
+  function alertMsg(kind, html){
+    document.getElementById('bu-alert').innerHTML =
+      '<div class="bu-msg ' + kind + '">' + html + '</div>'
+  }
+
+  document.getElementById('bu-go').addEventListener('click', async function(){
+    var csv = document.getElementById('bu-csv').files[0]
+    var zip = document.getElementById('bu-zip').files[0]
+    var btn = this
+    document.getElementById('bu-results').innerHTML = ''
+    if (!csv) { alertMsg('err', 'Please choose your CSV file first.'); return }
+    if (!/\.csv$/i.test(csv.name)) { alertMsg('err', 'That doesn’t look like a .csv file.'); return }
+    if (zip && !/\.zip$/i.test(zip.name)) { alertMsg('err', 'The photos file must be a .zip.'); return }
+
+    btn.disabled = true; btn.textContent = 'Uploading…'
+    alertMsg('ok', 'Uploading and creating listings — this can take a moment for large portfolios…')
+    try {
+      var data = await API.bulk.upload(csv, zip)
+      alertMsg('ok', '<b>' + data.message + '</b>')
+      renderResults(data.results || [])
+    } catch(e) {
+      alertMsg('err', e.message || 'Upload failed. Please check your CSV and try again.')
+    } finally {
+      btn.disabled = false; btn.textContent = 'Upload & create listings'
+    }
+  })
+
+  function renderResults(rows){
+    if (!rows.length) return
+    var html = '<div class="bu-results">'
+    rows.forEach(function(r){
+      var ok   = r.status === 'submitted_for_review' || r.status === 'awaiting_payment'
+      var cls  = ok ? 'good' : (r.status === 'skipped' ? 'warn' : 'bad')
+      var label = ok ? (r.status === 'awaiting_payment' ? 'Created · pay' : 'Created')
+                      : (r.status === 'skipped' ? 'Skipped' : 'Error')
+      var det = '<b>Row ' + r.row + ':</b> ' + escapeHtml(r.title || '')
+      if (r.errors && r.errors.length) det += '<br>' + r.errors.map(escapeHtml).join('<br>')
+      if (r.notes && r.notes.length)   det += '<br><span style="color:#b45309">' + r.notes.map(escapeHtml).join('<br>') + '</span>'
+      if (typeof r.photos_added === 'number') det += '<br>' + r.photos_added + ' photo(s) added'
+      html += '<div class="bu-rrow"><span class="badge ' + cls + '">' + label +
+              '</span><span class="det">' + det + '</span></div>'
+    })
+    html += '</div>'
+    document.getElementById('bu-results').innerHTML = html
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+  }
+</script>
+</body>
+</html>

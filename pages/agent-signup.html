@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>(function(){var t=localStorage.getItem('movin_theme');if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t)})()</script>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>For Estate Agents – List on Movin.ie</title>
+<meta name="description" content="List your properties on Movin.ie. Free for agents until 25 November 2025, then €29.99 per listing or €149.99/month for unlimited. Bulk-upload your whole portfolio in one go."/>
+<meta property="og:title" content="For Estate Agents – Movin.ie"/>
+<meta property="og:description" content="Reach buyers and renters across Ireland. Free agent listings until 25 Nov 2025, bulk CSV upload, fair flat pricing."/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../css/main.css"/>
+<link rel="manifest" href="/manifest.json"/>
+<link rel="apple-touch-icon" href="/favicon.svg"/>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+<meta name="theme-color" content="#1a5c45"/>
+<style>
+  :root{--g:#1a5c45;--gd:#0e3d2e;--gl:#e9f4ef;--o:#e07b3f;--border:#dad6c8;--paper:#faf7f0;--text:#1f2421;--muted:#737069}
+  *{box-sizing:border-box}
+  body{background:var(--paper)}
+  .as-hero{background:linear-gradient(140deg,var(--gd) 0%,var(--g) 60%,#1f6e52 100%);color:#fff;padding:4rem 1.25rem 4.5rem;position:relative;overflow:hidden}
+  .as-hero::after{content:'';position:absolute;right:-120px;top:-120px;width:380px;height:380px;background:radial-gradient(circle,rgba(224,123,63,.35),transparent 70%);pointer-events:none}
+  .as-wrap{max-width:1040px;margin:0 auto}
+  .as-hero h1{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:clamp(2rem,5vw,3.25rem);line-height:1.08;margin:0 0 1rem;max-width:14ch}
+  .as-hero h1 em{color:var(--o);font-style:normal}
+  .as-hero p{font-size:clamp(1rem,1.6vw,1.2rem);font-weight:300;max-width:54ch;line-height:1.6;opacity:.95;margin:0 0 2rem}
+  .as-cta-row{display:flex;flex-wrap:wrap;gap:.85rem}
+  .as-btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:500;font-size:15px;padding:.95rem 1.6rem;border-radius:999px;text-decoration:none;cursor:pointer;border:0;transition:transform .12s,box-shadow .15s}
+  .as-btn:hover{transform:translateY(-2px)}
+  .as-btn-primary{background:var(--o);color:#fff;box-shadow:0 10px 28px rgba(224,123,63,.4)}
+  .as-btn-ghost{background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.4)}
+  .as-trust{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:2.25rem;font-size:13px;opacity:.9}
+  .as-trust span{display:flex;align-items:center;gap:.4rem}
+
+  section{padding:3.5rem 1.25rem}
+  .as-section-head{text-align:center;max-width:46ch;margin:0 auto 2.5rem}
+  .as-section-head h2{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:clamp(1.5rem,3.4vw,2.3rem);color:var(--gd);margin:0 0 .6rem}
+  .as-section-head p{color:var(--muted);font-size:1rem;line-height:1.6;margin:0}
+
+  .as-grid{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem}
+  .as-card{background:var(--white,#fffdf8);border:1px solid var(--border);border-radius:18px;padding:1.6rem;transition:transform .15s,box-shadow .15s}
+  .as-card:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(14,61,46,.1)}
+  .as-card .ic{width:46px;height:46px;border-radius:13px;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:1rem}
+  .as-card h3{font-size:1.05rem;color:var(--gd);margin:0 0 .45rem;font-weight:600}
+  .as-card p{color:var(--muted);font-size:.92rem;line-height:1.6;margin:0}
+
+  /* Pricing */
+  .as-pricing{background:var(--paper-deep,#f3eee0)}
+  .as-free-banner{max-width:1040px;margin:0 auto 2rem;background:linear-gradient(135deg,var(--g),var(--gd));color:#fff;border-radius:18px;padding:1.5rem 1.75rem;display:flex;gap:1rem;align-items:flex-start}
+  .as-free-banner .big{font-size:34px;line-height:1;flex-shrink:0}
+  .as-free-banner strong{font-size:1.15rem;display:block;margin-bottom:.3rem}
+  .as-free-banner span{font-size:.95rem;opacity:.92;line-height:1.55}
+  .as-plans{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.1rem}
+  .as-plan{background:var(--white,#fffdf8);border:1.5px solid var(--border);border-radius:18px;padding:1.85rem;position:relative}
+  .as-plan.feat{border-color:var(--g);box-shadow:0 16px 40px rgba(26,92,69,.14)}
+  .as-plan .tag{position:absolute;top:-12px;left:1.85rem;background:var(--o);color:#fff;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:.3rem .7rem;border-radius:999px}
+  .as-plan h3{font-size:1.05rem;color:var(--gd);margin:0 0 .25rem;font-weight:600}
+  .as-plan .price{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:2.1rem;color:var(--gd);margin:.4rem 0}
+  .as-plan .price small{font-size:.9rem;font-weight:400;color:var(--muted);font-family:'DM Sans',sans-serif}
+  .as-plan .sub{color:var(--muted);font-size:.88rem;margin:0 0 1.1rem;min-height:2.4em}
+  .as-plan ul{list-style:none;padding:0;margin:0 0 .5rem}
+  .as-plan li{font-size:.9rem;color:var(--text);padding:.4rem 0 .4rem 1.5rem;position:relative;line-height:1.45}
+  .as-plan li::before{content:'✓';position:absolute;left:0;color:var(--g);font-weight:700}
+  .as-fine{max-width:1040px;margin:1.5rem auto 0;font-size:.82rem;color:var(--muted);text-align:center;line-height:1.6}
+  .as-fine a{color:var(--g);font-weight:500}
+
+  /* Steps */
+  .as-steps{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
+  .as-step{text-align:center}
+  .as-step .n{width:54px;height:54px;border-radius:50%;background:var(--g);color:#fff;font-family:'Playfair Display',serif;font-weight:900;font-size:1.4rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+  .as-step h3{font-size:1rem;color:var(--gd);margin:0 0 .4rem}
+  .as-step p{font-size:.9rem;color:var(--muted);line-height:1.55;margin:0}
+
+  .as-final{background:linear-gradient(140deg,var(--gd),var(--g));color:#fff;text-align:center}
+  .as-final h2{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:clamp(1.6rem,3.6vw,2.4rem);margin:0 0 .8rem}
+  .as-final p{opacity:.9;max-width:48ch;margin:0 auto 2rem;line-height:1.6}
+
+  details.as-faq{max-width:760px;margin:0 auto;border-bottom:1px solid var(--border)}
+  details.as-faq summary{cursor:pointer;padding:1.1rem .25rem;font-weight:600;color:var(--gd);font-size:1rem;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+  details.as-faq summary::-webkit-details-marker{display:none}
+  details.as-faq summary::after{content:'+';color:var(--o);font-size:1.3rem;line-height:1}
+  details.as-faq[open] summary::after{content:'–'}
+  details.as-faq p{color:var(--muted);font-size:.93rem;line-height:1.65;padding:0 .25rem 1.1rem;margin:0}
+
+  [data-theme="dark"] body{background:#0f1411}
+  [data-theme="dark"] .as-card,[data-theme="dark"] .as-plan{background:#16201a;border-color:#26352b}
+  [data-theme="dark"] .as-card h3,[data-theme="dark"] .as-plan h3,[data-theme="dark"] .as-plan .price,[data-theme="dark"] .as-section-head h2,[data-theme="dark"] details.as-faq summary{color:#e8e8e8}
+  [data-theme="dark"] .as-pricing{background:#0f1411}
+  [data-theme="dark"] .as-step h3{color:#e8e8e8}
+</style>
+</head>
+<body>
+<nav class="nav" id="main-nav"></nav>
+
+<header class="as-hero">
+  <div class="as-wrap">
+    <h1>Sell &amp; let <em>more</em> property, faster.</h1>
+    <p>Movin.ie is Ireland's fair-priced property marketplace for estate agents, landlords and developers. List one home or your entire portfolio — and reach buyers and renters nationwide.</p>
+    <div class="as-cta-row">
+      <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Create your agent account →</a>
+      <a class="as-btn as-btn-ghost" href="#pricing">See pricing</a>
+    </div>
+    <div class="as-trust">
+      <span>✓ Free for agents until 25 Nov 2025</span>
+      <span>✓ Bulk CSV upload</span>
+      <span>✓ Flat, transparent pricing</span>
+      <span>✓ No lock-in contracts</span>
+    </div>
+  </div>
+</header>
+
+<!-- Why Movin -->
+<section>
+  <div class="as-section-head">
+    <h2>Built for agents who want fair pricing</h2>
+    <p>No percentage commissions, no opaque tiers. Just a clean marketplace and tools that save you time.</p>
+  </div>
+  <div class="as-grid">
+    <div class="as-card">
+      <div class="ic">📤</div>
+      <h3>Bulk portfolio upload</h3>
+      <p>Upload your whole book at once with a simple CSV plus a ZIP of photos. No re-keying listing by listing.</p>
+    </div>
+    <div class="as-card">
+      <div class="ic">🏷️</div>
+      <h3>Residential &amp; commercial</h3>
+      <p>List houses, apartments and sites alongside offices, retail and industrial units — all in one account.</p>
+    </div>
+    <div class="as-card">
+      <div class="ic">📊</div>
+      <h3>Agent dashboard</h3>
+      <p>Manage every listing, track enquiries and mark properties sale agreed or let agreed in a few clicks.</p>
+    </div>
+    <div class="as-card">
+      <div class="ic">✨</div>
+      <h3>AI listing writer</h3>
+      <p>Turn rough notes into a polished, honest description in seconds — it never invents facts.</p>
+    </div>
+    <div class="as-card">
+      <div class="ic">🇮🇪</div>
+      <h3>Nationwide reach</h3>
+      <p>Buyers and renters search by county, area, Eircode and budget across all 26 counties.</p>
+    </div>
+    <div class="as-card">
+      <div class="ic">🤝</div>
+      <h3>Verified agent profile</h3>
+      <p>Show your agency name and PSRA licence to build instant trust with serious buyers.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pricing -->
+<section class="as-pricing" id="pricing">
+  <div class="as-section-head">
+    <h2>Simple, honest pricing</h2>
+    <p>You list free during our launch period. After that, a flat fee — never a slice of your sale.</p>
+  </div>
+
+  <div class="as-free-banner">
+    <span class="big">🎉</span>
+    <div>
+      <strong>Free for estate agents until 25 November 2025</strong>
+      <span>List as many properties as you like at no cost during the 6-month agent launch period (which began 25 May 2025). The pricing below only applies <em>after</em> that date — and an active Unlimited subscription always keeps standard listings free.</span>
+    </div>
+  </div>
+
+  <div class="as-plans">
+    <div class="as-plan">
+      <h3>Single listing</h3>
+      <div class="price">€29.99 <small>/ listing</small></div>
+      <p class="sub">Pay as you go — only after 25 Nov 2025.</p>
+      <ul>
+        <li>Full listing page &amp; photo gallery</li>
+        <li>Enquiry inbox</li>
+        <li>30 days live</li>
+        <li>Residential or commercial</li>
+      </ul>
+    </div>
+    <div class="as-plan feat">
+      <span class="tag">Best value</span>
+      <h3>Unlimited subscription</h3>
+      <div class="price">€149.99 <small>/ month</small></div>
+      <p class="sub">Unlimited active listings. Cancel any time.</p>
+      <ul>
+        <li>Everything in Single listing</li>
+        <li>Unlimited standard listings</li>
+        <li>No per-listing fee while active</li>
+        <li>Bulk upload your full portfolio</li>
+      </ul>
+    </div>
+    <div class="as-plan">
+      <h3>Featured upgrade</h3>
+      <div class="price">€14.99 <small>/ listing</small></div>
+      <p class="sub">Optional add-on — available any time, for everyone.</p>
+      <ul>
+        <li>Featured badge on cards</li>
+        <li>Top of search results</li>
+        <li>~2× more views on average</li>
+        <li>Stacks on any plan</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="as-fine">
+    All prices include VAT where applicable and are processed securely by Stripe. Private sellers &amp; landlords list free until 25 May 2026 (reviewed thereafter).
+    Full details in our <a href="terms-of-service.html#pricing" target="_blank" rel="noopener">Terms of Service</a>. We give 30 days' notice of any change to active subscriptions.
+  </p>
+</section>
+
+<!-- How it works -->
+<section>
+  <div class="as-section-head">
+    <h2>From sign-up to live in minutes</h2>
+    <p>Especially fast if you bulk-upload your whole portfolio.</p>
+  </div>
+  <div class="as-steps">
+    <div class="as-step">
+      <div class="n">1</div>
+      <h3>Create your agent account</h3>
+      <p>Add your agency name and PSRA number — verified and shown on your listings.</p>
+    </div>
+    <div class="as-step">
+      <div class="n">2</div>
+      <h3>Add your properties</h3>
+      <p>List them one by one, or bulk-upload a CSV with a ZIP of photos.</p>
+    </div>
+    <div class="as-step">
+      <div class="n">3</div>
+      <h3>We review &amp; publish</h3>
+      <p>Each listing is checked, then goes live to buyers and renters across Ireland.</p>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:2.25rem">
+    <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Get started — it's free →</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="as-pricing">
+  <div class="as-section-head"><h2>Agent questions</h2></div>
+  <details class="as-faq"><summary>Is it really free for agents right now?</summary>
+    <p>Yes. Estate agents list free for 6 months from 25 May 2025 — that's until 25 November 2025. After that, standard listings are €29.99 each or €149.99/month for unlimited. We'll always give 30 days' notice before charging an active subscription differently.</p></details>
+  <details class="as-faq"><summary>How does bulk upload work?</summary>
+    <p>Download our CSV template from your dashboard, fill one row per property, and reference your photo filenames. Zip those photos, then upload the CSV and ZIP together — we create every valid listing and attach its images automatically. Up to 100 listings per upload.</p></details>
+  <details class="as-faq"><summary>Can I list commercial property?</summary>
+    <p>Absolutely. Agent accounts can list residential (houses, apartments, sites) and commercial (office, retail, industrial, land) in the same place.</p></details>
+  <details class="as-faq"><summary>Do you take commission on sales?</summary>
+    <p>Never. Movin.ie is a flat-fee marketplace — you keep 100% of your commission. We only charge the listing fees shown above.</p></details>
+  <details class="as-faq"><summary>Can I cancel the subscription?</summary>
+    <p>Any time. The Unlimited subscription cancels at the end of your current billing period, so you keep what you've already paid for.</p></details>
+</section>
+
+<!-- Final CTA -->
+<section class="as-final">
+  <div class="as-wrap">
+    <h2>List your portfolio on Movin.ie today</h2>
+    <p>Join the fair-priced marketplace built for Irish agents. Free to start, no contracts, no commission.</p>
+    <div style="display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap">
+      <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Create your agent account →</a>
+      <a class="as-btn as-btn-ghost" href="login.html">I already have an account</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer" id="site-footer"></footer>
+
+<script>window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'</script>
+<script src="../js/icons.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/app.js"></script>
+<script>
+  renderNav()
+  // Smooth-scroll the in-page "See pricing" link.
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var t = document.querySelector(a.getAttribute('href'))
+      if (t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}) }
+    })
+  })
+</script>
+</body>
+</html>

@@ -64,6 +64,14 @@ const auth = {
     return data
   },
 
+  // Full registration payload (used by the agent sign-up page — includes
+  // account_type:'agent' plus agency_name / psra_number / agent_county etc.)
+  async registerFull(body) {
+    const data = await request('POST', '/api/auth/register', body)
+    if (data && data.token) { setToken(data.token); setUser(data.user) }
+    return data
+  },
+
   async login(email, password) {
     const data = await request('POST', '/api/auth/login', { email, password })
     setToken(data.token)
@@ -241,6 +249,22 @@ const push = {
   }
 }
 
+// ── Bulk upload (agents) ──────────────────────────────────────────────────────
+
+const bulk = {
+  templateUrl() {
+    return `${getApiUrl()}/api/bulk/template`
+  },
+
+  // csvFile: File, zipFile: File|null
+  async upload(csvFile, zipFile) {
+    const fd = new FormData()
+    fd.append('csv', csvFile)
+    if (zipFile) fd.append('images', zipFile)
+    return request('POST', '/api/bulk/upload', fd, true)
+  }
+}
+
 // ── Post-auth destination ─────────────────────────────────────────────────────
 // Use after register/login/verify to send the user to the right home page.
 // Agents get the agent dashboard; everyone else gets the regular dashboard.
@@ -252,4 +276,4 @@ function postAuthDest(user, fallback) {
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, getUser, getToken, postAuthDest }
+window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, getUser, getToken, postAuthDest }
