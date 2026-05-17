@@ -91,6 +91,25 @@ const auth = {
     return data
   },
 
+  // Upload / replace the agency logo (multipart). Requires an auth token —
+  // call right after registerFull() returns one.
+  async uploadAgencyLogo(file) {
+    const fd = new FormData()
+    fd.append('logo', file)
+    return request('POST', '/api/auth/agency-logo', fd, true)
+  },
+
+  // ── Admin: agent applications ──
+  async adminListAgents(status) {
+    return request('GET', '/api/auth/admin/agents?status=' + encodeURIComponent(status || 'pending'))
+  },
+  async adminApproveAgent(id) {
+    return request('PUT', `/api/auth/admin/agents/${id}/approve`)
+  },
+  async adminRejectAgent(id, reason) {
+    return request('PUT', `/api/auth/admin/agents/${id}/reject`, { reason: reason || null })
+  },
+
   logout() {
     clearToken()
     window.location.href = '/'
@@ -249,6 +268,24 @@ const push = {
   }
 }
 
+// ── Reviews / agent ratings ───────────────────────────────────────────────────
+
+const reviews = {
+  // reviewed_user_id, rating (1-5), comment, listing_id?, review_type?
+  async submit(payload) {
+    return request('POST', '/api/reviews', payload)
+  },
+  async forUser(userId) {
+    return request('GET', `/api/reviews/user/${userId}`)
+  },
+  async adminAll() {
+    return request('GET', '/api/reviews/admin/all')
+  },
+  async moderate(id, status) {
+    return request('PUT', `/api/reviews/${id}/moderate`, { status })
+  }
+}
+
 // ── Bulk upload (agents) ──────────────────────────────────────────────────────
 
 const bulk = {
@@ -276,4 +313,4 @@ function postAuthDest(user, fallback) {
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, getUser, getToken, postAuthDest }
+window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, getUser, getToken, postAuthDest }

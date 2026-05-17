@@ -411,6 +411,8 @@
     .rp-btn-phone:hover{background:#e9f4ef}
     .rp-agent{display:flex;align-items:center;gap:.75rem;padding-top:.85rem;border-top:1px solid var(--border)}
     .rp-agent-av{width:40px;height:40px;border-radius:50%;background:var(--gl,#e9f4ef);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:700;color:#1a5c45;flex-shrink:0}
+    .rp-agent-logo{width:46px;height:46px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--border,#e8e4dc);flex-shrink:0}
+    .rp-agent-verified{font-size:11px;color:#1a7f4b;font-weight:600;display:flex;align-items:center;gap:3px;margin:1px 0 2px}
     .rp-details-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem}
     .rp-detail-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text,#333);background:var(--bg,#f5f2ec);border-radius:10px;padding:.6rem .75rem}
     .rp-detail-ico{width:28px;height:28px;border-radius:8px;background:var(--gl,#e9f4ef);display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -1594,11 +1596,26 @@
                 L.lister_phone +
               '</a>'
             : '') +
-            '<div class="rp-agent">' +
-              '<div class="rp-agent-av">' + (L.lister_name||'O').charAt(0).toUpperCase() + '</div>' +
-              '<div><div style="font-size:14px;font-weight:600;color:var(--text,#111)">' + (L.lister_name||'Owner') + '</div>' +
-              '<a href="agent.html?id=' + L.user_id + '" style="font-size:12px;color:#1a5c45;text-decoration:none">View all listings →</a></div>' +
-            '</div>' +
+            (function(){
+              var isAgent = (L.lister_role === 'agent') || !!L.agency_name
+              var who = (isAgent && L.agency_name) ? L.agency_name : (L.lister_name || 'Owner')
+              var altSafe = String(who).replace(/"/g,'')
+              var avatar = (isAgent && L.agency_logo_url)
+                ? '<img src="' + L.agency_logo_url + '" alt="' + altSafe + '" class="rp-agent-logo"/>'
+                : '<div class="rp-agent-av">' + String(who).charAt(0).toUpperCase() + '</div>'
+              return '<div class="rp-agent">' +
+                avatar +
+                '<div style="min-width:0">' +
+                  '<div style="font-size:14px;font-weight:600;color:var(--text,#111)">' + who + '</div>' +
+                  (isAgent
+                    ? '<div class="rp-agent-verified">✓ Verified agent' + (L.agent_county ? ' · ' + L.agent_county : '') + '</div>'
+                    : '') +
+                  '<a href="agent.html?id=' + L.user_id + '" style="font-size:12px;color:#1a5c45;text-decoration:none;font-weight:500">' +
+                    (isAgent ? 'View agency &amp; listings →' : 'View all listings →') +
+                  '</a>' +
+                '</div>' +
+              '</div>'
+            })() +
           '</div>' +
           '<div class="rp-card">' +
             '<div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem">Property details</div>' +

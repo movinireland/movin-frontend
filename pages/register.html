@@ -257,16 +257,17 @@
   })
 
   function setType(type) {
+    // Agents have a dedicated application (company details + logo, admin
+    // approval, no Google sign-in). Send them to that flow instead of the
+    // personal Google/email signup.
+    if (type === 'agent') {
+      window.location.href = 'agent-signup.html'
+      return
+    }
     accountType = type
     document.getElementById('btn-personal').classList.toggle('on', type === 'personal')
     document.getElementById('btn-agent').classList.toggle('on', type === 'agent')
-    document.getElementById('agent-fields').style.display = type === 'agent' ? 'block' : 'none'
-    // Make agent fields required
-    var agentReqs = ['agency_name', 'agent_county']
-    agentReqs.forEach(function(id) {
-      var el = document.getElementById(id)
-      if (el) el.required = type === 'agent'
-    })
+    document.getElementById('agent-fields').style.display = 'none'
   }
 
   function setStep(n) {

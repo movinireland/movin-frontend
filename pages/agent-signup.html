@@ -87,6 +87,24 @@
   [data-theme="dark"] .as-card h3,[data-theme="dark"] .as-plan h3,[data-theme="dark"] .as-plan .price,[data-theme="dark"] .as-section-head h2,[data-theme="dark"] details.as-faq summary{color:#e8e8e8}
   [data-theme="dark"] .as-pricing{background:#0f1411}
   [data-theme="dark"] .as-step h3{color:#e8e8e8}
+
+  /* Application form */
+  .afg{margin-bottom:.95rem}
+  .af-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+  @media(max-width:520px){.af-row{grid-template-columns:1fr}}
+  .afg label{display:block;font-size:.83rem;font-weight:600;color:var(--text);margin-bottom:.35rem}
+  .afg label i{color:var(--o);font-style:normal}
+  .afg input,.afg select,.afg textarea{width:100%;font:inherit;font-size:15px;padding:.7rem .85rem;border:1.5px solid var(--border);border-radius:11px;background:var(--paper);color:var(--text);outline:none;transition:border-color .15s}
+  .afg input:focus,.afg select:focus,.afg textarea:focus{border-color:var(--g)}
+  .afg textarea{resize:vertical}
+  .af-hint{font-size:12px;color:var(--muted);margin-top:.35rem;line-height:1.5}
+  .af-terms{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--muted);line-height:1.55;margin:.4rem 0 1rem;cursor:pointer}
+  .af-terms input{width:18px;height:18px;accent-color:var(--g);flex-shrink:0;margin-top:1px}
+  .af-terms a{color:var(--g);font-weight:600}
+  .af-msg{border-radius:11px;padding:.8rem 1rem;font-size:.9rem;line-height:1.5;margin-bottom:1rem}
+  .af-msg.err{background:#fef2f2;border:1px solid #fecaca;color:#dc2626}
+  [data-theme="dark"] #apply-card{background:#16201a;border-color:#26352b}
+  [data-theme="dark"] .afg input,[data-theme="dark"] .afg select,[data-theme="dark"] .afg textarea{background:#0f1411;border-color:#26352b;color:#e8e8e8}
 </style>
 </head>
 <body>
@@ -97,7 +115,7 @@
     <h1>Sell &amp; let <em>more</em> property, faster.</h1>
     <p>Movin.ie is Ireland's fair-priced property marketplace for estate agents, landlords and developers. List one home or your entire portfolio — and reach buyers and renters nationwide.</p>
     <div class="as-cta-row">
-      <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Create your agent account →</a>
+      <a class="as-btn as-btn-primary" href="#apply">Create your agent account →</a>
       <a class="as-btn as-btn-ghost" href="#pricing">See pricing</a>
     </div>
     <div class="as-trust">
@@ -231,7 +249,7 @@
     </div>
   </div>
   <div style="text-align:center;margin-top:2.25rem">
-    <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Get started — it's free →</a>
+    <a class="as-btn as-btn-primary" href="#apply">Get started — it's free →</a>
   </div>
 </section>
 
@@ -250,14 +268,64 @@
     <p>Any time. The Unlimited subscription cancels at the end of your current billing period, so you keep what you've already paid for.</p></details>
 </section>
 
-<!-- Final CTA -->
-<section class="as-final">
-  <div class="as-wrap">
-    <h2>List your portfolio on Movin.ie today</h2>
-    <p>Join the fair-priced marketplace built for Irish agents. Free to start, no contracts, no commission.</p>
-    <div style="display:flex;gap:.85rem;justify-content:center;flex-wrap:wrap">
-      <a class="as-btn as-btn-primary" href="register.html?account_type=agent">Create your agent account →</a>
-      <a class="as-btn as-btn-ghost" href="login.html">I already have an account</a>
+<!-- Application form -->
+<section class="as-final" id="apply">
+  <div class="as-wrap" style="max-width:640px">
+    <h2>Create your agent account</h2>
+    <p>Tell us about your agency. We verify every agent before they go live — you'll get an email the moment you're approved.</p>
+
+    <div id="apply-card" style="background:var(--white,#fffdf8);color:var(--text);border-radius:18px;padding:1.75rem;text-align:left;border:1px solid var(--border)">
+      <div id="apply-alert"></div>
+      <form id="agent-form" novalidate>
+        <div class="afg"><label>Full name <i>*</i></label>
+          <input type="text" id="f-name" autocomplete="name" required/></div>
+        <div class="afg"><label>Email address <i>*</i></label>
+          <input type="email" id="f-email" autocomplete="email" required/></div>
+        <div class="af-row">
+          <div class="afg"><label>Password <i>*</i></label>
+            <input type="password" id="f-pass" autocomplete="new-password" placeholder="Min 8 characters" required/></div>
+          <div class="afg"><label>Phone</label>
+            <input type="tel" id="f-phone" autocomplete="tel" placeholder="Shown on your listings"/></div>
+        </div>
+        <hr style="border:0;border-top:1px solid var(--border);margin:1.25rem 0"/>
+        <div class="afg"><label>Agency / company name <i>*</i></label>
+          <input type="text" id="f-agency" placeholder="e.g. Murphy &amp; Co Estate Agents" required/></div>
+        <div class="af-row">
+          <div class="afg"><label>PSRA licence no.</label>
+            <input type="text" id="f-psra" placeholder="e.g. 001234"/></div>
+          <div class="afg"><label>County you operate in <i>*</i></label>
+            <select id="f-county" required>
+              <option value="">Select county…</option>
+            </select></div>
+        </div>
+        <div class="afg"><label>Website</label>
+          <input type="url" id="f-web" placeholder="https://www.youragency.ie"/></div>
+        <div class="afg"><label>Short agency bio</label>
+          <textarea id="f-bio" rows="3" placeholder="A sentence or two about your agency — shown on your public profile."></textarea></div>
+        <div class="afg"><label>Company logo <i>*</i></label>
+          <input type="file" id="f-logo" accept="image/png,image/jpeg,image/webp,image/svg+xml" required/>
+          <div class="af-hint">Appears on your profile and on every property you list. PNG/JPG/SVG/WebP, max 4 MB.</div>
+          <img id="f-logo-prev" alt="" style="display:none;margin-top:.6rem;max-height:64px;border-radius:8px;background:#fff;padding:6px;border:1px solid var(--border)"/></div>
+        <label class="af-terms" for="f-terms">
+          <input type="checkbox" id="f-terms" required/>
+          <span>I confirm these details are accurate and agree to the
+            <a href="terms-of-service.html" target="_blank" rel="noopener">Terms of Service</a> and
+            <a href="privacy-policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span>
+        </label>
+        <button type="submit" class="as-btn as-btn-primary" id="f-submit" style="width:100%;justify-content:center;margin-top:.5rem">Submit application →</button>
+        <p style="text-align:center;margin:.9rem 0 0;font-size:13px;color:var(--muted)">
+          Already approved? <a href="login.html" style="color:var(--g);font-weight:600">Sign in</a>
+        </p>
+      </form>
+
+      <div id="apply-done" style="display:none;text-align:center;padding:1rem .5rem">
+        <div style="font-size:46px;line-height:1;margin-bottom:.5rem">✅</div>
+        <h3 style="font-family:'Playfair Display',serif;color:var(--gd);margin:.2rem 0 .6rem;font-size:1.3rem">Application received</h3>
+        <p style="color:var(--muted);line-height:1.65;margin:0 auto;max-width:42ch">
+          We've emailed a verification link to <strong id="done-email"></strong>. Verify your email, then our team reviews your agency — you'll get an approval email with a link to your dashboard.
+        </p>
+        <a class="as-btn as-btn-ghost" href="/" style="margin-top:1.25rem">Back to Movin.ie</a>
+      </div>
     </div>
   </div>
 </section>
@@ -269,13 +337,84 @@
 <script src="../js/api.js"></script>
 <script src="../js/app.js"></script>
 <script>
-  renderNav()
-  // Smooth-scroll the in-page "See pricing" link.
+  renderNav();
+
+  // Smooth-scroll in-page links (See pricing / Apply CTAs).
   document.querySelectorAll('a[href^="#"]').forEach(function(a){
     a.addEventListener('click', function(e){
       var t = document.querySelector(a.getAttribute('href'))
       if (t){ e.preventDefault(); t.scrollIntoView({behavior:'smooth'}) }
     })
+  })
+
+  // Populate county dropdown.
+  var COUNTIES = ['Carlow','Cavan','Clare','Cork','Donegal','Dublin','Galway','Kerry','Kildare','Kilkenny','Laois','Leitrim','Limerick','Longford','Louth','Mayo','Meath','Monaghan','Offaly','Roscommon','Sligo','Tipperary','Waterford','Westmeath','Wexford','Wicklow']
+  var csel = document.getElementById('f-county')
+  COUNTIES.forEach(function(c){ var o=document.createElement('option'); o.value=c; o.textContent=c; csel.appendChild(o) })
+
+  // Logo preview.
+  var logoInput = document.getElementById('f-logo')
+  var logoPrev  = document.getElementById('f-logo-prev')
+  logoInput.addEventListener('change', function(){
+    var f = logoInput.files[0]
+    if (!f){ logoPrev.style.display='none'; return }
+    logoPrev.src = URL.createObjectURL(f)
+    logoPrev.style.display = 'inline-block'
+  })
+
+  function afErr(msg){
+    var el = document.getElementById('apply-alert')
+    el.innerHTML = '<div class="af-msg err">' + msg + '</div>'
+    el.scrollIntoView({ behavior:'smooth', block:'center' })
+  }
+
+  document.getElementById('agent-form').addEventListener('submit', async function(e){
+    e.preventDefault()
+    document.getElementById('apply-alert').innerHTML = ''
+    var name   = document.getElementById('f-name').value.trim()
+    var email  = document.getElementById('f-email').value.trim()
+    var pass   = document.getElementById('f-pass').value
+    var phone  = document.getElementById('f-phone').value.trim()
+    var agency = document.getElementById('f-agency').value.trim()
+    var psra   = document.getElementById('f-psra').value.trim()
+    var county = document.getElementById('f-county').value
+    var web    = document.getElementById('f-web').value.trim()
+    var bio    = document.getElementById('f-bio').value.trim()
+    var logo   = logoInput.files[0]
+
+    if (!name || !email || !pass)        return afErr('Please fill in your name, email and password.')
+    if (pass.length < 8)                 return afErr('Password must be at least 8 characters.')
+    if (!agency)                         return afErr('Agency / company name is required.')
+    if (!county)                         return afErr('Please choose the county you operate in.')
+    if (!logo)                           return afErr('Please upload your company logo.')
+    if (logo.size > 4*1024*1024)         return afErr('Logo is too large (max 4 MB).')
+    if (!document.getElementById('f-terms').checked)
+      return afErr('Please accept the Terms of Service and Privacy Policy.')
+
+    var btn = document.getElementById('f-submit')
+    btn.disabled = true; btn.textContent = 'Submitting…'
+    try {
+      await API.auth.registerFull({
+        name: name, email: email, password: pass, phone: phone || null,
+        account_type: 'agent',
+        agency_name: agency, psra_number: psra || null,
+        agent_county: county, agent_website: web || null,
+        agent_bio: bio || null
+      })
+      // Token is set by registerFull — upload the logo against it.
+      try { await API.auth.uploadAgencyLogo(logo) }
+      catch (le) { console.warn('Logo upload failed:', le && le.message) }
+
+      // Pending approval — do NOT keep them logged in / send to a dashboard.
+      try { localStorage.removeItem('movin_token'); localStorage.removeItem('movin_user') } catch(_){}
+      document.getElementById('done-email').textContent = email
+      document.getElementById('agent-form').style.display = 'none'
+      document.getElementById('apply-done').style.display = 'block'
+      document.getElementById('apply-card').scrollIntoView({ behavior:'smooth', block:'center' })
+    } catch (err) {
+      afErr(err && err.message ? err.message : 'Something went wrong. Please try again.')
+      btn.disabled = false; btn.textContent = 'Submit application →'
+    }
   })
 </script>
 </body>

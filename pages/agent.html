@@ -86,6 +86,7 @@
   <div class="agent-hero-inner">
     <div class="agent-card">
       <div class="agent-av" id="av-letter">?</div>
+      <img id="av-logo" alt="" style="display:none;width:72px;height:72px;border-radius:14px;object-fit:contain;background:#fff;padding:6px;flex-shrink:0"/>
       <div style="flex:1">
         <div class="agent-name" id="agent-name">Loading…</div>
         <div class="agent-agency" id="agent-agency" style="display:none"></div>
@@ -165,13 +166,35 @@ async function loadAgent() {
     var data = await res.json()
     var listings = data.listings || []
 
-    var name = listings.length ? (listings[0].lister_name || 'Property owner') : 'Property owner'
+    var first = listings[0] || {}
+    var isAgent = (first.lister_role === 'agent') || !!first.agency_name
+    var personName = first.lister_name || 'Property owner'
+    // For agents, the headline is the agency; the contact name is secondary.
+    var name = (isAgent && first.agency_name) ? first.agency_name : personName
     agentName = name
     var totalViews = listings.reduce(function(s,l) { return s+(l.views||0) }, 0)
 
-    document.getElementById('av-letter').textContent   = name.charAt(0).toUpperCase()
+    if (isAgent && first.agency_logo_url) {
+      var lg = document.getElementById('av-logo')
+      lg.src = first.agency_logo_url
+      lg.style.display = 'block'
+      document.getElementById('av-letter').style.display = 'none'
+    } else {
+      document.getElementById('av-letter').textContent = name.charAt(0).toUpperCase()
+    }
     document.getElementById('agent-name').textContent  = name
-    document.getElementById('agent-meta').textContent  = 'Listed on Movin.ie' + (listings.length && listings[0].county ? ' · ' + listings[0].county : '')
+    if (isAgent) {
+      var ag = document.getElementById('agent-agency')
+      ag.textContent = personName ? ('Contact: ' + personName) : ''
+      ag.style.display = personName ? 'block' : 'none'
+      var vf = document.getElementById('agent-verified')
+      vf.lastChild.textContent = ' Verified agent'
+      vf.style.display = 'flex'
+    }
+    document.getElementById('agent-meta').textContent  =
+      (isAgent ? 'Estate agent on Movin.ie' : 'Listed on Movin.ie') +
+      (first.agent_county ? ' · ' + first.agent_county
+        : (listings.length && first.county ? ' · ' + first.county : ''))
     document.getElementById('stat-listings').textContent = listings.length
     document.getElementById('stat-views').textContent    = totalViews.toLocaleString('en-IE')
     document.title = name + ' – Movin.ie'
