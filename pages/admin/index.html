@@ -644,6 +644,7 @@ async function loadSection(id) {
     case 'enquiries':     await loadEnquiries(); break
     case 'users':         await loadUsers(); break
     case 'agents':        await loadAgents(currentAgentFilter); break
+    case 'reviews':       await loadReviews(); break
     case 'notifications': await loadNotifications(); break
   }
   // Re-evaluate which tables overflow once fresh content is in the DOM
@@ -733,6 +734,58 @@ async function rejectAgent(id, btn) {
 window.loadAgents = loadAgents
 window.approveAgent = approveAgent
 window.rejectAgent = rejectAgent
+
+// ── Reviews moderation ────────────────────────────────────
+async function loadReviews() {
+  var body = document.getElementById('reviews-body')
+  body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr>'
+  try {
+    var rows = await window.API.reviews.adminAll()
+    if (!Array.isArray(rows) || !rows.length) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No reviews yet</td></tr>'
+      return
+    }
+    // Pending first
+    rows.sort(function(a,b){ return (a.status==='pending'?-1:0)-(b.status==='pending'?-1:0) })
+    body.innerHTML = rows.map(function(r){
+      var stars = ''
+      for (var i=1;i<=5;i++) stars += (i<=r.rating?'★':'☆')
+      var d = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'}) : '—'
+      var st = (r.status||'pending').toLowerCase()
+      var stCls = st==='approved'?'status-active':(st==='rejected'?'status-rejected':'status-pending')
+      var acts = st==='pending'
+        ? '<button class="btn-appr" style="font-size:12px;padding:.4rem .7rem;border:0;border-radius:7px;background:#1a7f4b;color:#fff;cursor:pointer;margin-right:5px" onclick="moderateReview(\''+r.id+'\',\'approved\',this)">Approve</button>' +
+          '<button class="btn-rej" style="font-size:12px;padding:.4rem .7rem;border:1.5px solid #fecaca;border-radius:7px;background:#fff;color:#dc2626;cursor:pointer" onclick="moderateReview(\''+r.id+'\',\'rejected\',this)">Reject</button>'
+        : (st==='approved'
+            ? '<button class="btn-rej" style="font-size:12px;padding:.4rem .7rem;border:1.5px solid #fecaca;border-radius:7px;background:#fff;color:#dc2626;cursor:pointer" onclick="moderateReview(\''+r.id+'\',\'rejected\',this)">Unpublish</button>'
+            : '<button class="btn-appr" style="font-size:12px;padding:.4rem .7rem;border:0;border-radius:7px;background:#1a7f4b;color:#fff;cursor:pointer" onclick="moderateReview(\''+r.id+'\',\'approved\',this)">Approve</button>')
+      return '<tr style="'+(st==='pending'?'background:#fffbeb':'')+'">' +
+        '<td>'+agEsc(r.reviewer_name||'—')+'<div style="font-size:11px;color:#999">'+agEsc(r.reviewer_email||'')+'</div></td>' +
+        '<td>'+agEsc(r.reviewed_name||'—')+'</td>' +
+        '<td style="color:#e07b3f;letter-spacing:1px">'+stars+'</td>' +
+        '<td style="max-width:280px">'+agEsc(r.comment||'')+'</td>' +
+        '<td style="white-space:nowrap">'+d+'</td>' +
+        '<td><span class="status-badge '+stCls+'">'+st+'</span></td>' +
+        '<td style="white-space:nowrap">'+acts+'</td>' +
+      '</tr>'
+    }).join('')
+  } catch(e) {
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#dc2626">'+agEsc(e.message||'Could not load reviews')+'</td></tr>'
+  }
+}
+
+async function moderateReview(id, status, btn) {
+  if (btn){ btn.disabled = true; btn.textContent = '…' }
+  try {
+    await window.API.reviews.moderate(id, status)
+    loadReviews()
+  } catch(e) {
+    alert(e.message || 'Could not update review.')
+    if (btn){ btn.disabled = false }
+  }
+}
+window.loadReviews = loadReviews
+window.moderateReview = moderateReview
 
 // ── Notifications (admin broadcast) ───────────────────────
 async function loadNotifications() {
