@@ -767,83 +767,99 @@ body.hero-places-ready .sugg-box{display:none !important}
 }
 
 /* ── Counties showcase ─────────────────────────────────────────────────── */
-.counties-section{padding:2.5rem 1.25rem;max-width:1180px;margin:0 auto}
-@media(min-width:768px){.counties-section{padding:3.5rem 1.5rem}}
+/* ════════ FIND HOMES BY COUNTY — single canonical design ════════ */
+.counties-section{padding:3rem 1.25rem;max-width:1200px;margin:0 auto}
+@media(min-width:768px){.counties-section{padding:4.5rem 1.5rem}}
 .counties-head{
-  display:flex;align-items:baseline;justify-content:space-between;
-  gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap;
+  padding-bottom:1.1rem;border-bottom:1px solid var(--border,#e6e2d8)
+}
+.counties-eyebrow{
+  font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--o,#e07b3f);margin:0 0 .45rem
 }
 .counties-title{
   font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size:clamp(22px,3.4vw,28px);font-weight:900;color:#111;letter-spacing:-.4px;
-  margin:0;line-height:1.15
+  font-size:clamp(25px,4vw,36px);font-weight:900;color:var(--gd,#0e3d2e);
+  letter-spacing:-.6px;margin:0;line-height:1.08
 }
 .counties-all{
-  font-size:13px;font-weight:500;color:var(--g);text-decoration:none;
-  display:inline-flex;align-items:center;gap:5px;
-  transition:color .15s, transform .15s
+  font-size:14px;font-weight:600;color:var(--g,#1a5c45);text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;padding:8px 2px;
+  transition:gap .2s ease, color .2s ease;-webkit-tap-highlight-color:transparent
 }
-.counties-all:hover{color:var(--gd);transform:translateX(2px)}
-.counties-all span{transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.counties-all:hover{color:var(--gd,#0e3d2e);gap:11px}
+.counties-all span{transition:transform .2s cubic-bezier(.2,.7,.2,1)}
 .counties-all:hover span{transform:translateX(3px)}
-.counties-grid{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:.65rem
-}
-@media(min-width:560px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:.75rem}}
-@media(min-width:900px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:1rem}}
+.counties-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
+@media(min-width:640px){.counties-grid{grid-template-columns:repeat(3,1fr);gap:1rem}}
+@media(min-width:980px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:1.15rem}}
 .county-card{
-  position:relative;display:flex;flex-direction:column;gap:.85rem;
-  background:var(--white,#fff);border:1px solid var(--border);border-radius:16px;
-  padding:1.1rem 1.1rem 1.1rem 1.4rem;font-family:inherit;text-align:left;
+  position:relative;display:flex;flex-direction:column;gap:1rem;
+  background:var(--white,#fff);border:1px solid var(--border,#e6e2d8);border-radius:18px;
+  padding:1.3rem 1.3rem 1.3rem 1.55rem;font-family:inherit;text-align:left;overflow:hidden;
   transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease;
-  -webkit-tap-highlight-color:transparent;overflow:hidden;
+  -webkit-tap-highlight-color:transparent
 }
 .county-card-stripe{
-  position:absolute;left:0;top:14%;bottom:14%;width:3px;border-radius:0 3px 3px 0;
-  background:linear-gradient(180deg, var(--g), #2a7d5c);
-  transition:width .22s cubic-bezier(.2,.7,.2,1), top .22s ease, bottom .22s ease;
+  position:absolute;left:0;top:20%;bottom:20%;width:4px;border-radius:0 4px 4px 0;
+  background:linear-gradient(180deg,var(--o,#e07b3f),var(--g,#1a5c45));
+  transition:top .25s ease, bottom .25s ease
 }
 .county-card:hover{
-  transform:translateY(-3px);
-  box-shadow:0 14px 30px rgba(26,92,69,.10), 0 4px 10px rgba(0,0,0,.04);
-  border-color:rgba(26,92,69,.20);
+  transform:translateY(-4px);
+  box-shadow:0 20px 38px -18px rgba(14,61,46,.32), 0 4px 12px rgba(0,0,0,.04);
+  border-color:rgba(26,92,69,.28)
 }
-.county-card:hover .county-card-stripe{ width:5px; top:0; bottom:0; border-radius:0 4px 4px 0 }
-.county-card-top{
-  display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;flex-wrap:wrap
-}
+.county-card:hover .county-card-stripe{top:0;bottom:0}
+.county-card-top{display:flex;flex-direction:column;gap:.3rem;min-width:0}
 .county-card-name{
   font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size:18px;font-weight:700;color:var(--text,#111);letter-spacing:-.2px;line-height:1.1
+  font-size:clamp(18px,2vw,21px);font-weight:900;color:var(--gd,#0e3d2e);
+  letter-spacing:-.3px;line-height:1.12;display:flex;align-items:center;gap:7px
+}
+.county-card-name::before{
+  content:"";width:15px;height:15px;flex-shrink:0;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e07b3f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") center/contain no-repeat
 }
 .county-card-meta{
-  font-size:11.5px;color:var(--muted,#888);font-weight:400;display:inline-flex;align-items:center;gap:4px
+  font-size:12.5px;color:var(--muted,#7a7a72);font-weight:500;
+  display:inline-flex;align-items:center;gap:5px
 }
-.county-card[data-has-count="1"] .county-card-meta{ color:var(--g);font-weight:600 }
-.county-card-acts{ display:flex;gap:8px }
+.county-card[data-has-count="1"] .county-card-meta{color:var(--g,#1a5c45);font-weight:700}
+.county-card-acts{display:flex;gap:.55rem;margin-top:auto}
 .county-act{
-  flex:1;border:1.5px solid var(--border);border-radius:50px;
-  padding:8px 10px;font-size:13px;font-weight:600;font-family:inherit;
-  cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;
-  background:var(--paper-deep,#f3eee0);color:var(--text,#1f2421)
+  flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
+  border:1.5px solid transparent;border-radius:50px;
+  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
+  transition:background .18s ease, color .18s ease, border-color .18s ease, transform .12s ease, box-shadow .18s ease;
+  -webkit-tap-highlight-color:transparent
 }
-.county-act.buy{ background:var(--g);color:#fff;border-color:var(--g);box-shadow:0 6px 14px -6px rgba(26,92,69,.45) }
-.county-act.buy:hover{ background:var(--gd);transform:translateY(-1px);box-shadow:0 9px 20px -6px rgba(26,92,69,.5) }
-.county-act.rent{ background:transparent;color:var(--g);border-color:var(--g) }
-.county-act.rent:hover{ background:var(--gl);transform:translateY(-1px) }
-.county-act:active{ transform:scale(.96) }
+.county-act.buy{background:var(--g,#1a5c45);color:#fff;box-shadow:0 8px 18px -9px rgba(26,92,69,.6)}
+.county-act.buy:hover{background:var(--gd,#0e3d2e);box-shadow:0 12px 24px -9px rgba(26,92,69,.65)}
+.county-act.rent{background:transparent;color:var(--g,#1a5c45);border-color:rgba(26,92,69,.32)}
+.county-act.rent:hover{background:var(--gl,#e9f4ef);border-color:var(--g,#1a5c45)}
+.county-act:active{transform:scale(.96)}
 
 /* Cascade reveal — staggered by JS via transition-delay */
-.counties-section .county-card{opacity:0;transform:translateY(10px);transition:opacity .45s cubic-bezier(.2,.7,.2,1), transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease}
+.counties-section .county-card{opacity:0;transform:translateY(14px);transition:opacity .5s cubic-bezier(.2,.7,.2,1), transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease}
 .counties-section.revealed .county-card{opacity:1;transform:translateY(0)}
+@media(prefers-reduced-motion:reduce){
+  .counties-section .county-card{opacity:1!important;transform:none!important;transition:box-shadow .2s ease,border-color .2s ease}
+  .county-card:hover{transform:none}
+}
 
 /* Dark mode */
-[data-theme="dark"] .counties-title{color:#e8e8e8}
-[data-theme="dark"] .county-card{background:#1a1a1a;border-color:#2a2a2a}
-[data-theme="dark"] .county-card:hover{border-color:rgba(46,204,138,.3);box-shadow:0 14px 30px rgba(0,0,0,.4)}
-[data-theme="dark"] .county-card-name{color:#e8e8e8}
-[data-theme="dark"] .county-card-meta{color:#666}
-[data-theme="dark"] .county-card[data-has-count="1"] .county-card-meta{color:#2ecc8a}
+[data-theme="dark"] .counties-title{color:#f1ebdc}
+[data-theme="dark"] .counties-head{border-bottom-color:#38342a}
+[data-theme="dark"] .county-card{background:#1c1b16;border-color:#38342a}
+[data-theme="dark"] .county-card:hover{border-color:#7ec9a8;box-shadow:0 20px 38px -18px rgba(0,0,0,.55)}
+[data-theme="dark"] .county-card-name{color:#f1ebdc}
+[data-theme="dark"] .county-card-meta{color:#a8a496}
+[data-theme="dark"] .county-card[data-has-count="1"] .county-card-meta{color:#7ec9a8}
+[data-theme="dark"] .county-act.rent{color:#7ec9a8;border-color:rgba(126,201,168,.4)}
+[data-theme="dark"] .county-act.rent:hover{background:#14342a}
 
 /* ── Stats: count-up styling polish ────────────────────────────────────── */
 .stat-cell{transition:background .35s ease}
@@ -1333,114 +1349,9 @@ body.hero-places-ready .sugg-box{display:none !important}
   font-weight: 400 !important;
 }
 
-/* ── Counties — clean text grid with subtle accents ──────────────── */
-.counties-section{ padding: 3.5rem 1.25rem 3rem !important; max-width: 1180px !important; margin: 0 auto }
-.counties-head{
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: flex-end !important;
-  gap: 1rem;
-  margin-bottom: 2rem !important;
-  flex-wrap: wrap;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--border);
-}
-.counties-title{
-  font-family: 'Playfair Display', serif !important;
-  font-size: clamp(26px, 3.6vw, 36px) !important;
-  font-weight: 700 !important;
-  letter-spacing: -.6px !important;
-  color: var(--text) !important;
-  margin: 0 !important;
-}
-.counties-title::before{ display: none !important }
-.counties-all{
-  color: var(--g) !important;
-  font-weight: 600 !important;
-  font-size: 13.5px !important;
-  display: inline-flex; align-items: center; gap: 5px;
-  transition: gap .2s ease;
-}
-.counties-all:hover{ gap: 9px }
-.counties-grid{
-  display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
-  gap: .85rem !important;
-}
-@media (max-width: 900px){ .counties-grid{ grid-template-columns: repeat(3, 1fr) !important } }
-@media (max-width: 640px){ .counties-grid{ grid-template-columns: repeat(2, 1fr) !important; gap: .65rem !important } }
-
-.county-card{
-  position: relative !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: .75rem !important;
-  background: var(--white) !important;
-  border: 1px solid var(--border) !important;
-  border-radius: 14px !important;
-  padding: 1.1rem 1.2rem !important;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif !important;
-  text-align: left !important;
-  background-image: none !important;
-  aspect-ratio: auto !important;
-  box-shadow: none !important;
-  transition: border-color .2s, transform .2s, box-shadow .2s;
-}
-.county-card::before, .county-card::after{ display: none !important; content: none !important; background: none !important; }
-.county-card:hover{
-  border-color: var(--g) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 24px -12px rgba(26,92,69,.18) !important;
-  background: var(--white) !important;
-}
-.county-card-stripe{ display: none !important }
-.county-card-name{
-  position: static !important;
-  font-family: 'Playfair Display', serif !important;
-  font-size: 17px !important;
-  font-weight: 700 !important;
-  color: var(--text) !important;
-  letter-spacing: -.2px !important;
-  text-shadow: none !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 2px !important;
-}
-.county-card-meta{
-  position: static !important;
-  font-size: 11.5px !important;
-  font-weight: 500 !important;
-  color: var(--muted) !important;
-  text-shadow: none !important;
-  font-family: 'DM Sans', sans-serif !important;
-  display: flex !important;
-  align-items: center !important;
-  flex-shrink: 0 !important;
-}
-.county-card-meta::after{
-  content: '→';
-  display: inline-block;
-  margin-left: 6px;
-  font-size: 14px;
-  color: var(--muted);
-  transition: transform .2s ease, color .2s ease;
-}
-.county-card:hover .county-card-meta{ color: var(--g) !important }
-.county-card:hover .county-card-meta::after{ transform: translateX(4px); color: var(--g) }
-
-/* Pin icon next to the name — small Irish-county locator vibe */
-.county-card-name::before{
-  content: '';
-  display: inline-block;
-  width: 22px; height: 22px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-bottom: 4px;
-  opacity: .8;
-}
+/* Counties styling now lives in the single canonical block above
+   ("FIND HOMES BY COUNTY — single canonical design"). The old
+   !important override grid was removed to stop the cascade conflict. */
 
 /* ── Section titles — sans-serif, friendly ───────────────────────── */
 .section-title{
@@ -1687,10 +1598,9 @@ body.hero-places-ready .sugg-box{display:none !important}
   .stats-strip .stat-cell{ padding: 8px 14px !important }
   .stats-strip .stat-n{ font-size: 14.5px !important }
   .stat-l{ font-size: 11.5px !important }
-  .counties-section{ padding: 1.75rem 1rem !important }
-  .county-card{ aspect-ratio: 4/5 }
-  .county-card-name{ font-size: 17px !important; bottom: 38px }
-  .county-card-meta{ font-size: 11.5px !important; bottom: 14px }
+  .counties-section{ padding: 2.5rem 1rem !important }
+  .county-card{ padding: 1.15rem 1.15rem 1.15rem 1.4rem; gap: .85rem }
+  .county-act{ min-height: 46px; font-size: 14px }
 }
 
 </style>
@@ -1981,7 +1891,10 @@ body.hero-places-ready .sugg-box{display:none !important}
 <!-- ── Browse by county — clean compact tiles ──────────────────────────── -->
 <section class="counties-section reveal" id="counties-showcase">
   <div class="counties-head">
-    <h2 class="counties-title">Find homes by county</h2>
+    <div>
+      <p class="counties-eyebrow">Explore Ireland</p>
+      <h2 class="counties-title">Find homes by county</h2>
+    </div>
     <a class="counties-all" href="pages/search.html">All 32 counties <span aria-hidden="true">→</span></a>
   </div>
   <div class="counties-grid" id="counties-grid"></div>
