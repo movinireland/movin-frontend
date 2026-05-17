@@ -1629,24 +1629,24 @@ function buildPropertyCard(listing, savedIds = []) {
         }
         <div class="prop-card-tags">
           ${listing.plan === 'premium'
-            ? `<span style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;box-shadow:0 2px 6px rgba(217,119,6,.4)">⚡ Premium</span>`
-            : (listing.plan === 'featured' || listing.is_featured
-                ? `<span style="background:linear-gradient(135deg,#e07b3f,#c9642a);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">⭐ Featured</span>`
-                : `<span style="background:${typeBg};color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${typeLabel}</span>`)
+            ? `<span class="pc-badge pc-badge--premium">⚡ Premium</span>`
+            : (isFeatured
+                ? `<span class="pc-badge pc-badge--featured">★ Featured</span>`
+                : `<span class="pc-badge pc-badge--${listing.listing_type === 'rent' ? 'rent' : listing.listing_type === 'share' ? 'share' : 'sale'}">${typeLabel}</span>`)
           }
-          ${(listing.status === 'sale_agreed' || listing.status === 'let_agreed') ? `<span style="background:#fbbf24;color:#78350f;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">${listing.status.replace('_',' ').toUpperCase()}</span>` : ''}
-          ${listing.status === 'auction' ? `<span style="background:#8b5cf6;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">AUCTION</span>` : ''}
-          ${isNew ? '<span style="background:#e07b3f;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">✨ New</span>' : ''}
-          ${priceDropPct > 0 ? `<span style="background:#dc2626;color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">▼ ${priceDropPct}%</span>` : ''}
+          ${(listing.status === 'sale_agreed' || listing.status === 'let_agreed') ? `<span class="pc-badge pc-badge--status">${listing.status.replace('_',' ').toUpperCase()}</span>` : ''}
+          ${listing.status === 'auction' ? `<span class="pc-badge" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">AUCTION</span>` : ''}
+          ${isNew ? '<span class="pc-badge pc-badge--new">✦ New</span>' : ''}
+          ${priceDropPct > 0 ? `<span class="pc-badge pc-badge--drop">▼ ${priceDropPct}%</span>` : ''}
         </div>
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
           onclick="event.stopPropagation();toggleSave('${listing.id}',this)"
           style="color:${isSaved ? '#e07b3f' : '#888'}">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="${isSaved ? '#e07b3f' : 'none'}" stroke="${isSaved ? '#e07b3f' : '#888'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </button>
-        <button style="position:absolute;bottom:8px;left:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#555;font-weight:700"
+        <button style="position:absolute;bottom:8px;left:8px;z-index:4;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#555;font-weight:700"
           onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)">⊕</button>
-        <div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
+        <div style="position:absolute;bottom:8px;right:8px;z-index:4;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
         <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗</div>

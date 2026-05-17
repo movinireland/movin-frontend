@@ -306,15 +306,57 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 }
 .prop-card-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
 .prop-card-save {
-  position: absolute; top: 10px; right: 10px;
+  position: absolute; top: 10px; right: 10px; z-index: 4;
   background: rgba(255,255,255,.92); border: none; border-radius: 50%;
   width: 34px; height: 34px; font-size: 16px; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: transform .15s;
+  transition: transform .15s; box-shadow: 0 2px 8px rgba(0,0,0,.15);
 }
 .prop-card-save:hover { transform: scale(1.15); }
 .prop-card-save.saved { color: var(--orange); }
-.prop-card-tags { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+/* Sit above the image (which the shimmer CSS pushes to z-index:1) */
+.prop-card-tags {
+  position: absolute; top: 10px; left: 10px; z-index: 4;
+  display: flex; gap: 5px; flex-wrap: wrap;
+  max-width: calc(100% - 56px);
+}
+
+/* ── Fancy property-card badges ─────────────────────────────────────── */
+.pc-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  text-transform: uppercase; line-height: 1;
+  padding: 5px 10px; border-radius: 999px; color: #fff;
+  box-shadow: 0 3px 10px rgba(0,0,0,.20);
+  -webkit-backdrop-filter: saturate(1.2); backdrop-filter: saturate(1.2);
+  white-space: nowrap;
+}
+.pc-badge svg { width: 11px; height: 11px; }
+.pc-badge--sale    { background: linear-gradient(135deg,#1f7a5c,#0e3d2e); }
+.pc-badge--rent    { background: linear-gradient(135deg,#ef9251,#c9642a); }
+.pc-badge--share   { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+.pc-badge--new     { background: #fff; color: var(--green,#1a5c45);
+                     box-shadow: 0 3px 10px rgba(0,0,0,.16); }
+.pc-badge--drop    { background: linear-gradient(135deg,#f87171,#dc2626); }
+.pc-badge--status  { background: linear-gradient(135deg,#fbbf24,#d97706);
+                     color:#3b2406; }
+.pc-badge--premium { background: linear-gradient(135deg,#fcd34d,#d97706);
+                     color:#3b2406; box-shadow:0 3px 12px rgba(217,119,6,.45); }
+/* Featured — gold→orange with an animated sheen + soft glow */
+.pc-badge--featured {
+  background: linear-gradient(135deg,#f7c948,#f0932b 55%,#e07b3f);
+  color:#3a1d05; position: relative; overflow: hidden;
+  box-shadow: 0 4px 14px rgba(224,123,63,.55), 0 0 0 1px rgba(255,255,255,.25) inset;
+}
+.pc-badge--featured::after {
+  content:''; position:absolute; inset:0;
+  background: linear-gradient(115deg,transparent 30%,rgba(255,255,255,.65) 50%,transparent 70%);
+  transform: translateX(-120%);
+  animation: pcSheen 2.6s ease-in-out infinite;
+}
+@keyframes pcSheen { 0%,60%{ transform:translateX(-120%) } 100%{ transform:translateX(120%) } }
+@media (prefers-reduced-motion: reduce){ .pc-badge--featured::after{ animation:none; display:none } }
+[data-theme="dark"] .pc-badge--new { background:#16201a; color:#7ee0b0; }
 
 /* "Enquiry sent" indicator — shown when the logged-in user has previously
    contacted the lister about this property. Sits at the bottom-left of the
