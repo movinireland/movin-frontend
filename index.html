@@ -6,7 +6,7 @@
 <title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
 <meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Free for private sellers and landlords (launch period)."/>
 <meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, Eircode property search, Movin.ie"/>
-<meta name="author" content="Movin Technologies Limited"/>
+<meta name="author" content="Movin Technologies Ltd"/>
 <meta name="robots" content="index, follow, max-image-preview:large"/>
 <link rel="canonical" href="https://movin.ie/"/>
 <!-- Open Graph -->
@@ -1975,7 +1975,7 @@ body.hero-places-ready .sugg-box{display:none !important}
   <div class="stat-cell"><div class="stat-n" data-count-target="0" id="stat-count">0</div><div class="stat-l">Live listings</div></div>
   <div class="stat-cell"><div class="stat-n" data-count-target="32">0</div><div class="stat-l">Counties</div></div>
   <div class="stat-cell"><div class="stat-n"><span class="stat-prefix">€</span><span data-count-target="0">0</span></div><div class="stat-l">Free for private sellers</div></div>
-  <div class="stat-cell"><div class="stat-n"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="stat-l">Agent plans available</div></div>
+  <div class="stat-cell"><div class="stat-n"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div><div class="stat-l">6 months free for agents</div></div>
 </div>
 
 <!-- ── Browse by county — clean compact tiles ──────────────────────────── -->
@@ -2100,7 +2100,7 @@ body.hero-places-ready .sugg-box{display:none !important}
     <div class="wp-head">
       <div class="section-eyebrow" style="color:rgba(255,255,255,.7)">Why Movin</div>
       <h2 class="section-title" style="color:#e07b3f !important">Built for Ireland.<br>Priced for everyone.</h2>
-      <p class="section-sub" style="color:#ffffff !important">No monthly fees. No hidden costs. Free for private sellers and landlords (launch period).</p>
+      <p class="section-sub" style="color:#ffffff !important">No monthly fees. No hidden costs. Free for private sellers &amp; landlords, and 6 months free for estate agents — subject to change.</p>
     </div>
 
     <div class="wp-values">
@@ -2125,16 +2125,16 @@ body.hero-places-ready .sugg-box{display:none !important}
       <div class="wp-price">
         <div class="wp-price-eyebrow">Private sellers &amp; landlords</div>
         <div class="wp-price-num">Free</div>
-        <div class="wp-price-period">during our launch period</div>
+        <div class="wp-price-period">to list — subject to change</div>
         <ul><li>Full listing page</li><li>Photo gallery</li><li>Enquiry inbox</li><li>30 days live, no card needed</li></ul>
         <button class="wp-cta wp-cta-ghost" onclick="go('pages/list.html')">Start free →</button>
       </div>
       <div class="wp-price wp-price-feat">
         <div class="wp-price-eyebrow">Estate agents &amp; agencies</div>
-        <div class="wp-price-num">Plans</div>
-        <div class="wp-price-period">single listings or unlimited subscription</div>
-        <ul><li>Single listing or unlimited subscription</li><li>Featured upgrade available</li><li>View &amp; enquiry analytics</li><li>Priority support</li></ul>
-        <button class="wp-cta wp-cta-primary" onclick="go('pages/terms-of-service.html#pricing')">See agent plans →</button>
+        <div class="wp-price-num">6 months free</div>
+        <div class="wp-price-period">free to list — subject to change</div>
+        <ul><li>List residential &amp; commercial</li><li>Bulk-upload your portfolio</li><li>Verified agency profile</li><li>View &amp; enquiry analytics</li></ul>
+        <button class="wp-cta wp-cta-primary" onclick="go('pages/agent-signup.html')">Become an agent →</button>
       </div>
     </div>
   </div>
@@ -2721,10 +2721,18 @@ async function loadFeatured(){
       if (card) card.setAttribute('data-has-count', n > 0 ? '1' : '0')
     })
 
-    const fresh = pool
-      .filter(l => l.created_at && new Date(l.created_at) >= sevenDaysAgo)
+    var isFeat = function(l){
+      return !!(l && (l.is_featured === true || l.is_featured === 1 ||
+        l.plan === 'featured' || l.plan === 'premium'))
+    }
+    // Featured listings always come first (any age), then the newest
+    // listings from the last 7 days fill the remaining slots.
+    var featured = pool.filter(isFeat)
       .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-      .slice(0, 4)
+    var recent = pool
+      .filter(l => !isFeat(l) && l.created_at && new Date(l.created_at) >= sevenDaysAgo)
+      .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+    const fresh = featured.concat(recent).slice(0, 4)
 
     if (!fresh.length){
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:#aaa;font-size:13px">No listings yet — <a href="pages/list.html" style="color:#1a5c45;font-weight:500">be the first!</a></div>'
