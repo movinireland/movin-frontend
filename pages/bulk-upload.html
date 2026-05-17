@@ -65,7 +65,7 @@
 <div class="bu-wrap">
   <div class="bu-head">
     <h1>Bulk upload your listings</h1>
-    <p>Add your whole portfolio in one go: fill a CSV (one property per row) and zip the photos it references. We'll create every valid listing and attach its images automatically.</p>
+    <p>Add your whole portfolio in one go: fill the Excel template (one property per row, with dropdowns for the fixed fields) and zip the photos it references. We'll create every valid listing and attach its images automatically.</p>
   </div>
 
   <!-- Access gate (shown if not an agent) -->
@@ -78,8 +78,8 @@
   <!-- Main flow (shown to agents) -->
   <div id="bu-main" style="display:none">
     <div class="bu-card">
-      <h2><span class="bu-num">1</span> Download the CSV template</h2>
-      <p>Each row is one property. Keep the header row. Boolean columns accept <code>yes</code>/<code>no</code>. The <code>images</code> column lists the photo filenames for that row, separated by semicolons (the first becomes the main photo).</p>
+      <h2><span class="bu-num">1</span> Download the Excel template</h2>
+      <p>Each row is one property. Keep the header row. The template is an <code>.xlsx</code> with built-in <b>dropdowns</b> for the fixed-choice fields (listing type, property type, county, BER, plan and the yes/no options) — just pick from the list. The <code>images</code> column lists the photo filenames for that row, separated by semicolons (the first becomes the main photo).</p>
       <table class="bu-cols">
         <thead><tr><th>Required</th><th>Optional</th></tr></thead>
         <tbody>
@@ -91,7 +91,7 @@
       </table>
       <p style="margin-top:.6rem"><code>listing_type</code>: sale · rent · share &nbsp;|&nbsp; <code>property_type</code>: house · apartment · bungalow · site · office · retail · industrial · land · commercial &nbsp;|&nbsp; <code>plan</code>: standard · featured</p>
       <div style="margin-top:1rem">
-        <button class="bu-btn bu-btn-ghost" id="bu-tpl">⬇ Download template (.csv)</button>
+        <button class="bu-btn bu-btn-ghost" id="bu-tpl">⬇ Download template (.xlsx)</button>
       </div>
     </div>
 
@@ -104,8 +104,8 @@
       <h2><span class="bu-num">3</span> Upload</h2>
       <p>Up to <b>100 listings</b> per upload. Listings follow normal pricing and go to review before publishing.</p>
       <div class="bu-file">
-        <label for="bu-csv">CSV file <span class="req">*</span></label>
-        <input type="file" id="bu-csv" accept=".csv,text/csv"/>
+        <label for="bu-csv">Filled template — .xlsx or .csv <span class="req">*</span></label>
+        <input type="file" id="bu-csv" accept=".xlsx,.csv,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
       </div>
       <div class="bu-file">
         <label for="bu-zip">Photos ZIP (optional)</label>
@@ -159,8 +159,8 @@
     var zip = document.getElementById('bu-zip').files[0]
     var btn = this
     document.getElementById('bu-results').innerHTML = ''
-    if (!csv) { alertMsg('err', 'Please choose your CSV file first.'); return }
-    if (!/\.csv$/i.test(csv.name)) { alertMsg('err', 'That doesn’t look like a .csv file.'); return }
+    if (!csv) { alertMsg('err', 'Please choose your filled template file first.'); return }
+    if (!/\.(xlsx|csv)$/i.test(csv.name)) { alertMsg('err', 'Use the provided template — an .xlsx or .csv file.'); return }
     if (zip && !/\.zip$/i.test(zip.name)) { alertMsg('err', 'The photos file must be a .zip.'); return }
 
     btn.disabled = true; btn.textContent = 'Uploading…'
@@ -170,7 +170,7 @@
       alertMsg('ok', '<b>' + data.message + '</b>')
       renderResults(data.results || [])
     } catch(e) {
-      alertMsg('err', e.message || 'Upload failed. Please check your CSV and try again.')
+      alertMsg('err', e.message || 'Upload failed. Please check your template and try again.')
     } finally {
       btn.disabled = false; btn.textContent = 'Upload & create listings'
     }
