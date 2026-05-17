@@ -1565,8 +1565,20 @@ function listingUrl(listing){
   )
   return '/property/' + (slug ? slug + '-' : '') + listing.id
 }
+// SEO-friendly agent profile URL: /agent/<agency-or-name-slug>-<userId>
+// Accepts a user/agent object OR a listing object (uses agency_name →
+// lister_name → name, and user_id → lister_id → id for the id).
+function agentUrl(a){
+  if (!a) return '/pages/agent.html'
+  var id = a.user_id || a.lister_id || a.id
+  if (!id) return '/pages/agent.html'
+  var label = a.agency_name || a.lister_name || a.name || 'agent'
+  var slug  = movinSlugify(label)
+  return '/agent/' + (slug ? slug + '-' : '') + id
+}
 window.movinSlugify = movinSlugify
 window.listingUrl   = listingUrl
+window.agentUrl     = agentUrl
 
 function buildPropertyCard(listing, savedIds = []) {
   // Absolute path — listing.html and neighbourhood.html always live under /pages/
@@ -1606,8 +1618,10 @@ function buildPropertyCard(listing, savedIds = []) {
     ? `<span class="ber-badge ${berClass(listing.ber_rating)}">${listing.ber_rating}</span>`
     : ''
 
+  const isFeatured = listing.is_featured || listing.plan === 'featured' || listing.plan === 'premium'
+
   return `
-    <div class="prop-card" onclick="window.location.href='${listingUrl(listing)}'">
+    <div class="prop-card${isFeatured ? ' prop-card-featured' : ''}" onclick="window.location.href='${listingUrl(listing)}'">
       <div class="prop-card-img" style="height:175px">
         ${imgSrc
           ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" onload="this.classList.add('loaded')" style="width:100%;height:100%;object-fit:cover;display:block"/>`

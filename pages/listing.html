@@ -1610,7 +1610,7 @@
                   (isAgent
                     ? '<div class="rp-agent-verified">✓ Verified agent' + (L.agent_county ? ' · ' + L.agent_county : '') + '</div>'
                     : '') +
-                  '<a href="agent.html?id=' + L.user_id + '" style="font-size:12px;color:#1a5c45;text-decoration:none;font-weight:500">' +
+                  '<a href="' + (window.agentUrl ? window.agentUrl(L) : '/pages/agent.html?id=' + L.user_id) + '" style="font-size:12px;color:#1a5c45;text-decoration:none;font-weight:500">' +
                     (isAgent ? 'View agency &amp; listings →' : 'View all listings →') +
                   '</a>' +
                 '</div>' +

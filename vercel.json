@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/property/:slug*", "destination": "/pages/listing.html" }
+    { "source": "/property/:slug*", "destination": "/pages/listing.html" },
+    { "source": "/agent/:slug*", "destination": "/pages/agent.html" }
   ],
   "headers": [
     {

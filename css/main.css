@@ -286,6 +286,19 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 }
 .prop-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,.1); }
 @media(max-width:600px){.prop-card:active{transform:scale(.98)}}
+/* Featured listings — distinct orange border + soft glow so they stand
+   out at the top of search results. */
+.prop-card.prop-card-featured {
+  border: 2px solid var(--orange, #e07b3f);
+  box-shadow: 0 4px 18px rgba(224,123,63,.20);
+}
+.prop-card.prop-card-featured:hover {
+  box-shadow: 0 10px 32px rgba(224,123,63,.30);
+}
+[data-theme="dark"] .prop-card.prop-card-featured {
+  border-color: #e07b3f;
+  box-shadow: 0 4px 18px rgba(224,123,63,.28);
+}
 .prop-card-img {
   height: 180px; position: relative; overflow: hidden;
   background: linear-gradient(135deg, #c8dfd4, #e9f4ef);
