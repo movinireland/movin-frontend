@@ -2663,6 +2663,10 @@ async function loadFeatured(){
     var statTotal   = total > 0 ? total : pool.length
     statCountEl.dataset.countTarget = statTotal
     statCountEl.dataset.countSuffix = '+'
+    // Reset the "already counted" flag — the IntersectionObserver may have
+    // fired with the placeholder target of 0 and locked the element. Without
+    // this, the live count stays "0" even after the real total loads.
+    statCountEl.dataset.countDone = ''
     if (typeof startCountUpFor === 'function') startCountUpFor(statCountEl)
 
     // Live ticker — count listings created in the past 7 days
