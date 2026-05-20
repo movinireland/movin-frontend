@@ -1951,6 +1951,135 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible{
   .mobile-hide{ display:none !important }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+   ✨ MOBILE EXCELLENCE PASS  (≤ 767px)
+   Adds the touches that separate a clean responsive page from a
+   premium native-feeling app: glassmorphism search, generous spacing,
+   editorial hero rhythm, horizontal-swipe featured deck, sticky
+   bottom search CTA, 8px+ touch spacing everywhere.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  /* Page surface: warm paper with a faint top gradient (no harsh lines) */
+  body{ background:linear-gradient(180deg,#ffffff 0%,#f6f4ee 220px) !important }
+
+  /* — Hero rhythm — */
+  .hero{
+    padding:1.5rem 0 1.75rem !important;
+    border-bottom:none !important;
+    background:transparent !important;
+  }
+  .hero h1, .hero-title{
+    font-size:30px !important; line-height:1.06 !important;
+    letter-spacing:-.7px !important; margin-bottom:.45rem !important;
+  }
+  .hero-sub{ font-size:14.5px !important; line-height:1.55 !important; color:#5b605a !important }
+
+  /* — Search card: subtle glassmorphism — */
+  .search-main, .hero-search, .search-card{
+    background:rgba(255,255,255,.82) !important;
+    border:1px solid rgba(230,226,216,.9) !important;
+    backdrop-filter:saturate(1.2) blur(10px);
+    -webkit-backdrop-filter:saturate(1.2) blur(10px);
+    border-radius:18px !important;
+    box-shadow:0 12px 30px -16px rgba(14,61,46,.25), 0 2px 6px rgba(14,61,46,.05) !important;
+    padding:.85rem !important; gap:.7rem !important;
+  }
+  /* Touch spacing: tabs need a real gap from inputs (UX rule: 8px+) */
+  .pill-row{ margin-bottom:.55rem !important }
+  /* Input ↔ button stack get a comfortable 10px gap */
+  .search-input-wrap{ margin-bottom:2px !important }
+
+  /* — Segmented tabs: slightly bigger active label + crisper border — */
+  .pill, .pill-row .pill{ font-size:13.5px !important; min-height:40px !important; letter-spacing:.2px }
+
+  /* — AI search pill (when shown on mobile): glass treatment — */
+  .ai-search-pill, .ai-pill, [class*="ai-search-wrap"]{
+    background:rgba(255,255,255,.78) !important;
+    backdrop-filter:saturate(1.15) blur(8px);
+    -webkit-backdrop-filter:saturate(1.15) blur(8px);
+    border-radius:16px !important;
+    border:1px solid rgba(230,226,216,.9) !important;
+    box-shadow:0 6px 20px -12px rgba(14,61,46,.18) !important;
+  }
+
+  /* — Section headers: small accent bar above the title for hierarchy — */
+  .counties-head .counties-title,
+  .tools-head .section-title,
+  .trust-head .section-title{
+    position:relative; padding-top:.85rem !important;
+  }
+  .counties-head .counties-title::before,
+  .tools-head .section-title::before,
+  .trust-head .section-title::before{
+    content:""; position:absolute; left:0; top:0;
+    width:32px; height:3px; border-radius:2px;
+    background:linear-gradient(90deg, #e07b3f, #1a5c45);
+  }
+
+  /* — County tiles: marginally more breathing room around text — */
+  .county-card{ box-shadow:0 10px 24px -14px rgba(14,61,46,.30) !important }
+  .county-card-body{ padding:.95rem 1rem 1rem !important }
+
+  /* — Featured listings: horizontal swipe deck (premium marketplace feel) — */
+  #featured-grid{
+    display:flex !important; flex-wrap:nowrap !important;
+    overflow-x:auto !important; -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;
+    gap:.85rem !important; padding:.25rem 1rem 1.25rem !important;
+    grid-template-columns:none !important;
+  }
+  #featured-grid::-webkit-scrollbar{ display:none }
+  #featured-grid > *{
+    flex:0 0 86%; scroll-snap-align:start;
+    border-radius:16px !important;
+  }
+  /* Add a tiny scroll hint below the deck */
+  #featured-grid + *{ margin-top:.25rem !important }
+
+  /* — Tool cards: cleaner icons + tighter padding — */
+  .tool-card{ padding:.95rem !important; gap:.25rem }
+  .tool-card-title{ font-size:13.5px !important }
+
+  /* — Trust / reviews — slightly more refined typography — */
+  .trust-quote{ font-style:italic; color:#3a3a35 !important }
+
+  /* — Sticky bottom search CTA (Airbnb/Rightmove pattern) — */
+  .mv-mobile-cta{
+    position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom, 0px) + 14px);
+    transform:translateX(-50%) translateY(140%);
+    display:inline-flex; align-items:center; gap:8px;
+    height:50px; padding:0 22px;
+    background:linear-gradient(135deg, #e07b3f, #c9642a); color:#fff;
+    border:none; border-radius:999px; cursor:pointer;
+    font-family:inherit; font-size:15px; font-weight:600; letter-spacing:.1px;
+    box-shadow:0 16px 36px -10px rgba(224,123,63,.55), 0 4px 10px rgba(0,0,0,.10);
+    z-index:60;
+    opacity:0; pointer-events:none;
+    transition:transform .28s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .mv-mobile-cta svg{ width:18px; height:18px; flex-shrink:0 }
+  body.mv-show-bottom-cta .mv-mobile-cta{
+    opacity:1; pointer-events:auto;
+    transform:translateX(-50%) translateY(0);
+  }
+  body.mv-show-bottom-cta{ padding-bottom:74px }
+
+  /* — Touch-spacing audit: enforce 8px+ between adjacent buttons everywhere — */
+  .qf-row, .county-card-acts, .pill-row, .hero .search-input-wrap + .search-go{ gap:8px !important }
+
+  /* — Reveal: ease, don't lurch — */
+  .reveal{ transition-duration:.55s !important }
+}
+
+/* — Sticky CTA element exists in DOM at all sizes but is only ever
+     visible on mobile (above ↑). Keeps the desktop tree clean. — */
+.mv-mobile-cta{ display:none }
+@media (max-width: 767px){ .mv-mobile-cta{ display:inline-flex } }
+
+/* — Print: hide the floating CTA — */
+@media print{ .mv-mobile-cta{ display:none !important } }
+
 </style>
 </head>
 <body>
@@ -3450,5 +3579,26 @@ else _renderFooterNow()
   async defer></script>
 
 <footer class="site-footer" id="site-footer"></footer>
+<!-- Sticky mobile search CTA (visible only ≤767px, after scrolling past hero) -->
+<button class="mv-mobile-cta" type="button" aria-label="Back to search"
+  onclick="(function(){ var i=document.getElementById('hero-loc'); window.scrollTo({top:0,behavior:'smooth'}); setTimeout(function(){ if(i) i.focus({preventScroll:true}) }, 300) })()">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>
+  </svg>
+  Search homes
+</button>
+
+<script>
+;(function mvMobileBottomCta(){
+  if (!('matchMedia' in window) || !window.matchMedia('(max-width: 767px)').matches) return
+  var hero = document.querySelector('.hero')
+  if (!hero || !('IntersectionObserver' in window)) return
+  var io = new IntersectionObserver(function(entries){
+    document.body.classList.toggle('mv-show-bottom-cta', !entries[0].isIntersecting)
+  }, { threshold: 0 })
+  io.observe(hero)
+})()
+</script>
+
 </body>
 </html>
