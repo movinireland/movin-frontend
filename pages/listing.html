@@ -1559,17 +1559,58 @@
 
         var galleryHTML = buildGallery(L)
 
-        var featuresHTML = ''
-        if (L.parking || L.garden || L.garage || L.alarm) {
-          featuresHTML = '<div class="detail-section"><h2>Features</h2><div class="feat-grid">'
-          if (L.parking)    featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-parking"/></svg></div>Parking</div>'
-          if (L.garden)     featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-garden"/></svg></div>Garden</div>'
-          if (L.garage)     featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-garage"/></svg></div>Garage</div>'
-          if (L.alarm)      featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-alarm"/></svg></div>Alarm</div>'
-          if (L.furnished)  featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-sofa"/></svg></div>Furnished</div>'
-          if (L.pets)       featuresHTML += '<div class="feat-item"><div class="feat-ico"><svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#icon-pets"/></svg></div>Pet-friendly</div>'
-          featuresHTML += '</div></div>'
+        // ── Features grid — data-driven so every amenity (original + Phase 1)
+        //    renders the same way and adding a new flag is one row. Falls back
+        //    to a clean check SVG for features without a custom icon.
+        var FEAT_SPECS = [
+          // Core
+          ['parking',         'Parking',           'icon-parking'],
+          ['garden',          'Garden',            'icon-garden'],
+          ['garage',          'Garage',            'icon-garage'],
+          ['alarm',           'Alarm',             'icon-alarm'],
+          ['wheelchair',      'Wheelchair access', 'icon-wheelchair'],
+          ['ensuite',         'Ensuite bathroom',  'icon-bath'],
+          // Comfort & climate
+          ['dishwasher',      'Dishwasher',        ''],
+          ['washer_dryer',    'Washer / dryer',    ''],
+          ['fireplace',       'Fireplace',         ''],
+          ['central_heating', 'Central heating',   ''],
+          ['air_con',         'Air conditioning',  ''],
+          // Outdoor
+          ['balcony',         'Balcony',           ''],
+          ['terrace',         'Terrace',           ''],
+          ['patio',           'Patio',             ''],
+          // Energy & connectivity
+          ['broadband',       'High-speed broadband', ''],
+          ['solar_panels',    'Solar panels',      ''],
+          ['ev_charger',      'EV charger',        ''],
+          ['heat_pump',       'Heat pump',         ''],
+          // Lifestyle & building
+          ['pet_friendly',    'Pet-friendly',      'icon-pets'],
+          ['furnished',       'Furnished',         'icon-sofa'],
+          ['gated',           'Gated community',   ''],
+          ['lift',            'Lift',              '']
+        ]
+        var VIEW_LABELS = { sea:'Sea view', mountain:'Mountain view', city:'City view', river:'River / lake view' }
+        var checkSvg =
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+            '<polyline points="20 6 9 17 4 12"/></svg>'
+
+        var featRows = ''
+        FEAT_SPECS.forEach(function(spec){
+          if (!L[spec[0]]) return
+          var ico = spec[2]
+            ? '<svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#' + spec[2] + '"/></svg>'
+            : checkSvg
+          featRows += '<div class="feat-item"><div class="feat-ico">' + ico + '</div>' + spec[1] + '</div>'
+        })
+        // view_type is a single-value enum — render the matching label only
+        if (L.view_type && VIEW_LABELS[L.view_type]) {
+          featRows += '<div class="feat-item"><div class="feat-ico">' + checkSvg + '</div>' + VIEW_LABELS[L.view_type] + '</div>'
         }
+        var featuresHTML = featRows
+          ? '<div class="detail-section"><h2>Features</h2><div class="feat-grid">' + featRows + '</div></div>'
+          : ''
 
         var callBtn = L.lister_phone
           ? '<div class="divider-text"><span>or</span></div><button class="call-btn" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 ' + L.lister_phone + '</button>'
@@ -1665,6 +1706,22 @@
               '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-eye"/></svg> ' + (L.views || 0) + ' views</span>' +
               (L.available_from ? '<span class="d-stat" style="color:#1a5c45;font-weight:600"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-approve"/></svg> Available ' + new Date(L.available_from).toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'}) + '</span>' : '') +
               (L.floor_size_m2 && L.price ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-euro"/></svg> €' + Math.round(parseInt(L.price) / parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</span>' : '') +
+              // Top-line highlight amenities (only render when true — keeps the
+              // row clean for properties without them). Uses a shared inline
+              // check SVG for items that don't have a brand icon in icons.svg.
+              (function(){
+                var sv = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+                var h = ''
+                if (L.parking)      h += '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-parking"/></svg> Parking</span>'
+                if (L.broadband)    h += '<span class="d-stat" style="color:#1a5c45;font-weight:600">' + sv + ' Broadband</span>'
+                if (L.heat_pump)    h += '<span class="d-stat" style="color:#1a5c45;font-weight:600">' + sv + ' Heat pump</span>'
+                if (L.solar_panels) h += '<span class="d-stat" style="color:#1a5c45;font-weight:600">' + sv + ' Solar panels</span>'
+                if (L.ev_charger)   h += '<span class="d-stat" style="color:#1a5c45;font-weight:600">' + sv + ' EV charger</span>'
+                if (L.lift)         h += '<span class="d-stat" style="color:#1a5c45;font-weight:600">' + sv + ' Lift</span>'
+                if (L.furnished)    h += '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-sofa"/></svg> Furnished</span>'
+                if (L.pet_friendly) h += '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-pets"/></svg> Pet-friendly</span>'
+                return h
+              })() +
             '</div>' +
           '</div>' +
 
