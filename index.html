@@ -795,51 +795,71 @@ body.hero-places-ready .sugg-box{display:none !important}
 .counties-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
 @media(min-width:640px){.counties-grid{grid-template-columns:repeat(3,1fr);gap:1rem}}
 @media(min-width:980px){.counties-grid{grid-template-columns:repeat(4,1fr);gap:1.15rem}}
+
+/* Photo-led tile cards — gradient + SVG art per county */
 .county-card{
-  position:relative;display:flex;flex-direction:column;gap:1rem;
-  background:var(--white,#fff);border:1px solid var(--border,#e6e2d8);border-radius:18px;
-  padding:1.3rem 1.3rem 1.3rem 1.55rem;font-family:inherit;text-align:left;overflow:hidden;
-  transition:transform .22s cubic-bezier(.2,.7,.2,1), box-shadow .22s ease, border-color .22s ease;
-  -webkit-tap-highlight-color:transparent
+  position:relative;display:block;overflow:hidden;
+  aspect-ratio:4/5;
+  border-radius:20px;text-decoration:none;color:#fff;
+  font-family:inherit;text-align:left;
+  box-shadow:0 8px 22px -10px rgba(14,61,46,.35);
+  transition:transform .25s cubic-bezier(.2,.7,.2,1), box-shadow .25s ease;
+  -webkit-tap-highlight-color:transparent;cursor:pointer;
+  isolation:isolate
 }
-.county-card-stripe{
-  position:absolute;left:0;top:20%;bottom:20%;width:4px;border-radius:0 4px 4px 0;
-  background:linear-gradient(180deg,var(--o,#e07b3f),var(--g,#1a5c45));
-  transition:top .25s ease, bottom .25s ease
-}
+@media(min-width:640px){.county-card{aspect-ratio:3/4}}
 .county-card:hover{
-  transform:translateY(-4px);
-  box-shadow:0 20px 38px -18px rgba(14,61,46,.32), 0 4px 12px rgba(0,0,0,.04);
-  border-color:rgba(26,92,69,.28)
+  transform:translateY(-5px);
+  box-shadow:0 28px 50px -18px rgba(14,61,46,.55), 0 6px 14px rgba(0,0,0,.08)
 }
-.county-card:hover .county-card-stripe{top:0;bottom:0}
-.county-card-top{display:flex;flex-direction:column;gap:.3rem;min-width:0}
+.county-card-art{
+  position:absolute;inset:0;width:100%;height:100%;
+  z-index:0;pointer-events:none;
+  transition:transform .8s cubic-bezier(.2,.7,.2,1)
+}
+.county-card:hover .county-card-art{transform:scale(1.06)}
+/* Dark overlay at the bottom so the county name + buttons stay readable */
+.county-card-shade{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(0,0,0,0) 35%, rgba(0,0,0,.18) 60%, rgba(0,0,0,.55) 100%);
+}
+.county-card-body{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:1rem 1.05rem 1.05rem;
+}
+.county-card-top{display:flex;flex-direction:column;gap:.18rem;min-width:0}
 .county-card-name{
   font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size:clamp(18px,2vw,21px);font-weight:900;color:var(--gd,#0e3d2e);
-  letter-spacing:-.3px;line-height:1.12;display:flex;align-items:center;gap:7px
-}
-.county-card-name::before{
-  content:"";width:15px;height:15px;flex-shrink:0;
-  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e07b3f' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z'/%3E%3Ccircle cx='12' cy='10' r='3'/%3E%3C/svg%3E") center/contain no-repeat
+  font-size:clamp(20px,2.5vw,26px);font-weight:900;color:#fff;
+  letter-spacing:-.4px;line-height:1.05;
+  text-shadow:0 2px 8px rgba(0,0,0,.35)
 }
 .county-card-meta{
-  font-size:12.5px;color:var(--muted,#7a7a72);font-weight:500;
-  display:inline-flex;align-items:center;gap:5px
+  font-size:12px;color:rgba(255,255,255,.85);font-weight:600;
+  text-transform:uppercase;letter-spacing:1px;
+  text-shadow:0 1px 4px rgba(0,0,0,.4)
 }
-.county-card[data-has-count="1"] .county-card-meta{color:var(--g,#1a5c45);font-weight:700}
-.county-card-acts{display:flex;gap:.55rem;margin-top:auto}
+.county-card[data-has-count="1"] .county-card-meta{color:#fff}
+/* Frosted action row at the bottom — Buy primary (orange) / Rent secondary (glass) */
+.county-card-acts{display:flex;gap:.45rem}
 .county-act{
-  flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;
-  border:1.5px solid transparent;border-radius:50px;
-  font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;
-  transition:background .18s ease, color .18s ease, border-color .18s ease, transform .12s ease, box-shadow .18s ease;
-  -webkit-tap-highlight-color:transparent
+  flex:1;min-height:40px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:50px;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;
+  border:1.5px solid transparent;
+  transition:background .18s ease, transform .12s ease, border-color .18s ease;
+  -webkit-tap-highlight-color:transparent;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)
 }
-.county-act.buy{background:var(--g,#1a5c45);color:#fff;box-shadow:0 8px 18px -9px rgba(26,92,69,.6)}
-.county-act.buy:hover{background:var(--gd,#0e3d2e);box-shadow:0 12px 24px -9px rgba(26,92,69,.65)}
-.county-act.rent{background:transparent;color:var(--g,#1a5c45);border-color:rgba(26,92,69,.32)}
-.county-act.rent:hover{background:var(--gl,#e9f4ef);border-color:var(--g,#1a5c45)}
+.county-act.buy{
+  background:var(--o,#e07b3f);color:#fff;
+  box-shadow:0 6px 14px -6px rgba(224,123,63,.65)
+}
+.county-act.buy:hover{background:#c9642a;transform:translateY(-1px)}
+.county-act.rent{
+  background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.45)
+}
+.county-act.rent:hover{background:rgba(255,255,255,.30);border-color:#fff}
 .county-act:active{transform:scale(.96)}
 
 /* Cascade reveal — staggered by JS via transition-delay */
@@ -1601,6 +1621,178 @@ body.hero-places-ready .sugg-box{display:none !important}
   .counties-section{ padding: 2.5rem 1rem !important }
   .county-card{ padding: 1.15rem 1.15rem 1.15rem 1.4rem; gap: .85rem }
   .county-act{ min-height: 46px; font-size: 14px }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   📱 MOBILE-ONLY RIGHTMOVE-STYLE REBUILD  (≤ 767px)
+   Flattens decoration, search-first, white surfaces, big tap targets.
+   Desktop is untouched.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+
+  /* — Body / page bg: clean Rightmove cream — */
+  body{ background:#f6f4ee !important }
+
+  /* — Hero: kill the animated mesh, make it a clean white search panel — */
+  .hero{
+    background:#ffffff !important;
+    padding:1rem 0 1.25rem !important;
+    min-height:0 !important;
+    border-bottom:1px solid #e6e2d8;
+  }
+  .hero::before,.hero::after,
+  .hero-shapes, .hero-blob, .hero-mesh, .hero-typer-art,
+  .hero-loc-typer, .hero-ticker{ display:none !important }
+
+  .hero-inner, .hero-content, .hero-wrap{ padding:0 1rem !important; gap:.85rem !important }
+  .hero h1, .hero-title{
+    font-family:'Playfair Display', Georgia, serif !important;
+    font-size:26px !important; line-height:1.12 !important; font-weight:900 !important;
+    color:#0e3d2e !important; letter-spacing:-.5px !important;
+    text-align:left !important; margin:0 0 .25rem !important; max-width:100% !important;
+  }
+  .hero h1 em, .hero-title em{ color:#e07b3f !important; font-style:normal !important }
+  .hero-sub, .hero p.hero-sub{
+    font-size:14px !important; line-height:1.5 !important; color:#555 !important;
+    text-align:left !important; max-width:100% !important; margin:0 0 .6rem !important;
+    font-weight:400 !important;
+  }
+
+  /* — Big white search card (Rightmove signature) — */
+  .search-main, .hero-search, .search-card{
+    background:#fff !important;
+    border:1.5px solid #e0dccf !important;
+    border-radius:14px !important;
+    box-shadow:0 6px 22px -10px rgba(14,61,46,.18) !important;
+    padding:.75rem !important;
+    display:flex !important; flex-direction:column !important; gap:.6rem !important;
+  }
+  /* Big single location input */
+  .search-input-wrap{ width:100% !important; position:relative !important }
+  .search-inp{
+    width:100% !important;
+    height:52px !important; padding:0 14px 0 42px !important;
+    font-size:16px !important;            /* prevents iOS zoom */
+    border:1.5px solid #e0dccf !important; border-radius:10px !important;
+    background:#fafaf8 !important; color:#1f2421 !important;
+  }
+  .search-inp:focus{ background:#fff !important; border-color:#1a5c45 !important }
+  .search-ico-abs{ left:12px !important; color:#1a5c45 !important }
+  /* Full-width orange CTA below input */
+  .search-go{
+    width:100% !important;
+    height:52px !important; padding:0 18px !important;
+    background:#e07b3f !important; color:#fff !important;
+    border-radius:10px !important; font-size:16px !important; font-weight:700 !important;
+    box-shadow:0 8px 18px -8px rgba(224,123,63,.6) !important;
+    display:flex !important; align-items:center !important; justify-content:center !important;
+  }
+  .search-go:active{ background:#c9642a !important; transform:scale(.98) !important }
+  .search-go-label{ display:inline !important }
+
+  /* Buy/Rent/Share tabs — segmented control style */
+  .pill-row{
+    display:grid !important; grid-template-columns:repeat(3,1fr) !important;
+    gap:0 !important;
+    background:#f1efe7 !important; border-radius:12px !important; padding:3px !important;
+    margin-bottom:.25rem !important;
+  }
+  .pill, .pill-row .pill{
+    border-radius:9px !important; padding:9px 4px !important;
+    min-height:38px !important;
+    background:transparent !important; border:none !important; color:#666 !important;
+    font-size:14px !important; font-weight:600 !important;
+    text-align:center !important; justify-content:center !important;
+  }
+  .pill.active, .pill-row .pill.active{
+    background:#fff !important; color:#0e3d2e !important;
+    box-shadow:0 1px 3px rgba(0,0,0,.08) !important;
+  }
+
+  /* Lower-priority quick filters → tucked tightly under the card */
+  .qf-row{ padding:.4rem 0 0 !important; gap:6px !important; overflow-x:auto !important; flex-wrap:nowrap !important }
+  .qf-row::-webkit-scrollbar{ display:none }
+  .qf-chip{ flex-shrink:0 }
+
+  /* AI search pill — keep but de-emphasise on mobile */
+  .ai-search-pill, .ai-pill, [class*="ai-search"]{
+    background:#fff !important; border:1.5px solid #e0dccf !important;
+    box-shadow:none !important; border-radius:12px !important;
+  }
+
+  /* — Chip wrap + radius pills: tighter spacing — */
+  .chip-wrap{ padding:.5rem 0 0 !important }
+  #radius-wrap{ padding:.5rem 0 0 !important; gap:6px !important }
+  #radius-pills .r-pill{ font-size:12px !important; padding:5px 10px !important; min-height:32px !important }
+
+  /* — Stats strip: simpler 4-up tiles — */
+  .stats-strip{
+    background:#fff !important; border:1px solid #e6e2d8 !important;
+    margin:1rem 1rem 0 !important; border-radius:14px !important;
+    padding:.65rem .5rem !important; gap:0 !important;
+    display:grid !important; grid-template-columns:repeat(4,1fr) !important;
+  }
+  .stats-strip .stat-cell{ background:transparent !important; padding:.5rem .25rem !important; text-align:center }
+  .stats-strip .stat-cell + .stat-cell{ border-left:1px solid #efece2 }
+  .stat-n{ font-size:14px !important; color:#0e3d2e !important; font-weight:700 !important; justify-content:center }
+  .stat-l{ font-size:10.5px !important; color:#888 !important; text-transform:none !important; letter-spacing:0 !important }
+
+  /* — Section headers: simple, no eyebrows on mobile — */
+  .section-eyebrow, .counties-eyebrow, .tools-head .section-eyebrow{ display:none !important }
+  .section-title, .counties-title, .tools-head .section-title{
+    font-size:22px !important; line-height:1.12 !important; letter-spacing:-.4px !important;
+    font-weight:900 !important; color:#0e3d2e !important; margin:0 !important;
+    text-align:left !important;
+  }
+  .section-sub{ font-size:13.5px !important; color:#666 !important; margin-top:.25rem !important; text-align:left !important }
+
+  /* — Section spacing: tighter, Rightmove-ish — */
+  section, .section{ padding:1.5rem 0 !important }
+  .counties-section{ padding:1.75rem 1rem !important }
+  .counties-head{ margin-bottom:1rem !important; padding-bottom:.75rem !important }
+  .counties-grid{ gap:.7rem !important }
+
+  /* — County tiles: slightly shorter on phones so two fit above the fold — */
+  .county-card{ aspect-ratio:5/4 !important; border-radius:14px !important }
+  .county-card-name{ font-size:19px !important }
+  .county-card-meta{ font-size:10.5px !important; letter-spacing:.6px !important }
+  .county-act{ min-height:38px !important; font-size:13px !important }
+
+  /* — Featured listings grid: 1-up, simple Rightmove cards — */
+  #featured-grid, .listings-grid{ grid-template-columns:1fr !important; gap:.75rem !important; padding:.25rem 1rem !important }
+  .prop-card{
+    border-radius:14px !important; border:1px solid #e6e2d8 !important;
+    box-shadow:none !important;
+  }
+  .prop-card:hover{ transform:none !important; box-shadow:0 4px 14px rgba(0,0,0,.06) !important }
+  .prop-card-img{ height:200px !important }
+  .prop-card-body{ padding:.85rem 1rem 1rem !important }
+  .prop-card-title{ font-size:15px !important; font-weight:700 !important }
+  .prop-card-price{ font-size:18px !important; margin-bottom:6px !important }
+
+  /* — Tools grid: 2-up simple icon cards on mobile — */
+  .tools-grid{ display:grid !important; grid-template-columns:repeat(2,1fr) !important; gap:.6rem !important; padding:0 1rem !important }
+  .tool-card{
+    background:#fff !important; border:1px solid #e6e2d8 !important;
+    border-radius:14px !important; box-shadow:none !important;
+    padding:1rem !important; min-height:auto !important;
+  }
+  .tool-card-bg, .tool-card-tag{ display:none !important }
+  .tool-card-title{ font-size:14px !important; margin-top:.3rem !important }
+  .tool-card-sub{ font-size:12px !important; color:#777 !important; -webkit-line-clamp:2; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden }
+  .tool-card-feature{ grid-column:1 / -1 !important }
+
+  /* — Trust / reviews: flatter and lighter — */
+  .trust-section, .why-pricing{
+    background:#fff !important; color:#1f2421 !important;
+    border-top:1px solid #e6e2d8; border-bottom:1px solid #e6e2d8;
+    padding:1.75rem 1rem !important;
+  }
+  .trust-section *,.why-pricing *{ color:inherit !important }
+  .trust-quote{ font-size:14px !important; line-height:1.55 !important }
+
+  /* — Hide the heaviest desktop-only decoration that survived above — */
+  .mobile-hide{ display:none !important }
 }
 
 </style>
@@ -2480,19 +2672,83 @@ window.countyGo = countyGo
 ;(function renderCountyCards(){
   var grid = document.getElementById('counties-grid')
   if (!grid) return
-  var counties = ['Dublin','Cork','Galway','Meath','Kildare','Wicklow','Limerick','Kerry']
-  grid.innerHTML = counties.map(function(c){
-    return '<div class="county-card" data-county-chip>' +
-      '<span class="county-card-stripe"></span>' +
-      '<div class="county-card-top">' +
-        '<span class="county-card-name">' + c + '</span>' +
-        '<span class="county-card-meta"><span data-county-count="' + c + '">View homes</span></span>' +
-      '</div>' +
-      '<div class="county-card-acts">' +
-        '<button type="button" class="county-act buy"  onclick="countyGo(\'' + c + '\',\'sale\')">Buy</button>' +
-        '<button type="button" class="county-act rent" onclick="countyGo(\'' + c + '\',\'rent\')">Rent</button>' +
-      '</div>' +
-    '</div>'
+
+  // ── Atmospheric SVG art per county type ───────────────────────────────
+  // Drawn at viewBox 200×200, sits behind the gradient overlay. Pure SVG so
+  // it never 404s and renders crisply at every zoom level.
+  var ART = {
+    city:  '<g fill="#fff" opacity=".18">' +
+              '<rect x="30" y="125" width="22" height="55" rx="2"/>' +
+              '<rect x="56" y="100" width="18" height="80" rx="2"/>' +
+              '<rect x="78" y="80"  width="26" height="100" rx="2"/>' +
+              '<rect x="108" y="110" width="20" height="70" rx="2"/>' +
+              '<rect x="132" y="90"  width="24" height="90" rx="2"/>' +
+              '<rect x="160" y="120" width="18" height="60" rx="2"/>' +
+              '<path d="M88 80l13-18 13 18z"/>' +
+              '<circle cx="146" cy="50" r="3"/><circle cx="40" cy="65" r="2"/><circle cx="170" cy="78" r="2"/>' +
+            '</g>',
+    mountain:'<g fill="#fff" opacity=".20">' +
+              '<path d="M0 180 L45 100 L80 140 L120 70 L165 130 L200 100 L200 200 L0 200 Z"/>' +
+            '</g>' +
+            '<g fill="#fff" opacity=".10">' +
+              '<path d="M0 200 L60 130 L100 165 L150 110 L200 150 L200 200 Z"/>' +
+            '</g>' +
+            '<circle cx="155" cy="55" r="14" fill="#fff" opacity=".24"/>',
+    coast: '<g fill="#fff" opacity=".22">' +
+              '<path d="M0 130 Q50 110 100 130 T200 130 L200 200 L0 200 Z"/>' +
+            '</g>' +
+            '<g fill="#fff" opacity=".14">' +
+              '<path d="M0 150 Q50 130 100 150 T200 150 L200 200 L0 200 Z"/>' +
+              '<path d="M0 170 Q50 150 100 170 T200 170 L200 200 L0 200 Z"/>' +
+            '</g>' +
+            '<circle cx="160" cy="50" r="16" fill="#fff" opacity=".30"/>',
+    fields:'<g fill="#fff" opacity=".18">' +
+              '<path d="M0 150 Q60 140 120 150 T200 145 L200 200 L0 200 Z"/>' +
+            '</g>' +
+            '<g fill="#fff" opacity=".10">' +
+              '<path d="M0 170 Q60 160 120 170 T200 165 L200 200 L0 200 Z"/>' +
+            '</g>' +
+            // Three small trees
+            '<g fill="#fff" opacity=".30">' +
+              '<circle cx="40" cy="140" r="11"/><rect x="38" y="148" width="4" height="14"/>' +
+              '<circle cx="100" cy="135" r="14"/><rect x="98" y="146" width="4" height="18"/>' +
+              '<circle cx="160" cy="142" r="10"/><rect x="158" y="150" width="4" height="13"/>' +
+            '</g>'
+  }
+
+  // Each county gets a flavoured gradient + a motif. The accent colour is
+  // applied to the active "Buy" pill so different regions feel distinct
+  // without breaking brand cohesion.
+  var COUNTIES = [
+    { name:'Dublin',   art:'city',     c1:'#0e3d2e', c2:'#1a5c45' },
+    { name:'Cork',     art:'coast',    c1:'#0e4253', c2:'#1a5c75' },
+    { name:'Galway',   art:'coast',    c1:'#0e3d4e', c2:'#1d6b88' },
+    { name:'Wicklow',  art:'mountain', c1:'#1f3a2d', c2:'#3a6149' },
+    { name:'Kerry',    art:'mountain', c1:'#19403a', c2:'#2e6f5d' },
+    { name:'Kildare',  art:'fields',   c1:'#3a4a2a', c2:'#5d7437' },
+    { name:'Meath',    art:'fields',   c1:'#2f4329', c2:'#506b35' },
+    { name:'Limerick', art:'city',     c1:'#5a3a1f', c2:'#a86230' }
+  ]
+
+  grid.innerHTML = COUNTIES.map(function(co){
+    var bg = 'linear-gradient(160deg,' + co.c1 + ' 0%,' + co.c2 + ' 100%)'
+    return ''
+      + '<a class="county-card" data-county-chip href="javascript:void(0)" '
+      +    'onclick="countyGo(\'' + co.name + '\',\'sale\')" '
+      +    'style="background:' + bg + '">'
+      +   '<svg class="county-card-art" viewBox="0 0 200 200" preserveAspectRatio="xMidYMax slice" aria-hidden="true">' + ART[co.art] + '</svg>'
+      +   '<div class="county-card-shade"></div>'
+      +   '<div class="county-card-body">'
+      +     '<div class="county-card-top">'
+      +       '<span class="county-card-name">' + co.name + '</span>'
+      +       '<span class="county-card-meta"><span data-county-count="' + co.name + '">View homes</span></span>'
+      +     '</div>'
+      +     '<div class="county-card-acts" onclick="event.stopPropagation()">'
+      +       '<button type="button" class="county-act buy"  onclick="countyGo(\'' + co.name + '\',\'sale\')">Buy</button>'
+      +       '<button type="button" class="county-act rent" onclick="countyGo(\'' + co.name + '\',\'rent\')">Rent</button>'
+      +     '</div>'
+      +   '</div>'
+      + '</a>'
   }).join('')
 })()
 
