@@ -461,15 +461,76 @@
           <div class="form-hint">When the property (or room) will be ready for the new tenant to move in.</div>
         </div>
         <div class="form-group">
-          <label class="form-label">Facilities</label>
-          <div style="display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.25rem">
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-parking" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-parking"/></svg> Parking</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garden" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garden"/></svg> Garden</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-garage" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-garage"/></svg> Garage</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-alarm" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-alarm"/></svg> Alarm</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-wheelchair" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-wheelchair"/></svg> Wheelchair access</label>
-            <!-- Ensuite — only shown for "Room for rent" (share) -->
-            <label id="f-ensuite-label" style="display:none;align-items:center;gap:6px;font-size:14px;cursor:pointer"><input type="checkbox" id="f-ensuite" style="accent-color:var(--green)"/> <svg width="14" height="14" style="color:currentColor;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-bath"/></svg> Ensuite bathroom</label>
+          <label class="form-label">Features &amp; facilities</label>
+          <style>
+            .feat-grp{margin-top:.4rem}
+            .feat-grp + .feat-grp{margin-top:.85rem;padding-top:.85rem;border-top:1px dashed var(--border,#e6e2d8)}
+            .feat-grp-title{font-size:11px;font-weight:600;color:var(--muted,#888);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.45rem}
+            .feat-grid{display:flex;flex-wrap:wrap;gap:.65rem .9rem}
+            .feat-chk{display:inline-flex;align-items:center;gap:7px;font-size:14px;cursor:pointer;padding:6px 2px;-webkit-tap-highlight-color:transparent}
+            .feat-chk input{accent-color:var(--green,#1a5c45);width:17px;height:17px;cursor:pointer;flex-shrink:0}
+            .feat-view{display:inline-flex;align-items:center;gap:6px;font-size:14px}
+            .feat-view select{font:inherit;font-size:14px;border:1.5px solid var(--border,#e6e2d8);border-radius:8px;padding:6px 10px;background:#fff}
+          </style>
+          <!-- Core (always shown) -->
+          <div class="feat-grp">
+            <div class="feat-grp-title">Core</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" id="f-parking"/> Parking</label>
+              <label class="feat-chk"><input type="checkbox" id="f-garden"/> Garden</label>
+              <label class="feat-chk"><input type="checkbox" id="f-garage"/> Garage</label>
+              <label class="feat-chk"><input type="checkbox" id="f-alarm"/> Alarm</label>
+              <label class="feat-chk"><input type="checkbox" id="f-wheelchair"/> Wheelchair access</label>
+              <label class="feat-chk" id="f-ensuite-label" style="display:none"><input type="checkbox" id="f-ensuite"/> Ensuite bathroom</label>
+            </div>
+          </div>
+          <!-- Comfort & climate -->
+          <div class="feat-grp">
+            <div class="feat-grp-title">Comfort &amp; climate</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" id="f-dishwasher"/> Dishwasher</label>
+              <label class="feat-chk"><input type="checkbox" id="f-washer_dryer"/> Washer / dryer</label>
+              <label class="feat-chk"><input type="checkbox" id="f-fireplace"/> Fireplace</label>
+              <label class="feat-chk"><input type="checkbox" id="f-central_heating"/> Central heating</label>
+              <label class="feat-chk"><input type="checkbox" id="f-air_con"/> Air conditioning</label>
+            </div>
+          </div>
+          <!-- Outdoor & views -->
+          <div class="feat-grp">
+            <div class="feat-grp-title">Outdoor &amp; views</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" id="f-balcony"/> Balcony</label>
+              <label class="feat-chk"><input type="checkbox" id="f-terrace"/> Terrace</label>
+              <label class="feat-chk"><input type="checkbox" id="f-patio"/> Patio</label>
+              <span class="feat-view"><label for="f-view_type" style="font-size:14px;color:#555">View:</label>
+                <select id="f-view_type">
+                  <option value="">— none —</option>
+                  <option value="sea">Sea</option>
+                  <option value="mountain">Mountain</option>
+                  <option value="city">City</option>
+                  <option value="river">River / lake</option>
+                </select></span>
+            </div>
+          </div>
+          <!-- Energy & connectivity -->
+          <div class="feat-grp">
+            <div class="feat-grp-title">Energy &amp; connectivity</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" id="f-broadband"/> High-speed broadband</label>
+              <label class="feat-chk"><input type="checkbox" id="f-solar_panels"/> Solar panels</label>
+              <label class="feat-chk"><input type="checkbox" id="f-ev_charger"/> EV charger</label>
+              <label class="feat-chk"><input type="checkbox" id="f-heat_pump"/> Heat pump</label>
+            </div>
+          </div>
+          <!-- Lifestyle & building -->
+          <div class="feat-grp">
+            <div class="feat-grp-title">Lifestyle &amp; building</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" id="f-pet_friendly"/> Pet-friendly</label>
+              <label class="feat-chk"><input type="checkbox" id="f-furnished"/> Furnished</label>
+              <label class="feat-chk"><input type="checkbox" id="f-gated"/> Gated community</label>
+              <label class="feat-chk"><input type="checkbox" id="f-lift"/> Lift</label>
+            </div>
           </div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
@@ -682,6 +743,12 @@
         setChk('f-alarm', listing.alarm)
         setChk('f-wheelchair', listing.wheelchair)
         setChk('f-ensuite', listing.ensuite)
+        ;[ 'dishwasher','washer_dryer','fireplace','central_heating','air_con',
+           'balcony','terrace','patio',
+           'broadband','solar_panels','ev_charger','heat_pump',
+           'pet_friendly','furnished','gated','lift'
+         ].forEach(function(k){ setChk('f-' + k, listing[k]) })
+        if (listing.view_type) setVal('f-view_type', listing.view_type)
         if (listing.available_from) setVal('available_from', String(listing.available_from).slice(0,10))
         if (typeof refreshListingTypeFields === 'function') refreshListingTypeFields()
 
@@ -1015,6 +1082,19 @@
           available_from:  document.getElementById('available_from') && document.getElementById('available_from').value || null,
           plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',
         }
+        // ── Phase 1 extra amenities — only sent when the matching field
+        //    exists on the page (so the room/share flow doesn't break).
+        ;[
+          'dishwasher','washer_dryer','fireplace','central_heating','air_con',
+          'balcony','terrace','patio',
+          'broadband','solar_panels','ev_charger','heat_pump',
+          'pet_friendly','furnished','gated','lift'
+        ].forEach(function(k){
+          var el = document.getElementById('f-' + k)
+          if (el) payload[k] = !!el.checked
+        })
+        var vt = document.getElementById('f-view_type')
+        if (vt && vt.value) payload.view_type = vt.value
 
         // ── Edit mode: update the existing listing instead of creating ────
         if (window.EDIT_LISTING_ID) {

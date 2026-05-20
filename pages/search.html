@@ -543,6 +543,55 @@
           <label class="cb-row"><input type="checkbox" id="f-alarm"/><label>Alarm system</label></label>
           <label class="cb-row"><input type="checkbox" id="f-wheelchair"/><label>Wheelchair access</label></label>
         </div>
+        <details class="more-feats" style="margin-top:.65rem">
+          <summary style="font-size:13px;font-weight:600;color:var(--green,#1a5c45);cursor:pointer;padding:6px 0;list-style:none;display:inline-flex;align-items:center;gap:5px">+ More features</summary>
+          <style>
+            .more-feats[open] summary::after{ content:'−';margin-left:4px }
+            .more-feats summary::after{ content:'+';margin-left:4px }
+            .more-feats summary::-webkit-details-marker{display:none}
+            .feat-sub-label{font-size:10.5px;font-weight:700;color:var(--muted,#888);text-transform:uppercase;letter-spacing:.7px;margin:.85rem 0 .4rem}
+            .feat-view-row{display:flex;align-items:center;gap:8px;font-size:13.5px;margin-top:.45rem}
+            .feat-view-row select{font:inherit;font-size:13px;border:1.5px solid var(--border,#e6e2d8);border-radius:8px;padding:5px 9px;background:#fff}
+          </style>
+          <div class="feat-sub-label">Comfort &amp; climate</div>
+          <div class="cb-col">
+            <label class="cb-row"><input type="checkbox" id="f-dishwasher"/><label>Dishwasher</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-washer_dryer"/><label>Washer / dryer</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-fireplace"/><label>Fireplace</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-central_heating"/><label>Central heating</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-air_con"/><label>Air conditioning</label></label>
+          </div>
+          <div class="feat-sub-label">Outdoor &amp; views</div>
+          <div class="cb-col">
+            <label class="cb-row"><input type="checkbox" id="f-balcony"/><label>Balcony</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-terrace"/><label>Terrace</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-patio"/><label>Patio</label></label>
+          </div>
+          <div class="feat-view-row">
+            <label for="f-view_type" style="color:#555">View:</label>
+            <select id="f-view_type" onchange="doSearch()">
+              <option value="">Any</option>
+              <option value="sea">Sea</option>
+              <option value="mountain">Mountain</option>
+              <option value="city">City</option>
+              <option value="river">River / lake</option>
+            </select>
+          </div>
+          <div class="feat-sub-label">Energy &amp; connectivity</div>
+          <div class="cb-col">
+            <label class="cb-row"><input type="checkbox" id="f-broadband"/><label>High-speed broadband</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-solar_panels"/><label>Solar panels</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-ev_charger"/><label>EV charger</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-heat_pump"/><label>Heat pump</label></label>
+          </div>
+          <div class="feat-sub-label">Lifestyle &amp; building</div>
+          <div class="cb-col">
+            <label class="cb-row"><input type="checkbox" id="f-pet_friendly"/><label>Pet-friendly</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-furnished"/><label>Furnished</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-gated"/><label>Gated community</label></label>
+            <label class="cb-row"><input type="checkbox" id="f-lift"/><label>Lift</label></label>
+          </div>
+        </details>
       </div>
 
       <!-- Buy-only filters: hidden when searchType === 'rent' or 'share' -->
@@ -866,9 +915,15 @@
       document.getElementById('f-max').value = ''
       document.querySelectorAll('.f-opt').forEach(o => o.classList.remove('on'))
       document.querySelectorAll('.ber-btn').forEach(b => b.classList.remove('on'))
-      ;['f-parking','f-garden','f-garage','f-alarm','f-wheelchair','f-auction','f-newdev'].forEach(function(id){
+      ;['f-parking','f-garden','f-garage','f-alarm','f-wheelchair','f-auction','f-newdev',
+        'f-dishwasher','f-washer_dryer','f-fireplace','f-central_heating','f-air_con',
+        'f-balcony','f-terrace','f-patio',
+        'f-broadband','f-solar_panels','f-ev_charger','f-heat_pump',
+        'f-pet_friendly','f-furnished','f-gated','f-lift'
+      ].forEach(function(id){
         var el = document.getElementById(id); if (el) el.checked = false
       })
+      var vt = document.getElementById('f-view_type'); if (vt) vt.value = ''
     }
 
     // Show/hide buy-only filter section based on active listing type.
@@ -919,6 +974,16 @@
       if (document.getElementById('f-garage')?.checked)     filters.garage     = '1'
       if (document.getElementById('f-alarm')?.checked)      filters.alarm      = '1'
       if (document.getElementById('f-wheelchair')?.checked) filters.wheelchair = '1'
+      // Phase 1 extra amenity filters
+      ;[ 'dishwasher','washer_dryer','fireplace','central_heating','air_con',
+         'balcony','terrace','patio',
+         'broadband','solar_panels','ev_charger','heat_pump',
+         'pet_friendly','furnished','gated','lift'
+       ].forEach(function(k){
+         if (document.getElementById('f-' + k)?.checked) filters[k] = '1'
+       })
+      var vtEl = document.getElementById('f-view_type')
+      if (vtEl && vtEl.value) filters.view_type = vtEl.value
       // Buy-only flags
       if ((!activeType || activeType === 'sale')) {
         if (document.getElementById('f-auction')?.checked) filters.is_auction = '1'
