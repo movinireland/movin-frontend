@@ -255,6 +255,117 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════════
+       Costs, taxes & lender presets
+  ══════════════════════════════════════ -->
+  <style>
+    .pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:.6rem 0 .25rem}
+    .lender-pill{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--border,#e6e2d8);background:#fff;color:#555;border-radius:50px;padding:7px 13px;font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;min-height:36px}
+    .lender-pill:hover{border-color:var(--g,#1a5c45);color:var(--g,#1a5c45)}
+    .lender-pill.active{background:var(--g,#1a5c45);color:#fff;border-color:var(--g,#1a5c45)}
+    .lender-pill .rate{font-size:11px;font-weight:600;opacity:.7}
+    .lender-pill.active .rate{opacity:.95}
+    .ftb-toggle{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--gl,#e9f4ef);border-radius:12px;margin:.85rem 0 0;font-size:13.5px;color:var(--gd,#0e3d2e)}
+    .ftb-toggle label{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:500}
+    .ftb-toggle input{accent-color:var(--g,#1a5c45);width:17px;height:17px;cursor:pointer}
+    .stress-row{display:flex;align-items:center;justify-content:space-between;background:#fef7e7;border:1px solid #f7d774;border-radius:10px;padding:10px 12px;margin:.75rem 0 0;font-size:13.5px;color:#7a4f00}
+    .share-btn{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--g,#1a5c45);background:#fff;color:var(--g,#1a5c45);border-radius:50px;padding:8px 16px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;min-height:38px;transition:all .15s;margin-top:.85rem}
+    .share-btn:hover{background:var(--gl,#e9f4ef)}
+    .share-btn.copied{background:var(--g,#1a5c45);color:#fff}
+    .chart-card{background:#fff;border:1px solid var(--border,#e6e2d8);border-radius:14px;padding:1.25rem;margin-bottom:1.25rem}
+    .chart-title{font-family:'Playfair Display',Georgia,serif;font-weight:900;color:var(--gd,#0e3d2e);font-size:16px;margin-bottom:.85rem;letter-spacing:-.3px}
+    .chart-grid{display:grid;gap:1.25rem;grid-template-columns:1fr}
+    @media(min-width:720px){.chart-grid{grid-template-columns:minmax(180px,220px) 1fr;align-items:center}}
+    .chart-legend{display:flex;flex-direction:column;gap:6px;margin-top:.6rem;font-size:13px;color:#555}
+    .chart-legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+    .chart-svg{width:100%;height:auto;display:block}
+  </style>
+
+  <div class="calc-card" id="costs-card">
+    <div class="calc-card-title">Costs, lenders &amp; first-time buyer</div>
+    <div class="calc-card-sub">Pick a lender for an indicative rate, toggle FTB to apply 4× lending + Help-to-Buy.</div>
+
+    <div class="pill-row" id="lender-pills">
+      <button type="button" class="lender-pill active" data-rate="" onclick="setLender(null,this)">Custom <span class="rate" id="lender-custom-rate"></span></button>
+      <button type="button" class="lender-pill" data-rate="3.50" onclick="setLender(3.50,this)">AIB <span class="rate">3.50%</span></button>
+      <button type="button" class="lender-pill" data-rate="3.70" onclick="setLender(3.70,this)">Bank of Ireland <span class="rate">3.70%</span></button>
+      <button type="button" class="lender-pill" data-rate="3.80" onclick="setLender(3.80,this)">PTSB <span class="rate">3.80%</span></button>
+      <button type="button" class="lender-pill" data-rate="3.60" onclick="setLender(3.60,this)">Avant <span class="rate">3.60%</span></button>
+      <button type="button" class="lender-pill" data-rate="3.50" onclick="setLender(3.50,this)">Haven <span class="rate">3.50%</span></button>
+      <button type="button" class="lender-pill" data-rate="3.85" onclick="setLender(3.85,this)">ICS <span class="rate">3.85%</span></button>
+    </div>
+    <p style="font-size:11.5px;color:#999;margin:.25rem 0 .25rem">Rates are indicative variable rates as of May 2026 — check the lender's current offer before committing.</p>
+
+    <div class="ftb-toggle">
+      <label><input type="checkbox" id="m-ftb" onchange="calcMortgage()"/> I'm a first-time buyer</label>
+      <label style="margin-left:auto"><input type="checkbox" id="m-newbuild" onchange="calcMortgage()"/> New build</label>
+    </div>
+
+    <div class="breakdown-card" style="margin-top:1rem">
+      <div class="breakdown-row">
+        <span class="breakdown-label">Stamp duty <span style="font-size:11px;color:#999">(1% up to €1m, 2% above)</span></span>
+        <span class="breakdown-value" id="b-stamp">€0</span>
+      </div>
+      <div class="breakdown-row" id="b-htb-row" style="display:none">
+        <span class="breakdown-label">Help-to-Buy credit <span style="font-size:11px;color:#999">(FTB · new build)</span></span>
+        <span class="breakdown-value" id="b-htb" style="color:#1a7a3a">−€0</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Legal &amp; setup <span style="font-size:11px;color:#999">(approx 1.5%)</span></span>
+        <span class="breakdown-value" id="b-legal">€0</span>
+      </div>
+      <div class="breakdown-row" style="border-top:1.5px solid var(--border,#e6e2d8);padding-top:.65rem">
+        <span class="breakdown-label" style="font-weight:600;color:var(--gd,#0e3d2e)">Estimated upfront cost</span>
+        <span class="breakdown-value" id="b-upfront" style="font-weight:700;color:var(--gd,#0e3d2e)">€0</span>
+      </div>
+    </div>
+
+    <div class="stress-row">
+      <span><strong>Stress test</strong> · monthly at rate + 2%</span>
+      <strong id="b-stress">€0</strong>
+    </div>
+
+    <button class="share-btn" id="share-btn" onclick="copyMortgageLink()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      <span id="share-btn-label">Share / save this scenario</span>
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       Charts: payment split & balance over time
+  ══════════════════════════════════════ -->
+  <div class="chart-card">
+    <div class="chart-title">Where your money goes</div>
+    <div class="chart-grid">
+      <div>
+        <svg class="chart-svg" id="chart-donut" viewBox="0 0 120 120" aria-label="Principal vs interest split">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#eef0ea" stroke-width="18"/>
+          <circle id="donut-arc" cx="60" cy="60" r="46" fill="none" stroke="#1a5c45" stroke-width="18"
+                  stroke-dasharray="0 999" stroke-linecap="butt" transform="rotate(-90 60 60)"/>
+          <text x="60" y="56" text-anchor="middle" font-family="Playfair Display, serif" font-weight="900" font-size="13" fill="#0e3d2e" id="donut-num">0%</text>
+          <text x="60" y="72" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="7.5" fill="#7a7a72">interest</text>
+        </svg>
+        <div class="chart-legend">
+          <div><span class="sw" style="background:#1a5c45"></span> Interest <span id="legend-int" style="float:right">€0</span></div>
+          <div><span class="sw" style="background:#eef0ea;border:1px solid #ddd"></span> Principal <span id="legend-prin" style="float:right">€0</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;color:#555;font-weight:600;margin-bottom:.4rem">Loan balance over time</div>
+        <svg class="chart-svg" id="chart-line" viewBox="0 0 400 160" preserveAspectRatio="none" aria-label="Loan balance over the mortgage term">
+          <!-- X / Y axis baselines -->
+          <line x1="36" y1="140" x2="394" y2="140" stroke="#e6e2d8" stroke-width="1"/>
+          <line x1="36" y1="10"  x2="36"  y2="140" stroke="#e6e2d8" stroke-width="1"/>
+          <!-- Filled area + line drawn by JS -->
+          <path id="line-fill"  d="" fill="#e9f4ef"/>
+          <path id="line-stroke" d="" fill="none" stroke="#1a5c45" stroke-width="2"/>
+          <g id="line-axis-x" font-family="DM Sans,sans-serif" font-size="9" fill="#888"></g>
+          <g id="line-axis-y" font-family="DM Sans,sans-serif" font-size="9" fill="#888"></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
   <!-- Affordability check -->
   <div class="calc-card">
     <div class="calc-card-title">Affordability check</div>
@@ -754,18 +865,40 @@ function fmtK(n) {
 // ══════════════════════════════════════
 // MORTGAGE CALCULATOR
 // ══════════════════════════════════════
+// ── Irish-specific helpers ───────────────────────────────────────────────────
+// Residential stamp duty: 1% up to €1,000,000, then 2% on the excess.
+function irishStampDuty(price){
+  if (!price || price <= 0) return 0
+  if (price <= 1_000_000) return price * 0.01
+  return 1_000_000 * 0.01 + (price - 1_000_000) * 0.02
+}
+// Help-to-Buy: refund of income tax/DIRT up to 10% of price or €30,000
+// (whichever is lower) for first-time buyers on a NEW build.
+function htbCredit(price, isFTB, newBuild){
+  if (!isFTB || !newBuild || price <= 0) return 0
+  return Math.min(30_000, price * 0.10)
+}
+// Compute a monthly repayment with the standard annuity formula.
+function monthlyPayment(principal, annualRate, termYears){
+  if (principal <= 0 || termYears <= 0) return 0
+  const r = annualRate / 100 / 12
+  const n = termYears * 12
+  return r === 0 ? principal / n : principal * r / (1 - Math.pow(1 + r, -n))
+}
+
 function calcMortgage() {
   const price   = parseFloat(document.getElementById('m-price').value)   || 0
   const deposit = parseFloat(document.getElementById('m-deposit').value) || 0
   const rate    = parseFloat(document.getElementById('m-rate').value)    || 0
   const term    = parseInt(document.getElementById('m-term').value)      || 0
+  const isFTB   = !!document.getElementById('m-ftb')?.checked
+  const newBuild= !!document.getElementById('m-newbuild')?.checked
 
   const principal = Math.max(0, price - deposit)
-  const monthly   = rate === 0
-    ? principal / (term * 12)
-    : principal * (rate/100/12) / (1 - Math.pow(1 + rate/100/12, -(term * 12)))
+  const monthly   = monthlyPayment(principal, rate, term)
+  const stressMonthly = monthlyPayment(principal, rate + 2, term)
 
-  const totalRepaid  = monthly * term * 12
+  const totalRepaid   = monthly * term * 12
   const totalInterest = Math.max(0, totalRepaid - principal)
   const ltv = principal > 0 ? Math.round((principal / price) * 100) : 0
 
@@ -781,15 +914,130 @@ function calcMortgage() {
   document.getElementById('b-term').textContent    = term + ' years'
   document.getElementById('b-monthly').textContent = fmt(monthly)
 
+  // Stamp duty + HTB + legal + total upfront
+  const stamp = irishStampDuty(price)
+  const htb   = htbCredit(price, isFTB, newBuild)
+  const legal = price * 0.015 // approx solicitor + survey + Land Reg
+  const upfront = Math.max(0, deposit + stamp + legal - htb)
+  document.getElementById('b-stamp').textContent   = fmt(stamp)
+  document.getElementById('b-htb').textContent     = '−' + fmt(htb)
+  document.getElementById('b-htb-row').style.display = htb > 0 ? '' : 'none'
+  document.getElementById('b-legal').textContent   = fmt(legal)
+  document.getElementById('b-upfront').textContent = fmt(upfront)
+  document.getElementById('b-stress').textContent  = fmt(stressMonthly) + ' /mo'
+
   // Sync sliders
   document.getElementById('m-price-sl').value = price
   document.getElementById('m-dep-sl').value   = deposit
 
-  // Amortisation
-  buildAmortTable(principal, rate, term)
+  // Highlight the Custom lender pill + show its current rate
+  const customPill = document.querySelector('#lender-pills .lender-pill[data-rate=""]')
+  if (customPill && !customPill.classList.contains('active') &&
+      !document.querySelector('#lender-pills .lender-pill.active')) {
+    customPill.classList.add('active')
+  }
+  const customRateEl = document.getElementById('lender-custom-rate')
+  if (customRateEl) customRateEl.textContent = rate ? rate.toFixed(2) + '%' : ''
 
-  // Re-run affordability
+  // Amortisation table + balance-over-time data for the chart
+  const series = buildAmortTable(principal, rate, term)
+  drawDonut(principal, totalInterest)
+  drawBalanceLine(series, principal)
+
+  // Re-run affordability with the new FTB flag in mind
   calcAffordability()
+}
+
+// ── Lender preset pill → set rate input ──────────────────────────────────────
+function setLender(rate, btn){
+  document.querySelectorAll('#lender-pills .lender-pill').forEach(function(b){ b.classList.remove('active') })
+  if (btn) btn.classList.add('active')
+  if (rate != null) {
+    document.getElementById('m-rate').value = rate
+  }
+  calcMortgage()
+}
+
+// ── Share / save link — encodes scenario in the URL ──────────────────────────
+function copyMortgageLink(){
+  const ids = ['m-price','m-deposit','m-rate','m-term','m-income','m-income2']
+  const p = new URLSearchParams()
+  ids.forEach(function(id){
+    const v = document.getElementById(id)
+    if (v && v.value !== '') p.set(id.replace('m-',''), v.value)
+  })
+  if (document.getElementById('m-ftb')?.checked)      p.set('ftb', '1')
+  if (document.getElementById('m-newbuild')?.checked) p.set('newbuild', '1')
+  const url = location.origin + location.pathname + '?' + p.toString() + '#mortgage'
+  const btn = document.getElementById('share-btn')
+  const lbl = document.getElementById('share-btn-label')
+  navigator.clipboard.writeText(url).then(function(){
+    btn.classList.add('copied'); lbl.textContent = '✓ Link copied — paste anywhere'
+    setTimeout(function(){ btn.classList.remove('copied'); lbl.textContent = 'Share / save this scenario' }, 2200)
+  }).catch(function(){
+    // Fallback: prompt with the URL
+    prompt('Copy this link to share your scenario:', url)
+  })
+}
+
+// ── Hydrate inputs from a shared querystring on first load ───────────────────
+;(function loadMortgageFromQuery(){
+  if (!location.search) return
+  const q = new URLSearchParams(location.search)
+  const map = { price:'m-price', deposit:'m-deposit', rate:'m-rate', term:'m-term',
+                income:'m-income', income2:'m-income2' }
+  Object.keys(map).forEach(function(k){
+    if (q.has(k)) {
+      const el = document.getElementById(map[k])
+      if (el) el.value = q.get(k)
+    }
+  })
+  if (q.get('ftb')      === '1') { const el = document.getElementById('m-ftb');      if (el) el.checked = true }
+  if (q.get('newbuild') === '1') { const el = document.getElementById('m-newbuild'); if (el) el.checked = true }
+})()
+
+// ── SVG charts (no external library) ─────────────────────────────────────────
+function drawDonut(principal, interest){
+  const total = principal + interest
+  const pct   = total > 0 ? interest / total : 0
+  // r = 46, circumference = 2πr ≈ 289.03
+  const circ  = 2 * Math.PI * 46
+  const arc   = document.getElementById('donut-arc')
+  const num   = document.getElementById('donut-num')
+  if (arc) arc.setAttribute('stroke-dasharray', (pct * circ).toFixed(1) + ' ' + (circ).toFixed(1))
+  if (num) num.textContent = Math.round(pct * 100) + '%'
+  const lp = document.getElementById('legend-prin'); if (lp) lp.textContent = fmt(principal)
+  const li = document.getElementById('legend-int');  if (li) li.textContent = fmt(interest)
+}
+
+function drawBalanceLine(series, principal){
+  // series = [{year:1, balance:…}, …] — first point implicitly year 0 / principal
+  if (!Array.isArray(series) || !series.length) return
+  const w = 400, h = 160, padL = 36, padR = 6, padT = 10, padB = 20
+  const maxY = principal
+  const pts  = [{ x:0, y:principal }].concat(series.map(function(s){ return { x: s.year, y: Math.max(0, s.balance) } }))
+  const maxX = pts[pts.length - 1].x
+  const X = function(x){ return padL + (x / maxX) * (w - padL - padR) }
+  const Y = function(y){ return padT + (1 - (maxY > 0 ? y / maxY : 0)) * (h - padT - padB) }
+  let d = ''
+  pts.forEach(function(p, i){ d += (i === 0 ? 'M' : 'L') + X(p.x).toFixed(1) + ' ' + Y(p.y).toFixed(1) + ' ' })
+  document.getElementById('line-stroke').setAttribute('d', d.trim())
+  // Fill = the line + close to baseline
+  const baseline = Y(0).toFixed(1)
+  const fill = d.trim() + ' L ' + X(maxX).toFixed(1) + ' ' + baseline + ' L ' + X(0).toFixed(1) + ' ' + baseline + ' Z'
+  document.getElementById('line-fill').setAttribute('d', fill)
+  // Axis labels — 0, midYear, maxYear on X; 0, midY, maxY on Y
+  const ax = document.getElementById('line-axis-x'); ax.innerHTML = ''
+  const ay = document.getElementById('line-axis-y'); ay.innerHTML = ''
+  ;[0, Math.round(maxX/2), maxX].forEach(function(x){
+    ax.insertAdjacentHTML('beforeend',
+      '<text x="' + X(x) + '" y="' + (h - padB + 12) + '" text-anchor="middle">Yr ' + x + '</text>')
+  })
+  ;[maxY, maxY/2, 0].forEach(function(y){
+    ay.insertAdjacentHTML('beforeend',
+      '<text x="' + (padL - 4) + '" y="' + (Y(y) + 3) + '" text-anchor="end">' +
+      (y >= 1000 ? '€' + Math.round(y/1000) + 'k' : '€' + Math.round(y)) + '</text>')
+  })
 }
 
 function buildAmortTable(principal, annualRate, termYears) {
@@ -799,6 +1047,7 @@ function buildAmortTable(principal, annualRate, termYears) {
   let balance = principal
   const tbody = document.getElementById('amort-body')
   tbody.innerHTML = ''
+  const series = []
 
   for (let year = 1; year <= termYears; year++) {
     let yearPrincipal = 0, yearInterest = 0
@@ -813,7 +1062,9 @@ function buildAmortTable(principal, annualRate, termYears) {
     const tr = document.createElement('tr')
     tr.innerHTML = `<td>Year ${year}</td><td>${fmt(yearPrincipal)}</td><td>${fmt(yearInterest)}</td><td>${fmt(Math.max(0,balance))}</td>`
     tbody.appendChild(tr)
+    series.push({ year: year, balance: Math.max(0, balance) })
   }
+  return series
 }
 
 function toggleAmort() {
@@ -833,8 +1084,11 @@ function calcAffordability() {
   const deposit = parseFloat(document.getElementById('m-deposit').value) || 0
   const income  = parseFloat(document.getElementById('m-income').value)  || 0
   const income2 = parseFloat(document.getElementById('m-income2').value) || 0
+  const isFTB   = !!document.getElementById('m-ftb')?.checked
   const combined = income + income2
-  const maxBorrow = combined * 3.5
+  // CBI macroprudential rule: 3.5× gross income, lifted to 4× for FTBs (2023+).
+  const multiplier = isFTB ? 4 : 3.5
+  const maxBorrow = combined * multiplier
   const maxPrice  = maxBorrow + deposit
   const diff      = price - maxPrice
   const pct       = Math.min(100, Math.round((maxPrice / price) * 100))
@@ -843,6 +1097,8 @@ function calcAffordability() {
   document.getElementById('a-max').textContent    = fmt(maxBorrow)
   document.getElementById('a-total').textContent  = fmt(maxPrice)
   document.getElementById('a-price').textContent  = fmt(price)
+  const maxLabel = document.querySelector('.breakdown-card #a-max')?.previousElementSibling
+  if (maxLabel) maxLabel.textContent = `Max borrowing (${multiplier}×${isFTB ? ' — FTB' : ''})`
 
   const bar  = document.getElementById('afford-bar')
   const note = document.getElementById('afford-note')
