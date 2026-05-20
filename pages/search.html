@@ -445,6 +445,30 @@
     <button class="qf-chip" onclick="createAlert()" id="create-alert-btn"><svg width="12" height="12" style="color:#555"><use href="/icons.svg#icon-bell"/></svg> Alert</button>
   </div>
 
+  <!-- Distance/radius pill — appears when search.html arrives with lat/lng -->
+  <div id="origin-bar" style="display:none;padding:.55rem 1rem;background:var(--gl,#e9f4ef);border-bottom:1px solid var(--border);align-items:center;gap:.6rem;flex-wrap:wrap">
+    <style>
+      #origin-bar{align-items:center}
+      #origin-bar .o-label{font-size:13px;color:var(--gd,#0e3d2e);font-weight:600;display:inline-flex;align-items:center;gap:5px}
+      #origin-pills{display:inline-flex;gap:6px;flex-wrap:wrap}
+      #origin-pills .o-pill{font:inherit;font-size:12.5px;font-weight:600;color:#1a5c45;background:#fff;border:1.5px solid #c8dfd4;border-radius:50px;padding:6px 12px;cursor:pointer;min-height:34px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+      #origin-pills .o-pill:hover{border-color:var(--g,#1a5c45)}
+      #origin-pills .o-pill.active{background:var(--g,#1a5c45);color:#fff;border-color:var(--g,#1a5c45)}
+    </style>
+    <span class="o-label">📍 Near <span id="origin-label" style="font-weight:500"></span></span>
+    <span style="font-size:12px;color:var(--gd,#0e3d2e);opacity:.7">·</span>
+    <span style="font-size:12.5px;color:var(--gd,#0e3d2e);font-weight:500">within</span>
+    <div id="origin-pills" role="radiogroup" aria-label="Search radius">
+      <button type="button" class="o-pill" data-r=""   onclick="changeRadius(null,this)">Any</button>
+      <button type="button" class="o-pill" data-r="1"  onclick="changeRadius(1,this)">1 km</button>
+      <button type="button" class="o-pill" data-r="5"  onclick="changeRadius(5,this)">5 km</button>
+      <button type="button" class="o-pill" data-r="10" onclick="changeRadius(10,this)">10 km</button>
+      <button type="button" class="o-pill" data-r="25" onclick="changeRadius(25,this)">25 km</button>
+      <button type="button" class="o-pill" data-r="50" onclick="changeRadius(50,this)">50 km</button>
+    </div>
+    <button type="button" id="origin-clear" onclick="clearOrigin()" style="margin-left:auto;background:none;border:none;color:#666;font-size:12.5px;font-weight:600;cursor:pointer;padding:6px 8px">Clear</button>
+  </div>
+
   <!-- Results header -->
   <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border);flex-wrap:wrap">
     <div class="results-count" id="result-count" style="font-size:13px;color:#888">Loading…</div>
@@ -462,6 +486,7 @@
       </div>
       <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
         <option value="newest">Most recent</option>
+        <option value="closest" id="sort-closest" hidden>Closest first</option>
         <option value="price_asc">Price ↑</option>
         <option value="price_desc">Price ↓</option>
         <option value="most_viewed">Most viewed</option>
@@ -638,6 +663,56 @@
     window.setView = setView; window.applyResultsView = applyResultsView
     document.addEventListener('DOMContentLoaded', applyResultsView)
 
+    // ── Radius / origin bar (Phase 3) ────────────────────────────────────
+    function applyOriginBar(){
+      var bar = document.getElementById('origin-bar')
+      if (!bar) return
+      var show = Number.isFinite(searchOriginLat) && Number.isFinite(searchOriginLng)
+      bar.style.display = show ? 'flex' : 'none'
+      // Reveal/hide the "Closest first" sort option to match
+      var sc = document.getElementById('sort-closest')
+      if (sc) sc.hidden = !show
+      if (!show) {
+        // If user cleared origin while "closest" was selected, fall back
+        var sel = document.getElementById('sort-sel')
+        if (sel && sel.value === 'closest') sel.value = 'newest'
+        return
+      }
+      var lab = document.getElementById('origin-label')
+      if (lab) lab.textContent = searchOriginLabel || (searchOriginLat.toFixed(3) + ', ' + searchOriginLng.toFixed(3))
+      document.querySelectorAll('#origin-pills .o-pill').forEach(function(b){
+        var r = b.dataset.r
+        var match = (r === '' && !searchRadiusKm) || (parseFloat(r) === searchRadiusKm)
+        b.classList.toggle('active', !!match)
+      })
+    }
+    function changeRadius(km, btn){
+      searchRadiusKm = (km && km > 0) ? km : null
+      // Update the URL without reload so the share-link reflects the radius
+      try {
+        var p = new URLSearchParams(location.search)
+        if (searchRadiusKm) p.set('radius_km', String(searchRadiusKm))
+        else p.delete('radius_km')
+        history.replaceState(null, '', location.pathname + '?' + p.toString())
+      } catch(_) {}
+      applyOriginBar()
+      if (typeof doSearch === 'function') doSearch()
+    }
+    function clearOrigin(){
+      searchOriginLat = null; searchOriginLng = null
+      searchOriginLabel = ''; searchRadiusKm = null
+      try {
+        var p = new URLSearchParams(location.search)
+        ;['lat','lng','near','radius_km'].forEach(function(k){ p.delete(k) })
+        history.replaceState(null, '', location.pathname + '?' + p.toString())
+      } catch(_) {}
+      applyOriginBar()
+      if (typeof doSearch === 'function') doSearch()
+    }
+    window.changeRadius = changeRadius
+    window.clearOrigin  = clearOrigin
+    document.addEventListener('DOMContentLoaded', applyOriginBar)
+
     renderNav('search')
     if (typeof setSEO === 'function') setSEO({
       title:       'Search Properties for Sale & Rent in Ireland | Movin.ie',
@@ -698,10 +773,24 @@
     let searchQuery = ''
     let searchCounty = ''
     let searchDistrict = ''
+    // ── Distance / radius state (Phase 3) ─────────────────────────────────
+    let searchOriginLat = null
+    let searchOriginLng = null
+    let searchOriginLabel = ''
+    let searchRadiusKm = null
 
     // ── Read URL params ─────────────────────────────────────────────────────
     let urlPropertyType = ''
     const urlP = new URLSearchParams(window.location.search)
+    // Lat/Lng/near come from the homepage when a place was picked.
+    var _ulat = parseFloat(urlP.get('lat'))
+    var _ulng = parseFloat(urlP.get('lng'))
+    if (Number.isFinite(_ulat) && Number.isFinite(_ulng)) {
+      searchOriginLat = _ulat; searchOriginLng = _ulng
+      searchOriginLabel = urlP.get('near') || ''
+    }
+    var _ur = parseFloat(urlP.get('radius_km'))
+    if (Number.isFinite(_ur) && _ur > 0) searchRadiusKm = _ur
     if (urlP.get('listing_type')) {
       activeType = urlP.get('listing_type')
       document.querySelectorAll('.pill[data-type]').forEach(p => {
@@ -984,6 +1073,12 @@
        })
       var vtEl = document.getElementById('f-view_type')
       if (vtEl && vtEl.value) filters.view_type = vtEl.value
+      // Distance/radius (Phase 3) — only meaningful when we have an origin
+      if (Number.isFinite(searchOriginLat) && Number.isFinite(searchOriginLng)) {
+        filters.lat = searchOriginLat
+        filters.lng = searchOriginLng
+        if (searchRadiusKm && searchRadiusKm > 0) filters.radius_km = searchRadiusKm
+      }
       // Buy-only flags
       if ((!activeType || activeType === 'sale')) {
         if (document.getElementById('f-auction')?.checked) filters.is_auction = '1'

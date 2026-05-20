@@ -1649,7 +1649,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:8px;right:8px;z-index:4;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗</div>
+        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗${(listing.distance_km != null && isFinite(parseFloat(listing.distance_km))) ? ` · <span style="color:#1a5c45;font-weight:600;text-transform:none;letter-spacing:0">${parseFloat(listing.distance_km).toFixed(parseFloat(listing.distance_km) < 10 ? 1 : 0)} km</span>` : ''}</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">

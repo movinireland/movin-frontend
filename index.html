@@ -1802,6 +1802,27 @@ body.hero-places-ready .sugg-box{display:none !important}
 
     <div class="chip-wrap" id="chip-wrap"></div>
 
+    <!-- Radius pill — shown once the user picks a place from autocomplete -->
+    <div id="radius-wrap" style="display:none;padding:0 1rem .25rem;align-items:center;gap:8px;flex-wrap:wrap">
+      <style>
+        #radius-wrap{align-items:center}
+        #radius-wrap label{font-size:13px;color:#555;font-weight:500}
+        #radius-pills{display:inline-flex;gap:6px;flex-wrap:wrap}
+        #radius-pills .r-pill{font:inherit;font-size:12.5px;font-weight:600;color:#555;background:#fff;border:1.5px solid var(--border,#e6e2d8);border-radius:50px;padding:6px 13px;cursor:pointer;min-height:34px;transition:all .15s;-webkit-tap-highlight-color:transparent}
+        #radius-pills .r-pill:hover{border-color:var(--g,#1a5c45);color:var(--g,#1a5c45)}
+        #radius-pills .r-pill.active{background:var(--g,#1a5c45);color:#fff;border-color:var(--g,#1a5c45)}
+      </style>
+      <label for="radius-pills">Within</label>
+      <div id="radius-pills" role="radiogroup" aria-label="Search radius">
+        <button type="button" class="r-pill active" data-r="" onclick="setRadius(null,this)">Any</button>
+        <button type="button" class="r-pill" data-r="1"  onclick="setRadius(1,this)">1 km</button>
+        <button type="button" class="r-pill" data-r="5"  onclick="setRadius(5,this)">5 km</button>
+        <button type="button" class="r-pill" data-r="10" onclick="setRadius(10,this)">10 km</button>
+        <button type="button" class="r-pill" data-r="25" onclick="setRadius(25,this)">25 km</button>
+        <button type="button" class="r-pill" data-r="50" onclick="setRadius(50,this)">50 km</button>
+      </div>
+    </div>
+
     <div class="adv-toggle" onclick="toggleAdv()">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 2h12M3 7h8M5 12h4" stroke="#1a5c45" stroke-width="1.5" stroke-linecap="round"/></svg>
       Advanced search
@@ -2233,7 +2254,35 @@ function selectLoc(item){
   showChip(item.name)
 }
 function showChip(label){document.getElementById('chip-wrap').innerHTML=`<span class="search-chip">📍 ${label}<button class="chip-x" onclick="clearSearch()">×</button></span>`}
-function clearSearch(){searchQuery='';searchCounty='';document.getElementById('hero-loc').value='';document.getElementById('chip-wrap').innerHTML=''}
+function clearSearch(){searchQuery='';searchCounty='';document.getElementById('hero-loc').value='';document.getElementById('chip-wrap').innerHTML='';searchOrigin=null;searchRadiusKm=null;showRadiusWrap(false)}
+
+// ── Radius pill (Phase 3) ────────────────────────────────────────────────
+// Only meaningful once we have a lat/lng anchor (place picked from autocomplete).
+let searchRadiusKm = null
+try { var _r = localStorage.getItem('movin_radius_km'); if (_r) searchRadiusKm = parseFloat(_r) || null } catch(_) {}
+function showRadiusWrap(show){
+  var w = document.getElementById('radius-wrap')
+  if (w) w.style.display = show ? 'flex' : 'none'
+}
+function setRadius(km, btn){
+  searchRadiusKm = (km && km > 0) ? km : null
+  try {
+    if (searchRadiusKm) localStorage.setItem('movin_radius_km', String(searchRadiusKm))
+    else localStorage.removeItem('movin_radius_km')
+  } catch(_) {}
+  document.querySelectorAll('#radius-pills .r-pill').forEach(function(b){ b.classList.remove('active') })
+  if (btn) btn.classList.add('active')
+}
+// Restore active pill from saved preference on first paint
+document.addEventListener('DOMContentLoaded', function(){
+  if (searchRadiusKm) {
+    var pill = document.querySelector('#radius-pills .r-pill[data-r="' + searchRadiusKm + '"]')
+    if (pill) {
+      document.querySelectorAll('#radius-pills .r-pill').forEach(function(b){ b.classList.remove('active') })
+      pill.classList.add('active')
+    }
+  }
+})
 document.addEventListener('click',e=>{if(!e.target.closest('.search-main'))document.getElementById('loc-sugg')?.classList.remove('open')})
 // When the user picks a place from the Google Places dropdown we capture
 // its lat/lng so search.html can sort listings by distance to it.
@@ -2371,6 +2420,7 @@ function _doDirectSearch(qOverride){
     p.set('lat',  searchOrigin.lat)
     p.set('lng',  searchOrigin.lng)
     p.set('near', searchOrigin.label || q || '')
+    if (searchRadiusKm && searchRadiusKm > 0) p.set('radius_km', searchRadiusKm)
   }
   window.location.href='pages/search.html?'+p.toString()
 }
@@ -2414,6 +2464,7 @@ function doSearch(){
     p.set('lat',  searchOrigin.lat)
     p.set('lng',  searchOrigin.lng)
     p.set('near', searchOrigin.label || q || '')
+    if (searchRadiusKm && searchRadiusKm > 0) p.set('radius_km', searchRadiusKm)
   }
   window.location.href='pages/search.html?'+p.toString()
 }
@@ -2567,6 +2618,8 @@ function applyHeroPlace(place){
       lng:   typeof loc.lng === 'function' ? loc.lng() : loc.lng,
       label: label
     }
+    // Reveal the radius pill — only meaningful once we have an anchor.
+    showRadiusWrap(true)
   }
 
   // Update the input + visible chip + state used by doSearch()
