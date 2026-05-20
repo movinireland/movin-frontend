@@ -1786,6 +1786,9 @@ function renderFooter() {
         '<a href="https://www.instagram.com/movinireland" target="_blank" rel="noopener" aria-label="Movin on Instagram" title="Instagram">' +
           '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37a4 4 0 1 1-7.92 1.18A4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>' +
         '</a>' +
+        '<a href="https://x.com/movinireland" target="_blank" rel="noopener" aria-label="Movin on X" title="X">' +
+          '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' +
+        '</a>' +
         '<a href="https://www.linkedin.com/company/movinireland" target="_blank" rel="noopener" aria-label="Movin on LinkedIn" title="LinkedIn">' +
           '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14zM8.34 18V10.05H5.67V18h2.67zM7 8.86A1.55 1.55 0 1 0 7 5.76a1.55 1.55 0 0 0 0 3.1zM18.34 18v-4.35c0-2.35-1.26-3.45-2.94-3.45a2.53 2.53 0 0 0-2.3 1.27v-1.42H10.4V18h2.69v-4.16c0-1.1.21-2.17 1.57-2.17 1.34 0 1.36 1.26 1.36 2.24V18h2.32z"/></svg>' +
         '</a>' +
