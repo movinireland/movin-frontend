@@ -308,6 +308,54 @@
   [data-theme="dark"] .prop-card{ background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important }
   [data-theme="dark"] .pill{ background:#1c1b16 !important; color:#cfc9bb !important; border-color:#38342a !important }
   [data-theme="dark"] .results-count, [data-theme="dark"] .modal-title{ color:#f1ebdc !important }
+
+  /* ── View toggle (Grid / List) ────────────────────────────────────── */
+  .view-toggle{display:inline-flex;background:var(--white,#fff);border:1.5px solid var(--border);border-radius:50px;padding:3px;gap:2px}
+  .vt-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:12px;font-weight:500;color:#666;background:transparent;border:none;border-radius:50px;padding:6px 12px;cursor:pointer;min-height:34px;transition:background .15s,color .15s;-webkit-tap-highlight-color:transparent}
+  .vt-btn:hover{color:var(--green,#1a5c45)}
+  .vt-btn.active{background:var(--green,#1a5c45);color:#fff;box-shadow:0 2px 6px rgba(26,92,69,.25)}
+  .vt-btn.active:hover{color:#fff}
+  .vt-btn svg{flex-shrink:0}
+  @media(max-width:520px){.vt-label{display:none}.vt-btn{padding:6px 10px}}
+  [data-theme="dark"] .view-toggle{background:#1c1b16;border-color:#38342a}
+  [data-theme="dark"] .vt-btn{color:#cfc9bb}
+
+  /* ── LIST VIEW — same .prop-card markup, restyled into a horizontal row ── */
+  .listings-grid.listings-list{
+    display:flex !important;flex-direction:column !important;gap:.75rem !important;
+    grid-template-columns:none !important;padding:1rem !important;
+  }
+  @media(min-width:900px){.listings-grid.listings-list{gap:.9rem !important;padding:1.25rem !important;max-width:1100px;margin:0 auto}}
+  .listings-list .prop-card{
+    display:flex !important;flex-direction:row !important;
+    height:auto;min-height:128px;
+  }
+  .listings-list .prop-card-img{
+    width:140px !important;height:auto !important;min-height:128px;
+    flex-shrink:0;border-radius:0;
+  }
+  @media(min-width:640px){.listings-list .prop-card-img{width:200px !important;min-height:155px}}
+  @media(min-width:900px){.listings-list .prop-card-img{width:260px !important;min-height:180px}}
+  .listings-list .prop-card-img img{position:absolute;inset:0;width:100%;height:100%}
+  .listings-list .prop-card-body{
+    flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;
+    padding:.85rem 1rem;
+  }
+  @media(min-width:640px){.listings-list .prop-card-body{padding:1rem 1.25rem}}
+  .listings-list .prop-card-title{
+    font-size:16px;line-height:1.3;margin-bottom:6px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  @media(min-width:900px){.listings-list .prop-card-title{font-size:18px}}
+  .listings-list .prop-card-price{font-size:18px;margin-bottom:6px}
+  @media(min-width:900px){.listings-list .prop-card-price{font-size:22px}}
+  .listings-list .prop-card-meta{padding-top:6px;font-size:11.5px}
+  /* On very small screens, drop the compare circle + time chip so the
+     image area stays readable */
+  @media(max-width:420px){
+    .listings-list .prop-card-img > button[onclick*="toggleCompare"],
+    .listings-list .prop-card-img > div[style*="rgba(0,0,0,.55)"]{display:none}
+  }
   </style>
 </head>
 <body>
@@ -398,14 +446,27 @@
   </div>
 
   <!-- Results header -->
-  <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border)">
+  <div class="results-header" style="display:flex;justify-content:space-between;align-items:center;gap:.6rem;padding:.6rem 1rem;background:var(--bg,#f5f2ec);border-bottom:1px solid var(--border);flex-wrap:wrap">
     <div class="results-count" id="result-count" style="font-size:13px;color:#888">Loading…</div>
-    <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
-      <option value="newest">Most recent</option>
-      <option value="price_asc">Price ↑</option>
-      <option value="price_desc">Price ↓</option>
-      <option value="most_viewed">Most viewed</option>
-    </select>
+    <div style="display:flex;align-items:center;gap:.55rem">
+      <!-- View toggle: grid (default) ↔ list -->
+      <div class="view-toggle" role="tablist" aria-label="Result view">
+        <button class="vt-btn active" id="vt-grid" type="button" role="tab" aria-selected="true" aria-label="Grid view" onclick="setView('grid')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span class="vt-label">Grid</span>
+        </button>
+        <button class="vt-btn" id="vt-list" type="button" role="tab" aria-selected="false" aria-label="List view" onclick="setView('list')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="4" cy="18" r="1.5"/></svg>
+          <span class="vt-label">List</span>
+        </button>
+      </div>
+      <select class="sort-select" id="sort-sel" onchange="doSearch()" style="border:1.5px solid var(--border);border-radius:50px;padding:6px 14px;font-size:12px;font-weight:500;background:var(--white,#fff);outline:none;font-family:inherit;cursor:pointer;color:#555">
+        <option value="newest">Most recent</option>
+        <option value="price_asc">Price ↑</option>
+        <option value="price_desc">Price ↓</option>
+        <option value="most_viewed">Most viewed</option>
+      </select>
+    </div>
   </div>
 
   <!-- Results grid -->
@@ -507,6 +568,27 @@
   <script src="../js/api.js"></script>
   <script src="../js/app.js"></script>
   <script>
+    // ── Grid / List view toggle ───────────────────────────────────────────
+    // Preference persists across sessions and pages via localStorage.
+    function getView(){ try { return localStorage.getItem('movin_results_view') || 'grid' } catch(_) { return 'grid' } }
+    function applyResultsView(){
+      var mode = getView() === 'list' ? 'list' : 'grid'
+      var grid = document.getElementById('results-grid')
+      if (grid) grid.classList.toggle('listings-list', mode === 'list')
+      var g = document.getElementById('vt-grid'), l = document.getElementById('vt-list')
+      if (g && l){
+        g.classList.toggle('active', mode === 'grid'); g.setAttribute('aria-selected', mode === 'grid')
+        l.classList.toggle('active', mode === 'list'); l.setAttribute('aria-selected', mode === 'list')
+      }
+    }
+    function setView(mode){
+      if (mode !== 'grid' && mode !== 'list') mode = 'grid'
+      try { localStorage.setItem('movin_results_view', mode) } catch(_) {}
+      applyResultsView()
+    }
+    window.setView = setView; window.applyResultsView = applyResultsView
+    document.addEventListener('DOMContentLoaded', applyResultsView)
+
     renderNav('search')
     if (typeof setSEO === 'function') setSEO({
       title:       'Search Properties for Sale & Rent in Ireland | Movin.ie',
@@ -873,6 +955,7 @@
         }
 
         grid.innerHTML = res.listings.map(l => buildPropertyCard(l, savedIds)).join('')
+        applyResultsView()
 
         // Pagination
         const pg = document.getElementById('pagination')
