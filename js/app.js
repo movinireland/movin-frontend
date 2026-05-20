@@ -2187,7 +2187,7 @@ if (document.readyState === 'loading') {
     googleMapsLoading = true
     window._qsearchOnReady = function() { cb && cb() }
     var s = document.createElement('script')
-    s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAvuyk032ZHZ1L_ZlFfqMhOSVz1Vncp6hk&libraries=places&callback=_qsearchOnReady&v=weekly'
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAtOOE0qNigzPeNTnXZuOIsc9sqSO1qSxk&libraries=places&callback=_qsearchOnReady&v=weekly'
     s.async = true
     s.defer = true
     document.head.appendChild(s)
