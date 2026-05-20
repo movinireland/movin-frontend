@@ -1624,6 +1624,162 @@ body.hero-places-ready .sugg-box{display:none !important}
 }
 
 /* ════════════════════════════════════════════════════════════════════
+   ✦ PROFESSIONAL POLISH PASS
+   A single unified design system on top of everything: one card
+   shape, one shadow scale, one transition curve, one button rhythm,
+   tighter type, subtle section rhythm. No new markup — just refines
+   what's already approved so it feels production-grade.
+   ══════════════════════════════════════════════════════════════════ */
+:root{
+  --mv-radius-sm:10px;
+  --mv-radius:   14px;
+  --mv-radius-lg:18px;
+  --mv-radius-xl:22px;
+  --mv-shadow-1: 0 1px 2px rgba(20,30,25,.05);
+  --mv-shadow-2: 0 6px 18px -8px rgba(14,61,46,.18);
+  --mv-shadow-3: 0 18px 36px -16px rgba(14,61,46,.26);
+  --mv-border:   1px solid #e6e2d8;
+  --mv-ease:     cubic-bezier(.2,.7,.2,1);
+  --mv-dur:      .22s;
+}
+
+/* ── Type rhythm ─────────────────────────────────────────────────── */
+.section-eyebrow{
+  font-size:11.5px !important; font-weight:700 !important;
+  letter-spacing:2.4px !important; text-transform:uppercase !important;
+  color:#e07b3f !important; margin-bottom:.55rem !important;
+}
+.section-title{
+  font-family:'Playfair Display', Georgia, serif !important;
+  font-weight:900 !important; color:#0e3d2e !important;
+  letter-spacing:-.6px !important; line-height:1.05 !important;
+  font-size:clamp(26px, 3.6vw, 38px) !important;
+}
+.section-sub{
+  font-size:clamp(14px, 1.4vw, 16px) !important;
+  line-height:1.65 !important; color:#5b605a !important;
+  max-width:62ch !important; margin-top:.6rem !important; font-weight:400 !important;
+}
+
+/* ── Hero refinement: keep the mood, dial the volume down — */
+@media (min-width:768px){
+  .hero{ padding-bottom:3rem !important }
+  .hero h1, .hero-title{ letter-spacing:-1px !important; line-height:1.04 !important }
+  .hero-sub{ max-width:54ch !important; line-height:1.6 !important }
+  /* Soften the mesh blobs a touch — less "designer demo", more "product" */
+  .hero-shapes, .hero-mesh{ opacity:.85 !important; filter:saturate(.92) }
+}
+
+/* ── Search shell: refined focus + premium feel — */
+.search-main, .hero-search, .search-card{
+  border-radius:var(--mv-radius-lg) !important;
+  box-shadow:var(--mv-shadow-2) !important;
+  border:var(--mv-border) !important;
+  transition:box-shadow var(--mv-dur) var(--mv-ease), border-color var(--mv-dur) var(--mv-ease) !important;
+}
+.search-main:focus-within, .hero-search:focus-within, .search-card:focus-within{
+  border-color:#1a5c45 !important;
+  box-shadow:0 0 0 4px rgba(26,92,69,.10), var(--mv-shadow-3) !important;
+}
+.search-inp{ transition:background .18s var(--mv-ease) }
+
+/* ── AI search: subtle "smart" treatment — */
+.ai-search-pill, .ai-pill, [class*="ai-search-wrap"]{
+  border-radius:var(--mv-radius-lg) !important;
+  border:var(--mv-border) !important;
+  box-shadow:var(--mv-shadow-1) !important;
+  transition:box-shadow var(--mv-dur) var(--mv-ease), border-color var(--mv-dur) var(--mv-ease) !important;
+}
+.ai-search-pill:focus-within, .ai-pill:focus-within{
+  border-color:#e07b3f !important;
+  box-shadow:0 0 0 3px rgba(224,123,63,.14), var(--mv-shadow-2) !important;
+}
+
+/* ── Unified card system: same radius, same elevation, same lift — */
+.tool-card, .stat-cell, .trust-card, .review-card, .wp-val, .wp-price,
+.afford-card, .calc-card, .breakdown-card{
+  border-radius:var(--mv-radius-lg) !important;
+}
+.tool-card, .trust-card{
+  border:var(--mv-border) !important;
+  box-shadow:var(--mv-shadow-1) !important;
+  transition:transform var(--mv-dur) var(--mv-ease),
+             box-shadow var(--mv-dur) var(--mv-ease) !important;
+}
+.tool-card:hover, .trust-card:hover{
+  transform:translateY(-4px) !important;
+  box-shadow:var(--mv-shadow-3) !important;
+}
+
+/* ── Property cards: keep the look, level out the hover — */
+.prop-card{ border-radius:var(--mv-radius-lg) !important; transition:transform var(--mv-dur) var(--mv-ease), box-shadow var(--mv-dur) var(--mv-ease) !important }
+.prop-card:hover{ box-shadow:var(--mv-shadow-3) !important }
+
+/* ── Section rhythm: subtle alternating surfaces (desktop only) — */
+@media (min-width:768px){
+  .section, section{ position:relative }
+  /* Counties / Featured / Tools alternate on a warm paper to give the page
+     a magazine-like cadence without competing with the photo tiles. */
+  .counties-section{ background:transparent }
+  .tools-section{
+    background:linear-gradient(180deg,#ffffff 0%, var(--paper,#faf7f0) 100%);
+    border-top:1px solid #efece2; border-bottom:1px solid #efece2;
+  }
+  .trust-section{ background:#faf7f0 !important }
+  /* Larger, more deliberate section padding on desktop */
+  section{ padding:5rem 1.5rem }
+  .counties-section, .tools-section, .trust-section{ padding-top:4.5rem !important; padding-bottom:4.5rem !important }
+}
+
+/* ── Buttons: unify rhythm and hover — */
+.btn, .btn-primary, .btn-ghost, .wp-cta, .search-go, .tool-card-cta{
+  transition:transform var(--mv-dur) var(--mv-ease),
+             box-shadow var(--mv-dur) var(--mv-ease),
+             background var(--mv-dur) var(--mv-ease),
+             color var(--mv-dur) var(--mv-ease) !important;
+}
+.btn-primary:hover, .wp-cta:hover, .search-go:hover{
+  transform:translateY(-1px);
+  box-shadow:0 12px 26px -10px rgba(26,92,69,.45) !important;
+}
+
+/* ── Stat strip: cleaner divider + numeric tabular nums — */
+.stats-strip{
+  border-radius:var(--mv-radius-xl) !important;
+  box-shadow:var(--mv-shadow-2) !important;
+}
+.stat-n{ font-variant-numeric:tabular-nums !important; letter-spacing:-.2px !important }
+
+/* ── Reveal animation: smoother, less aggressive — */
+.reveal{
+  opacity:0; transform:translateY(14px);
+  transition:opacity .65s var(--mv-ease), transform .65s var(--mv-ease);
+}
+.reveal.revealed{ opacity:1; transform:none }
+@media (prefers-reduced-motion:reduce){
+  .reveal, .reveal.revealed{ opacity:1 !important; transform:none !important; transition:none !important }
+  .tool-card:hover, .trust-card:hover, .prop-card:hover{ transform:none !important }
+}
+
+/* ── Focus rings (keyboard accessibility) — */
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible{
+  outline:2px solid #1a5c45 !important; outline-offset:3px;
+  border-radius:6px;
+}
+.search-inp:focus-visible, .form-input:focus-visible{
+  outline:none; border-color:#1a5c45 !important;
+  box-shadow:0 0 0 4px rgba(26,92,69,.18) !important;
+}
+
+/* ── Dark mode: keep the new tokens consistent — */
+[data-theme="dark"]{
+  --mv-border:1px solid #2a2a2a;
+  --mv-shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --mv-shadow-2:0 6px 18px -8px rgba(0,0,0,.6);
+  --mv-shadow-3:0 18px 36px -16px rgba(0,0,0,.7);
+}
+
+/* ════════════════════════════════════════════════════════════════════
    📱 MOBILE-ONLY RIGHTMOVE-STYLE REBUILD  (≤ 767px)
    Flattens decoration, search-first, white surfaces, big tap targets.
    Desktop is untouched.
