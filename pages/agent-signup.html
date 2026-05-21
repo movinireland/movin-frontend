@@ -275,8 +275,34 @@
     <p>Tell us about your agency. We verify every agent before they go live — you'll get an email the moment you're approved.</p>
 
     <div id="apply-card" style="background:var(--white,#fffdf8);color:var(--text);border-radius:18px;padding:1.75rem;text-align:left;border:1px solid var(--border)">
+      <!-- Mode toggle: create a new agency vs join an existing one with a code -->
+      <div id="mode-toggle" style="display:flex;gap:6px;background:#f1efe7;border-radius:50px;padding:3px;margin-bottom:1.25rem">
+        <button type="button" id="mode-new"  class="mode-pill on"  onclick="setMode('new')">Create new agency</button>
+        <button type="button" id="mode-join" class="mode-pill"      onclick="setMode('join')">Join with team code</button>
+      </div>
+      <style>
+        .mode-pill{flex:1;background:transparent;border:none;border-radius:9px;padding:9px 6px;min-height:38px;font:inherit;font-size:13.5px;font-weight:600;color:#666;cursor:pointer;transition:background .15s, color .15s}
+        .mode-pill.on{background:#fff;color:#0e3d2e;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+        #join-preview{background:#e6fbfb;border:1.5px solid #b4eaea;border-radius:12px;padding:.85rem 1rem;margin-bottom:1rem;display:none;align-items:center;gap:12px}
+        #join-preview img{width:48px;height:48px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--border);padding:4px;flex-shrink:0}
+        #join-preview .jp-meta{font-size:13.5px;color:#0e3d2e;line-height:1.45}
+        #join-preview .jp-meta strong{display:block;font-family:'Playfair Display',serif;font-size:16px;color:#0e3d2e}
+      </style>
       <div id="apply-alert"></div>
       <form id="agent-form" novalidate>
+        <!-- Team-code field (only in join mode) -->
+        <div class="afg" id="code-group" style="display:none">
+          <label>Agency team code <i>*</i></label>
+          <input type="text" id="f-code" placeholder="e.g. M7K2-9XPQ" autocomplete="off" style="text-transform:uppercase;letter-spacing:1px;font-family:'Courier New',monospace"/>
+          <div class="af-hint">Ask the agency's admin for their 8-character team code. Joining a code skips admin approval — you go straight to listing.</div>
+          <div id="join-preview" aria-live="polite">
+            <img id="jp-logo" alt="" style="display:none"/>
+            <div class="jp-meta">
+              <strong id="jp-name">—</strong>
+              <span id="jp-sub" style="color:#3a6149">Verified Irish agency on Movin.ie</span>
+            </div>
+          </div>
+        </div>
         <div class="afg"><label>Full name <i>*</i></label>
           <input type="text" id="f-name" autocomplete="name" required/></div>
         <div class="afg"><label>Email address <i>*</i></label>
@@ -368,6 +394,62 @@
     el.scrollIntoView({ behavior:'smooth', block:'center' })
   }
 
+  // ── Mode toggle: new agency  ↔  join existing with code ──────────────────
+  var signupMode = 'new'
+  function setMode(m){
+    signupMode = m
+    document.getElementById('mode-new' ).classList.toggle('on', m === 'new')
+    document.getElementById('mode-join').classList.toggle('on', m === 'join')
+    document.getElementById('code-group').style.display = m === 'join' ? '' : 'none'
+    // Hide the agency-detail fields in join mode — they inherit from the agency.
+    ;['f-agency','f-psra','f-county','f-web','f-bio','f-logo'].forEach(function(id){
+      var el = document.getElementById(id)
+      if (!el) return
+      var grp = el.closest('.afg') || el.closest('.form-group') || el.parentElement
+      if (grp) grp.style.display = m === 'join' ? 'none' : ''
+      // Also drop the required flag so HTML validation doesn't block submit
+      if (el.required) { el.dataset.wasRequired = '1'; el.required = false }
+      else if (m === 'new' && el.dataset.wasRequired) { el.required = true }
+    })
+    document.getElementById('f-submit').textContent =
+      m === 'join' ? 'Join the agency →' : 'Submit application →'
+    document.querySelector('#apply h2').textContent =
+      m === 'join' ? 'Join your agency' : 'Create your agent account'
+  }
+  window.setMode = setMode
+
+  // Honour ?code=XXXX in the URL — auto-switch to join mode and pre-fill
+  var urlCode = (new URLSearchParams(location.search).get('code') || '').toUpperCase()
+  if (urlCode) {
+    setMode('join')
+    var cf = document.getElementById('f-code')
+    if (cf) cf.value = urlCode
+    setTimeout(lookupAgency, 0)
+  }
+
+  // Live "Joining …" preview as the user types the code
+  var _codeTimer = null
+  function lookupAgency(){
+    var code = (document.getElementById('f-code').value || '').trim().toUpperCase()
+    var box  = document.getElementById('join-preview')
+    if (code.length < 5) { box.style.display = 'none'; return }
+    fetch(window.MOVIN_API_URL + '/api/auth/agency-by-code/' + encodeURIComponent(code))
+      .then(function(r){ return r.ok ? r.json() : Promise.reject() })
+      .then(function(a){
+        box.style.display = 'flex'
+        document.getElementById('jp-name').textContent = a.agency_name || 'Verified agency'
+        var img = document.getElementById('jp-logo')
+        if (a.agency_logo_url) { img.src = a.agency_logo_url; img.style.display = '' }
+        else                   { img.style.display = 'none' }
+      })
+      .catch(function(){ box.style.display = 'none' })
+  }
+  document.getElementById('f-code').addEventListener('input', function(e){
+    e.target.value = e.target.value.toUpperCase()
+    clearTimeout(_codeTimer)
+    _codeTimer = setTimeout(lookupAgency, 250)
+  })
+
   document.getElementById('agent-form').addEventListener('submit', async function(e){
     e.preventDefault()
     document.getElementById('apply-alert').innerHTML = ''
@@ -375,37 +457,58 @@
     var email  = document.getElementById('f-email').value.trim()
     var pass   = document.getElementById('f-pass').value
     var phone  = document.getElementById('f-phone').value.trim()
-    var agency = document.getElementById('f-agency').value.trim()
-    var psra   = document.getElementById('f-psra').value.trim()
-    var county = document.getElementById('f-county').value
-    var web    = document.getElementById('f-web').value.trim()
-    var bio    = document.getElementById('f-bio').value.trim()
-    var logo   = logoInput.files[0]
+    var code   = (document.getElementById('f-code').value || '').trim().toUpperCase()
 
     if (!name || !email || !pass)        return afErr('Please fill in your name, email and password.')
     if (pass.length < 8)                 return afErr('Password must be at least 8 characters.')
-    if (!agency)                         return afErr('Agency / company name is required.')
-    if (!county)                         return afErr('Please choose the county you operate in.')
-    if (!logo)                           return afErr('Please upload your company logo.')
-    if (logo.size > 4*1024*1024)         return afErr('Logo is too large (max 4 MB).')
     if (!document.getElementById('f-terms').checked)
       return afErr('Please accept the Terms of Service and Privacy Policy.')
 
-    var btn = document.getElementById('f-submit')
-    btn.disabled = true; btn.textContent = 'Submitting…'
-    try {
-      await API.auth.registerFull({
-        name: name, email: email, password: pass, phone: phone || null,
-        account_type: 'agent',
-        agency_name: agency, psra_number: psra || null,
-        agent_county: county, agent_website: web || null,
-        agent_bio: bio || null
-      })
-      // Token is set by registerFull — upload the logo against it.
-      try { await API.auth.uploadAgencyLogo(logo) }
-      catch (le) { console.warn('Logo upload failed:', le && le.message) }
+    if (signupMode === 'join') {
+      if (!code || code.length < 5)      return afErr('Please paste the 8-character agency team code.')
+    } else {
+      var agency = document.getElementById('f-agency').value.trim()
+      var county = document.getElementById('f-county').value
+      var logo   = logoInput.files[0]
+      if (!agency)                       return afErr('Agency / company name is required.')
+      if (!county)                       return afErr('Please choose the county you operate in.')
+      if (!logo)                         return afErr('Please upload your company logo.')
+      if (logo.size > 4*1024*1024)       return afErr('Logo is too large (max 4 MB).')
+    }
 
-      // Pending approval — do NOT keep them logged in / send to a dashboard.
+    var btn = document.getElementById('f-submit')
+    btn.disabled = true
+    btn.textContent = signupMode === 'join' ? 'Joining…' : 'Submitting…'
+    try {
+      var payload = {
+        name: name, email: email, password: pass, phone: phone || null,
+        account_type: 'agent'
+      }
+      if (signupMode === 'join') {
+        payload.agency_share_code = code
+      } else {
+        payload.agency_name   = document.getElementById('f-agency').value.trim()
+        payload.psra_number   = document.getElementById('f-psra').value.trim() || null
+        payload.agent_county  = document.getElementById('f-county').value
+        payload.agent_website = document.getElementById('f-web').value.trim() || null
+        payload.agent_bio     = document.getElementById('f-bio').value.trim() || null
+      }
+      var resp = await API.auth.registerFull(payload)
+
+      // Logo upload — only relevant for new agencies (team members inherit)
+      if (signupMode === 'new') {
+        try { await API.auth.uploadAgencyLogo(logoInput.files[0]) }
+        catch (le) { console.warn('Logo upload failed:', le && le.message) }
+      }
+
+      if (signupMode === 'join' && resp && resp.team_joined) {
+        // Team member is auto-approved — keep them logged in and send straight
+        // to the agent dashboard.
+        window.location.href = '/pages/agent-dashboard.html'
+        return
+      }
+
+      // New-agency application — pending admin approval; log them out for now.
       try { localStorage.removeItem('movin_token'); localStorage.removeItem('movin_user') } catch(_){}
       document.getElementById('done-email').textContent = email
       document.getElementById('agent-form').style.display = 'none'
@@ -413,7 +516,8 @@
       document.getElementById('apply-card').scrollIntoView({ behavior:'smooth', block:'center' })
     } catch (err) {
       afErr(err && err.message ? err.message : 'Something went wrong. Please try again.')
-      btn.disabled = false; btn.textContent = 'Submit application →'
+      btn.disabled = false
+      btn.textContent = signupMode === 'join' ? 'Join the agency →' : 'Submit application →'
     }
   })
 </script>

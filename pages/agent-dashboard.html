@@ -270,6 +270,22 @@
     <!-- Overview tab -->
     <section class="tab-pane" id="pane-overview">
       <div id="welcome-banner"></div>
+      <div id="share-code-panel"></div>
+      <style>
+        .share-code-card{background:#fff;border:1px solid var(--border,#e6e2d8);border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:1.25rem;box-shadow:0 1px 2px rgba(20,30,25,.04)}
+        .share-code-card .sc-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:1rem}
+        .share-code-card .sc-icon{width:42px;height:42px;border-radius:12px;background:var(--gl,#e9f4ef);color:var(--g,#1a5c45);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .share-code-card .sc-title{font-family:'Playfair Display',Georgia,serif;font-size:17px;font-weight:900;color:var(--gd,#0e3d2e);margin-bottom:3px}
+        .share-code-card .sc-sub{font-size:13px;color:#5b605a;line-height:1.55;max-width:62ch}
+        .share-code-card .sc-row{display:grid;grid-template-columns:1fr;gap:.75rem}
+        @media(min-width:720px){.share-code-card .sc-row{grid-template-columns:auto 1fr;gap:1rem}}
+        .share-code-card .sc-field{position:relative}
+        .share-code-card .sc-field label{display:block;font-size:11px;font-weight:600;color:var(--muted,#7a7a72);text-transform:uppercase;letter-spacing:.7px;margin-bottom:.3rem}
+        .share-code-card input{width:100%;padding:10px 80px 10px 12px;border:1.5px solid var(--border,#e6e2d8);border-radius:10px;font:inherit;font-family:'Courier New',ui-monospace,monospace;font-size:14px;letter-spacing:1px;color:var(--text,#1f2421);background:#fafaf8;outline:none}
+        .share-code-card input:focus{border-color:var(--g,#1a5c45);background:#fff}
+        .share-code-card .sc-copy{position:absolute;right:5px;top:25px;background:var(--g,#1a5c45);color:#fff;border:none;border-radius:8px;padding:7px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;min-height:32px}
+        .share-code-card .sc-copy:hover{background:var(--gd,#0e3d2e)}
+      </style>
 
       <div class="stats-grid">
         <div class="stat-card">
@@ -559,8 +575,59 @@
       if (me.agent_county) pills.push('<span class="ag-pill">📍 ' + escapeHtml(me.agent_county) + '</span>')
       if (me.psra_number) pills.push('<span class="ag-pill verified">PSRA ' + escapeHtml(me.psra_number) + '</span>')
       pills.push('<span class="ag-pill">' + (me.email_verified ? '✓ Email verified' : '⚠ Verify your email') + '</span>')
+      // If this user is a team member of a larger agency, show that.
+      if (me.parent_agency_id && me.parent_agency)
+        pills.push('<span class="ag-pill">👥 Team member of ' + escapeHtml(me.parent_agency.agency_name || 'agency') + '</span>')
       document.getElementById('ag-pills').innerHTML = pills.join('')
+      renderShareCodePanel(me)
     }
+
+    // ── Agency team share-code panel ──────────────────────────────────────
+    // Visible only to the primary agency user (not team members) so they
+    // can invite agents who work for the agency.
+    function renderShareCodePanel(me){
+      var mount = document.getElementById('share-code-panel')
+      if (!mount) return
+      if (me.parent_agency_id || !me.agency_share_code) { mount.innerHTML = ''; return }
+      var code = String(me.agency_share_code)
+      var join = (location.origin || '') + '/pages/agent-signup.html?code=' + encodeURIComponent(code)
+      mount.innerHTML =
+        '<div class="share-code-card">' +
+          '<div class="sc-head">' +
+            '<div class="sc-icon">' +
+              '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+                '<circle cx="9" cy="7" r="4"/><circle cx="17" cy="9" r="3"/>' +
+                '<path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>' +
+                '<path d="M16 14h2a3 3 0 0 1 3 3v2"/>' +
+              '</svg>' +
+            '</div>' +
+            '<div>' +
+              '<div class="sc-title">Team / agents at your agency</div>' +
+              '<div class="sc-sub">Share this code with the agents who work for ' + escapeHtml(me.agency_name || 'your agency') + ' — they\'ll sign up under your agency and list properties on its behalf. Their name shows on each listing they create.</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="sc-row">' +
+            '<div class="sc-field">' +
+              '<label>Team code</label>' +
+              '<input id="sc-code" type="text" readonly value="' + code + '"/>' +
+              '<button class="sc-copy" onclick="copyShareCode(\'' + code + '\', this)">Copy</button>' +
+            '</div>' +
+            '<div class="sc-field">' +
+              '<label>Direct invite link</label>' +
+              '<input id="sc-link" type="text" readonly value="' + join + '"/>' +
+              '<button class="sc-copy" onclick="copyShareCode(\'' + join + '\', this)">Copy link</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+    }
+    function copyShareCode(text, btn){
+      var orig = btn.textContent
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent = '✓ Copied'
+        setTimeout(function(){ btn.textContent = orig }, 1800)
+      }).catch(function(){ prompt('Copy:', text) })
+    }
+    window.copyShareCode = copyShareCode
 
     // ── Listings ──────────────────────────────────────────────────────────
     async function loadListings(){
