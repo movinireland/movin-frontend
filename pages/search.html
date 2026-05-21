@@ -377,6 +377,7 @@
       <button class="pill active" data-type="sale"  onclick="togglePill(this)">Buy</button>
       <button class="pill" data-type="rent"  onclick="togglePill(this)">Rent</button>
       <button class="pill" data-type="share" onclick="togglePill(this)">Room for rent</button>
+      <button class="pill" data-type="summer" onclick="togglePill(this)">Summer rental</button>
       <button class="pill" data-type="new"   onclick="togglePill(this)">New homes</button>
       <button class="filter-btn" id="filter-btn" onclick="document.getElementById('filter-modal').classList.add('open')">
         <svg width="14" height="14" style="color:currentColor" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="5" x2="21" y2="5"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="19" x2="14" y2="19"/></svg>
@@ -889,7 +890,17 @@
     function handleSearchKey(e) {
       if (e.key === 'Enter') {
         document.getElementById('suggestions').classList.remove('open')
-        function createAlert() {
+        doSearch()
+      }
+      if (e.key === 'Escape') {
+        document.getElementById('suggestions').classList.remove('open')
+      }
+    }
+
+    // ── Create-alert (was nested inside handleSearchKey, so the onclick
+    //    on the "Alert" button was hitting a ReferenceError — that's why
+    //    alerts weren't working). Hoisted to module scope.
+    function createAlert() {
       if (!API.auth.isLoggedIn()) {
         if (confirm('Sign in to create search alerts. Go to login?')) window.location.href = 'login.html'
         return
@@ -902,20 +913,21 @@
       fetch(window.MOVIN_API_URL + '/api/alerts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('movin_token') },
-        body: JSON.stringify({ ...params, label: label })
+        body: JSON.stringify(Object.assign({}, params, { label: label }))
       })
       .then(function(r) { return r.json() })
       .then(function(data) {
         if (data.id) {
           toast('🔔 Alert created! We will email you when new listings match.', 'success')
-          document.getElementById('create-alert-btn').textContent = '✓ Alert created'
-          document.getElementById('create-alert-btn').style.color = '#1a5c45'
+          var b = document.getElementById('create-alert-btn')
+          if (b) { b.textContent = '✓ Alert created'; b.style.color = '#1a5c45' }
         } else {
           toast(data.error || 'Could not create alert', 'error')
         }
       })
       .catch(function() { toast('Could not create alert', 'error') })
     }
+    window.createAlert = createAlert
 
     function buildSearchParams() {
       var params = { listing_type: activeType || 'sale' }
@@ -928,13 +940,6 @@
       if (min)  params.min_price = min
       if (max)  params.max_price = max
       return params
-    }
-
-    doSearch()
-      }
-      if (e.key === 'Escape') {
-        document.getElementById('suggestions').classList.remove('open')
-      }
     }
 
     function selectSuggestion(item) {

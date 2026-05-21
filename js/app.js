@@ -1587,8 +1587,16 @@ function buildPropertyCard(listing, savedIds = []) {
   const photo = listing.primary_photo || listing.photos?.[0]?.url || null
   const imgSrc = photo ? (photo.startsWith('http') ? photo : window.MOVIN_API_URL + photo) : null
 
-  const typeLabel = listing.listing_type === 'rent' ? 'To Rent' : listing.listing_type === 'share' ? 'Sharing' : 'For Sale'
-  const typeBg    = listing.listing_type === 'rent' ? '#e07b3f' : listing.listing_type === 'share' ? '#1d4ed8' : '#1a5c45'
+  const typeLabel =
+    listing.listing_type === 'rent'   ? 'To Rent'
+  : listing.listing_type === 'share'  ? 'Sharing'
+  : listing.listing_type === 'summer' ? 'Summer Rental'
+  : 'For Sale'
+  const typeBg =
+    listing.listing_type === 'rent'   ? '#e07b3f'
+  : listing.listing_type === 'share'  ? '#1d4ed8'
+  : listing.listing_type === 'summer' ? '#0e8a8e'
+  : '#1a5c45'
   const isNew     = listing.created_at && ((Date.now() - new Date(listing.created_at).getTime()) / 86400000) < 7
   const daysAgo   = Math.floor((Date.now() - new Date(listing.created_at).getTime()) / 86400000)
   const timeStr   = daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : daysAgo + 'd ago'
@@ -1632,7 +1640,7 @@ function buildPropertyCard(listing, savedIds = []) {
             ? `<span class="pc-badge pc-badge--premium">⚡ Premium</span>`
             : (isFeatured
                 ? `<span class="pc-badge pc-badge--featured">★ Featured</span>`
-                : `<span class="pc-badge pc-badge--${listing.listing_type === 'rent' ? 'rent' : listing.listing_type === 'share' ? 'share' : 'sale'}">${typeLabel}</span>`)
+                : `<span class="pc-badge pc-badge--${listing.listing_type === 'rent' ? 'rent' : listing.listing_type === 'share' ? 'share' : listing.listing_type === 'summer' ? 'summer' : 'sale'}">${typeLabel}</span>`)
           }
           ${(listing.status === 'sale_agreed' || listing.status === 'let_agreed') ? `<span class="pc-badge pc-badge--status">${listing.status.replace('_',' ').toUpperCase()}</span>` : ''}
           ${listing.status === 'auction' ? `<span class="pc-badge" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">AUCTION</span>` : ''}
@@ -1649,7 +1657,7 @@ function buildPropertyCard(listing, savedIds = []) {
         <div style="position:absolute;bottom:8px;right:8px;z-index:4;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc" onclick="event.stopPropagation();window.location.href='${root}neighbourhood.html?area=${encodeURIComponent(listing.address_area||listing.county)}&county=${encodeURIComponent(listing.county)}'" style="cursor:pointer;-webkit-tap-highlight-color:transparent" title="View neighbourhood guide">${listing.address_area || listing.county} ↗${(listing.distance_km != null && isFinite(parseFloat(listing.distance_km))) ? ` · <span style="color:#1a5c45;font-weight:600;text-transform:none;letter-spacing:0">${parseFloat(listing.distance_km).toFixed(parseFloat(listing.distance_km) < 10 ? 1 : 0)} km</span>` : ''}</div>
+        <div class="prop-card-loc">${listing.address_area || listing.county}${(listing.distance_km != null && isFinite(parseFloat(listing.distance_km))) ? ` · <span style="color:#1a5c45;font-weight:600;text-transform:none;letter-spacing:0">${parseFloat(listing.distance_km).toFixed(parseFloat(listing.distance_km) < 10 ? 1 : 0)} km</span>` : ''}</div>
         <div class="prop-card-title">${listing.title}</div>
         <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
         <div class="prop-card-meta">

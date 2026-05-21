@@ -335,6 +335,7 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 .pc-badge--sale    { background: linear-gradient(135deg,#1f7a5c,#0e3d2e); }
 .pc-badge--rent    { background: linear-gradient(135deg,#ef9251,#c9642a); }
 .pc-badge--share   { background: linear-gradient(135deg,#3b82f6,#1d4ed8); }
+.pc-badge--summer  { background: linear-gradient(135deg,#14b8a6,#0e8a8e); }
 .pc-badge--new     { background: #fff; color: var(--green,#1a5c45);
                      box-shadow: 0 3px 10px rgba(0,0,0,.16); }
 .pc-badge--drop    { background: linear-gradient(135deg,#f87171,#dc2626); }

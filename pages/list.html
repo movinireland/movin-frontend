@@ -299,6 +299,7 @@
               <option value="sale">For Sale</option>
               <option value="rent">To Rent (whole property)</option>
               <option value="share" id="opt-share">Room for rent (sharing)</option>
+              <option value="summer">Summer / holiday rental</option>
             </select>
           </div>
           <div class="form-group" id="style-group">
@@ -454,11 +455,43 @@
             </select>
           </div>
         </div>
-        <!-- Available from — only relevant for rent / room listings -->
+        <!-- Available from — only relevant for rent / room / summer listings -->
         <div class="form-group" id="available-from-group" style="display:none">
           <label class="form-label" for="available_from">Available from</label>
           <input class="form-input" type="date" id="available_from" style="max-width:240px"/>
           <div class="form-hint">When the property (or room) will be ready for the new tenant to move in.</div>
+        </div>
+
+        <!-- ── Summer / holiday rental fields (only shown when "Summer / holiday rental" is picked) ── -->
+        <div id="summer-fields" style="display:none">
+          <div style="background:#e6fbfb;border:1.5px solid #b4eaea;border-radius:14px;padding:1rem 1.15rem;margin-bottom:1rem;font-size:13.5px;color:#0e3d2e;line-height:1.55">
+            <strong style="color:#0e8a8e">☀ Summer / holiday rental</strong> — these listings show a <strong>weekly</strong> rate, sleeps badge and the dates the home is available. Add the holiday-specific details below.
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="sleeps">Sleeps <span class="req">*</span></label>
+              <input class="form-input" type="number" id="sleeps" min="1" max="30" placeholder="e.g. 6" inputmode="numeric"/>
+              <div class="form-hint">How many guests the property can accommodate in total.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="nights_min">Minimum nights stay</label>
+              <input class="form-input" type="number" id="nights_min" min="1" max="60" placeholder="e.g. 3" inputmode="numeric"/>
+              <div class="form-hint">Shortest booking you'll accept (leave blank for any).</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="available_until">Available until</label>
+            <input class="form-input" type="date" id="available_until" style="max-width:240px"/>
+            <div class="form-hint">Last date the property is available to book this season.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Holiday amenities</label>
+            <div class="feat-grid" style="margin-top:.25rem">
+              <label class="feat-chk"><input type="checkbox" id="f-pool"/> Swimming pool</label>
+              <label class="feat-chk"><input type="checkbox" id="f-hot_tub"/> Hot tub / Jacuzzi</label>
+            </div>
+            <div class="form-hint" style="margin-top:.5rem">Tip: tick "Sea view" / "Pet-friendly" / "Furnished" / "Broadband" in the Features section below if they apply — they all show on summer listings too.</div>
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">Features &amp; facilities</label>
@@ -750,6 +783,12 @@
          ].forEach(function(k){ setChk('f-' + k, listing[k]) })
         if (listing.view_type) setVal('f-view_type', listing.view_type)
         if (listing.available_from) setVal('available_from', String(listing.available_from).slice(0,10))
+        // Summer-rental fields
+        if (listing.sleeps != null)         setVal('sleeps', listing.sleeps)
+        if (listing.nights_min != null)     setVal('nights_min', listing.nights_min)
+        if (listing.available_until)        setVal('available_until', String(listing.available_until).slice(0,10))
+        setChk('f-pool',    listing.pool)
+        setChk('f-hot_tub', listing.hot_tub)
         if (typeof refreshListingTypeFields === 'function') refreshListingTypeFields()
 
         // Plan
@@ -920,13 +959,23 @@
     function refreshListingTypeFields(){
       var t = document.getElementById('listing_type').value
       var hint = document.getElementById('price-hint')
-      if (hint) hint.textContent = (t === 'rent' || t === 'share') ? 'Enter monthly rent in €' : 'Enter asking price in €'
-      // Available from — show for rent and share listings only
+      if (hint) {
+        if (t === 'summer')                 hint.textContent = 'Enter the WEEKLY rental rate in €'
+        else if (t === 'rent' || t === 'share') hint.textContent = 'Enter monthly rent in €'
+        else                                hint.textContent = 'Enter asking price in €'
+      }
+      // Price label switches for summer
+      var priceLab = document.querySelector('label[for="price"], #price-label')
+      if (priceLab) priceLab.textContent = (t === 'summer') ? 'Weekly rate (€)' : 'Price (€)'
+      // Available from — show for rent, share, summer (when can guests arrive)
       var avFrom = document.getElementById('available-from-group')
-      if (avFrom) avFrom.style.display = (t === 'rent' || t === 'share') ? '' : 'none'
+      if (avFrom) avFrom.style.display = (t === 'rent' || t === 'share' || t === 'summer') ? '' : 'none'
       // Ensuite — only for "Room for rent" (share)
       var ens = document.getElementById('f-ensuite-label')
       if (ens) ens.style.display = (t === 'share') ? 'inline-flex' : 'none'
+      // Summer-only fields wrap
+      var summerWrap = document.getElementById('summer-fields')
+      if (summerWrap) summerWrap.style.display = (t === 'summer') ? '' : 'none'
     }
     document.getElementById('listing_type').addEventListener('change', refreshListingTypeFields)
     refreshListingTypeFields()
@@ -1081,6 +1130,19 @@
           ensuite:         !!(document.getElementById('f-ensuite') && document.getElementById('f-ensuite').checked),
           available_from:  document.getElementById('available_from') && document.getElementById('available_from').value || null,
           plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',
+        }
+        // ── Summer / holiday rental fields (only when the type is 'summer') ─
+        if (payload.listing_type === 'summer') {
+          var _slEl = document.getElementById('sleeps')
+          var _nmEl = document.getElementById('nights_min')
+          var _auEl = document.getElementById('available_until')
+          if (_slEl && _slEl.value) payload.sleeps          = parseInt(_slEl.value, 10) || null
+          if (_nmEl && _nmEl.value) payload.nights_min      = parseInt(_nmEl.value, 10) || null
+          if (_auEl && _auEl.value) payload.available_until = _auEl.value
+          var _poolEl = document.getElementById('f-pool')
+          var _htEl   = document.getElementById('f-hot_tub')
+          if (_poolEl) payload.pool    = !!_poolEl.checked
+          if (_htEl)   payload.hot_tub = !!_htEl.checked
         }
         // ── Phase 1 extra amenities — only sent when the matching field
         //    exists on the page (so the room/share flow doesn't break).
