@@ -516,13 +516,16 @@ function renderMiniTopBar(navEl, root, user, isLoggedIn){
   navEl.classList.add('mv-topbar-mini')
   navEl.innerHTML =
     '<div class="mv-mini-inner">' +
-      '<button class="mv-mini-btn mv-mini-back" type="button" aria-label="Go back" onclick="mvGoBack()">' +
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>' +
-        '<span class="mv-mini-back-label">Back</span>' +
+      '<button class="mv-mini-back" type="button" aria-label="Go back" onclick="mvGoBack()">' +
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>' +
       '</button>' +
-      '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
-      '<button class="mv-mini-btn mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
-        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>' +
+      '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">' +
+        'mov<span>·</span>in' +
+      '</a>' +
+      '<button class="mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
+        '<span class="mv-menu-lines">' +
+          '<span></span><span></span><span></span>' +
+        '</span>' +
       '</button>' +
     '</div>'
   if (!canBack) {
@@ -599,6 +602,7 @@ function mvOpenDrawer(){
   d.classList.add('open'); s.classList.add('open')
   d.setAttribute('aria-hidden', 'false'); s.setAttribute('aria-hidden', 'false')
   document.body.style.overflow = 'hidden'
+  document.body.classList.add('mv-drawer-open')
   var menuBtn = document.querySelector('.mv-mini-menu'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true')
 }
 function mvCloseDrawer(){
@@ -607,6 +611,7 @@ function mvCloseDrawer(){
   d.classList.remove('open'); s.classList.remove('open')
   d.setAttribute('aria-hidden', 'true'); s.setAttribute('aria-hidden', 'true')
   document.body.style.overflow = ''
+  document.body.classList.remove('mv-drawer-open')
   var menuBtn = document.querySelector('.mv-mini-menu'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false')
 }
 function mvGoBack(){
@@ -627,44 +632,157 @@ function mvInjectChromeStyles(){
   var s = document.createElement('style')
   s.id = 'mv-chrome-styles'
   s.textContent = [
-    /* Hide whatever default .nav styles the page had so the mini bar
-       renders cleanly on top of #main-nav.                            */
-    '.nav.mv-topbar-mini{ background:#fff !important; border-bottom:1px solid #e6e2d8 !important; box-shadow:0 1px 2px rgba(20,30,25,.04) !important; padding:0 !important; height:auto !important; min-height:0 !important; position:sticky; top:0; z-index:90 }',
-    '.mv-mini-inner{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:.55rem .85rem; max-width:1180px; margin:0 auto }',
-    '.mv-mini-btn{ display:inline-flex; align-items:center; gap:6px; min-height:44px; min-width:44px; padding:0 12px; border:none; background:transparent; color:#0e3d2e; font:inherit; font-size:14px; font-weight:600; border-radius:10px; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .15s }',
-    '.mv-mini-btn:hover{ background:#f1efe7 }',
-    '.mv-mini-btn:active{ background:#e6e2d8 }',
-    '.mv-mini-back-label{ font-size:14px; font-weight:600 }',
-    '@media (max-width:380px){ .mv-mini-back-label{ display:none } }',
-    '.mv-mini-logo{ font-family:Playfair Display,Georgia,serif; font-weight:900; font-size:22px; color:#1a5c45; text-decoration:none; letter-spacing:-.5px; line-height:1 }',
-    '.mv-mini-logo span{ color:#e07b3f }',
-    /* Scrim */
-    '.mv-scrim{ position:fixed; inset:0; background:rgba(14,30,22,.5); opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:140 }',
+    /* ── Top bar shell — frosted glass on a hairline border ──────────────── */
+    '.nav.mv-topbar-mini{',
+    '  position:sticky; top:0; z-index:90;',
+    '  padding:0 !important; height:auto !important; min-height:0 !important;',
+    '  background:rgba(255,255,255,.82) !important;',
+    '  -webkit-backdrop-filter:saturate(1.6) blur(14px);',
+    '          backdrop-filter:saturate(1.6) blur(14px);',
+    '  border-bottom:1px solid rgba(230,226,216,.65) !important;',
+    '  box-shadow:0 1px 0 rgba(20,30,25,.02) !important;',
+    '}',
+    '@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){',
+    '  .nav.mv-topbar-mini{ background:#fff !important }',
+    '}',
+    '.mv-mini-inner{',
+    '  display:grid; grid-template-columns:44px 1fr 44px; align-items:center;',
+    '  gap:8px; padding:.55rem .9rem;',
+    '  max-width:720px; margin:0 auto;',
+    '}',
+
+    /* ── Back button — clean circular ghost button ──────────────────────── */
+    '.mv-mini-back, .mv-mini-menu{',
+    '  width:44px; height:44px; padding:0;',
+    '  display:inline-flex; align-items:center; justify-content:center;',
+    '  border:none; background:transparent; color:#0e3d2e;',
+    '  border-radius:14px; cursor:pointer; -webkit-tap-highlight-color:transparent;',
+    '  transition:background .18s ease, color .18s ease, transform .12s ease;',
+    '}',
+    '.mv-mini-back:hover, .mv-mini-menu:hover{ background:rgba(26,92,69,.08); color:#0e3d2e }',
+    '.mv-mini-back:active, .mv-mini-menu:active{ transform:scale(.94) }',
+    '.mv-mini-menu:focus-visible, .mv-mini-back:focus-visible{',
+    '  outline:none; box-shadow:0 0 0 3px rgba(26,92,69,.20);',
+    '}',
+
+    /* ── Animated 3-line menu icon ─────────────────────────────────────── */
+    '.mv-menu-lines{ display:block; width:18px; height:14px; position:relative }',
+    '.mv-menu-lines span{',
+    '  position:absolute; left:0; right:0; height:2px; border-radius:2px;',
+    '  background:currentColor; transition:transform .25s ease, opacity .2s ease;',
+    '}',
+    '.mv-menu-lines span:nth-child(1){ top:1px }',
+    '.mv-menu-lines span:nth-child(2){ top:6px }',
+    '.mv-menu-lines span:nth-child(3){ top:11px }',
+    /* When drawer is open, morph to an X */
+    'body.mv-drawer-open .mv-menu-lines span:nth-child(1){ transform:translateY(5px) rotate(45deg) }',
+    'body.mv-drawer-open .mv-menu-lines span:nth-child(2){ opacity:0 }',
+    'body.mv-drawer-open .mv-menu-lines span:nth-child(3){ transform:translateY(-5px) rotate(-45deg) }',
+
+    /* ── Logo — refined wordmark with orange dot ─────────────────────────── */
+    '.mv-mini-logo{',
+    '  justify-self:center;',
+    '  font-family:"Playfair Display", Georgia, serif;',
+    '  font-weight:900; font-size:23px; line-height:1;',
+    '  color:#0e3d2e; text-decoration:none; letter-spacing:-.6px;',
+    '  display:inline-flex; align-items:baseline; gap:0;',
+    '  padding:8px 4px; border-radius:8px;',
+    '  transition:opacity .15s ease;',
+    '}',
+    '.mv-mini-logo:hover{ opacity:.85 }',
+    '.mv-mini-logo > span{',
+    '  color:#e07b3f; font-size:13px; margin:0 1px; transform:translateY(-2px);',
+    '  display:inline-block;',
+    '}',
+
+    /* ── Scrim ─────────────────────────────────────────────────────────── */
+    '.mv-scrim{',
+    '  position:fixed; inset:0; z-index:140;',
+    '  background:rgba(10,22,16,.55);',
+    '  opacity:0; pointer-events:none;',
+    '  transition:opacity .25s ease;',
+    '  -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);',
+    '}',
     '.mv-scrim.open{ opacity:1; pointer-events:auto }',
-    /* Drawer */
-    '.mv-drawer{ position:fixed; top:0; right:0; bottom:0; width:min(86vw, 360px); background:#fff; box-shadow:-12px 0 32px -10px rgba(14,61,46,.20); transform:translateX(110%); transition:transform .28s cubic-bezier(.2,.7,.2,1); z-index:150; display:flex; flex-direction:column; overflow:hidden }',
+
+    /* ── Drawer ────────────────────────────────────────────────────────── */
+    '.mv-drawer{',
+    '  position:fixed; top:0; right:0; bottom:0; z-index:150;',
+    '  width:min(86vw, 360px); display:flex; flex-direction:column;',
+    '  background:#faf7f0; overflow:hidden;',
+    '  transform:translateX(110%);',
+    '  transition:transform .32s cubic-bezier(.2,.7,.2,1);',
+    '  box-shadow:-22px 0 60px -16px rgba(14,61,46,.30);',
+    '}',
     '.mv-drawer.open{ transform:none }',
-    '.mv-drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:.75rem 1rem; border-bottom:1px solid #e6e2d8 }',
-    '.mv-drawer-nav{ flex:1; overflow-y:auto; padding:.5rem 0 1.25rem }',
-    '.mv-drawer-label{ font-size:11px; font-weight:700; color:#7a7a72; text-transform:uppercase; letter-spacing:1.5px; padding:1.1rem 1.25rem .35rem }',
-    '.mv-drawer-item{ display:flex; align-items:center; gap:11px; width:100%; min-height:46px; padding:11px 1.25rem; font:inherit; font-size:15px; color:#1f2421; background:transparent; border:none; cursor:pointer; text-decoration:none; transition:background .12s, color .12s }',
-    '.mv-drawer-item:hover{ background:#f7f5ee; color:#0e3d2e }',
-    '.mv-drawer-item:active{ background:#eee9dc }',
-    '.mv-drawer-item.primary{ color:#0e3d2e; font-weight:700 }',
-    '.mv-drawer-item.primary-cta{ margin:.55rem 1.25rem .25rem; padding:11px 1.1rem; background:#1a5c45; color:#fff; border-radius:50px; justify-content:center; font-weight:600; min-height:46px }',
-    '.mv-drawer-item.primary-cta:hover{ background:#0e3d2e; color:#fff }',
-    '.mv-drawer-ico{ width:24px; display:inline-flex; align-items:center; justify-content:center; color:#1a5c45; flex-shrink:0 }',
-    /* Dark mode */
-    '[data-theme="dark"] .nav.mv-topbar-mini{ background:#161613 !important; border-bottom-color:#2a2a2a !important }',
-    '[data-theme="dark"] .mv-mini-btn{ color:#f1ebdc }',
-    '[data-theme="dark"] .mv-mini-btn:hover{ background:#1e1e1a }',
-    '[data-theme="dark"] .mv-mini-logo{ color:#7ec9a8 }',
-    '[data-theme="dark"] .mv-drawer{ background:#161613 }',
-    '[data-theme="dark"] .mv-drawer-head{ border-bottom-color:#2a2a2a }',
+    '.mv-drawer-head{',
+    '  display:flex; align-items:center; justify-content:space-between;',
+    '  padding:.9rem 1rem; border-bottom:1px solid rgba(230,226,216,.7);',
+    '  background:#fff;',
+    '}',
+    '.mv-drawer-head .mv-mini-logo{ font-size:22px }',
+    '.mv-drawer-nav{',
+    '  flex:1; overflow-y:auto; overscroll-behavior:contain;',
+    '  padding:.4rem 0 1.4rem;',
+    '}',
+    '.mv-drawer-label{',
+    '  font-size:10.5px; font-weight:700; color:#7a7a72;',
+    '  text-transform:uppercase; letter-spacing:1.8px;',
+    '  padding:1.15rem 1.3rem .4rem;',
+    '}',
+    '.mv-drawer-item{',
+    '  display:flex; align-items:center; gap:14px; width:100%; min-height:48px;',
+    '  padding:12px 1.3rem;',
+    '  font:inherit; font-size:15px; font-weight:500; color:#1f2421;',
+    '  background:transparent; border:none; cursor:pointer;',
+    '  text-decoration:none; text-align:left;',
+    '  border-left:3px solid transparent;',
+    '  transition:background .15s, color .15s, border-left-color .15s, padding-left .15s;',
+    '}',
+    '.mv-drawer-item:hover, .mv-drawer-item:active{',
+    '  background:#fff; color:#0e3d2e;',
+    '  border-left-color:#e07b3f;',
+    '  padding-left:1.45rem;',
+    '}',
+    '.mv-drawer-item.primary{',
+    '  color:#0e3d2e; font-weight:700; background:#fff;',
+    '  margin:0 0 .25rem;',
+    '}',
+    '.mv-drawer-item.primary-cta{',
+    '  margin:.85rem 1.25rem .35rem;',
+    '  padding:12px 1.1rem;',
+    '  background:linear-gradient(135deg,#1a5c45,#0e3d2e);',
+    '  color:#fff; border-radius:14px; border:none;',
+    '  justify-content:center; font-weight:600;',
+    '  min-height:48px; letter-spacing:.2px;',
+    '  box-shadow:0 8px 22px -8px rgba(26,92,69,.5);',
+    '}',
+    '.mv-drawer-item.primary-cta:hover{ background:linear-gradient(135deg,#0e3d2e,#0e3d2e); color:#fff; padding-left:1.1rem }',
+    '.mv-drawer-ico{',
+    '  width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;',
+    '  color:#1a5c45; flex-shrink:0;',
+    '  background:rgba(26,92,69,.08); border-radius:8px;',
+    '}',
+
+    /* ── Dark mode ──────────────────────────────────────────────────────── */
+    '[data-theme="dark"] .nav.mv-topbar-mini{ background:rgba(22,22,19,.85) !important; border-bottom-color:#2a2a2a !important }',
+    '[data-theme="dark"] .mv-mini-back, [data-theme="dark"] .mv-mini-menu{ color:#f1ebdc }',
+    '[data-theme="dark"] .mv-mini-back:hover, [data-theme="dark"] .mv-mini-menu:hover{ background:rgba(126,201,168,.12); color:#7ec9a8 }',
+    '[data-theme="dark"] .mv-mini-logo{ color:#f1ebdc }',
+    '[data-theme="dark"] .mv-drawer{ background:#0f120f }',
+    '[data-theme="dark"] .mv-drawer-head{ background:#161613; border-bottom-color:#2a2a2a }',
     '[data-theme="dark"] .mv-drawer-item{ color:#f1ebdc }',
-    '[data-theme="dark"] .mv-drawer-item:hover{ background:#1e1e1a }',
+    '[data-theme="dark"] .mv-drawer-item:hover{ background:#161613; color:#7ec9a8 }',
+    '[data-theme="dark"] .mv-drawer-item.primary{ background:#161613 }',
     '[data-theme="dark"] .mv-drawer-label{ color:#a8a496 }',
-    '@media (prefers-reduced-motion: reduce){ .mv-drawer, .mv-scrim{ transition:none !important } }'
+    '[data-theme="dark"] .mv-drawer-ico{ background:rgba(126,201,168,.12); color:#7ec9a8 }',
+
+    /* ── Motion: respect reduce-motion ─────────────────────────────────── */
+    '@media (prefers-reduced-motion: reduce){',
+    '  .mv-drawer, .mv-scrim, .mv-mini-back, .mv-mini-menu, .mv-drawer-item, .mv-menu-lines span{',
+    '    transition:none !important',
+    '  }',
+    '}'
   ].join('\n')
   document.head.appendChild(s)
 }
@@ -2278,6 +2396,16 @@ if (document.readyState === 'loading') {
   }
 
   function injectTabBar() {
+    // Bottom tab bar lives on the HOMEPAGE only. Every other page on mobile
+    // already has the slide-in drawer in the top mini-bar — no need to also
+    // float a pill at the bottom. If a previous render left one behind,
+    // remove it and clear the body padding class.
+    if (!_mvIsHomepage()) {
+      var existing = document.querySelector('.tab-bar')
+      if (existing) existing.remove()
+      document.body.classList.remove('has-tab-bar')
+      return
+    }
     ensureTabBarStyles()
     if (document.querySelector('.tab-bar')) {
       // Existing tab bar — just mark body so padding-bottom kicks in
