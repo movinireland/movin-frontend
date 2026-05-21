@@ -520,7 +520,7 @@ function renderMiniTopBar(navEl, root, user, isLoggedIn){
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>' +
       '</button>' +
       '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">' +
-        'mov<span>·</span>in' +
+        'mov<span>in</span>' +
       '</a>' +
       '<button class="mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
         '<span class="mv-menu-lines">' +
@@ -544,7 +544,7 @@ function ensureNavDrawer(root, user, isLoggedIn, activePage){
     '<div class="mv-scrim" id="mv-scrim" onclick="mvCloseDrawer()" aria-hidden="true"></div>' +
     '<aside class="mv-drawer" id="mv-drawer" aria-hidden="true" aria-label="Site navigation">' +
       '<div class="mv-drawer-head">' +
-        '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
+        '<a class="mv-mini-logo mv-drawer-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
         '<button class="mv-mini-btn" type="button" aria-label="Close menu" onclick="mvCloseDrawer()">' +
           '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
         '</button>' +
@@ -647,8 +647,11 @@ function mvInjectChromeStyles(){
     '}',
     '.mv-mini-inner{',
     '  display:grid; grid-template-columns:44px 1fr 44px; align-items:center;',
-    '  gap:8px; padding:.55rem .9rem;',
-    '  max-width:720px; margin:0 auto;',
+    '  gap:8px;',
+    '  padding:.55rem 1rem;',
+    '  padding-left:  max(1rem, env(safe-area-inset-left));',
+    '  padding-right: max(1rem, env(safe-area-inset-right));',
+    '  width:100%;',
     '}',
 
     /* ── Back button — clean circular ghost button ──────────────────────── */
@@ -679,21 +682,18 @@ function mvInjectChromeStyles(){
     'body.mv-drawer-open .mv-menu-lines span:nth-child(2){ opacity:0 }',
     'body.mv-drawer-open .mv-menu-lines span:nth-child(3){ transform:translateY(-5px) rotate(-45deg) }',
 
-    /* ── Logo — refined wordmark with orange dot ─────────────────────────── */
+    /* ── Logo — matches the homepage wordmark exactly ──────────────────── */
     '.mv-mini-logo{',
     '  justify-self:center;',
     '  font-family:"Playfair Display", Georgia, serif;',
     '  font-weight:900; font-size:23px; line-height:1;',
-    '  color:#0e3d2e; text-decoration:none; letter-spacing:-.6px;',
-    '  display:inline-flex; align-items:baseline; gap:0;',
+    '  color:#1a5c45; text-decoration:none; letter-spacing:-.4px;',
     '  padding:8px 4px; border-radius:8px;',
     '  transition:opacity .15s ease;',
     '}',
     '.mv-mini-logo:hover{ opacity:.85 }',
-    '.mv-mini-logo > span{',
-    '  color:#e07b3f; font-size:13px; margin:0 1px; transform:translateY(-2px);',
-    '  display:inline-block;',
-    '}',
+    '.mv-mini-logo > span{ color:#e07b3f }',
+    '.mv-drawer-head .mv-mini-logo{ justify-self:start }',
 
     /* ── Scrim ─────────────────────────────────────────────────────────── */
     '.mv-scrim{',
@@ -2445,6 +2445,9 @@ if (document.readyState === 'loading') {
     if (isHome()) return
     if (document.body.hasAttribute('data-no-back')) return
     if (document.querySelector('.mobile-back-btn, .nav-back, .back-btn')) return
+    // The new mobile mini top-bar already has its own back button. Skip the
+    // legacy floating back so they don't show up at the same time.
+    if (document.querySelector('.nav.mv-topbar-mini .mv-mini-back')) return
 
     var navInner = document.querySelector('.nav .nav-inner')
     if (navInner) {
