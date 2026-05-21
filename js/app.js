@@ -680,10 +680,12 @@ function renderNav(activePage = '') {
   const nav = document.getElementById('main-nav')
   if (!nav) return
 
-  // On non-homepage pages: render a compact top bar (back ← logo ≡ menu)
-  // and inject a slide-in drawer with the full navigation. Keeps the
-  // homepage's rich nav intact while every other page gets a tidier UI.
-  if (!_mvIsHomepage()) {
+  // On non-homepage pages — MOBILE ONLY (≤ 767px) — render a compact top
+  // bar (back ← logo ≡ menu) and inject a slide-in drawer with the full
+  // navigation. Desktop ALWAYS gets the full top nav, on every page.
+  var _isMobile = (typeof window.matchMedia === 'function')
+                  && window.matchMedia('(max-width: 767px)').matches
+  if (!_mvIsHomepage() && _isMobile) {
     renderMiniTopBar(nav, root, user, isLoggedIn)
     ensureNavDrawer(root, user, isLoggedIn, activePage)
     return
