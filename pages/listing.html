@@ -438,6 +438,36 @@
 
     .mort-section{padding:1rem;border-bottom:1px solid var(--border)}
     .mort-section h2{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:17px;font-weight:700;margin-bottom:.75rem}
+    /* — Collapsible mortgage calculator (details/summary) — */
+    details.mort-section{padding:0 1rem;border-bottom:1px solid var(--border)}
+    details.mort-section > summary{
+      list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
+      display:flex; align-items:center; gap:12px;
+      padding:1.1rem 0; margin:0;
+      font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
+      font-size:17px; font-weight:700; color:#0e3d2e;
+    }
+    details.mort-section > summary::-webkit-details-marker{display:none}
+    details.mort-section > summary .mort-ico{
+      width:36px;height:36px;border-radius:10px;background:var(--gl,#e9f4ef);
+      color:#1a5c45;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    details.mort-section > summary .mort-label{flex:1;display:flex;flex-direction:column;gap:2px}
+    details.mort-section > summary .mort-hint{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:400;color:#7a7a72}
+    details.mort-section > summary .mort-chev{
+      width:30px;height:30px;border-radius:50%;background:#fafaf8;
+      display:flex;align-items:center;justify-content:center;color:#1a5c45;
+      transition:transform .25s cubic-bezier(.2,.7,.2,1), background .15s;
+      flex-shrink:0;
+    }
+    details.mort-section:hover > summary .mort-chev{background:var(--gl,#e9f4ef)}
+    details.mort-section[open] > summary .mort-chev{transform:rotate(180deg)}
+    details.mort-section[open] > summary{ padding-bottom:.5rem }
+    details.mort-section .mort-body{ padding:0 0 1.1rem }
+    details.mort-section .mort-body .mort-grid{ margin-top:.25rem }
+    @media (prefers-reduced-motion: reduce){
+      details.mort-section > summary .mort-chev{ transition:none }
+    }
     .mort-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
     .mort-input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:8px 10px;font-size:14px;background:#fafaf8;color:#333;outline:none;font-family:'DM Sans',sans-serif}
     .mort-input:focus{border-color:#1a5c45}
@@ -1781,9 +1811,48 @@
 
           '<div class="detail-section"><h2>About this property</h2><p class="desc-text">' + L.description.replace(/\n/g, '<br>') + '</p></div>' +
 
-          (L.listing_type !== 'rent' && L.listing_type !== 'share' ? '<div class="mort-section" id="mort-section"><h2>Mortgage calculator</h2><div class="mort-grid"><div><label class="mort-label">Purchase price (€)</label><input class="mort-input" id="mc-price" type="number" value="' + L.price + '" oninput="calcMort()"/></div><div><label class="mort-label">Deposit (€)</label><input class="mort-input" id="mc-deposit" type="number" value="' + Math.round(parseInt(L.price)*0.1) + '" oninput="calcMort()"/></div><div><label class="mort-label">Term (years)</label><input class="mort-input" id="mc-term" type="number" value="30" min="5" max="35" oninput="calcMort()"/></div><div><label class="mort-label">Interest rate (%)</label><input class="mort-input" id="mc-rate" type="number" value="4.0" step="0.1" min="0.1" oninput="calcMort()"/></div></div><div class="mort-result" id="mc-result"><div class="mort-monthly" id="mc-monthly">€0/mo</div><div class="mort-meta" id="mc-meta">Enter values above to calculate</div></div></div>' : '') +
-
+          // Features show BEFORE the mortgage calculator so buyers can scan
+          // the property's amenities first.
           featuresHTML +
+
+          // Mortgage calculator — collapsed by default. Sale listings only.
+          // Clicking the summary expands the form; first open auto-calculates.
+          (L.listing_type !== 'rent' && L.listing_type !== 'share' && L.listing_type !== 'summer' ?
+            '<details class="mort-section" id="mort-section" ontoggle="if(this.open) calcMort()">' +
+              '<summary>' +
+                '<span class="mort-ico" aria-hidden="true">' +
+                  '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+                    '<rect x="4" y="3" width="16" height="18" rx="2"/>' +
+                    '<line x1="8" y1="7" x2="16" y2="7"/>' +
+                    '<line x1="8" y1="11" x2="10" y2="11"/>' +
+                    '<line x1="12" y1="11" x2="14" y2="11"/>' +
+                    '<line x1="8" y1="15" x2="10" y2="15"/>' +
+                    '<line x1="12" y1="15" x2="14" y2="15"/>' +
+                    '<line x1="8" y1="18" x2="14" y2="18"/>' +
+                  '</svg>' +
+                '</span>' +
+                '<span class="mort-label">' +
+                  '<span>Mortgage calculator</span>' +
+                  '<span class="mort-hint">Estimate your monthly repayment on this property</span>' +
+                '</span>' +
+                '<span class="mort-chev" aria-hidden="true">' +
+                  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>' +
+                '</span>' +
+              '</summary>' +
+              '<div class="mort-body">' +
+                '<div class="mort-grid">' +
+                  '<div><label class="mort-label">Purchase price (€)</label><input class="mort-input" id="mc-price"   type="number" value="' + L.price + '" oninput="calcMort()"/></div>' +
+                  '<div><label class="mort-label">Deposit (€)</label>'        + '<input class="mort-input" id="mc-deposit" type="number" value="' + Math.round(parseInt(L.price)*0.1) + '" oninput="calcMort()"/></div>' +
+                  '<div><label class="mort-label">Term (years)</label>'        + '<input class="mort-input" id="mc-term"    type="number" value="30" min="5" max="35" oninput="calcMort()"/></div>' +
+                  '<div><label class="mort-label">Interest rate (%)</label>'   + '<input class="mort-input" id="mc-rate"    type="number" value="4.0" step="0.1" min="0.1" oninput="calcMort()"/></div>' +
+                '</div>' +
+                '<div class="mort-result" id="mc-result">' +
+                  '<div class="mort-monthly" id="mc-monthly">€0/mo</div>' +
+                  '<div class="mort-meta" id="mc-meta">Enter values above to calculate</div>' +
+                '</div>' +
+              '</div>' +
+            '</details>'
+          : '') +
 
           '<div class="detail-section">' +
             '<h2>Location &amp; nearby</h2>' +
