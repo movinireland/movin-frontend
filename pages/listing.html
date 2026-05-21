@@ -604,6 +604,96 @@
   pointer-events:none;
 }
 .btn-enquire:hover::after{ left:120% }
+
+/* ── Enquiry modal ───────────────────────────────────────────────────── */
+.enq-modal{
+  position:fixed; inset:0; z-index:200;
+  background:rgba(14,30,22,.55);
+  display:none; align-items:flex-end; justify-content:center;
+  padding:1rem;
+  -webkit-tap-highlight-color:transparent;
+  backdrop-filter:blur(2px);
+}
+.enq-modal.open{ display:flex; animation:enqFadeIn .2s ease }
+.enq-modal-card{
+  background:#fff; border-radius:20px 20px 12px 12px;
+  width:100%; max-width:480px;
+  max-height:calc(100vh - 2rem); overflow-y:auto;
+  padding:1.75rem 1.5rem 1.5rem;
+  position:relative;
+  box-shadow:0 -24px 60px -10px rgba(14,61,46,.35), 0 -4px 14px rgba(0,0,0,.10);
+  animation:enqSlideUp .28s cubic-bezier(.2,.7,.2,1);
+}
+@media (min-width:560px){
+  .enq-modal{ align-items:center }
+  .enq-modal-card{ border-radius:20px }
+}
+.enq-modal-x{
+  position:absolute; top:.85rem; right:.85rem;
+  width:36px; height:36px; border-radius:50%;
+  border:none; background:#fafaf8; color:#666;
+  font-size:20px; line-height:1; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s, color .15s;
+}
+.enq-modal-x:hover{ background:#e6e2d8; color:#0e3d2e }
+.enq-modal-head h2{
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:22px; font-weight:900; color:#0e3d2e;
+  margin:0 2rem .25rem 0; letter-spacing:-.3px;
+}
+.enq-modal-head p{
+  font-size:13px; color:#7a7a72; margin:0 0 1.1rem;
+}
+.enq-modal-head p strong{ color:#1f2421; font-weight:600 }
+.enq-modal #enq-modal-form{ display:flex; flex-direction:column; gap:10px }
+.enq-modal .form-input, .enq-modal .form-textarea{
+  width:100%; padding:11px 14px;
+  border:1.5px solid var(--border,#e6e2d8); border-radius:10px;
+  font-size:15px; font-family:inherit; background:#fafaf8; outline:none;
+  transition:border-color .15s, background .15s;
+}
+.enq-modal .form-input:focus, .enq-modal .form-textarea:focus{
+  border-color:#1a5c45; background:#fff;
+}
+.enq-modal .form-textarea{ min-height:110px; resize:vertical; line-height:1.5 }
+.enq-modal #enq-modal-btn{
+  width:100%; min-height:48px;
+  background:#1a5c45; color:#fff; border:none; border-radius:50px;
+  font-size:15px; font-weight:600; cursor:pointer;
+  margin-top:.4rem; transition:background .15s, transform .15s;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+}
+.enq-modal #enq-modal-btn:hover{ background:#0e3d2e }
+.enq-modal #enq-modal-btn:disabled{ opacity:.7; cursor:wait }
+.enq-modal-success{
+  text-align:center; padding:1rem .5rem;
+}
+.enq-modal-success .check{
+  width:56px; height:56px; border-radius:50%;
+  background:#dcfce7; color:#16a34a;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-bottom:1rem;
+}
+.enq-modal-success h3{
+  font-family:'Playfair Display', Georgia, serif;
+  font-size:20px; color:#0e3d2e; margin:.25rem 0 .5rem; font-weight:900;
+}
+.enq-modal-success p{ color:#555; font-size:14px; line-height:1.55; margin:0 }
+.enq-modal-alert .alert{ margin-bottom:.85rem }
+@keyframes enqFadeIn{ from{ opacity:0 } to{ opacity:1 } }
+@keyframes enqSlideUp{ from{ transform:translateY(20px); opacity:0 } to{ transform:none; opacity:1 } }
+@media (prefers-reduced-motion: reduce){
+  .enq-modal, .enq-modal-card{ animation:none !important }
+}
+
+/* Enquire buttons in "already enquired" state */
+.btn-enquire.enq-done, .rp-btn-enq.enq-done, .sticky-cta-btn.enq-done{
+  background:#dcfce7 !important; color:#16a34a !important; cursor:default; pointer-events:none;
+}
+
+/* The inline enquiry section is replaced by the modal — hide it from view */
+#enq-section{ display:none !important }
   </style>
 </head>
 <body>
@@ -1664,7 +1754,7 @@
           '<div class="rp-card">' +
             '<div class="rp-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
             '<div class="rp-price-sub">' + (L.listing_type==='rent'?'Per calendar month':'Asking price') + '</div>' +
-            '<button class="rp-btn-enq" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<button class="rp-btn-enq" onclick="openEnquiryModal()">' +
               '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
               'Send enquiry' +
             '</button>' +
@@ -1724,6 +1814,13 @@
             '</button>' +
           '</div>'
 
+        // Stash the listing so the enquiry modal can read its title / lister.
+        window.__listing = L
+        // If this device has already enquired about the listing, disable the
+        // enquire buttons after render.
+        if (hasEnquired(L.id)) {
+          setTimeout(function(){ disableEnquireButtons() }, 0)
+        }
         document.getElementById('page-content').innerHTML =
           '<div class="listing-page-wrap">' +
           '<div class="listing-col-left">' +
@@ -1775,7 +1872,7 @@
           '</div>' +
 
           '<div class="action-strip">' +
-            '<button class="btn-enquire" onclick="document.getElementById(\'enq-section\').scrollIntoView({behavior:\'smooth\'})">' +
+            '<button class="btn-enquire" onclick="openEnquiryModal()">' +
               '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
               ' Enquire now' +
             '</button>' +
@@ -1966,10 +2063,15 @@
 
     async function submitEnquiry(e, lid) {
       e.preventDefault()
-      var btn = document.getElementById('enq-btn')
-      var alertEl = document.getElementById('enq-alert')
+      // Modal form? Fall back to inline if not.
+      var isModal = e.target.id === 'enq-modal-form'
+      var btn     = isModal ? document.getElementById('enq-modal-btn')  : document.getElementById('enq-btn')
+      var alertEl = isModal ? document.getElementById('enq-modal-alert') : document.getElementById('enq-alert')
+      lid = lid || (window.__listing && window.__listing.id)
+      if (!lid) return
       btn.disabled = true
       btn.textContent = 'Sending…'
+      if (alertEl) alertEl.innerHTML = ''
       try {
         await API.enquiries.send(lid, {
           sender_name:  e.target.sender_name.value,
@@ -1977,14 +2079,34 @@
           sender_phone: e.target.sender_phone.value,
           message:      e.target.message.value
         })
-        alertEl.innerHTML = '<div class="alert alert-ok">✓ Enquiry sent! The owner will be in touch soon.</div>'
-        e.target.reset()
+        markEnquired(lid)
+        if (isModal) {
+          // Modal success state, auto-close after 1.6s
+          document.getElementById('enq-modal-form').style.display    = 'none'
+          document.getElementById('enq-modal-success').style.display = 'block'
+          setTimeout(function(){ closeEnquiryModal(); disableEnquireButtons() }, 1600)
+        } else {
+          alertEl.innerHTML = '<div class="alert alert-ok">✓ Enquiry sent! The owner will be in touch soon.</div>'
+          e.target.reset()
+          disableEnquireButtons()
+        }
       } catch(err) {
-        alertEl.innerHTML = '<div class="alert alert-err">' + err.message + '</div>'
+        // Duplicate enquiry: backend returns the message in err.message —
+        // mark this device as already-enquired so the buttons disable too.
+        if (err && /already enquired/i.test(err.message || '')) {
+          markEnquired(lid)
+          disableEnquireButtons()
+        }
+        if (alertEl) {
+          alertEl.innerHTML = '<div class="alert alert-err">' + (err.message || 'Could not send enquiry.') + '</div>'
+        }
       }
       btn.disabled = false
-      btn.textContent = 'Send enquiry'
+      btn.innerHTML = isModal
+        ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Send enquiry'
+        : 'Send enquiry'
     }
+    window.submitEnquiry = submitEnquiry
 
     var isSaved = false
     async function handleSave() {
@@ -2149,7 +2271,7 @@
   <!-- Sticky mobile CTA bar — populated post-render -->
   <div class="sticky-cta" id="sticky-cta" role="region" aria-label="Property quick actions">
     <div class="sticky-cta-price">€—</div>
-    <button class="sticky-cta-btn" onclick="document.getElementById('enq-section')&&document.getElementById('enq-section').scrollIntoView({behavior:'smooth'})">
+    <button class="sticky-cta-btn" onclick="openEnquiryModal()">
       Enquire
     </button>
   </div>
@@ -2245,6 +2367,85 @@
       <div class="sp-fineprint">Pick from the dropdown so we have an exact location. Saved places stay on this device.</div>
     </div>
   </div>
+
+  <!-- ── Enquiry modal ─────────────────────────────────────────────────── -->
+  <div id="enq-modal" class="enq-modal" aria-hidden="true" onclick="if(event.target===this)closeEnquiryModal()">
+    <div class="enq-modal-card" role="dialog" aria-labelledby="enq-modal-title" aria-modal="true">
+      <button class="enq-modal-x" aria-label="Close" type="button" onclick="closeEnquiryModal()">×</button>
+      <div class="enq-modal-head">
+        <h2 id="enq-modal-title">Send an enquiry</h2>
+        <p>About <strong id="enq-modal-listing">this property</strong> · Listed by <strong id="enq-modal-by">the owner</strong></p>
+      </div>
+      <div id="enq-modal-alert" class="enq-modal-alert"></div>
+      <form id="enq-modal-form" onsubmit="submitEnquiry(event)">
+        <input class="form-input" type="text"  name="sender_name"  placeholder="Your name"            required autocomplete="name"/>
+        <input class="form-input" type="email" name="sender_email" placeholder="Email address"        required autocomplete="email"/>
+        <input class="form-input" type="tel"   name="sender_phone" placeholder="Phone (optional)"     autocomplete="tel"/>
+        <textarea class="form-input form-textarea" name="message" placeholder="Hi, I'd like to arrange a viewing…" required></textarea>
+        <button type="submit" class="btn btn-primary btn-block" id="enq-modal-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          Send enquiry
+        </button>
+      </form>
+      <div id="enq-modal-success" class="enq-modal-success" style="display:none">
+        <div class="check"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <h3>Enquiry sent</h3>
+        <p>The owner will be in touch shortly. We've also emailed you a receipt — check your inbox (and spam folder, just in case).</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // ── Enquiry modal helpers ───────────────────────────────────────────────
+  function _enqKey(lid){ return 'movin_enquired_' + lid }
+  function hasEnquired(lid){ try { return localStorage.getItem(_enqKey(lid)) === '1' } catch(_) { return false } }
+  function markEnquired(lid){ try { localStorage.setItem(_enqKey(lid), '1') } catch(_) {} }
+
+  function disableEnquireButtons(){
+    document.querySelectorAll('.btn-enquire, .rp-btn-enq, .sticky-cta-btn').forEach(function(b){
+      b.classList.add('enq-done')
+      b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> Enquiry sent'
+      b.setAttribute('disabled', 'disabled')
+      b.onclick = null
+    })
+  }
+
+  function openEnquiryModal(){
+    var L = window.__listing
+    if (!L) return
+    if (hasEnquired(L.id)) {
+      disableEnquireButtons()
+      return
+    }
+    document.getElementById('enq-modal-listing').textContent = L.title || 'this property'
+    document.getElementById('enq-modal-by').textContent      = L.agency_name || L.lister_name || 'the owner'
+    document.getElementById('enq-modal-alert').innerHTML     = ''
+    document.getElementById('enq-modal-form').style.display    = ''
+    document.getElementById('enq-modal-success').style.display = 'none'
+    document.getElementById('enq-modal-form').reset()
+    var m = document.getElementById('enq-modal')
+    m.classList.add('open')
+    m.setAttribute('aria-hidden', 'false')
+    document.body.style.overflow = 'hidden'
+    // Move focus to first input for keyboard / screen-reader UX
+    setTimeout(function(){ var f = m.querySelector('input[name="sender_name"]'); if (f) f.focus() }, 50)
+  }
+  function closeEnquiryModal(){
+    var m = document.getElementById('enq-modal')
+    m.classList.remove('open')
+    m.setAttribute('aria-hidden', 'true')
+    document.body.style.overflow = ''
+  }
+  window.openEnquiryModal  = openEnquiryModal
+  window.closeEnquiryModal = closeEnquiryModal
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' &&
+        document.getElementById('enq-modal') &&
+        document.getElementById('enq-modal').classList.contains('open')) {
+      closeEnquiryModal()
+    }
+  })
+  </script>
 
 </body>
 </html>
