@@ -501,6 +501,174 @@ function requireLogin() {
 // ── Inject nav ────────────────────────────────────────────────────────────────
 // REPLACE the renderNav function in your js/app.js with this entire function
  
+// ── Is this the homepage? (only place the full top nav shows) ──────────────
+function _mvIsHomepage(){
+  var p = (location.pathname || '').replace(/\/+$/,'') || '/'
+  return p === '' || p === '/' || /\/index\.html?$/i.test(p)
+}
+
+// ── Compact top bar for non-homepage pages: [← Back] [logo] [≡ Menu] ───────
+function renderMiniTopBar(navEl, root, user, isLoggedIn){
+  // Smart back: stay in the app when there's a real previous page on the
+  // same origin; otherwise fall back to the homepage.
+  var canBack = (history.length > 1) &&
+                (!document.referrer || document.referrer.indexOf(location.origin) === 0)
+  navEl.classList.add('mv-topbar-mini')
+  navEl.innerHTML =
+    '<div class="mv-mini-inner">' +
+      '<button class="mv-mini-btn mv-mini-back" type="button" aria-label="Go back" onclick="mvGoBack()">' +
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>' +
+        '<span class="mv-mini-back-label">Back</span>' +
+      '</button>' +
+      '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
+      '<button class="mv-mini-btn mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6"  x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>' +
+      '</button>' +
+    '</div>'
+  if (!canBack) {
+    var b = navEl.querySelector('.mv-mini-back')
+    if (b) b.style.visibility = 'hidden'
+  }
+  mvInjectChromeStyles()
+}
+
+// ── Slide-in drawer: full navigation for non-homepage pages ────────────────
+function ensureNavDrawer(root, user, isLoggedIn, activePage){
+  if (document.getElementById('mv-drawer')) return
+  // Drawer + scrim
+  var wrap = document.createElement('div')
+  wrap.innerHTML =
+    '<div class="mv-scrim" id="mv-scrim" onclick="mvCloseDrawer()" aria-hidden="true"></div>' +
+    '<aside class="mv-drawer" id="mv-drawer" aria-hidden="true" aria-label="Site navigation">' +
+      '<div class="mv-drawer-head">' +
+        '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
+        '<button class="mv-mini-btn" type="button" aria-label="Close menu" onclick="mvCloseDrawer()">' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<nav class="mv-drawer-nav">' +
+        // Primary
+        '<a class="mv-drawer-item primary" href="' + root + 'index.html">' +
+          '<span class="mv-drawer-ico">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>' +
+          '</span>Home</a>' +
+        '<div class="mv-drawer-label">Browse</div>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=sale">Buy a home</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=rent">Rent a home</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=share">Share a room</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=summer">Summer rentals</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/map-search.html">Map search</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/commercial.html">Commercial</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/latest.html">Latest listings</a>' +
+        '<div class="mv-drawer-label">Tools</div>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#stamp">Stamp duty</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/drive-time.html">Drive-time search</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/house-price-index.html">House price index</a>' +
+        '<div class="mv-drawer-label">For agents &amp; landlords</div>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/list.html">List a property</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/agent-signup.html">Become an agent</a>' +
+        '<div class="mv-drawer-label">Account</div>' +
+        (isLoggedIn ?
+          '<a class="mv-drawer-item" href="' + root + 'pages/' + (user && user.role === 'agent' ? 'agent-dashboard.html' : 'dashboard.html') + '">My dashboard</a>' +
+          '<button class="mv-drawer-item" type="button" onclick="if(window.API)window.API.auth.logout()">Sign out</button>'
+        :
+          '<a class="mv-drawer-item primary-cta" href="' + root + 'pages/login.html">Sign in</a>' +
+          '<a class="mv-drawer-item" href="' + root + 'pages/register.html">Create account</a>'
+        ) +
+        '<div class="mv-drawer-label">Movin</div>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/about.html">About</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/contact.html">Contact</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/faq.html">FAQ</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/terms-of-service.html">Terms</a>' +
+        '<a class="mv-drawer-item" href="' + root + 'pages/privacy-policy.html">Privacy</a>' +
+      '</nav>' +
+    '</aside>'
+  while (wrap.firstChild) document.body.appendChild(wrap.firstChild)
+  // ESC closes the drawer
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') mvCloseDrawer()
+  })
+}
+
+// ── Drawer / back-button behaviour ─────────────────────────────────────────
+function mvOpenDrawer(){
+  var d = document.getElementById('mv-drawer'), s = document.getElementById('mv-scrim')
+  if (!d || !s) return
+  d.classList.add('open'); s.classList.add('open')
+  d.setAttribute('aria-hidden', 'false'); s.setAttribute('aria-hidden', 'false')
+  document.body.style.overflow = 'hidden'
+  var menuBtn = document.querySelector('.mv-mini-menu'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'true')
+}
+function mvCloseDrawer(){
+  var d = document.getElementById('mv-drawer'), s = document.getElementById('mv-scrim')
+  if (!d || !s) return
+  d.classList.remove('open'); s.classList.remove('open')
+  d.setAttribute('aria-hidden', 'true'); s.setAttribute('aria-hidden', 'true')
+  document.body.style.overflow = ''
+  var menuBtn = document.querySelector('.mv-mini-menu'); if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false')
+}
+function mvGoBack(){
+  // Same-origin referrer + real history → use the browser stack.
+  if (history.length > 1 && (!document.referrer || document.referrer.indexOf(location.origin) === 0)) {
+    history.back()
+  } else {
+    location.href = '/'
+  }
+}
+window.mvOpenDrawer = mvOpenDrawer
+window.mvCloseDrawer = mvCloseDrawer
+window.mvGoBack      = mvGoBack
+
+// One-time stylesheet for the mini top bar + drawer.
+function mvInjectChromeStyles(){
+  if (document.getElementById('mv-chrome-styles')) return
+  var s = document.createElement('style')
+  s.id = 'mv-chrome-styles'
+  s.textContent = [
+    /* Hide whatever default .nav styles the page had so the mini bar
+       renders cleanly on top of #main-nav.                            */
+    '.nav.mv-topbar-mini{ background:#fff !important; border-bottom:1px solid #e6e2d8 !important; box-shadow:0 1px 2px rgba(20,30,25,.04) !important; padding:0 !important; height:auto !important; min-height:0 !important; position:sticky; top:0; z-index:90 }',
+    '.mv-mini-inner{ display:flex; align-items:center; justify-content:space-between; gap:8px; padding:.55rem .85rem; max-width:1180px; margin:0 auto }',
+    '.mv-mini-btn{ display:inline-flex; align-items:center; gap:6px; min-height:44px; min-width:44px; padding:0 12px; border:none; background:transparent; color:#0e3d2e; font:inherit; font-size:14px; font-weight:600; border-radius:10px; cursor:pointer; -webkit-tap-highlight-color:transparent; transition:background .15s }',
+    '.mv-mini-btn:hover{ background:#f1efe7 }',
+    '.mv-mini-btn:active{ background:#e6e2d8 }',
+    '.mv-mini-back-label{ font-size:14px; font-weight:600 }',
+    '@media (max-width:380px){ .mv-mini-back-label{ display:none } }',
+    '.mv-mini-logo{ font-family:Playfair Display,Georgia,serif; font-weight:900; font-size:22px; color:#1a5c45; text-decoration:none; letter-spacing:-.5px; line-height:1 }',
+    '.mv-mini-logo span{ color:#e07b3f }',
+    /* Scrim */
+    '.mv-scrim{ position:fixed; inset:0; background:rgba(14,30,22,.5); opacity:0; pointer-events:none; transition:opacity .22s ease; z-index:140 }',
+    '.mv-scrim.open{ opacity:1; pointer-events:auto }',
+    /* Drawer */
+    '.mv-drawer{ position:fixed; top:0; right:0; bottom:0; width:min(86vw, 360px); background:#fff; box-shadow:-12px 0 32px -10px rgba(14,61,46,.20); transform:translateX(110%); transition:transform .28s cubic-bezier(.2,.7,.2,1); z-index:150; display:flex; flex-direction:column; overflow:hidden }',
+    '.mv-drawer.open{ transform:none }',
+    '.mv-drawer-head{ display:flex; align-items:center; justify-content:space-between; padding:.75rem 1rem; border-bottom:1px solid #e6e2d8 }',
+    '.mv-drawer-nav{ flex:1; overflow-y:auto; padding:.5rem 0 1.25rem }',
+    '.mv-drawer-label{ font-size:11px; font-weight:700; color:#7a7a72; text-transform:uppercase; letter-spacing:1.5px; padding:1.1rem 1.25rem .35rem }',
+    '.mv-drawer-item{ display:flex; align-items:center; gap:11px; width:100%; min-height:46px; padding:11px 1.25rem; font:inherit; font-size:15px; color:#1f2421; background:transparent; border:none; cursor:pointer; text-decoration:none; transition:background .12s, color .12s }',
+    '.mv-drawer-item:hover{ background:#f7f5ee; color:#0e3d2e }',
+    '.mv-drawer-item:active{ background:#eee9dc }',
+    '.mv-drawer-item.primary{ color:#0e3d2e; font-weight:700 }',
+    '.mv-drawer-item.primary-cta{ margin:.55rem 1.25rem .25rem; padding:11px 1.1rem; background:#1a5c45; color:#fff; border-radius:50px; justify-content:center; font-weight:600; min-height:46px }',
+    '.mv-drawer-item.primary-cta:hover{ background:#0e3d2e; color:#fff }',
+    '.mv-drawer-ico{ width:24px; display:inline-flex; align-items:center; justify-content:center; color:#1a5c45; flex-shrink:0 }',
+    /* Dark mode */
+    '[data-theme="dark"] .nav.mv-topbar-mini{ background:#161613 !important; border-bottom-color:#2a2a2a !important }',
+    '[data-theme="dark"] .mv-mini-btn{ color:#f1ebdc }',
+    '[data-theme="dark"] .mv-mini-btn:hover{ background:#1e1e1a }',
+    '[data-theme="dark"] .mv-mini-logo{ color:#7ec9a8 }',
+    '[data-theme="dark"] .mv-drawer{ background:#161613 }',
+    '[data-theme="dark"] .mv-drawer-head{ border-bottom-color:#2a2a2a }',
+    '[data-theme="dark"] .mv-drawer-item{ color:#f1ebdc }',
+    '[data-theme="dark"] .mv-drawer-item:hover{ background:#1e1e1a }',
+    '[data-theme="dark"] .mv-drawer-label{ color:#a8a496 }',
+    '@media (prefers-reduced-motion: reduce){ .mv-drawer, .mv-scrim{ transition:none !important } }'
+  ].join('\n')
+  document.head.appendChild(s)
+}
+
 function renderNav(activePage = '') {
   const user = window.API ? window.API.getUser() : null
   const isLoggedIn = window.API ? window.API.auth.isLoggedIn() : false
@@ -511,6 +679,15 @@ function renderNav(activePage = '') {
 
   const nav = document.getElementById('main-nav')
   if (!nav) return
+
+  // On non-homepage pages: render a compact top bar (back ← logo ≡ menu)
+  // and inject a slide-in drawer with the full navigation. Keeps the
+  // homepage's rich nav intact while every other page gets a tidier UI.
+  if (!_mvIsHomepage()) {
+    renderMiniTopBar(nav, root, user, isLoggedIn)
+    ensureNavDrawer(root, user, isLoggedIn, activePage)
+    return
+  }
  
   nav.innerHTML = `
     <div class="nav-inner">
