@@ -696,198 +696,238 @@
 #enq-section{ display:none !important }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   "HERITAGE MODERN" — mobile-only listing-page design layer (≤ 767px).
-   Desktop is untouched. Cream canvas surfaces, deep forest green ink, soft
-   diffused elevation, generous whitespace, pill CTAs.
+   📱 Mobile listing-page polish (≤ 767px) — Movin brand only.
+   ONE button system, one card system, brand greens + brand orange only.
+   Desktop untouched.
    ═══════════════════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
-  /* Canvas + ink tokens */
-  :root, [data-theme="light"]{
-    --hm-canvas:#FAF9F6;
-    --hm-cream:#F1EBDC;
-    --hm-ink:#0E3D2E;
-    --hm-ink-soft:#404944;
-    --hm-muted:#707973;
-    --hm-primary:#1A5C45;
-    --hm-primary-deep:#004430;
-    --hm-rust:#E07B3F;
-    --hm-shadow-soft:0 4px 20px rgba(14,61,46,.05);
-    --hm-shadow-lift:0 8px 28px rgba(14,61,46,.10);
+  /* Strict brand palette tokens — used everywhere below for consistency */
+  :root{
+    --mv-paper: #faf7f0;        /* page background */
+    --mv-card:  #ffffff;        /* card surface */
+    --mv-line:  #e8e2d3;        /* hairline border */
+    --mv-line-soft: #f1ebdc;    /* even softer divider */
+    --mv-ink:   #0e3d2e;        /* primary text — brand dark green */
+    --mv-ink-2: #1f2421;        /* body text */
+    --mv-muted: #6c6f6a;        /* secondary text */
+    --mv-green: #1a5c45;        /* brand green */
+    --mv-green-d: #0e3d2e;      /* deep green */
+    --mv-orange: #e07b3f;       /* brand orange — single CTA colour */
+    --mv-radius: 14px;
+    --mv-shadow: 0 2px 10px rgba(14,61,46,.05);
   }
 
-  /* Canvas */
-  body{ background:var(--hm-canvas) !important }
+  /* Page surface */
+  body{ background:var(--mv-paper) !important }
 
-  /* Gallery edges: 0 — full-bleed photo on phones */
+  /* Edge-to-edge gallery, cards inset from the edges */
   .listing-page-wrap{ padding:0 !important; gap:0 !important }
   .listing-col-left, .listing-col-right{ padding:0 !important }
 
-  /* Detail header */
-  .detail-header{
-    background:#fff !important;
-    border-radius:18px !important;
-    margin:1rem 1rem 1.25rem !important;
-    padding:1.25rem 1.25rem 1.4rem !important;
-    box-shadow:var(--hm-shadow-soft) !important;
-    border:1px solid var(--glass-border, rgba(26,92,69,.08)) !important;
+  /* ── Card system: one style, repeated everywhere ─────────────────── */
+  .detail-header,
+  .detail-section, details.detail-section,
+  details.mort-section,
+  .rp-card{
+    background:var(--mv-card) !important;
+    border:1px solid var(--mv-line) !important;
+    border-radius:var(--mv-radius) !important;
+    box-shadow:var(--mv-shadow) !important;
+    margin:.85rem 1rem !important;
+    padding:1.2rem 1.25rem !important;
   }
-  .d-tag-row{ gap:6px !important; margin-bottom:.65rem !important }
-  .d-title{
-    font-family:'Playfair Display', Georgia, serif !important;
-    font-size:24px !important; line-height:1.12 !important;
-    color:var(--hm-ink) !important; letter-spacing:-.4px !important;
-    margin-bottom:.45rem !important; font-weight:700 !important;
-  }
-  .d-loc{ font-size:13px !important; color:var(--hm-muted) !important; margin-bottom:.75rem !important }
-  .d-price{
-    font-family:'Playfair Display', Georgia, serif !important;
-    font-size:30px !important; font-weight:900 !important;
-    color:var(--hm-primary) !important; letter-spacing:-.5px !important;
-    margin-bottom:.85rem !important;
-  }
-  .d-stats{ gap:.4rem !important }
-  .d-stat{
-    background:var(--hm-cream) !important; color:var(--hm-ink) !important;
-    padding:6px 11px !important; border-radius:999px !important;
-    font-size:12.5px !important; font-weight:500 !important;
-    border:1px solid rgba(14,61,46,.05) !important;
-  }
+  .detail-header{ margin-top:1rem !important }
+  .detail-section + .detail-section,
+  .detail-section + details.detail-section,
+  details.detail-section + .detail-section,
+  details.mort-section + .detail-section,
+  .detail-section + details.mort-section,
+  .rp-card + .detail-section,
+  .detail-section + .rp-card{ margin-top:.85rem !important }
 
-  /* Detail sections (description, features, mortgage, location, …) */
-  .detail-section, details.detail-section, details.mort-section{
-    background:#fff !important;
-    border-radius:18px !important;
-    margin:0 1rem 1rem !important;
-    padding:1.25rem 1.4rem !important;
-    border:1px solid var(--glass-border, rgba(26,92,69,.08)) !important;
-    box-shadow:var(--hm-shadow-soft) !important;
-  }
+  /* ── Headline hierarchy — Playfair for headings, brand greens ────── */
   .detail-section h2, .detail-section > h2{
     font-family:'Playfair Display', Georgia, serif !important;
-    font-size:18px !important; font-weight:900 !important;
-    color:var(--hm-ink) !important; letter-spacing:-.3px !important;
+    font-size:17px !important; font-weight:900 !important;
+    color:var(--mv-ink) !important; letter-spacing:-.2px !important;
     margin-bottom:.85rem !important;
   }
-  .desc-text{ font-size:15.5px !important; line-height:1.7 !important; color:var(--hm-ink-soft) !important }
+  .d-title{
+    font-family:'Playfair Display', Georgia, serif !important;
+    font-size:22px !important; font-weight:700 !important; line-height:1.18 !important;
+    color:var(--mv-ink) !important; letter-spacing:-.3px !important;
+    margin-bottom:.45rem !important;
+  }
+  .d-loc{ font-size:13px !important; color:var(--mv-muted) !important; margin-bottom:.7rem !important }
+  .d-price{
+    font-family:'Playfair Display', Georgia, serif !important;
+    font-size:26px !important; font-weight:900 !important;
+    color:var(--mv-green) !important; letter-spacing:-.3px !important;
+    margin-bottom:.75rem !important;
+  }
+  .d-stats{ gap:.35rem !important }
+  .d-stat{
+    background:#fff !important; color:var(--mv-ink-2) !important;
+    border:1px solid var(--mv-line) !important;
+    padding:5px 11px !important; border-radius:999px !important;
+    font-size:12.5px !important; font-weight:500 !important;
+  }
+  .desc-text{ font-size:15px !important; line-height:1.7 !important; color:var(--mv-ink-2) !important }
 
-  /* Features grid: warm cream tiles */
-  .feat-grid{ gap:.55rem !important }
+  /* Features grid — flat white tiles, hairline border, brand-green icons */
+  .feat-grid{ gap:.5rem !important }
   .feat-item{
-    background:var(--hm-cream) !important;
-    border:1px solid rgba(14,61,46,.06) !important;
-    border-radius:14px !important;
-    padding:.7rem .85rem !important;
-    font-size:14px !important; color:var(--hm-ink) !important; font-weight:500 !important;
+    background:#fff !important;
+    border:1px solid var(--mv-line) !important;
+    border-radius:12px !important;
+    padding:.65rem .85rem !important;
+    font-size:14px !important; color:var(--mv-ink-2) !important; font-weight:500 !important;
     gap:10px !important;
+    box-shadow:none !important;
   }
   .feat-ico{
-    width:30px !important; height:30px !important; border-radius:10px !important;
-    background:#fff !important;
+    width:28px !important; height:28px !important; border-radius:8px !important;
+    background:#f5f1e6 !important; color:var(--mv-green) !important;
   }
 
-  /* Right sidebar (sticky on desktop) becomes inline above content on mobile */
+  /* ── Right sidebar (lifts above description on mobile) ───────────── */
   .listing-col-right{ order:-1 }
-  .rp-card{
-    background:#fff !important;
-    border-radius:18px !important;
-    margin:1rem 1rem 1rem !important;
-    padding:1.25rem 1.25rem 1.1rem !important;
-    box-shadow:var(--hm-shadow-soft) !important;
-    border:1px solid var(--glass-border, rgba(26,92,69,.08)) !important;
-  }
   .rp-price{
     font-family:'Playfair Display', Georgia, serif !important;
-    font-size:30px !important; font-weight:900 !important;
-    color:var(--hm-primary) !important; letter-spacing:-.5px !important;
+    font-size:26px !important; font-weight:900 !important;
+    color:var(--mv-green) !important; letter-spacing:-.3px !important;
     margin-bottom:2px !important;
   }
-  .rp-price-sub{ font-size:12px !important; color:var(--hm-muted) !important; margin-bottom:1rem !important }
-  /* Primary CTA: pill, rust-coloured (per design system) */
-  .rp-btn-enq{
-    background:var(--hm-rust) !important; color:#fff !important;
-    border-radius:999px !important;
-    padding:14px 22px !important;
-    font-size:15px !important; font-weight:600 !important;
-    box-shadow:0 8px 22px -8px rgba(224,123,63,.55) !important;
-    transition:transform .12s ease, box-shadow .15s ease !important;
-  }
-  .rp-btn-enq:active{ transform:scale(.98) !important }
-  .rp-btn-phone{
-    background:#fff !important; color:var(--hm-primary) !important;
-    border:1.5px solid var(--hm-primary) !important;
-    border-radius:999px !important;
-    padding:12px 18px !important; font-weight:600 !important;
+  .rp-price-sub{ font-size:12px !important; color:var(--mv-muted) !important; margin-bottom:1rem !important }
+
+  /* Lister / agent block inside the rp-card */
+  .rp-agent{
+    border-top:1px solid var(--mv-line-soft) !important;
+    padding-top:.85rem !important; margin-top:.85rem !important;
   }
 
-  /* Mortgage calculator summary — Heritage style */
+  /* ─────────────────────────────────────────────────────────────────────
+     UNIFIED BUTTON SYSTEM — three variants, used across the whole page
+     ─────────────────────────────────────────────────────────────────────
+     • mv-btn--primary  → solid brand orange pill (Enquire — the only orange)
+     • mv-btn--ghost    → outlined brand-green pill (Phone, Open in Maps…)
+     • mv-btn--icon     → 40-px round white icon button (Save, Share, +)
+     The existing classes (.rp-btn-enq, .rp-btn-phone, .rp-action-btn,
+     .btn-enquire, .sticky-cta-btn) are remapped onto these variants so
+     the cascade stays simple and every page button matches.
+     ───────────────────────────────────────────────────────────────────── */
+  .rp-btn-enq, .btn-enquire, .sticky-cta-btn{
+    background:var(--mv-orange) !important; color:#fff !important;
+    border:none !important; border-radius:999px !important;
+    height:48px !important; padding:0 22px !important; width:100% !important;
+    font:600 15px/1 'DM Sans', sans-serif !important;
+    display:inline-flex !important; align-items:center !important; justify-content:center !important; gap:8px !important;
+    box-shadow:0 6px 18px -6px rgba(224,123,63,.55) !important;
+    transition:transform .12s ease, background .15s ease, box-shadow .15s ease !important;
+    -webkit-tap-highlight-color:transparent !important;
+  }
+  .rp-btn-enq:hover, .btn-enquire:hover, .sticky-cta-btn:hover{
+    background:#c9642a !important;
+  }
+  .rp-btn-enq:active, .btn-enquire:active, .sticky-cta-btn:active{ transform:scale(.98) !important }
+
+  .rp-btn-phone, .call-btn{
+    background:#fff !important; color:var(--mv-green) !important;
+    border:1.5px solid var(--mv-green) !important; border-radius:999px !important;
+    height:46px !important; padding:0 18px !important; width:100% !important;
+    font:600 15px/1 'DM Sans', sans-serif !important;
+    display:inline-flex !important; align-items:center !important; justify-content:center !important; gap:8px !important;
+    transition:background .15s ease, color .15s ease !important;
+    margin-top:.5rem !important;
+  }
+  .rp-btn-phone:hover, .call-btn:hover{
+    background:var(--mv-green) !important; color:#fff !important;
+  }
+
+  /* Save / Share / Compare round icon buttons in the sidebar */
+  .rp-actions{ display:grid !important; grid-template-columns:1fr 1fr !important; gap:8px !important; margin-top:.75rem !important }
+  .rp-action-btn{
+    background:#fff !important; color:var(--mv-green) !important;
+    border:1.5px solid var(--mv-line) !important; border-radius:999px !important;
+    height:42px !important; font:500 13.5px/1 'DM Sans', sans-serif !important;
+    transition:border-color .15s ease, color .15s ease !important;
+  }
+  .rp-action-btn:hover{ border-color:var(--mv-green) !important; color:var(--mv-green-d) !important }
+
+  /* Open-in-Maps inline link reads as a small green text link, not a button */
+  .detail-section a, details.loc-section .loc-body a{ color:var(--mv-green) !important }
+
+  /* ── Mortgage calculator summary row — matches loc-section visual ── */
+  details.mort-section{ padding:0 !important }
   details.mort-section > summary{
-    padding:1rem 0 !important; font-size:16px !important; color:var(--hm-ink) !important;
+    padding:1.1rem 1.25rem !important; margin:0 !important;
+    font-family:'Playfair Display', Georgia, serif !important;
+    font-size:17px !important; font-weight:900 !important; color:var(--mv-ink) !important;
+    letter-spacing:-.2px !important; gap:12px !important;
   }
   details.mort-section .mort-ico{
-    background:var(--hm-cream) !important; color:var(--hm-primary) !important;
+    width:40px !important; height:40px !important; border-radius:12px !important;
+    background:#f5f1e6 !important; color:var(--mv-green) !important;
   }
-  details.mort-section .mort-hint{ color:var(--hm-muted) !important; font-size:12.5px !important }
+  details.mort-section .mort-hint{ color:var(--mv-muted) !important; font-size:12.5px !important; font-family:'DM Sans', sans-serif !important; font-weight:400 !important }
+  details.mort-section .mort-chev{
+    width:32px !important; height:32px !important; border-radius:50% !important;
+    background:#f5f1e6 !important; color:var(--mv-green) !important;
+  }
+  details.mort-section[open] > summary{ border-bottom:1px solid var(--mv-line-soft) !important; padding-bottom:.85rem !important }
+  details.mort-section .mort-body{ padding:1rem 1.25rem 1.25rem !important }
 
-  /* ── Collapsible Location & nearby (closed by default on mobile) ─── */
+  /* ── Collapsible Location & nearby — same visual language as mortgage ── */
   details.loc-section{ padding:0 !important; overflow:hidden }
   details.loc-section > summary{
     list-style:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
-    display:flex; align-items:center; gap:14px;
-    padding:1.1rem 1.4rem !important;
-    margin:0 !important;
+    display:flex; align-items:center; gap:12px;
+    padding:1.1rem 1.25rem !important; margin:0 !important;
   }
   details.loc-section > summary::-webkit-details-marker{ display:none }
   .loc-summary-ico{
     width:40px; height:40px; border-radius:12px;
-    background:var(--hm-cream); color:var(--hm-primary);
+    background:#f5f1e6; color:var(--mv-green);
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
   }
   .loc-summary-text{ flex:1; display:flex; flex-direction:column; gap:2px; min-width:0 }
   .loc-summary-title{
     font-family:'Playfair Display', Georgia, serif;
-    font-size:17px; font-weight:900; color:var(--hm-ink); letter-spacing:-.2px;
+    font-size:17px; font-weight:900; color:var(--mv-ink); letter-spacing:-.2px;
   }
-  .loc-summary-sub{ font-size:12.5px; color:var(--hm-muted); font-weight:500 }
+  .loc-summary-sub{ font-size:12.5px; color:var(--mv-muted); font-weight:500 }
   .loc-summary-chev{
-    width:32px; height:32px; border-radius:50%; background:var(--hm-cream);
-    color:var(--hm-primary); display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; transition:transform .25s cubic-bezier(.2,.7,.2,1), background .15s;
+    width:32px; height:32px; border-radius:50%; background:#f5f1e6;
+    color:var(--mv-green); display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:transform .25s cubic-bezier(.2,.7,.2,1);
   }
+  details.loc-section[open] > summary{ border-bottom:1px solid var(--mv-line-soft) !important; padding-bottom:.85rem !important }
   details.loc-section[open] > summary .loc-summary-chev{ transform:rotate(180deg) }
   details.loc-section .loc-body{
-    padding:0 1.4rem 1.25rem !important;
-    animation:locSlide .28s cubic-bezier(.2,.7,.2,1);
+    padding:1rem 1.25rem 1.25rem !important;
+    animation:locSlide .26s cubic-bezier(.2,.7,.2,1);
   }
-  @keyframes locSlide{ from{ opacity:0; transform:translateY(-6px) } to{ opacity:1; transform:none } }
+  @keyframes locSlide{ from{ opacity:0; transform:translateY(-4px) } to{ opacity:1; transform:none } }
   @media (prefers-reduced-motion: reduce){
     details.loc-section .loc-body{ animation:none }
-    .loc-summary-chev{ transition:none }
+    .loc-summary-chev, details.mort-section .mort-chev{ transition:none }
   }
   details.loc-section #property-map{
-    border-radius:14px !important; border:1px solid var(--glass-border, rgba(26,92,69,.08)) !important;
+    border-radius:12px !important; border:1px solid var(--mv-line) !important;
     height:220px !important;
   }
 
-  /* Generous breathing room between sections (matches the "section-gap: 48px"
-     spec without overdoing it on mobile) */
-  .detail-section + .detail-section,
-  .detail-section + details.detail-section,
-  details.detail-section + .detail-section,
-  .rp-card + .detail-section{ margin-top:1.1rem !important }
-
-  /* Sticky CTA bar at the bottom of the viewport (refined) */
+  /* ── Sticky bottom CTA — same orange button as Enquire ───────────── */
   .sticky-cta{
-    background:rgba(255,255,255,.92) !important;
+    background:rgba(255,255,255,.94) !important;
     backdrop-filter:saturate(1.4) blur(14px);
     -webkit-backdrop-filter:saturate(1.4) blur(14px);
-    border-top:1px solid var(--glass-border, rgba(26,92,69,.10)) !important;
-    box-shadow:0 -8px 28px rgba(14,61,46,.06) !important;
+    border-top:1px solid var(--mv-line) !important;
+    box-shadow:0 -6px 22px rgba(14,61,46,.06) !important;
+    padding:10px 14px !important;
   }
-  .sticky-cta-btn{
-    background:var(--hm-rust) !important; color:#fff !important;
-    box-shadow:0 8px 18px -6px rgba(224,123,63,.55) !important;
-    border-radius:999px !important;
-  }
+  .sticky-cta-price{ color:var(--mv-green) !important; font-weight:700 !important; font-family:'Playfair Display', Georgia, serif !important }
+  .sticky-cta-btn{ height:46px !important; padding:0 22px !important }
 }
   </style>
 </head>
