@@ -941,6 +941,142 @@
   }
   .sticky-cta-price{ color:var(--mv-green) !important; font-weight:700 !important; font-family:'Playfair Display', Georgia, serif !important }
   .sticky-cta-btn{ height:46px !important; padding:0 22px !important }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     DARK MODE — mobile listing layer
+     Override every hard-coded #fff / #f5f1e6 / #e9f4ef so chips, icon-chips,
+     feature tiles, action buttons and section cards all read correctly.
+     ════════════════════════════════════════════════════════════════════════ */
+  [data-theme="dark"] body{ background:#14130f !important; color:#f1ebdc !important }
+
+  /* Section cards */
+  [data-theme="dark"] .detail-header,
+  [data-theme="dark"] .detail-section,
+  [data-theme="dark"] details.detail-section,
+  [data-theme="dark"] details.mort-section,
+  [data-theme="dark"] .rp-card{
+    background:#1c1b16 !important;
+    border-color:#38342a !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.35) !important;
+  }
+  [data-theme="dark"] .detail-section h2,
+  [data-theme="dark"] .d-title,
+  [data-theme="dark"] .loc-summary-title{ color:#f1ebdc !important }
+  [data-theme="dark"] .d-loc,
+  [data-theme="dark"] .rp-price-sub,
+  [data-theme="dark"] .loc-summary-sub,
+  [data-theme="dark"] details.mort-section .mort-hint,
+  [data-theme="dark"] .desc-text{ color:#a8a496 !important }
+  [data-theme="dark"] .d-price,
+  [data-theme="dark"] .rp-price,
+  [data-theme="dark"] .sticky-cta-price{ color:#7ec9a8 !important }
+
+  /* Chip rail under the price (3 beds · 2 baths · 100m² · B2 · 35 views · €/m²) */
+  [data-theme="dark"] .d-stat{
+    background:#242219 !important;
+    border-color:#38342a !important;
+    color:#f1ebdc !important;
+  }
+  [data-theme="dark"] .d-stat svg{ stroke:#7ec9a8 !important; color:#7ec9a8 !important }
+
+  /* Feature tiles (Garage, Wheelchair access, …) */
+  [data-theme="dark"] .feat-item{
+    background:#242219 !important;
+    border-color:#38342a !important;
+    color:#f1ebdc !important;
+  }
+  [data-theme="dark"] .feat-ico{
+    background:#1c1b16 !important;
+    color:#7ec9a8 !important;
+  }
+  [data-theme="dark"] .feat-ico svg{ stroke:#7ec9a8 !important; color:#7ec9a8 !important }
+
+  /* Icon chips on mortgage + location summaries */
+  [data-theme="dark"] details.mort-section .mort-ico,
+  [data-theme="dark"] details.mort-section .mort-chev,
+  [data-theme="dark"] .loc-summary-ico,
+  [data-theme="dark"] .loc-summary-chev{
+    background:#1c1b16 !important;
+    color:#7ec9a8 !important;
+    border:1px solid #38342a !important;
+  }
+  [data-theme="dark"] details.mort-section[open] > summary,
+  [data-theme="dark"] details.loc-section[open] > summary{
+    border-bottom-color:#38342a !important;
+  }
+
+  /* Ghost / action buttons — solid dark surface, brand-mint border */
+  [data-theme="dark"] .rp-btn-phone,
+  [data-theme="dark"] .call-btn,
+  [data-theme="dark"] .rp-action-btn{
+    background:#1c1b16 !important;
+    color:#7ec9a8 !important;
+    border-color:#7ec9a8 !important;
+  }
+  [data-theme="dark"] .rp-action-btn{ border-color:#38342a !important }
+  [data-theme="dark"] .rp-action-btn:hover{ border-color:#7ec9a8 !important; color:#a0e0c0 !important }
+  [data-theme="dark"] .rp-btn-phone:hover,
+  [data-theme="dark"] .call-btn:hover{ background:#7ec9a8 !important; color:#0e3d2e !important }
+
+  /* Status / type / age pills in the detail header */
+  [data-theme="dark"] .d-tag-row .badge{
+    background:#242219 !important;
+    color:#f1ebdc !important;
+    border-color:#38342a !important;
+  }
+  /* BER badge — keep readable green pill */
+  [data-theme="dark"] .d-tag-row .badge-g,
+  [data-theme="dark"] .d-tag-row .badge[style*="2aaa50"]{
+    background:#2aaa50 !important;
+    color:#fff !important;
+  }
+  [data-theme="dark"] .d-age{ color:#a8a496 !important }
+
+  /* "Where you'll live" preview card */
+  [data-theme="dark"] .map-preview{
+    background:#1c1b16 !important; border-color:#38342a !important;
+    box-shadow:0 2px 10px rgba(0,0,0,.4) !important;
+  }
+  [data-theme="dark"] .map-preview-body .mp-addr{ color:#f1ebdc !important }
+  [data-theme="dark"] .map-preview-body .mp-area{ color:#a8a496 !important }
+  [data-theme="dark"] .map-preview-body .mp-eyebrow{ color:#7ec9a8 !important }
+  [data-theme="dark"] .map-preview-body .mp-cta{ color:#7ec9a8 !important }
+  [data-theme="dark"] .map-preview-thumb{ background:linear-gradient(135deg,#1f2421,#0e3d2e) !important }
+  [data-theme="dark"] .map-preview .mp-corner-arrow{
+    background:#242219 !important; color:#7ec9a8 !important;
+  }
+  [data-theme="dark"] .map-preview:hover .mp-corner-arrow{
+    background:#7ec9a8 !important; color:#0e3d2e !important;
+  }
+
+  /* Property map embed border */
+  [data-theme="dark"] details.loc-section #property-map{ border-color:#38342a !important }
+
+  /* Sticky bottom CTA — translucent dark */
+  [data-theme="dark"] .sticky-cta{
+    background:rgba(20,19,15,.94) !important;
+    border-top-color:#38342a !important;
+    box-shadow:0 -6px 22px rgba(0,0,0,.5) !important;
+  }
+
+  /* Breadcrumb / search-back row at top */
+  [data-theme="dark"] .breadcrumb,
+  [data-theme="dark"] .breadcrumb span{ color:#a8a496 !important }
+  [data-theme="dark"] .breadcrumb a,
+  [data-theme="dark"] .breadcrumb span[onclick]{ color:#7ec9a8 !important }
+
+  /* Gallery save-heart button + photo counter */
+  [data-theme="dark"] .gallery-save-btn{
+    background:rgba(36,34,25,.92) !important; color:#f1ebdc !important;
+  }
+  [data-theme="dark"] .gallery-counter{
+    background:rgba(36,34,25,.85) !important; color:#f1ebdc !important;
+  }
+
+  /* "Listed Xd ago" + "About this property" small labels */
+  [data-theme="dark"] .meta-text,
+  [data-theme="dark"] .listed-ago,
+  [data-theme="dark"] .small-meta{ color:#a8a496 !important }
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
