@@ -516,16 +516,16 @@ function renderMiniTopBar(navEl, root, user, isLoggedIn){
   navEl.classList.add('mv-topbar-mini')
   navEl.innerHTML =
     '<div class="mv-mini-inner">' +
-      '<button class="mv-mini-back" type="button" aria-label="Go back" onclick="mvGoBack()">' +
-        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>' +
+      '<button class="mv-mini-btn mv-mini-back" type="button" aria-label="Go back" onclick="mvGoBack()">' +
+        // 24px back chevron — matches drawer icon stroke for visual consistency
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>' +
       '</button>' +
       '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">' +
         'mov<span>in</span>' +
       '</a>' +
-      '<button class="mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
-        '<span class="mv-menu-lines">' +
-          '<span></span><span></span><span></span>' +
-        '</span>' +
+      '<button class="mv-mini-btn mv-mini-menu" type="button" aria-label="Open menu" aria-controls="mv-drawer" aria-expanded="false" onclick="mvOpenDrawer()">' +
+        // Simple 3-line hamburger — no animation, no morph
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="7"  x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>' +
       '</button>' +
     '</div>'
   if (!canBack) {
@@ -535,57 +535,117 @@ function renderMiniTopBar(navEl, root, user, isLoggedIn){
   mvInjectChromeStyles()
 }
 
+// One-stop SVG kit for the drawer — same line style (24×24 viewBox, 2px
+// stroke, round caps + joins) so every item icon matches.
+var _MV_ICONS = {
+  home:    '<path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/>',
+  buy:     '<rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V8a5 5 0 0 1 10 0v3"/>',
+  rent:    '<path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/><path d="M9 14h6v6H9z"/>',
+  share:   '<circle cx="9" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 14h2a3 3 0 0 1 3 3v2"/>',
+  summer:  '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>',
+  map:     '<polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21 3 6"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/>',
+  building:'<path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 9h.01M9 13h.01M9 17h.01M13 13h.01M13 17h.01"/>',
+  sparkle: '<path d="M12 3v3M12 18v3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M3 12h3M18 12h3M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3"/>',
+  calc:    '<rect x="5" y="3" width="14" height="18" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="9" y2="11"/><line x1="12" y1="11" x2="13" y2="11"/><line x1="16" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="9" y2="15"/><line x1="12" y1="15" x2="13" y2="15"/><line x1="16" y1="15" x2="16" y2="15"/><line x1="8" y1="18" x2="13" y2="18"/>',
+  value:   '<path d="M3 12c0-5 4-9 9-9s9 4 9 9-4 9-9 9-9-4-9-9z"/><path d="M12 7v5l3 2"/>',
+  stamp:   '<path d="M5 21h14"/><path d="M6 17h12l-1-6H7z"/><path d="M9 11V7a3 3 0 0 1 6 0v4"/>',
+  car:     '<path d="M5 17h14l-1.5-6h-11z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/><path d="M3 13h2M19 13h2"/>',
+  chart:   '<line x1="3" y1="21" x2="21" y2="21"/><line x1="6" y1="17" x2="6" y2="11"/><line x1="11" y1="17" x2="11" y2="7"/><line x1="16" y1="17" x2="16" y2="13"/>',
+  plus:    '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+  user:    '<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+  dash:    '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  logout:  '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+  login:   '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>',
+  info:    '<circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="17"/><circle cx="12" cy="8" r=".6"/>',
+  mail:    '<rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/>',
+  help:    '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4"/><circle cx="12" cy="17" r=".6"/>',
+  doc:     '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="14 3 14 9 20 9"/>',
+  lock:    '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+}
+function _mvIcon(name){
+  var p = _MV_ICONS[name] || ''
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'
+}
+
 // ── Slide-in drawer: full navigation for non-homepage pages ────────────────
 function ensureNavDrawer(root, user, isLoggedIn, activePage){
   if (document.getElementById('mv-drawer')) return
-  // Drawer + scrim
+  var dashHref = root + 'pages/' + (user && user.role === 'agent' ? 'agent-dashboard.html' : 'dashboard.html')
+  var firstName = (user && user.name) ? String(user.name).split(' ')[0] : ''
+
+  // Helper to render a row with an icon from _MV_ICONS
+  function row(href, icon, label, opts){
+    opts = opts || {}
+    var tag    = opts.button ? 'button' : 'a'
+    var attrs  = opts.button
+      ? 'type="button"' + (opts.onclick ? ' onclick="' + opts.onclick + '"' : '')
+      : 'href="' + href + '"'
+    var cls    = 'mv-drawer-item' + (opts.cls ? ' ' + opts.cls : '')
+    return '<' + tag + ' class="' + cls + '" ' + attrs + '>' +
+      '<span class="mv-drawer-ico">' + _mvIcon(icon) + '</span>' +
+      '<span class="mv-drawer-label-text">' + label + '</span>' +
+      '<span class="mv-drawer-chev" aria-hidden="true">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>' +
+      '</span>' +
+    '</' + tag + '>'
+  }
+
+  // Header card: account block at the top of the drawer — primary action
+  var accountCard = isLoggedIn
+    ? '<a class="mv-drawer-account" href="' + dashHref + '">' +
+        '<div class="mv-drawer-avatar">' + ((firstName || 'U').charAt(0).toUpperCase()) + '</div>' +
+        '<div class="mv-drawer-account-text">' +
+          '<div class="mv-drawer-account-name">' + (firstName || 'Your account') + '</div>' +
+          '<div class="mv-drawer-account-sub">View your dashboard</div>' +
+        '</div>' +
+        '<span class="mv-drawer-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>' +
+      '</a>'
+    : '<div class="mv-drawer-account-guest">' +
+        '<a class="mv-drawer-cta-primary" href="' + root + 'pages/login.html">Sign in</a>' +
+        '<a class="mv-drawer-cta-ghost"   href="' + root + 'pages/register.html">Create account</a>' +
+      '</div>'
+
   var wrap = document.createElement('div')
   wrap.innerHTML =
     '<div class="mv-scrim" id="mv-scrim" onclick="mvCloseDrawer()" aria-hidden="true"></div>' +
     '<aside class="mv-drawer" id="mv-drawer" aria-hidden="true" aria-label="Site navigation">' +
       '<div class="mv-drawer-head">' +
-        '<a class="mv-mini-logo mv-drawer-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
+        '<a class="mv-mini-logo" href="' + root + 'index.html" aria-label="Movin.ie — Home">mov<span>in</span></a>' +
         '<button class="mv-mini-btn" type="button" aria-label="Close menu" onclick="mvCloseDrawer()">' +
-          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
         '</button>' +
       '</div>' +
+      '<div class="mv-drawer-account-wrap">' + accountCard + '</div>' +
       '<nav class="mv-drawer-nav">' +
-        // Primary
-        '<a class="mv-drawer-item primary" href="' + root + 'index.html">' +
-          '<span class="mv-drawer-ico">' +
-            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>' +
-          '</span>Home</a>' +
-        '<div class="mv-drawer-label">Browse</div>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=sale">Buy a home</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=rent">Rent a home</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=share">Share a room</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/search.html?listing_type=summer">Summer rentals</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/map-search.html">Map search</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/commercial.html">Commercial</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/latest.html">Latest listings</a>' +
-        '<div class="mv-drawer-label">Tools</div>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#mortgage">Mortgage calculator</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#valuation">Home valuation</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/tools.html#stamp">Stamp duty</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/drive-time.html">Drive-time search</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/house-price-index.html">House price index</a>' +
-        '<div class="mv-drawer-label">For agents &amp; landlords</div>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/list.html">List a property</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/agent-signup.html">Become an agent</a>' +
-        '<div class="mv-drawer-label">Account</div>' +
+        row(root + 'index.html', 'home', 'Home') +
+        '<div class="mv-drawer-section">Browse</div>' +
+        row(root + 'pages/search.html?listing_type=sale',   'buy',      'Buy a home') +
+        row(root + 'pages/search.html?listing_type=rent',   'rent',     'Rent a home') +
+        row(root + 'pages/search.html?listing_type=share',  'share',    'Share a room') +
+        row(root + 'pages/search.html?listing_type=summer', 'summer',   'Summer rentals') +
+        row(root + 'pages/map-search.html',                 'map',      'Map search') +
+        row(root + 'pages/commercial.html',                 'building', 'Commercial') +
+        row(root + 'pages/latest.html',                     'sparkle',  'Latest listings') +
+        '<div class="mv-drawer-section">Tools</div>' +
+        row(root + 'pages/tools.html#mortgage',  'calc',  'Mortgage calculator') +
+        row(root + 'pages/tools.html#valuation', 'value', 'Home valuation') +
+        row(root + 'pages/tools.html#stamp',     'stamp', 'Stamp duty calculator') +
+        row(root + 'pages/drive-time.html',      'car',   'Drive-time search') +
+        row(root + 'pages/house-price-index.html','chart','House price index') +
+        '<div class="mv-drawer-section">For agents &amp; landlords</div>' +
+        row(root + 'pages/list.html',         'plus', 'List a property') +
+        row(root + 'pages/agent-signup.html', 'user', 'Become an agent') +
         (isLoggedIn ?
-          '<a class="mv-drawer-item" href="' + root + 'pages/' + (user && user.role === 'agent' ? 'agent-dashboard.html' : 'dashboard.html') + '">My dashboard</a>' +
-          '<button class="mv-drawer-item" type="button" onclick="if(window.API)window.API.auth.logout()">Sign out</button>'
-        :
-          '<a class="mv-drawer-item primary-cta" href="' + root + 'pages/login.html">Sign in</a>' +
-          '<a class="mv-drawer-item" href="' + root + 'pages/register.html">Create account</a>'
-        ) +
-        '<div class="mv-drawer-label">Movin</div>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/about.html">About</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/contact.html">Contact</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/faq.html">FAQ</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/terms-of-service.html">Terms</a>' +
-        '<a class="mv-drawer-item" href="' + root + 'pages/privacy-policy.html">Privacy</a>' +
+          '<div class="mv-drawer-section">Account</div>' +
+          row(dashHref, 'dash', 'My dashboard') +
+          row('', 'logout', 'Sign out', { button:true, onclick:'if(window.API)window.API.auth.logout()' })
+        : '') +
+        '<div class="mv-drawer-section">Movin</div>' +
+        row(root + 'pages/about.html',             'info', 'About') +
+        row(root + 'pages/contact.html',           'mail', 'Contact') +
+        row(root + 'pages/faq.html',               'help', 'FAQ') +
+        row(root + 'pages/terms-of-service.html',  'doc',  'Terms of service') +
+        row(root + 'pages/privacy-policy.html',    'lock', 'Privacy policy') +
       '</nav>' +
     '</aside>'
   while (wrap.firstChild) document.body.appendChild(wrap.firstChild)
@@ -632,155 +692,190 @@ function mvInjectChromeStyles(){
   var s = document.createElement('style')
   s.id = 'mv-chrome-styles'
   s.textContent = [
-    /* ── Top bar shell — frosted glass on a hairline border ──────────────── */
+    /* ── Brand tokens — match the listing page exactly ─────────────────── */
+    ':root{',
+    '  --mvn-paper:  #faf7f0;',
+    '  --mvn-card:   #ffffff;',
+    '  --mvn-line:   #e8e2d3;',
+    '  --mvn-ink:    #0e3d2e;',
+    '  --mvn-ink-2:  #1f2421;',
+    '  --mvn-muted:  #6c6f6a;',
+    '  --mvn-green:  #1a5c45;',
+    '  --mvn-orange: #e07b3f;',
+    '}',
+
+    /* ── Top bar — solid white, hairline border, brand wordmark ──────── */
     '.nav.mv-topbar-mini{',
     '  position:sticky; top:0; z-index:90;',
     '  padding:0 !important; height:auto !important; min-height:0 !important;',
-    '  background:rgba(255,255,255,.82) !important;',
-    '  -webkit-backdrop-filter:saturate(1.6) blur(14px);',
-    '          backdrop-filter:saturate(1.6) blur(14px);',
-    '  border-bottom:1px solid rgba(230,226,216,.65) !important;',
-    '  box-shadow:0 1px 0 rgba(20,30,25,.02) !important;',
-    '}',
-    '@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){',
-    '  .nav.mv-topbar-mini{ background:#fff !important }',
+    '  background:#fff !important;',
+    '  border-bottom:1px solid var(--mvn-line) !important;',
+    '  box-shadow:0 1px 0 rgba(14,61,46,.03) !important;',
     '}',
     '.mv-mini-inner{',
     '  display:grid; grid-template-columns:44px 1fr 44px; align-items:center;',
     '  gap:8px;',
-    '  padding:.55rem 1rem;',
+    '  padding:.5rem 1rem;',
     '  padding-left:  max(1rem, env(safe-area-inset-left));',
     '  padding-right: max(1rem, env(safe-area-inset-right));',
     '  width:100%;',
     '}',
 
-    /* ── Back button — clean circular ghost button ──────────────────────── */
-    '.mv-mini-back, .mv-mini-menu{',
+    /* ── Topbar buttons (back + menu) — identical treatment ─────────── */
+    '.mv-mini-btn{',
     '  width:44px; height:44px; padding:0;',
     '  display:inline-flex; align-items:center; justify-content:center;',
-    '  border:none; background:transparent; color:#0e3d2e;',
-    '  border-radius:14px; cursor:pointer; -webkit-tap-highlight-color:transparent;',
-    '  transition:background .18s ease, color .18s ease, transform .12s ease;',
+    '  border:none; background:transparent; color:var(--mvn-ink);',
+    '  border-radius:12px; cursor:pointer; -webkit-tap-highlight-color:transparent;',
+    '  transition:background .15s ease, color .15s ease, transform .12s ease;',
     '}',
-    '.mv-mini-back:hover, .mv-mini-menu:hover{ background:rgba(26,92,69,.08); color:#0e3d2e }',
-    '.mv-mini-back:active, .mv-mini-menu:active{ transform:scale(.94) }',
-    '.mv-mini-menu:focus-visible, .mv-mini-back:focus-visible{',
-    '  outline:none; box-shadow:0 0 0 3px rgba(26,92,69,.20);',
+    '.mv-mini-btn:hover{ background:#f5f1e6; color:var(--mvn-green) }',
+    '.mv-mini-btn:active{ transform:scale(.94) }',
+    '.mv-mini-btn:focus-visible{',
+    '  outline:none; box-shadow:0 0 0 3px rgba(26,92,69,.18);',
     '}',
 
-    /* ── Animated 3-line menu icon ─────────────────────────────────────── */
-    '.mv-menu-lines{ display:block; width:18px; height:14px; position:relative }',
-    '.mv-menu-lines span{',
-    '  position:absolute; left:0; right:0; height:2px; border-radius:2px;',
-    '  background:currentColor; transition:transform .25s ease, opacity .2s ease;',
-    '}',
-    '.mv-menu-lines span:nth-child(1){ top:1px }',
-    '.mv-menu-lines span:nth-child(2){ top:6px }',
-    '.mv-menu-lines span:nth-child(3){ top:11px }',
-    /* When drawer is open, morph to an X */
-    'body.mv-drawer-open .mv-menu-lines span:nth-child(1){ transform:translateY(5px) rotate(45deg) }',
-    'body.mv-drawer-open .mv-menu-lines span:nth-child(2){ opacity:0 }',
-    'body.mv-drawer-open .mv-menu-lines span:nth-child(3){ transform:translateY(-5px) rotate(-45deg) }',
-
-    /* ── Logo — matches the homepage wordmark exactly ──────────────────── */
+    /* ── Logo — matches the rest of the site exactly ─────────────────── */
     '.mv-mini-logo{',
     '  justify-self:center;',
     '  font-family:"Playfair Display", Georgia, serif;',
     '  font-weight:900; font-size:23px; line-height:1;',
-    '  color:#1a5c45; text-decoration:none; letter-spacing:-.4px;',
-    '  padding:8px 4px; border-radius:8px;',
+    '  color:var(--mvn-green); text-decoration:none; letter-spacing:-.4px;',
+    '  padding:6px 4px; border-radius:8px;',
     '  transition:opacity .15s ease;',
     '}',
     '.mv-mini-logo:hover{ opacity:.85 }',
-    '.mv-mini-logo > span{ color:#e07b3f }',
-    '.mv-drawer-head .mv-mini-logo{ justify-self:start }',
+    '.mv-mini-logo > span{ color:var(--mvn-orange) }',
+    '.mv-drawer-head .mv-mini-logo{ justify-self:start; font-size:22px }',
 
     /* ── Scrim ─────────────────────────────────────────────────────────── */
     '.mv-scrim{',
     '  position:fixed; inset:0; z-index:140;',
-    '  background:rgba(10,22,16,.55);',
+    '  background:rgba(14,61,46,.45);',
     '  opacity:0; pointer-events:none;',
-    '  transition:opacity .25s ease;',
-    '  -webkit-backdrop-filter:blur(2px); backdrop-filter:blur(2px);',
+    '  transition:opacity .22s ease;',
+    '  backdrop-filter:blur(2px); -webkit-backdrop-filter:blur(2px);',
     '}',
     '.mv-scrim.open{ opacity:1; pointer-events:auto }',
 
-    /* ── Drawer ────────────────────────────────────────────────────────── */
+    /* ── Drawer shell ──────────────────────────────────────────────────── */
     '.mv-drawer{',
     '  position:fixed; top:0; right:0; bottom:0; z-index:150;',
-    '  width:min(86vw, 360px); display:flex; flex-direction:column;',
-    '  background:#faf7f0; overflow:hidden;',
+    '  width:min(88vw, 380px); display:flex; flex-direction:column;',
+    '  background:var(--mvn-paper); overflow:hidden;',
     '  transform:translateX(110%);',
     '  transition:transform .32s cubic-bezier(.2,.7,.2,1);',
-    '  box-shadow:-22px 0 60px -16px rgba(14,61,46,.30);',
+    '  box-shadow:-18px 0 48px -16px rgba(14,61,46,.25);',
     '}',
     '.mv-drawer.open{ transform:none }',
     '.mv-drawer-head{',
     '  display:flex; align-items:center; justify-content:space-between;',
-    '  padding:.9rem 1rem; border-bottom:1px solid rgba(230,226,216,.7);',
-    '  background:#fff;',
-    '}',
-    '.mv-drawer-head .mv-mini-logo{ font-size:22px }',
-    '.mv-drawer-nav{',
-    '  flex:1; overflow-y:auto; overscroll-behavior:contain;',
-    '  padding:.4rem 0 1.4rem;',
-    '}',
-    '.mv-drawer-label{',
-    '  font-size:10.5px; font-weight:700; color:#7a7a72;',
-    '  text-transform:uppercase; letter-spacing:1.8px;',
-    '  padding:1.15rem 1.3rem .4rem;',
-    '}',
-    '.mv-drawer-item{',
-    '  display:flex; align-items:center; gap:14px; width:100%; min-height:48px;',
-    '  padding:12px 1.3rem;',
-    '  font:inherit; font-size:15px; font-weight:500; color:#1f2421;',
-    '  background:transparent; border:none; cursor:pointer;',
-    '  text-decoration:none; text-align:left;',
-    '  border-left:3px solid transparent;',
-    '  transition:background .15s, color .15s, border-left-color .15s, padding-left .15s;',
-    '}',
-    '.mv-drawer-item:hover, .mv-drawer-item:active{',
-    '  background:#fff; color:#0e3d2e;',
-    '  border-left-color:#e07b3f;',
-    '  padding-left:1.45rem;',
-    '}',
-    '.mv-drawer-item.primary{',
-    '  color:#0e3d2e; font-weight:700; background:#fff;',
-    '  margin:0 0 .25rem;',
-    '}',
-    '.mv-drawer-item.primary-cta{',
-    '  margin:.85rem 1.25rem .35rem;',
-    '  padding:12px 1.1rem;',
-    '  background:linear-gradient(135deg,#1a5c45,#0e3d2e);',
-    '  color:#fff; border-radius:14px; border:none;',
-    '  justify-content:center; font-weight:600;',
-    '  min-height:48px; letter-spacing:.2px;',
-    '  box-shadow:0 8px 22px -8px rgba(26,92,69,.5);',
-    '}',
-    '.mv-drawer-item.primary-cta:hover{ background:linear-gradient(135deg,#0e3d2e,#0e3d2e); color:#fff; padding-left:1.1rem }',
-    '.mv-drawer-ico{',
-    '  width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center;',
-    '  color:#1a5c45; flex-shrink:0;',
-    '  background:rgba(26,92,69,.08); border-radius:8px;',
+    '  padding:.7rem 1rem; border-bottom:1px solid var(--mvn-line);',
+    '  background:#fff; flex-shrink:0;',
     '}',
 
-    /* ── Dark mode ──────────────────────────────────────────────────────── */
-    '[data-theme="dark"] .nav.mv-topbar-mini{ background:rgba(22,22,19,.85) !important; border-bottom-color:#2a2a2a !important }',
-    '[data-theme="dark"] .mv-mini-back, [data-theme="dark"] .mv-mini-menu{ color:#f1ebdc }',
-    '[data-theme="dark"] .mv-mini-back:hover, [data-theme="dark"] .mv-mini-menu:hover{ background:rgba(126,201,168,.12); color:#7ec9a8 }',
-    '[data-theme="dark"] .mv-mini-logo{ color:#f1ebdc }',
-    '[data-theme="dark"] .mv-drawer{ background:#0f120f }',
-    '[data-theme="dark"] .mv-drawer-head{ background:#161613; border-bottom-color:#2a2a2a }',
-    '[data-theme="dark"] .mv-drawer-item{ color:#f1ebdc }',
-    '[data-theme="dark"] .mv-drawer-item:hover{ background:#161613; color:#7ec9a8 }',
-    '[data-theme="dark"] .mv-drawer-item.primary{ background:#161613 }',
-    '[data-theme="dark"] .mv-drawer-label{ color:#a8a496 }',
+    /* ── Account card at the top of the drawer ───────────────────────── */
+    '.mv-drawer-account-wrap{ padding:.85rem 1rem .25rem; background:#fff; border-bottom:1px solid var(--mvn-line) }',
+    '.mv-drawer-account{',
+    '  display:flex; align-items:center; gap:12px; padding:.75rem .85rem;',
+    '  background:var(--mvn-paper); border:1px solid var(--mvn-line);',
+    '  border-radius:14px; text-decoration:none;',
+    '  transition:background .15s, border-color .15s;',
+    '}',
+    '.mv-drawer-account:hover{ background:#f5f1e6; border-color:var(--mvn-green) }',
+    '.mv-drawer-avatar{',
+    '  width:42px; height:42px; border-radius:50%;',
+    '  background:linear-gradient(135deg, var(--mvn-green), var(--mvn-ink));',
+    '  color:#fff; display:flex; align-items:center; justify-content:center;',
+    '  font-family:"Playfair Display", Georgia, serif; font-weight:900; font-size:18px;',
+    '  flex-shrink:0;',
+    '}',
+    '.mv-drawer-account-text{ flex:1; min-width:0 }',
+    '.mv-drawer-account-name{ font-family:"Playfair Display", Georgia, serif; font-weight:900; font-size:16px; color:var(--mvn-ink); letter-spacing:-.2px }',
+    '.mv-drawer-account-sub{ font-size:12.5px; color:var(--mvn-muted); margin-top:1px }',
+    '.mv-drawer-account-guest{ display:flex; flex-direction:column; gap:8px; padding:0 }',
+    '.mv-drawer-cta-primary{',
+    '  display:flex; align-items:center; justify-content:center; gap:8px;',
+    '  height:46px; padding:0 18px;',
+    '  background:var(--mvn-orange); color:#fff;',
+    '  border:none; border-radius:999px;',
+    '  font:600 15px/1 "DM Sans", sans-serif; text-decoration:none;',
+    '  box-shadow:0 6px 16px -6px rgba(224,123,63,.55);',
+    '  transition:background .15s, transform .12s;',
+    '}',
+    '.mv-drawer-cta-primary:hover{ background:#c9642a }',
+    '.mv-drawer-cta-primary:active{ transform:scale(.98) }',
+    '.mv-drawer-cta-ghost{',
+    '  display:flex; align-items:center; justify-content:center;',
+    '  height:44px; padding:0 18px;',
+    '  background:#fff; color:var(--mvn-green);',
+    '  border:1.5px solid var(--mvn-green); border-radius:999px;',
+    '  font:600 14.5px/1 "DM Sans", sans-serif; text-decoration:none;',
+    '  transition:background .15s, color .15s;',
+    '}',
+    '.mv-drawer-cta-ghost:hover{ background:var(--mvn-green); color:#fff }',
+
+    /* ── Nav body ──────────────────────────────────────────────────────── */
+    '.mv-drawer-nav{',
+    '  flex:1; overflow-y:auto; overscroll-behavior:contain;',
+    '  padding:.5rem 0 1.5rem;',
+    '}',
+    '.mv-drawer-section{',
+    '  font-size:10.5px; font-weight:700; color:var(--mvn-muted);',
+    '  text-transform:uppercase; letter-spacing:1.6px;',
+    '  padding:1.2rem 1.3rem .4rem;',
+    '}',
+
+    /* ── Drawer item — icon + label + chevron, identical for every row ── */
+    '.mv-drawer-item{',
+    '  display:flex; align-items:center; gap:12px; width:100%; min-height:50px;',
+    '  padding:11px 1.3rem;',
+    '  font:500 15px/1.25 "DM Sans", sans-serif; color:var(--mvn-ink-2);',
+    '  background:transparent; border:none; cursor:pointer;',
+    '  text-decoration:none; text-align:left;',
+    '  transition:background .15s ease, color .15s ease;',
+    '}',
+    '.mv-drawer-item:hover{ background:#f5f1e6; color:var(--mvn-ink) }',
+    '.mv-drawer-item:active{ background:#efe9d8 }',
+    '.mv-drawer-item .mv-drawer-label-text{ flex:1; min-width:0 }',
+
+    /* Icon — same green token, matched cream chip, identical 36px box */
+    '.mv-drawer-ico{',
+    '  width:36px; height:36px; flex-shrink:0;',
+    '  display:inline-flex; align-items:center; justify-content:center;',
+    '  background:#f5f1e6; color:var(--mvn-green);',
+    '  border-radius:10px;',
+    '  transition:background .15s, color .15s;',
+    '}',
+    '.mv-drawer-ico svg{ width:20px; height:20px }',
+    '.mv-drawer-item:hover .mv-drawer-ico{ background:#fff; color:var(--mvn-ink) }',
+    '.mv-drawer-chev{',
+    '  width:20px; height:20px; color:#bcb6a3; flex-shrink:0;',
+    '  display:inline-flex; align-items:center; justify-content:center;',
+    '  transition:color .15s, transform .15s;',
+    '}',
+    '.mv-drawer-chev svg{ width:16px; height:16px }',
+    '.mv-drawer-item:hover .mv-drawer-chev{ color:var(--mvn-green); transform:translateX(2px) }',
+    '.mv-drawer-account .mv-drawer-chev{ color:var(--mvn-green) }',
+
+    /* ── Dark mode ─────────────────────────────────────────────────────── */
+    '[data-theme="dark"]{',
+    '  --mvn-paper:#0f120f; --mvn-card:#161613; --mvn-line:#2a2a2a;',
+    '  --mvn-ink:#f1ebdc; --mvn-ink-2:#e8e4d6; --mvn-muted:#a8a496;',
+    '  --mvn-green:#7ec9a8;',
+    '}',
+    '[data-theme="dark"] .nav.mv-topbar-mini{ background:#161613 !important; border-bottom-color:#2a2a2a !important }',
+    '[data-theme="dark"] .mv-mini-btn:hover{ background:rgba(126,201,168,.12) }',
+    '[data-theme="dark"] .mv-drawer-head, [data-theme="dark"] .mv-drawer-account-wrap{ background:#161613; border-bottom-color:#2a2a2a }',
+    '[data-theme="dark"] .mv-drawer-account{ background:#0f120f; border-color:#2a2a2a }',
     '[data-theme="dark"] .mv-drawer-ico{ background:rgba(126,201,168,.12); color:#7ec9a8 }',
+    '[data-theme="dark"] .mv-drawer-item:hover{ background:#1a1a17 }',
+    '[data-theme="dark"] .mv-drawer-item:hover .mv-drawer-ico{ background:#0f120f }',
 
     /* ── Motion: respect reduce-motion ─────────────────────────────────── */
     '@media (prefers-reduced-motion: reduce){',
-    '  .mv-drawer, .mv-scrim, .mv-mini-back, .mv-mini-menu, .mv-drawer-item, .mv-menu-lines span{',
-    '    transition:none !important',
+    '  .mv-drawer, .mv-scrim, .mv-mini-btn, .mv-drawer-item, .mv-drawer-ico, .mv-drawer-chev{',
+    '    transition:none !important; transform:none !important;',
     '  }',
     '}'
   ].join('\n')
