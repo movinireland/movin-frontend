@@ -999,8 +999,173 @@
       document.querySelectorAll('.pill[data-type]').forEach(p => p.classList.remove('active'))
       el.classList.add('active')
       if (typeof applyFilterVisibility === 'function') applyFilterVisibility()
+      if (typeof applyTypeAwareFilters === 'function') applyTypeAwareFilters()
       doSearch()
     }
+
+    // ── Type-aware filter options ──────────────────────────────────────────
+    // Rebuilds the price drop-downs (quick-filter chips + modal) and the
+    // property-type list so they reflect realistic ranges per listing type.
+    //   • sale   → €50k → €1m  (capital purchase)
+    //   • rent   → €500/mo → €5k/mo
+    //   • share  → €200/mo → €1.5k/mo  (rooms in shared homes)
+    //   • summer → €500/wk → €5k/wk  (holiday lets)
+    // Also clears the currently-selected min/max if the value isn't in the
+    // new option set, so the user can never end up with a 50k filter on
+    // rent (the bug being reported).
+    var PRICE_OPTIONS = {
+      sale: {
+        unit:   '',
+        min: [
+          { v:'50000',   l:'€50k'   }, { v:'100000', l:'€100k' },
+          { v:'150000',  l:'€150k'  }, { v:'200000', l:'€200k' },
+          { v:'250000',  l:'€250k'  }, { v:'300000', l:'€300k' },
+          { v:'400000',  l:'€400k'  }, { v:'500000', l:'€500k' },
+          { v:'750000',  l:'€750k'  }
+        ],
+        max: [
+          { v:'100000', l:'€100k' }, { v:'200000', l:'€200k' },
+          { v:'300000', l:'€300k' }, { v:'400000', l:'€400k' },
+          { v:'500000', l:'€500k' }, { v:'600000', l:'€600k' },
+          { v:'750000', l:'€750k' }, { v:'1000000', l:'€1m' },
+          { v:'2000000', l:'€2m+' }
+        ]
+      },
+      rent: {
+        unit:   '/mo',
+        min: [
+          { v:'500',  l:'€500/mo'  }, { v:'750',  l:'€750/mo'  },
+          { v:'1000', l:'€1k/mo'   }, { v:'1250', l:'€1.25k/mo'},
+          { v:'1500', l:'€1.5k/mo' }, { v:'2000', l:'€2k/mo'   },
+          { v:'2500', l:'€2.5k/mo' }, { v:'3000', l:'€3k/mo'   }
+        ],
+        max: [
+          { v:'750',  l:'€750/mo'  }, { v:'1000', l:'€1k/mo'   },
+          { v:'1500', l:'€1.5k/mo' }, { v:'2000', l:'€2k/mo'   },
+          { v:'2500', l:'€2.5k/mo' }, { v:'3000', l:'€3k/mo'   },
+          { v:'4000', l:'€4k/mo'   }, { v:'5000', l:'€5k/mo+'  }
+        ]
+      },
+      share: {
+        unit:   '/mo',
+        min: [
+          { v:'200', l:'€200/mo' }, { v:'300', l:'€300/mo' },
+          { v:'400', l:'€400/mo' }, { v:'500', l:'€500/mo' },
+          { v:'600', l:'€600/mo' }, { v:'750', l:'€750/mo' },
+          { v:'1000', l:'€1k/mo' }
+        ],
+        max: [
+          { v:'400',  l:'€400/mo' }, { v:'500',  l:'€500/mo' },
+          { v:'600',  l:'€600/mo' }, { v:'750',  l:'€750/mo' },
+          { v:'900',  l:'€900/mo' }, { v:'1200', l:'€1.2k/mo'},
+          { v:'1500', l:'€1.5k/mo+' }
+        ]
+      },
+      summer: {
+        unit:   '/wk',
+        min: [
+          { v:'500',  l:'€500/wk'  }, { v:'750',  l:'€750/wk'  },
+          { v:'1000', l:'€1k/wk'   }, { v:'1500', l:'€1.5k/wk' },
+          { v:'2000', l:'€2k/wk'   }, { v:'3000', l:'€3k/wk'   }
+        ],
+        max: [
+          { v:'750',  l:'€750/wk'  }, { v:'1000', l:'€1k/wk'   },
+          { v:'1500', l:'€1.5k/wk' }, { v:'2000', l:'€2k/wk'   },
+          { v:'3000', l:'€3k/wk'   }, { v:'5000', l:'€5k/wk+'  }
+        ]
+      }
+    }
+
+    // Property-type options per listing type (no House/Site for room shares;
+    // no Sites for rentals; Summer-lets get a Cottage option).
+    var TYPE_OPTIONS = {
+      sale:   [
+        { v:'house',     l:'House' },
+        { v:'apartment', l:'Apartment' },
+        { v:'bungalow',  l:'Bungalow' },
+        { v:'site',      l:'Site / Land' }
+      ],
+      rent:   [
+        { v:'house',     l:'House' },
+        { v:'apartment', l:'Apartment' },
+        { v:'bungalow',  l:'Bungalow' }
+      ],
+      share:  [
+        { v:'single_room', l:'Single room' },
+        { v:'double_room', l:'Double room' },
+        { v:'ensuite',     l:'Ensuite room' },
+        { v:'shared_room', l:'Shared room' }
+      ],
+      summer: [
+        { v:'house',     l:'House' },
+        { v:'apartment', l:'Apartment' },
+        { v:'cottage',   l:'Cottage' }
+      ]
+    }
+
+    function _rebuildSelect(el, placeholder, opts, keepIfValid){
+      if (!el) return
+      var current = el.value
+      var html = '<option value="">' + placeholder + '</option>'
+      var valid = false
+      opts.forEach(function(o){
+        if (o.v === current) valid = true
+        html += '<option value="' + o.v + '">' + o.l + '</option>'
+      })
+      el.innerHTML = html
+      // Restore selection only if it's still in the new option set;
+      // otherwise reset so we don't keep a nonsensical filter.
+      el.value = (valid && keepIfValid) ? current : ''
+    }
+
+    function _rebuildCheckboxList(container, opts){
+      if (!container) return
+      // Remember which values were previously checked so the user's intent
+      // survives compatible tab swaps (e.g. House stays checked sale↔rent).
+      var prevChecked = {}
+      container.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+        if (cb.checked) prevChecked[cb.value] = true
+      })
+      container.innerHTML = opts.map(function(o){
+        var on = prevChecked[o.v] ? ' checked' : ''
+        return '<label class="cb-row"><input type="checkbox" value="' + o.v + '"' + on + '/><label>' + o.l + '</label></label>'
+      }).join('')
+    }
+
+    function applyTypeAwareFilters(){
+      var key = (activeType === 'sale' || activeType === 'rent' || activeType === 'share' || activeType === 'summer')
+        ? activeType : 'sale'
+      var po  = PRICE_OPTIONS[key]
+      var to  = TYPE_OPTIONS[key]
+      // Quick-filter chips (top bar) — keep current value if still valid
+      _rebuildSelect(document.getElementById('qf-min'), 'Min price', po.min, true)
+      _rebuildSelect(document.getElementById('qf-max'), 'Max price', po.max, true)
+      // Filter modal — same logic
+      _rebuildSelect(document.getElementById('f-min'),  'Min price', po.min, true)
+      _rebuildSelect(document.getElementById('f-max'),  'Max price', po.max, true)
+      // Property type checkbox list inside the modal
+      var cbCol = document.querySelector('#filter-modal .cb-col')
+      if (cbCol) _rebuildCheckboxList(cbCol, to)
+      // Property type quick-filter (single-select)
+      var qfType = document.getElementById('qf-type')
+      if (qfType) {
+        _rebuildSelect(
+          qfType, 'Any type',
+          to.map(function(o){ return { v:o.v, l:o.l } }),
+          true
+        )
+      }
+      // Bedrooms: rooms-for-rent only ever has 1 bed; hide bedroom filter
+      var qfBeds = document.getElementById('qf-beds')
+      if (qfBeds) qfBeds.style.display = (key === 'share') ? 'none' : ''
+      var bedSec = document.querySelector('#filter-modal .filter-opts')
+      if (bedSec && bedSec.parentElement) {
+        bedSec.parentElement.style.display = (key === 'share') ? 'none' : ''
+      }
+    }
+    // Run once on initial page load so the filters match whatever
+    // listing_type came in via URL (e.g. ?listing_type=rent).
+    try { applyTypeAwareFilters() } catch(_) {}
 
     // ── Filter modal ────────────────────────────────────────────────────────
     function closeFilterBg(e) {
