@@ -12,7 +12,11 @@ window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 // CHANGE THE PASSWORD HERE before deploying. This is a low-stakes "soft
 // launch" gate, not real auth — anyone who pulls your bundle can read it.
 ;(function comingSoonGate(){
-  var MOVIN_LAUNCHED = false                              // set to true on public launch day
+  // ─── Coming-soon gate switch ────────────────────────────────────────────
+  // false → gate is shown to public visitors (password required)
+  // true  → gate is hidden, site is fully public
+  // To put the gate BACK: change `true` to `false` on the next line.
+  var MOVIN_LAUNCHED = true                               // ← flip to false to re-enable the gate
   var MOVIN_PREVIEW_PASSWORD = 'movin2026'                // CHANGE ME before deploy
   if (MOVIN_LAUNCHED) return
   // Already unlocked in this browser? Let them through.
