@@ -308,6 +308,198 @@ input, select, textarea, button { font-family: inherit; }
 /* Selection */
 [data-theme="dark"] ::selection{ background:#2ecc8a; color:#0e3d2e }
 
+/* ──────────────────────────────────────────────────────────────────────
+   GENERIC CLASS-PATTERN SAFETY NET
+   The pages hard-code colours on hundreds of small classes following
+   a few naming conventions. Catching the patterns here means we don't
+   have to enumerate every class on every page.
+
+   Strategy:
+   - "-title", "-name", "-num", "-val" → strong/heading colour
+   - "-sub", "-desc", "-meta", "-hint", "-label", "-date", "-time",
+     "-loading", "-empty", "-fineprint", "-count", "-source"   → muted
+   - "-card", "-box", "-section"                              → dark surface
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Strong / heading text — readable cream */
+[data-theme="dark"] [class$="-title"],
+[data-theme="dark"] [class$="-name"],
+[data-theme="dark"] [class$="-num"],
+[data-theme="dark"] [class$="-val"],
+[data-theme="dark"] [class$="-q"],
+[data-theme="dark"] [class*=" mission-section"],
+[data-theme="dark"] .auth-title,
+[data-theme="dark"] .success-title,
+[data-theme="dark"] .legal-wrap{
+  color:#f1ebdc !important;
+}
+
+/* Muted secondary text — readable muted cream */
+[data-theme="dark"] [class$="-sub"],
+[data-theme="dark"] [class$="-desc"],
+[data-theme="dark"] [class$="-meta"],
+[data-theme="dark"] [class$="-hint"],
+[data-theme="dark"] [class$="-label"],
+[data-theme="dark"] [class$="-date"],
+[data-theme="dark"] [class$="-time"],
+[data-theme="dark"] [class$="-loading"],
+[data-theme="dark"] [class$="-empty"],
+[data-theme="dark"] [class$="-fineprint"],
+[data-theme="dark"] [class$="-count"],
+[data-theme="dark"] [class$="-source"],
+[data-theme="dark"] [class$="-role"],
+[data-theme="dark"] [class$="-l"],
+[data-theme="dark"] [class$="-message"],
+[data-theme="dark"] [class$="-addr"],
+[data-theme="dark"] [class$="-eyebrow"],
+[data-theme="dark"] [class$="-a"],
+[data-theme="dark"] .auth-sub,
+[data-theme="dark"] .auth-switch,
+[data-theme="dark"] .auth-divider,
+[data-theme="dark"] .form-hint,
+[data-theme="dark"] .step-label,
+[data-theme="dark"] .step-dot,
+[data-theme="dark"] .modal-sub{
+  color:#a8a496 !important;
+}
+
+/* Dark surface for any "card-ish" block */
+[data-theme="dark"] [class$="-card"]:not(.btn):not(.nav-card),
+[data-theme="dark"] [class$="-box"]:not(.search-box),
+[data-theme="dark"] [class*=" -section"],
+[data-theme="dark"] .auth-card,
+[data-theme="dark"] .auth-wrap,
+[data-theme="dark"] .success-card,
+[data-theme="dark"] .stat-box,
+[data-theme="dark"] .value-card,
+[data-theme="dark"] .team-card,
+[data-theme="dark"] .pricing-card,
+[data-theme="dark"] .toc,
+[data-theme="dark"] .legal-meta,
+[data-theme="dark"] .share-code-card,
+[data-theme="dark"] .iw-card,
+[data-theme="dark"] .demo-row,
+[data-theme="dark"] .pn-news,
+[data-theme="dark"] .faq-still-card,
+[data-theme="dark"] .review-card,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .dt-circle-info,
+[data-theme="dark"] .dt-map-status,
+[data-theme="dark"] .unread,
+[data-theme="dark"] .lst-row,
+[data-theme="dark"] .lst-stats{
+  background:#1c1b16 !important;
+  border-color:#38342a !important;
+  color:#f1ebdc !important;
+}
+
+/* Mid-toned text variants — body / paragraph */
+[data-theme="dark"] [class$="-text"]:not(.btn-text),
+[data-theme="dark"] [class$="-body"]:not(body),
+[data-theme="dark"] [class$="-info"]:not(.dt-circle-info):not(.dt-map-status),
+[data-theme="dark"] .lst-meta,
+[data-theme="dark"] .enq-message,
+[data-theme="dark"] .cp-s,
+[data-theme="dark"] .com-sort,
+[data-theme="dark"] .pg-btn,
+[data-theme="dark"] .results-count,
+[data-theme="dark"] .feat-row{
+  color:#e8e4d6;
+}
+
+/* Tabs across the site */
+[data-theme="dark"] [class$="-tab"]:not(.tab-bar){
+  color:#a8a496 !important;
+}
+[data-theme="dark"] [class$="-tab"].active{ color:#7ec9a8 !important }
+
+/* Pill / chip backgrounds that came from #f5f2ec / #fff */
+[data-theme="dark"] .status-draft,
+[data-theme="dark"] .cat-pill,
+[data-theme="dark"] .modal-close,
+[data-theme="dark"] .pg-btn,
+[data-theme="dark"] .com-sort{
+  background:#242219 !important;
+  color:#a8a496 !important;
+  border-color:#38342a !important;
+}
+
+/* Hero text on brand-coloured banners — keep white (don't override) */
+[data-theme="dark"] [class$="-hero"],
+[data-theme="dark"] [class$="-banner"]:not(.pricing-info-banner){
+  color:inherit;  /* let hero white remain */
+}
+
+/* "Empty state" / "no results" big text */
+[data-theme="dark"] .empty,
+[data-theme="dark"] .empty h2,
+[data-theme="dark"] .empty h3,
+[data-theme="dark"] .dt-empty-sub,
+[data-theme="dark"] .archive-empty,
+[data-theme="dark"] .empty-reviews{
+  color:#a8a496;
+}
+[data-theme="dark"] .empty h2,
+[data-theme="dark"] .empty h3{ color:#f1ebdc }
+
+/* Legal / policy pages — body copy in privacy/terms */
+[data-theme="dark"] .legal-wrap{ color:#e8e4d6 !important }
+[data-theme="dark"] .legal-wrap h2,
+[data-theme="dark"] .legal-wrap h3,
+[data-theme="dark"] .legal-wrap strong{ color:#f1ebdc !important }
+[data-theme="dark"] .legal-wrap a{ color:#7ec9a8 !important }
+
+/* HPI bars / data viz labels */
+[data-theme="dark"] .hpi-bar-label{ color:#a8a496 !important }
+[data-theme="dark"] .hpi-bar-val{ color:#f1ebdc !important }
+[data-theme="dark"] .hpi-delta.flat{ color:#a8a496 !important }
+
+/* Icon-guide page — many small previews */
+[data-theme="dark"] .icon-card,
+[data-theme="dark"] .btn-ghost-demo{
+  background:#1c1b16 !important; color:#7ec9a8 !important; border-color:#38342a !important;
+}
+[data-theme="dark"] .icon-name,
+[data-theme="dark"] .demo-label,
+[data-theme="dark"] .meta-demo{ color:#a8a496 !important }
+[data-theme="dark"] .chip-demo{ color:#7ec9a8 !important }
+
+/* Property-news guide */
+[data-theme="dark"] .pn-feat-excerpt,
+[data-theme="dark"] .pn-card-excerpt{ color:#a8a496 !important }
+[data-theme="dark"] .pn-news-input{
+  background:#1c1b16 !important; color:#f1ebdc !important; border-color:#38342a !important;
+}
+
+/* Drive-time / map-overlay specifics */
+[data-theme="dark"] .dt-loc-clear,
+[data-theme="dark"] .dt-step-text,
+[data-theme="dark"] .dt-result-meta,
+[data-theme="dark"] .dt-result-loading,
+[data-theme="dark"] .dt-result-empty,
+[data-theme="dark"] .iw-meta{ color:#a8a496 !important }
+
+/* Register page wrap */
+[data-theme="dark"] .auth-wrap{ background:#14130f !important }
+[data-theme="dark"] .acct-btn-sub{ color:#a8a496 !important }
+
+/* Mode-pill / segmented controls on agent-signup */
+[data-theme="dark"] .mode-pill{ color:#a8a496 !important }
+[data-theme="dark"] .mode-pill.on{ background:#7ec9a8 !important; color:#0e3d2e !important }
+[data-theme="dark"] .jp-meta{ color:#a8a496 !important }
+
+/* Sold / archive */
+[data-theme="dark"] .archive-addr{ color:#a8a496 !important }
+[data-theme="dark"] .archive-meta,
+[data-theme="dark"] .archive-date{ color:#7a7567 !important }
+
+/* Dot / status indicators that defaulted to grey */
+[data-theme="dark"] .dot-draft{ background:#7a7567 !important }
+
+/* Reviews */
+[data-theme="dark"] .review-listing,
+[data-theme="dark"] .review-date{ color:#a8a496 !important }
+
 /* ── Typography ────────────────────────────────────────────────── */
 .serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
 h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; font-weight: 700; line-height: 1.15; }

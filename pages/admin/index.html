@@ -1667,16 +1667,20 @@ async function approveListing(id) {
 }
 
 async function rejectListing(id) {
-  const reason = prompt('Reason for rejection (optional):')
+  const reason = prompt('Reason for rejection (optional — emailed to the lister so they know what to fix):')
   if (reason === null) return
   try {
     const token = localStorage.getItem('movin_token')
-    await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+    const body = { status: 'rejected' }
+    const trimmed = String(reason || '').trim()
+    if (trimmed) body.reason = trimmed
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ status: 'rejected' })
+      body: JSON.stringify(body)
     })
-    alert('❌ Listing rejected.')
+    if (!res.ok) throw new Error('Reject failed (' + res.status + ')')
+    alert('❌ Listing rejected. The lister has been emailed.')
     loadAllListings()
   } catch(e) {
     alert('Error rejecting listing.')

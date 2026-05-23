@@ -193,6 +193,62 @@
     [data-theme="dark"] .vis-toggle{ background:#1c1b16; border-color:#38342a }
     [data-theme="dark"] .vis-toggle .vis-knob{ background:#242219 !important }
     [data-theme="dark"] .vis-toggle.on .vis-knob{ background:#7ec9a8 !important }
+
+    /* ── Comprehensive dark mode — catches every hardcoded dark/grey colour ── */
+    [data-theme="dark"] body{ background:#14130f !important; color:#f1ebdc !important }
+    [data-theme="dark"] .type-lbl{ color:#a8a496 !important }
+    [data-theme="dark"] .plan-desc{ color:#a8a496 !important }
+    [data-theme="dark"] .upload-zone-hint{ color:#a8a496 !important }
+    [data-theme="dark"] .photo-tip{ color:#a8a496 !important }
+    [data-theme="dark"] .cat-gate-eyebrow{ color:#a8a496 !important }
+    [data-theme="dark"] .plan-list li{ color:#a8a496 !important }
+    [data-theme="dark"] .pac-item-query{ color:#f1ebdc !important }
+    [data-theme="dark"] .photo-count{ color:#7ec9a8 !important }
+    [data-theme="dark"] .photo-set-main{ background:rgba(36,34,25,.92) !important; color:#7ec9a8 !important }
+    /* Cards / panels / inputs */
+    [data-theme="dark"] .form-section,
+    [data-theme="dark"] .form-card,
+    [data-theme="dark"] .upload-zone,
+    [data-theme="dark"] .photo-item,
+    [data-theme="dark"] .cat-card,
+    [data-theme="dark"] .plan-card,
+    [data-theme="dark"] .summer-card,
+    [data-theme="dark"] .pricing-info-banner,
+    [data-theme="dark"] .listing-form,
+    [data-theme="dark"] .form-row,
+    [data-theme="dark"] .form-block{
+      background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important;
+    }
+    [data-theme="dark"] .cat-switch-btn{ background:#1c1b16 !important; color:#7ec9a8 !important }
+    [data-theme="dark"] .feat-view select{
+      background:#1c1b16 !important; color:#f1ebdc !important; border-color:#38342a !important;
+    }
+    /* Section headings + labels */
+    [data-theme="dark"] .form-label,
+    [data-theme="dark"] .section-title,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3,
+    [data-theme="dark"] .cat-card .cat-title,
+    [data-theme="dark"] .plan-name{ color:#f1ebdc !important }
+    /* Pricing banner — inline gradient/borders */
+    [data-theme="dark"] .pricing-info-banner{
+      background:linear-gradient(135deg,#1f2421 0%,#2a1e15 100%) !important;
+      border-color:#38342a !important; color:#e8e4d6 !important;
+    }
+    [data-theme="dark"] .pricing-info-banner *{ color:inherit !important }
+    [data-theme="dark"] .pricing-info-banner a{ color:#7ec9a8 !important }
+    /* Summer / holiday rental info box */
+    [data-theme="dark"] [style*="background:#e6fbfb"]{
+      background:#0e2a2c !important; border-color:#1a5c66 !important; color:#a0d9dd !important;
+    }
+    [data-theme="dark"] [style*="background:#e6fbfb"] strong{ color:#a0e0c0 !important }
+    /* Edit-mode alert */
+    [data-theme="dark"] [style*="background:#e3ebe1"]{
+      background:#1f2a22 !important; color:#7ec9a8 !important; border-color:#38342a !important;
+    }
+    /* Terms checkbox row */
+    [data-theme="dark"] [for="list-terms-agree"] span,
+    [data-theme="dark"] label[for="list-terms-agree"]{ color:#a8a496 !important }
   </style>
 </head>
 <body>
