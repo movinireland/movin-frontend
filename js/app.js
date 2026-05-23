@@ -2093,45 +2093,72 @@ function buildPropertyCard(listing, savedIds = []) {
     ? `<span class="ber-badge ${berClass(listing.ber_rating)}">${listing.ber_rating}</span>`
     : ''
 
-  const isFeatured = listing.is_featured || listing.plan === 'featured' || listing.plan === 'premium'
+  // "Premium" replaces the old "Featured" terminology — same data flag, new
+  // brand-aligned wording + treatment (orange border + green pill).
+  const isPremium = listing.is_featured || listing.plan === 'featured' || listing.plan === 'premium'
+
+  // Bed + occupancy icon set (inline so the card renders even before icons.svg loads)
+  const bedSvg    = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5"/><path d="M3 18h18"/><path d="M7 10V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>'
+  const peopleSvg = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-1.5A4.5 4.5 0 0 1 7.5 15h3A4.5 4.5 0 0 1 15 19.5V21"/><path d="M16 15h1.5A3.5 3.5 0 0 1 21 18.5V21"/></svg>'
+  const bathSvg   = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M9 7h2"/></svg>'
+  const sizeSvg   = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 17 7 7 17 7"/><polyline points="17 7 17 17 7 17"/><line x1="7" y1="7" x2="17" y2="17"/></svg>'
+  const heartSvg  = (filled) => '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (filled ? '#e07b3f' : 'none') + '" stroke="' + (filled ? '#e07b3f' : '#0e3d2e') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+
+  // Status pill — single source of truth. ONLY one shows: Premium > status > new.
+  let statusPill = ''
+  if (listing.status === 'sale_agreed' || listing.status === 'let_agreed') {
+    statusPill = `<span class="pc-pill pc-pill--status">${listing.status.replace('_',' ').toUpperCase()}</span>`
+  } else if (listing.status === 'auction') {
+    statusPill = `<span class="pc-pill pc-pill--auction">Auction</span>`
+  } else if (isNew) {
+    statusPill = `<span class="pc-pill pc-pill--new">Just Listed</span>`
+  } else if (priceDropPct > 0) {
+    statusPill = `<span class="pc-pill pc-pill--drop">▼ ${priceDropPct}%</span>`
+  } else {
+    statusPill = `<span class="pc-pill pc-pill--type">${typeLabel}</span>`
+  }
+
+  // Address line — clean street/area, no emoji
+  const addrLine = listing.address_line1 || listing.title
+  const subLine  = [
+    (listing.property_type || '').replace(/_/g,' '),
+    listing.floor_size_m2 ? listing.floor_size_m2 + 'm²' : null
+  ].filter(Boolean).join(' · ').toUpperCase()
 
   return `
-    <div class="prop-card${isFeatured ? ' prop-card-featured' : ''}" onclick="window.location.href='${listingUrl(listing)}'">
-      <div class="prop-card-img" style="height:175px">
+    <div class="prop-card${isPremium ? ' prop-card--premium' : ''}" onclick="window.location.href='${listingUrl(listing)}'">
+      <div class="prop-card-img">
         ${imgSrc
-          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" onload="this.classList.add('loaded')" style="width:100%;height:100%;object-fit:cover;display:block"/>`
-          : `<div style="width:100%;height:175px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef)">🏡</div>`
+          ? `<img src="${imgSrc}" alt="${listing.title}" loading="lazy" onload="this.classList.add('loaded')"/>`
+          : `<div class="prop-card-img-fallback">🏡</div>`
         }
+        <!-- Top-left: Premium badge stacks above status pill -->
         <div class="prop-card-tags">
-          ${listing.plan === 'premium'
-            ? `<span class="pc-badge pc-badge--premium">⚡ Premium</span>`
-            : (isFeatured
-                ? `<span class="pc-badge pc-badge--featured">★ Featured</span>`
-                : `<span class="pc-badge pc-badge--${listing.listing_type === 'rent' ? 'rent' : listing.listing_type === 'share' ? 'share' : listing.listing_type === 'summer' ? 'summer' : 'sale'}">${typeLabel}</span>`)
-          }
-          ${(listing.status === 'sale_agreed' || listing.status === 'let_agreed') ? `<span class="pc-badge pc-badge--status">${listing.status.replace('_',' ').toUpperCase()}</span>` : ''}
-          ${listing.status === 'auction' ? `<span class="pc-badge" style="background:linear-gradient(135deg,#a78bfa,#7c3aed)">AUCTION</span>` : ''}
-          ${isNew ? '<span class="pc-badge pc-badge--new">✦ New</span>' : ''}
-          ${priceDropPct > 0 ? `<span class="pc-badge pc-badge--drop">▼ ${priceDropPct}%</span>` : ''}
+          ${isPremium ? `<span class="pc-pill pc-pill--premium">Premium</span>` : ''}
+          ${statusPill}
         </div>
+        <!-- Top-right: heart save button -->
         <button class="prop-card-save ${isSaved ? 'saved' : ''}"
-          onclick="event.stopPropagation();toggleSave('${listing.id}',this)"
-          style="color:${isSaved ? '#e07b3f' : '#888'}">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="${isSaved ? '#e07b3f' : 'none'}" stroke="${isSaved ? '#e07b3f' : '#888'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          aria-label="${isSaved ? 'Unsave' : 'Save'} property"
+          onclick="event.stopPropagation();toggleSave('${listing.id}',this)">
+          ${heartSvg(isSaved)}
         </button>
-        <button style="position:absolute;bottom:8px;left:8px;z-index:4;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:#555;font-weight:700"
-          onclick="event.stopPropagation();toggleCompare('${listing.id}','${listing.title.replace(/'/g,'').replace(/"/g,'')}','${listing.price}','${listing.listing_type}',this)">⊕</button>
-        <div style="position:absolute;bottom:8px;right:8px;z-index:4;background:rgba(0,0,0,.55);color:#fff;font-size:9px;font-weight:500;padding:2px 7px;border-radius:10px">${timeStr}</div>
       </div>
       <div class="prop-card-body">
-        <div class="prop-card-loc">${listing.address_area || listing.county}${(listing.distance_km != null && isFinite(parseFloat(listing.distance_km))) ? ` · <span style="color:#1a5c45;font-weight:600;text-transform:none;letter-spacing:0">${parseFloat(listing.distance_km).toFixed(parseFloat(listing.distance_km) < 10 ? 1 : 0)} km</span>` : ''}</div>
-        <div class="prop-card-title">${listing.title}</div>
-        <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
+        <!-- Price + bed/bath meta on one row, like the reference -->
+        <div class="prop-card-price-row">
+          <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
+          <div class="prop-card-icons">
+            ${listing.bedrooms  ? `<span>${bedSvg}${listing.bedrooms}</span>` : ''}
+            ${listing.bathrooms ? `<span>${bathSvg}${listing.bathrooms}</span>` : ''}
+            ${(!listing.bathrooms && listing.sleeps) ? `<span>${peopleSvg}${listing.sleeps}</span>` : ''}
+          </div>
+        </div>
+        <!-- Address (Playfair, brand-green) -->
+        <div class="prop-card-title">${addrLine}</div>
+        <!-- Type · size · BER (small caps, muted) -->
         <div class="prop-card-meta">
-          ${listing.bedrooms    ? `<span>${icon('bed',11,'#bbb')} ${listing.bedrooms}bd</span>` : ''}
-          ${listing.bathrooms   ? `<span>${icon('bath',11,'#bbb')} ${listing.bathrooms}ba</span>` : ''}
-          ${listing.floor_size_m2 ? `<span>${icon('size',11,'#bbb')} ${listing.floor_size_m2}m²</span>` : ''}
-          ${listing.property_type ? `<span style="text-transform:capitalize">${listing.property_type}</span>` : ''}
+          ${subLine ? `<span class="prop-card-meta-sub">${subLine}</span>` : ''}
           ${berBadge}
         </div>
       </div>
