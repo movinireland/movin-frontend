@@ -158,156 +158,222 @@ body{
 }
 .lx-btn--ghost:hover::after{ transform: scaleX(1) }
 
-/* ═══════════ HERO ═══════════════════════════════════════════════════════ */
+/* ═══════════ HERO — full-bleed editorial photograph ═════════════════════ */
+:root{
+  /* Swap this to a local file (e.g. url('img/hero-house.jpg')) once you
+     have a final hero photograph. Default is a hotlink-friendly Unsplash
+     shot of a modern Irish-style home for immediate visual fidelity. */
+  --lx-hero-image-url: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2400&q=80');
+}
 .lx-hero{
   position: relative;
-  min-height: 92vh;
-  background: linear-gradient(160deg, var(--lx-ink) 0%, var(--lx-ink-deep) 100%);
+  min-height: 100vh;
   color: var(--lx-paper);
   overflow: hidden;
   display: flex; flex-direction: column;
-  padding-top: 1rem;
-}
-/* Soft atmospheric tints */
-.lx-hero::before{
-  content:""; position:absolute; inset:0; pointer-events:none;
+  /* Layered backgrounds: dark vignette → photograph → fallback gradient.
+     The vignette guarantees text legibility regardless of which photo
+     you slot in. */
   background:
-    radial-gradient(circle 600px at 12% 18%, rgba(126,201,168,.18) 0%, transparent 60%),
-    radial-gradient(circle 700px at 88% 82%, rgba(224,123,63,.18) 0%, transparent 60%);
+    linear-gradient(180deg, rgba(7,37,28,.45) 0%, rgba(7,37,28,.40) 40%, rgba(7,37,28,.78) 100%),
+    var(--lx-hero-image-url) center/cover no-repeat,
+    linear-gradient(160deg, var(--lx-ink) 0%, var(--lx-ink-deep) 100%);
+  background-blend-mode: normal;
 }
-.lx-hero-grid{
+
+.lx-hero-inner{
   position: relative; z-index: 1;
   flex: 1;
-  display: grid; grid-template-columns: 1.05fr .95fr;
-  gap: 80px;
-  align-items: center;
-  padding: 80px 0 100px;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 140px 0 64px;
+  text-align: center;
 }
 @media (max-width: 900px){
-  .lx-hero{ min-height: auto }
-  .lx-hero-grid{
-    grid-template-columns: 1fr;
-    gap: 40px; padding: 56px 0 64px;
-  }
-}
-.lx-hero-copy{ max-width: 600px }
-.lx-hero-copy .lx-display{ margin: 18px 0 22px }
-.lx-hero-copy .lx-lede{ margin-bottom: 36px }
-.lx-hero-cta-row{
-  display: flex; gap: 14px; flex-wrap: wrap;
-  margin-bottom: 28px;
+  .lx-hero-inner{ padding: 120px 0 48px }
 }
 
-/* Live ticker — keep the existing JS hook, restyle */
-.lx-ticker{
-  display: inline-flex; align-items: center; gap: 10px;
-  font-size: 12px; font-weight: 500;
-  color: var(--lx-muted-on-dark);
-  padding: 8px 14px;
-  background: rgba(250,247,240,.06);
-  border: 1px solid var(--lx-line-deep);
-  border-radius: var(--lx-pill);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+.lx-hero-copy{ max-width: 880px; margin: 0 auto }
+.lx-hero-copy .lx-display{
+  margin: 0 0 22px;
+  font-size: clamp(40px, 6.6vw, 78px);
+  font-weight: 700; font-style: italic;
+  letter-spacing: -0.02em; line-height: 1.05;
 }
-.lx-ticker .lx-pulse{
-  width: 8px; height: 8px; border-radius: 50%;
-  background: #7ec9a8;
-  box-shadow: 0 0 0 0 rgba(126,201,168,.6);
-  animation: lxPulse 2s infinite;
-}
-@keyframes lxPulse{
-  0%   { box-shadow: 0 0 0 0 rgba(126,201,168,.6) }
-  70%  { box-shadow: 0 0 0 12px rgba(126,201,168,0) }
-  100% { box-shadow: 0 0 0 0 rgba(126,201,168,0) }
+.lx-hero-copy .lx-lede{
+  margin: 0 auto 44px;
+  max-width: 60ch;
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: rgba(241,235,220,.85);
+  font-weight: 400;
 }
 
-/* Hero search panel — glassmorphic, premium */
-.lx-search-card{
-  -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
-  background: rgba(250,247,240,.08);
-  border: 1px solid var(--lx-line-deeper);
-  border-radius: var(--lx-radius);
-  padding: 24px;
-  box-shadow: 0 24px 56px -16px rgba(0,0,0,.45);
-}
-.lx-search-tabs{
-  display: flex; gap: 4px;
-  background: rgba(250,247,240,.06);
-  padding: 4px; border-radius: var(--lx-pill);
-  margin-bottom: 18px;
-  font-size: 12.5px;
-}
-.lx-search-tab{
-  flex: 1; padding: 10px 14px; border-radius: var(--lx-pill);
-  background: transparent; color: var(--lx-muted-on-dark);
-  border: none; cursor: pointer;
-  font-family: 'DM Sans', sans-serif; font-weight: 600;
-  letter-spacing: .04em; text-transform: capitalize;
-  transition: background .2s, color .2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.lx-search-tab:hover{ color: var(--lx-paper) }
-.lx-search-tab.is-active{
-  background: var(--lx-paper); color: var(--lx-ink);
-}
-.lx-search-field{
-  display: flex; gap: 10px;
-  background: rgba(250,247,240,.10);
+/* ── Unified search pill — single rounded bar, three segments ─────────── */
+.lx-search-pill{
+  display: flex; align-items: center; gap: 0;
+  width: min(880px, 100%);
+  margin: 0 auto;
+  background: rgba(10,20,17,.55);
+  border: 1px solid rgba(250,247,240,.14);
   border-radius: var(--lx-pill);
   padding: 8px 8px 8px 22px;
-  align-items: center;
-  border: 1px solid var(--lx-line-deep);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  box-shadow: 0 24px 56px -20px rgba(0,0,0,.55);
 }
-.lx-search-field input{
+.lx-search-seg{
+  display: flex; align-items: center; gap: 10px;
+  flex: 1; min-width: 0;
+  color: var(--lx-paper);
+}
+.lx-search-seg svg{ flex-shrink: 0; opacity: .85 }
+.lx-search-seg input{
   flex: 1; min-width: 0;
   background: transparent; border: none; outline: none;
-  color: var(--lx-paper); font-family: inherit;
-  font-size: 15px; font-weight: 400;
-  padding: 12px 0;
-}
-.lx-search-field input::placeholder{ color: rgba(241,235,220,.55) }
-.lx-search-field .lx-btn--primary{ height: 44px; padding: 0 22px }
-
-/* Hero side image — editorial photo placeholder */
-.lx-hero-art{
-  position: relative;
-  aspect-ratio: 4 / 5;
-  border-radius: var(--lx-radius);
-  overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(14,61,46,0) 0%, rgba(14,61,46,.45) 100%),
-    linear-gradient(135deg, #1a5c45 0%, #0e3d2e 60%, #14130f 100%);
-  border: 1px solid var(--lx-line-deeper);
-  box-shadow: 0 32px 64px -24px rgba(0,0,0,.55);
-}
-.lx-hero-art-tag{
-  position: absolute; top: 24px; left: 24px;
-  font-size: 11px; font-weight: 600; letter-spacing: .24em;
-  text-transform: uppercase; color: var(--lx-mint);
-  padding: 6px 12px; border-radius: var(--lx-pill);
-  background: rgba(250,247,240,.10);
-  border: 1px solid var(--lx-line-deep);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-}
-.lx-hero-art-quote{
-  position: absolute; left: 28px; right: 28px; bottom: 28px;
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(20px, 2.2vw, 28px); line-height: 1.25;
-  font-weight: 400; font-style: italic;
   color: var(--lx-paper);
-  letter-spacing: -.01em;
+  font-family: inherit; font-size: 15px; font-weight: 400;
+  padding: 14px 0;
+  letter-spacing: .005em;
 }
-.lx-hero-art-quote::after{
-  content:"— A home in Connemara";
-  display:block; font-family:'DM Sans', sans-serif;
-  font-style: normal; font-weight: 500;
-  font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--lx-mint);
-  margin-top: 14px;
+.lx-search-seg input::placeholder{ color: rgba(241,235,220,.55) }
+
+/* Vertical hairline divider */
+.lx-search-div{
+  width: 1px; height: 28px;
+  background: rgba(250,247,240,.18);
+  flex-shrink: 0; margin: 0 16px;
 }
-@media (max-width: 900px){
-  .lx-hero-art{ aspect-ratio: 4 / 3 }
+
+/* Type dropdown — sits inside the pill, native select made invisible */
+.lx-search-type{
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  color: var(--lx-paper); cursor: pointer;
+  flex-shrink: 0; padding: 0 8px;
 }
+.lx-search-type svg.lx-house{ opacity: .85 }
+.lx-search-type .lx-caret{ opacity: .65 }
+.lx-search-type select{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+  font-family: inherit;
+}
+.lx-search-type-label{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: .02em;
+}
+
+/* Search button — solid orange pill, matches brand */
+.lx-search-go{
+  flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 46px; padding: 0 28px; margin-left: 8px;
+  border: none; border-radius: var(--lx-pill);
+  background: var(--lx-accent); color: #fff;
+  font-family: 'DM Sans', sans-serif; font-size: 13px;
+  font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s, transform .12s;
+  box-shadow: 0 10px 22px -10px rgba(224,123,63,.55);
+}
+.lx-search-go:hover{ background: #c9642a }
+.lx-search-go:active{ transform: scale(.98) }
+
+/* Mobile — collapse the pill into stacked rows */
+@media (max-width: 720px){
+  .lx-search-pill{
+    flex-direction: column;
+    border-radius: 24px;
+    padding: 12px;
+    gap: 6px;
+  }
+  .lx-search-seg{ width: 100%; padding: 8px 12px }
+  .lx-search-seg input{ padding: 10px 0 }
+  .lx-search-div{
+    width: 100%; height: 1px; margin: 4px 0;
+  }
+  .lx-search-type{ width: 100%; padding: 10px 12px; justify-content: space-between }
+  .lx-search-type select{ width: 100% }
+  .lx-search-go{
+    width: 100%; height: 50px; margin: 4px 0 0;
+  }
+}
+
+/* ── Hero stats overlay (anchored to the bottom of the photo) ─────── */
+.lx-hero-stats{
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-top: 64px;
+  border-top: 1px solid rgba(250,247,240,.14);
+  padding-top: 28px;
+}
+@media (max-width: 720px){
+  .lx-hero-stats{ grid-template-columns: repeat(2, 1fr); gap: 18px; padding-top: 20px; margin-top: 40px }
+}
+.lx-hero-stat{
+  text-align: center;
+  padding: 6px 12px;
+  border-right: 1px solid rgba(250,247,240,.10);
+}
+.lx-hero-stat:last-child{ border-right: none }
+@media (max-width: 720px){ .lx-hero-stat{ border-right: none } }
+.lx-hero-stat-num{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 3.2vw, 42px);
+  font-weight: 700; color: var(--lx-paper);
+  line-height: 1; letter-spacing: -.02em; margin-bottom: 8px;
+}
+.lx-hero-stat-num em{ font-style: italic; font-weight: 400; color: var(--lx-accent) }
+.lx-hero-stat-label{
+  font-size: 10.5px; font-weight: 600;
+  letter-spacing: .26em; text-transform: uppercase;
+  color: rgba(241,235,220,.65);
+}
+
+/* ── Transparent header overlaying the hero ──────────────────────────── */
+/* Page-scoped overrides — only on this homepage. The shared .nav from
+   renderNav() normally has a solid white background; here it floats
+   transparently over the photo, then becomes solid on scroll. */
+body.lx-home .nav{
+  position: fixed; top: 0; left: 0; right: 0;
+  background: transparent !important;
+  border-bottom: 1px solid transparent !important;
+  box-shadow: none !important;
+  transition: background .25s ease, border-color .25s ease, backdrop-filter .25s ease;
+  z-index: 100;
+}
+body.lx-home .nav-logo{ color: var(--lx-paper) !important }
+body.lx-home .nav-logo span{ color: var(--lx-accent) !important }
+body.lx-home .nav-links li{ color: rgba(241,235,220,.85) !important }
+body.lx-home .nav-links li:hover,
+body.lx-home .nav-links li.active{ color: #fff !important }
+body.lx-home .nav-right .theme-toggle{
+  background: rgba(250,247,240,.12) !important;
+  color: var(--lx-paper) !important;
+}
+body.lx-home .nav-right .theme-toggle:hover{
+  background: rgba(250,247,240,.22) !important;
+}
+body.lx-home .nav-right > a.btn-ghost{
+  background: transparent !important;
+  color: var(--lx-paper) !important;
+  border-color: rgba(250,247,240,.45) !important;
+}
+body.lx-home .nav-right > a.btn-ghost:hover{
+  background: var(--lx-paper) !important; color: var(--lx-ink) !important;
+}
+body.lx-home .nav-user-name{ color: var(--lx-paper) !important }
+
+/* When the user scrolls past the hero, the nav becomes a frosted bar */
+body.lx-home.lx-scrolled .nav{
+  background: rgba(7,37,28,.78) !important;
+  border-bottom-color: rgba(250,247,240,.10) !important;
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+}
+/* Push the rest of the page down so it doesn't sit under the fixed nav */
+body.lx-home{ padding-top: 0 }   /* hero already accounts for the fixed nav via padding-top */
 
 /* ═══════════ EDITORIAL INTRO BAND ═══════════════════════════════════════ */
 .lx-band{
@@ -570,53 +636,71 @@ body{
 </head>
 <body>
 
-<!-- Nav rendered by shared renderNav() — identical chrome on every page -->
+<!-- Nav rendered by shared renderNav() — transparent on this page (see
+     body.lx-home .nav rules), becomes a frosted bar once the user scrolls. -->
 <nav class="nav" id="main-nav"></nav>
 
-<!-- ═══════════════ HERO ═══════════════════════════════════════════════ -->
+<!-- ═══════════════ HERO — full-bleed photograph ═════════════════════════ -->
 <section class="lx-hero">
-  <div class="lx-wrap lx-hero-grid">
+  <div class="lx-wrap lx-hero-inner">
+
     <div class="lx-hero-copy">
-      <span class="lx-eyebrow on-dark">Ireland's editorial property platform</span>
-      <h1 class="lx-display on-dark">
-        Find a home <em>worth coming</em> home to.
-      </h1>
+      <h1 class="lx-display on-dark">Find your next home in Ireland</h1>
       <p class="lx-lede on-dark">
-        Discover residential, rental and share homes across every Irish county —
-        curated, photographed and presented the way they deserve.
+        Smarter search and transparent pricing for Ireland's most exclusive properties.
       </p>
 
-      <!-- Glassmorphic search panel — pass into existing search.html -->
-      <div class="lx-search-card">
-        <div class="lx-search-tabs" role="tablist">
-          <button class="lx-search-tab is-active" type="button" data-type="sale">Buy</button>
-          <button class="lx-search-tab" type="button" data-type="rent">Rent</button>
-          <button class="lx-search-tab" type="button" data-type="share">Share</button>
-          <button class="lx-search-tab" type="button" data-type="summer">Summer</button>
+      <!-- Unified search pill: pin · input · divider · type · search button -->
+      <form class="lx-search-pill" onsubmit="event.preventDefault();luxeSearch()">
+        <div class="lx-search-seg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 22s7-7.58 7-13a7 7 0 1 0-14 0c0 5.42 7 13 7 13z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          <input type="text" id="lx-q" placeholder="County, Town or Eircode…" autocomplete="off"/>
         </div>
-        <form class="lx-search-field" onsubmit="event.preventDefault();luxeSearch()">
-          <input type="text" id="lx-q" placeholder="Search by county, area or Eircode…" autocomplete="off"/>
-          <button type="submit" class="lx-btn lx-btn--primary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            Search
-          </button>
-        </form>
+
+        <div class="lx-search-div" aria-hidden="true"></div>
+
+        <label class="lx-search-type">
+          <svg class="lx-house" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/>
+          </svg>
+          <span class="lx-search-type-label" id="lx-type-label">Buy</span>
+          <svg class="lx-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+          <select id="lx-type" aria-label="Listing type" onchange="luxeTypeChanged(this)">
+            <option value="sale">Buy</option>
+            <option value="rent">Rent</option>
+            <option value="share">Room for rent</option>
+            <option value="summer">Summer rental</option>
+          </select>
+        </label>
+
+        <button type="submit" class="lx-search-go">Search</button>
+      </form>
+
+      <!-- Stats row, anchored beneath the search -->
+      <div class="lx-hero-stats">
+        <div class="lx-hero-stat">
+          <div class="lx-hero-stat-num">24/7</div>
+          <div class="lx-hero-stat-label">Live listings</div>
+        </div>
+        <div class="lx-hero-stat">
+          <div class="lx-hero-stat-num">32</div>
+          <div class="lx-hero-stat-label">Counties covered</div>
+        </div>
+        <div class="lx-hero-stat">
+          <div class="lx-hero-stat-num"><em>€0</em></div>
+          <div class="lx-hero-stat-label">Private seller fee</div>
+        </div>
+        <div class="lx-hero-stat">
+          <div class="lx-hero-stat-num">100%</div>
+          <div class="lx-hero-stat-label">Irish owned</div>
+        </div>
       </div>
 
-      <div class="lx-hero-cta-row" style="margin-top:22px">
-        <span class="lx-ticker">
-          <span class="lx-pulse"></span>
-          <span><strong id="hero-ticker-num">—</strong> new homes listed this week</span>
-        </span>
-      </div>
-    </div>
-
-    <!-- Right-side editorial art panel -->
-    <div class="lx-hero-art" aria-hidden="true">
-      <span class="lx-hero-art-tag">Featured place</span>
-      <div class="lx-hero-art-quote">
-        "Stone walls, a turf fire, and morning light through the bay windows."
-      </div>
     </div>
   </div>
 </section>
@@ -729,17 +813,7 @@ body{
   </div>
 </section>
 
-<!-- ═══════════════ TRUST / STATS ═══════════════════════════════════════ -->
-<section class="lx-band lx-band--cream" style="padding-top:0;padding-bottom:0">
-  <div class="lx-wrap">
-    <div class="lx-stats">
-      <div class="lx-stat"><div class="lx-stat-num" id="lx-stat-listings">—</div><div class="lx-stat-label">Live listings</div></div>
-      <div class="lx-stat"><div class="lx-stat-num">32</div><div class="lx-stat-label">Irish counties</div></div>
-      <div class="lx-stat"><div class="lx-stat-num" id="lx-stat-agents">—</div><div class="lx-stat-label">Verified agents</div></div>
-      <div class="lx-stat"><div class="lx-stat-num">€0</div><div class="lx-stat-label">First listing — free</div></div>
-    </div>
-  </div>
-</section>
+<!-- Standalone stats section removed — stats now live inside the hero -->
 
 <!-- ═══════════════ WHY MOVIN ═══════════════════════════════════════════ -->
 <section class="lx-band lx-band--cream">
@@ -807,15 +881,29 @@ body{
 // ═══════════════════════════════════════════════════════════════════════
 function go(path){ window.location.href = path }
 
+// ── Add body marker so the transparent-nav CSS activates only here ────
+document.body.classList.add('lx-home')
+
+// Scrolled state — once the user scrolls past ~80px the nav becomes a
+// frosted bar instead of pure transparent (otherwise menu items vanish
+// over light photo content further down).
+function lxOnScroll(){
+  if (window.scrollY > 80) document.body.classList.add('lx-scrolled')
+  else document.body.classList.remove('lx-scrolled')
+}
+window.addEventListener('scroll', lxOnScroll, { passive:true })
+lxOnScroll()
+
 // ── Hero search ────────────────────────────────────────────────────────
 let lxActiveType = 'sale'
-document.querySelectorAll('.lx-search-tab').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.lx-search-tab').forEach(b => b.classList.remove('is-active'))
-    btn.classList.add('is-active')
-    lxActiveType = btn.dataset.type
-  })
-})
+function luxeTypeChanged(sel){
+  lxActiveType = sel.value
+  var labels = { sale:'Buy', rent:'Rent', share:'Room for rent', summer:'Summer rental' }
+  var el = document.getElementById('lx-type-label')
+  if (el) el.textContent = labels[lxActiveType] || 'Buy'
+}
+window.luxeTypeChanged = luxeTypeChanged
+
 function luxeSearch(){
   var q = (document.getElementById('lx-q').value || '').trim()
   var qs = new URLSearchParams({ listing_type: lxActiveType })
