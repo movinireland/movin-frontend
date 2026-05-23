@@ -1091,11 +1091,23 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
   display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
   margin-bottom: 2rem;
 }
+/* Footer wordmark — matches the header .nav-logo spec exactly
+   (22px Playfair 900, -.5px tracking, line-height 1, orange "in" span).
+   Colour is brand cream rather than green because the footer surface is
+   always dark green (#0e3d2e in light mode, #0a0f0c in dark) — a green
+   wordmark would disappear against it. The cream → orange contrast is
+   the same brand pairing, just inverted for the dark surface. */
 .footer-brand-logo {
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size: 24px; font-weight: 900; color: #fff;
+  font-size: 22px; font-weight: 900;
+  color: #faf7f0;
+  letter-spacing: -0.5px;
+  line-height: 1;
 }
 .footer-brand-logo span { color: #e07b3f; }
+/* Dark mode — same treatment (footer bg is also dark, just deeper) */
+[data-theme="dark"] .footer-brand-logo { color: #faf7f0 !important; }
+[data-theme="dark"] .footer-brand-logo span { color: #e07b3f !important; }
 .footer-brand-tag {
   font-size: 13px; color: rgba(255,255,255,.45);
   font-weight: 300;
