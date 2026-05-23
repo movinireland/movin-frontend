@@ -3,6 +3,30 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     HOMEPAGE VARIANT SWITCH
+     ─────────────────────────────────────────────────────────────────────
+     true  → serve the new "Luxe Habitat" homepage (index-luxe.html)
+     false → serve THIS file (the original homepage you're reading)
+     To revert to the original homepage, flip the next line to `false`.
+     URL override: ?classic=1 forces the original, ?luxe=1 forces luxe.
+     ════════════════════════════════════════════════════════════════════════ -->
+<script>
+;(function homepageVariantSwitch(){
+  var MOVIN_USE_LUXE_HOMEPAGE = true;   // ← flip to false to revert to original
+  try {
+    var u = new URLSearchParams(location.search);
+    if (u.get('classic') === '1') return;             // explicit override → original
+    if (u.get('luxe') === '1' || MOVIN_USE_LUXE_HOMEPAGE) {
+      // Preserve query string when redirecting (e.g. utm_*).
+      var qs = location.search ? location.search : '';
+      location.replace('/index-luxe.html' + qs + location.hash);
+    }
+  } catch(_) { /* fail-open: render the original */ }
+})();
+</script>
+
 <title>Movin.ie – Find Your Next Home in Ireland | Buy, Rent, Share</title>
 <meta name="description" content="Ireland's modern property marketplace. Browse houses, apartments and bungalows for sale or rent across all 32 counties. Free for private sellers and landlords (launch period)."/>
 <meta name="keywords" content="property Ireland, houses for sale Ireland, apartments to rent Dublin, Irish property, Eircode property search, Movin.ie"/>
