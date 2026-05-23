@@ -143,6 +143,34 @@
 .amort-table th{text-align:left;padding:6px 8px;background:var(--g);color:#fff;font-weight:500}
 .amort-table td{padding:6px 8px;border-bottom:1px solid #f0ede6}
 .amort-table tr:nth-child(even) td{background:#fafaf8}
+
+/* ── Dark mode for tools page ──────────────────────────────────────── */
+[data-theme="dark"] body{ background:#14130f; color:#f1ebdc }
+[data-theme="dark"] .tools-tabs,
+[data-theme="dark"] .calc-card,
+[data-theme="dark"] .scheme-card,
+[data-theme="dark"] .chart-card,
+[data-theme="dark"] .result-card,
+[data-theme="dark"] .info-card{
+  background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important;
+}
+[data-theme="dark"] .calc-card-title,
+[data-theme="dark"] .scheme-title,
+[data-theme="dark"] .chart-title,
+[data-theme="dark"] .tools-section-title{ color:#f1ebdc !important }
+[data-theme="dark"] .calc-card-sub,
+[data-theme="dark"] .scheme-sub,
+[data-theme="dark"] .form-hint,
+[data-theme="dark"] .amort-toggle{ color:#a8a496 !important }
+[data-theme="dark"] .tool-tab{ color:#a8a496 !important }
+[data-theme="dark"] .tool-tab.active{ color:#7ec9a8 !important; background:#242219 !important }
+[data-theme="dark"] .amort-table td{ border-bottom-color:#38342a !important; color:#e8e4d6 !important }
+[data-theme="dark"] .amort-table tr:nth-child(even) td{ background:#1f1d16 !important }
+[data-theme="dark"] .calc-input,
+[data-theme="dark"] .calc-card input,
+[data-theme="dark"] .calc-card select{
+  background:#14130f !important; color:#f1ebdc !important; border-color:#38342a !important;
+}
 </style>
 </head>
 <body>

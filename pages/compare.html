@@ -36,6 +36,20 @@
 .empty-compare{text-align:center;padding:4rem 1rem}
 .spinner{width:24px;height:24px;border-radius:50%;border:3px solid var(--gl);border-top-color:var(--g);animation:spin .7s linear infinite;margin:2rem auto;display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Dark mode for compare page ────────────────────────────────────── */
+[data-theme="dark"] body{ background:#14130f; color:#f1ebdc }
+[data-theme="dark"] .compare-title{ color:#f1ebdc !important }
+[data-theme="dark"] .compare-grid,
+[data-theme="dark"] .compare-card,
+[data-theme="dark"] .compare-col{ background:#1c1b16 !important; border-color:#38342a !important; color:#f1ebdc !important }
+[data-theme="dark"] .prop-name{ color:#f1ebdc !important }
+[data-theme="dark"] .prop-price{ color:#7ec9a8 !important }
+[data-theme="dark"] .badge-green{ background:#16201a !important; color:#7ee0b0 !important }
+[data-theme="dark"] .badge-red{ background:#2a1414 !important; color:#ff8a80 !important }
+[data-theme="dark"] .empty-compare{ color:#a8a496 !important }
+[data-theme="dark"] .empty-compare h2,
+[data-theme="dark"] .empty-compare h3{ color:#f1ebdc !important }
 </style>
 </head>
 <body>

@@ -717,6 +717,19 @@
     --mv-shadow: 0 2px 10px rgba(14,61,46,.05);
   }
 
+  /* Dark-mode token re-binding — keeps the mobile layer readable. */
+  [data-theme="dark"]:root{
+    --mv-paper: #14130f;
+    --mv-card:  #1c1b16;
+    --mv-line:  #38342a;
+    --mv-line-soft: #2a2820;
+    --mv-ink:   #f1ebdc;
+    --mv-ink-2: #e8e4d6;
+    --mv-muted: #a8a496;
+    --mv-green: #7ec9a8;
+    --mv-green-d: #2ecc8a;
+  }
+
   /* Page surface */
   body{ background:var(--mv-paper) !important }
 
@@ -978,6 +991,14 @@
     border:1px solid var(--border, #e8e4dc) !important;
     margin-bottom:1rem;
   }
+  /* Desktop dark-mode for loc-section */
+  [data-theme="dark"] details.loc-section{ border-bottom-color:#38342a }
+  [data-theme="dark"] details.loc-section > summary .loc-summary-ico{
+    background:#242219; color:#7ec9a8;
+  }
+  [data-theme="dark"] details.loc-section > summary .loc-summary-title{ color:#f1ebdc }
+  [data-theme="dark"] details.loc-section > summary .loc-summary-sub{ color:#a8a496 }
+  [data-theme="dark"] details.loc-section #property-map{ border-color:#38342a }
 }
   </style>
 </head>
