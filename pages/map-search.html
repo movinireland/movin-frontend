@@ -310,22 +310,90 @@
   .ms-research-btn:hover{background:var(--g);color:#fff}
   @keyframes msfade{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
 
-  /* ── Themed Google InfoWindow ── */
+  /* ── Themed Google InfoWindow — redesigned ────────────────────────── */
   .gm-style .gm-style-iw-c{
-    border-radius:18px !important;padding:0 !important;box-shadow:0 14px 36px rgba(0,0,0,.18) !important;
-    max-width:280px !important
+    border-radius:20px !important;padding:0 !important;
+    box-shadow:0 18px 48px -10px rgba(14,61,46,.28), 0 4px 12px rgba(14,61,46,.10) !important;
+    max-width:300px !important; background:transparent !important;
   }
   .gm-style .gm-style-iw-d{overflow:hidden !important;padding:0 !important;max-height:none !important}
-  .gm-style .gm-ui-hover-effect{top:6px !important;right:6px !important;background:rgba(255,255,255,.9) !important;border-radius:50% !important}
-  .iw-card{font-family:'DM Sans',sans-serif;width:240px;border-radius:18px;overflow:hidden;background:#fff}
-  .iw-photo{width:100%;height:120px;background:linear-gradient(135deg,#c8dfd4,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:32px}
+  .gm-style .gm-style-iw-tc::after{background:#fff !important;box-shadow:none !important}
+  .gm-style .gm-ui-hover-effect{
+    top:10px !important;right:10px !important;width:30px !important;height:30px !important;
+    background:rgba(255,255,255,.95) !important;border-radius:50% !important;
+    box-shadow:0 2px 8px rgba(0,0,0,.22) !important;opacity:1 !important;
+  }
+  .gm-style .gm-ui-hover-effect img{margin:7px !important;opacity:.7 !important}
+
+  .iw-card{
+    font-family:'DM Sans', sans-serif;
+    width:280px; border-radius:20px; overflow:hidden; background:#fff;
+    position:relative;
+  }
+  .iw-photo{
+    position:relative; width:100%; height:160px;
+    background:linear-gradient(135deg,#c8dfd4,#e9f4ef);
+    display:flex;align-items:center;justify-content:center;font-size:38px;
+  }
   .iw-photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .iw-body{padding:.75rem .9rem 1rem}
-  .iw-price{font-size:16px;font-weight:700;color:var(--g);margin-bottom:1px}
-  .iw-title{font-size:13px;font-weight:500;color:#111;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .iw-meta{font-size:11px;color:#888;margin-bottom:8px}
-  .iw-cta{display:block;text-align:center;background:var(--g);color:#fff;font-size:12px;font-weight:600;padding:8px;border-radius:50px;text-decoration:none}
-  .iw-cta:hover{background:var(--gd)}
+  /* Soft gradient bottom-fade so price reads if it overlays */
+  .iw-photo::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:64px;
+    background:linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.32) 100%);
+    pointer-events:none;
+  }
+  .iw-photo-badge{
+    position:absolute; top:12px; left:12px; z-index:2;
+    background:rgba(255,255,255,.96);
+    color:#0e3d2e; font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.6px;
+    padding:5px 10px; border-radius:999px;
+    box-shadow:0 2px 8px rgba(14,61,46,.18);
+  }
+  .iw-photo-price{
+    position:absolute; left:14px; bottom:12px; z-index:2;
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:22px; font-weight:900; color:#fff; letter-spacing:-.4px;
+    text-shadow:0 2px 6px rgba(0,0,0,.32);
+  }
+  .iw-body{padding:.9rem 1rem 1rem}
+  .iw-title{
+    font-family:'Playfair Display', Georgia, serif;
+    font-size:16px; font-weight:700; color:#0e3d2e;
+    line-height:1.25; margin:0 0 .55rem;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+    overflow:hidden; letter-spacing:-.2px;
+  }
+  .iw-meta{
+    display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+    margin-bottom:.85rem;
+  }
+  .iw-chip{
+    display:inline-flex; align-items:center; gap:5px;
+    background:#f5f1e6; color:#1a5c45;
+    font-size:12px; font-weight:600;
+    padding:4px 10px; border-radius:999px;
+    white-space:nowrap;
+  }
+  .iw-chip svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .iw-loc{
+    display:flex; align-items:center; gap:6px;
+    font-size:12.5px; color:#6c6f6a; font-weight:500;
+    margin-bottom:.85rem;
+  }
+  .iw-loc svg{width:14px;height:14px;stroke:#1a5c45;fill:none;stroke-width:2;flex-shrink:0}
+  .iw-cta{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    width:100%; height:42px; padding:0 16px;
+    background:#e07b3f; color:#fff;
+    font-family:'DM Sans', sans-serif; font-size:14px; font-weight:700;
+    border:none; border-radius:999px; text-decoration:none;
+    box-shadow:0 6px 16px -6px rgba(224,123,63,.55);
+    transition:background .15s ease, transform .12s ease;
+  }
+  .iw-cta:hover{background:#c9642a; transform:translateY(-1px)}
+  .iw-cta:active{transform:translateY(0)}
+  .iw-cta svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2}
 
   /* ── Filter sheet (kept) ── */
   .overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:600;display:none}
@@ -406,13 +474,24 @@
   }
   /* Loading overlay / next-page button / InfoWindow cards */
   [data-theme="dark"] .ms-loading,
-  [data-theme="dark"] .ms-next-page,
-  [data-theme="dark"] .iw-card{
+  [data-theme="dark"] .ms-next-page{
     background:#1c1b16 !important; color:#f1ebdc !important; border-color:#38342a !important;
   }
-  [data-theme="dark"] .iw-title{ color:#f1ebdc !important }
-  [data-theme="dark"] .iw-price{ color:#7ec9a8 !important }
   [data-theme="dark"] .ms-next-page{ color:#7ec9a8 !important; border-color:#7ec9a8 !important }
+  /* InfoWindow card — dark variant */
+  [data-theme="dark"] .gm-style .gm-style-iw-c{
+    background:#1c1b16 !important;
+    box-shadow:0 18px 48px -10px rgba(0,0,0,.6), 0 4px 12px rgba(0,0,0,.4) !important;
+  }
+  [data-theme="dark"] .gm-style .gm-style-iw-tc::after{ background:#1c1b16 !important }
+  [data-theme="dark"] .gm-style .gm-ui-hover-effect{ background:rgba(36,34,25,.95) !important }
+  [data-theme="dark"] .gm-style .gm-ui-hover-effect img{ filter:invert(.85) }
+  [data-theme="dark"] .iw-card{ background:#1c1b16 !important }
+  [data-theme="dark"] .iw-photo-badge{ background:rgba(36,34,25,.95) !important; color:#7ec9a8 !important }
+  [data-theme="dark"] .iw-title{ color:#f1ebdc !important }
+  [data-theme="dark"] .iw-chip{ background:#242219 !important; color:#7ec9a8 !important }
+  [data-theme="dark"] .iw-loc{ color:#a8a496 !important }
+  [data-theme="dark"] .iw-loc svg{ stroke:#7ec9a8 !important }
 </style>
 </head>
 <body>
@@ -798,20 +877,47 @@
   // ── Map markers ─────────────────────────────────────────────────────────
   function priceIcon(label, hovered){
     var text = (label || '€').replace(/[<>&]/g,'')
-    var w = Math.max(58, text.length * 8 + 22), h = 34
-    var fill = hovered ? '#0e3d2e' : '#1a5c45', stroke='#fff'
+    // Wider, taller pill — more readable; consistent padding regardless of length
+    var charW = 8.2
+    var w = Math.max(66, Math.ceil(text.length * charW + 28))
+    var pillH = 30, tailH = 10, h = pillH + tailH
+    // Hovered: brand orange. Default: brand deep-green. Both with white stroke.
+    var fill   = hovered ? '#e07b3f' : '#1a5c45'
+    var stroke = '#ffffff'
+    var textY  = pillH / 2 + 1
+    var cx     = w / 2
+    // Rounded pill body (radius = pillH/2 for true capsule) + small triangular tail
+    var r = pillH / 2
+    var pill = 'M ' + r + ' 0' +
+               ' H ' + (w - r) +
+               ' a ' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r +
+               ' v 0' +
+               ' a ' + r + ' ' + r + ' 0 0 1 -' + r + ' ' + r +
+               ' H ' + (cx + 6) +
+               ' L ' + cx + ' ' + (pillH + tailH - 1) +
+               ' L ' + (cx - 6) + ' ' + pillH +
+               ' H ' + r +
+               ' a ' + r + ' ' + r + ' 0 0 1 -' + r + ' -' + r +
+               ' v 0' +
+               ' a ' + r + ' ' + r + ' 0 0 1 ' + r + ' -' + r + ' Z'
     var svg =
       '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'">' +
-        '<defs><filter id="s" x="-20%" y="-20%" width="140%" height="160%">' +
-          '<feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,.28)"/></filter></defs>' +
-        '<g filter="url(#s)"><path d="M11,1 H' + (w-11) + ' Q' + (w-1) + ',1 ' + (w-1) + ',11 V14 Q' + (w-1) + ',23 ' + (w-11) + ',23 H' + (w/2 + 5) +
-          ' L' + (w/2) + ',' + (h-2) + ' L' + (w/2 - 5) + ',23 H11 Q1,23 1,14 V11 Q1,1 11,1 Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5"/></g>' +
-        '<text x="'+(w/2)+'" y="16" fill="#fff" font-size="11.5" font-weight="700" font-family="DM Sans, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle">'+text+'</text>' +
+        '<defs>' +
+          '<filter id="s" x="-20%" y="-10%" width="140%" height="160%">' +
+            '<feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="rgba(14,61,46,.35)"/>' +
+          '</filter>' +
+        '</defs>' +
+        '<g filter="url(#s)">' +
+          '<path d="' + pill + '" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2" stroke-linejoin="round"/>' +
+        '</g>' +
+        '<text x="'+cx+'" y="'+textY+'" fill="#fff" font-size="12.5" font-weight="700" ' +
+          'font-family="DM Sans, Arial, sans-serif" text-anchor="middle" dominant-baseline="middle" ' +
+          'letter-spacing="-0.1">'+text+'</text>' +
       '</svg>'
     return {
       url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg),
       scaledSize: new google.maps.Size(w, h),
-      anchor: new google.maps.Point(w/2, h)
+      anchor: new google.maps.Point(w/2, h - 1)
     }
   }
   function clearMarkers(){
@@ -879,18 +985,30 @@
     if (!infoWindow) infoWindow = new google.maps.InfoWindow({ maxWidth: 280 })
     var photo = l.primary_photo || (l.photos && l.photos[0] && l.photos[0].url) || null
     var imgSrc = photo ? (photo.indexOf('http')===0 ? photo : window.MOVIN_API_URL + photo) : null
+    var typeLabel = (l.listing_type === 'rent') ? 'For rent'
+                   : (l.listing_type === 'share') ? 'Share'
+                   : (l.listing_type === 'summer') ? 'Summer let'
+                   : 'For sale'
+    var bedSvg  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18v-5a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v5"/><path d="M3 18h18"/><path d="M7 10V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/></svg>'
+    var bathSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M9 7h2"/></svg>'
+    var pinSvg  = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-7.58 7-13a7 7 0 1 0-14 0c0 5.42 7 13 7 13z"/><circle cx="12" cy="9" r="2.5"/></svg>'
+    var arrSvg  = '<svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>'
+    var locText = [l.address_area, l.county].filter(Boolean).join(', ') || '—'
     var html =
       '<div class="iw-card">' +
-        '<div class="iw-photo">' + (imgSrc ? '<img src="'+imgSrc+'" alt=""/>' : '🏡') + '</div>' +
+        '<div class="iw-photo">' +
+          '<span class="iw-photo-badge">' + typeLabel + '</span>' +
+          (imgSrc ? '<img src="'+imgSrc+'" alt=""/>' : '🏡') +
+          '<span class="iw-photo-price">' + fmtPrice(l.price, l.listing_type) + '</span>' +
+        '</div>' +
         '<div class="iw-body">' +
-          '<div class="iw-price">' + fmtPrice(l.price, l.listing_type) + '</div>' +
-          '<div class="iw-title">' + (l.title || '—') + '</div>' +
+          '<h3 class="iw-title">' + (l.title || '—') + '</h3>' +
           '<div class="iw-meta">' +
-            (l.bedrooms ? l.bedrooms + ' bed · ' : '') +
-            (l.bathrooms ? l.bathrooms + ' bath · ' : '') +
-            (l.address_area || l.county || '') +
+            (l.bedrooms  ? '<span class="iw-chip">' + bedSvg  + l.bedrooms  + ' bed</span>'  : '') +
+            (l.bathrooms ? '<span class="iw-chip">' + bathSvg + l.bathrooms + ' bath</span>' : '') +
           '</div>' +
-          '<a class="iw-cta" href="listing.html?id=' + l.id + '">View listing →</a>' +
+          '<div class="iw-loc">' + pinSvg + '<span>' + locText + '</span></div>' +
+          '<a class="iw-cta" href="listing.html?id=' + l.id + '">View listing' + arrSvg + '</a>' +
         '</div>' +
       '</div>'
     infoWindow.setContent(html)
