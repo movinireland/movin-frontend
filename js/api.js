@@ -313,4 +313,27 @@ function postAuthDest(user, fallback) {
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, getUser, getToken, postAuthDest }
+// ── Admin RBAC (Phase 1) ─────────────────────────────────────────────────────
+// Roles, permissions, audit log. All endpoints permission-gated server-side.
+const adminRBAC = {
+  listPermissions()       { return request('GET',  '/api/admin/rbac/permissions') },
+  listRoles(q)            { return request('GET',  '/api/admin/rbac/roles' + (q ? '?q=' + encodeURIComponent(q) : '')) },
+  getRole(id)             { return request('GET',  '/api/admin/rbac/roles/' + id) },
+  createRole(body)        { return request('POST', '/api/admin/rbac/roles', body) },
+  updateRole(id, body)    { return request('PUT',  '/api/admin/rbac/roles/' + id, body) },
+  cloneRole(id, name)     { return request('POST', '/api/admin/rbac/roles/' + id + '/clone', { name }) },
+  deleteRole(id)          { return request('DELETE','/api/admin/rbac/roles/' + id) },
+  setRolePermissions(id, permission_keys) {
+    return request('PUT', '/api/admin/rbac/roles/' + id + '/permissions', { permission_keys })
+  },
+  setUserRoles(userId, role_ids) {
+    return request('PUT', '/api/admin/rbac/users/' + userId + '/roles', { role_ids })
+  },
+  searchUsers(q)          { return request('GET', '/api/admin/rbac/users-search' + (q ? '?q=' + encodeURIComponent(q) : '')) },
+  auditLogs(params = {})  {
+    const q = new URLSearchParams(params).toString()
+    return request('GET', '/api/admin/rbac/audit-logs' + (q ? '?' + q : ''))
+  }
+}
+
+window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, adminRBAC, getUser, getToken, postAuthDest }
