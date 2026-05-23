@@ -354,12 +354,55 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
         <div class="topbar-title">Users</div>
         <div class="topbar-right"><span id="user-count" style="font-size:13px;color:#888"></span></div>
       </div>
+      <style>
+        .user-roles-cell{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:160px}
+        .user-roles-cell .role-chip{font-size:11px;font-weight:600;color:var(--gd,#0e3d2e);background:var(--gl,#e9f4ef);border:1px solid #c8dfd4;padding:2px 8px;border-radius:999px;white-space:nowrap}
+        .user-roles-cell .role-chip.super{background:#fff1e3;color:#e07b3f;border-color:#f7d7b5}
+        .user-roles-cell .role-chip.empty{background:#fafaf8;color:#888;border-color:var(--border,#e6e2d8);font-style:italic;font-weight:500}
+        .user-roles-cell button{font-size:11px;font-weight:600;color:var(--g,#1a5c45);background:#fff;border:1.5px solid var(--border,#e6e2d8);padding:2px 9px;border-radius:999px;cursor:pointer;transition:border-color .15s,color .15s}
+        .user-roles-cell button:hover{border-color:var(--g,#1a5c45);background:var(--gl,#e9f4ef)}
+        /* User-role editor modal */
+        .ure-modal{position:fixed;inset:0;background:rgba(14,30,22,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(2px)}
+        .ure-modal.open{display:flex}
+        .ure-card{background:#fff;border-radius:18px;max-width:500px;width:100%;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 24px 50px -12px rgba(14,61,46,.35)}
+        .ure-head{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border,#e6e2d8)}
+        .ure-head h2{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:var(--gd,#0e3d2e);margin:0 0 .3rem;font-weight:900}
+        .ure-head .ure-sub{font-size:13px;color:var(--muted,#7a7a72)}
+        .ure-body{padding:.6rem 0;overflow-y:auto;flex:1}
+        .ure-row{display:flex;align-items:flex-start;gap:12px;padding:.7rem 1.5rem;cursor:pointer;border-bottom:1px solid #f5f3eb}
+        .ure-row:hover{background:#fafaf8}
+        .ure-row input{margin-top:3px;width:18px;height:18px;accent-color:var(--g,#1a5c45);cursor:pointer;flex-shrink:0}
+        .ure-row .ure-name{font-weight:600;color:var(--gd,#0e3d2e);font-size:14px;display:flex;align-items:center;gap:8px}
+        .ure-row .ure-desc{font-size:12.5px;color:var(--muted,#7a7a72);line-height:1.5;margin-top:2px}
+        .ure-row .sys-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#8a8a82;background:#f1efe7;padding:2px 7px;border-radius:999px}
+        .ure-row .super-tag{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#e07b3f;background:#fff1e3;padding:2px 7px;border-radius:999px}
+        .ure-foot{padding:1rem 1.5rem;border-top:1px solid var(--border,#e6e2d8);display:flex;gap:8px;justify-content:flex-end;align-items:center}
+        .ure-foot .ure-status{margin-right:auto;font-size:12.5px;color:var(--muted,#7a7a72)}
+      </style>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
-            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Listings</th><th>Verified</th><th>Joined</th></tr></thead>
+            <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Roles</th><th>Listings</th><th>Verified</th><th>Joined</th></tr></thead>
             <tbody id="users-body"><tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr></tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- User-roles editor modal (lives at section level so it covers the page) -->
+    <div id="ure-modal" class="ure-modal" onclick="if(event.target===this)closeUserRoles()">
+      <div class="ure-card" role="dialog" aria-modal="true" aria-labelledby="ure-title">
+        <div class="ure-head">
+          <h2 id="ure-title">Assign roles</h2>
+          <div class="ure-sub" id="ure-sub">—</div>
+        </div>
+        <div class="ure-body" id="ure-body">
+          <div style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></div>
+        </div>
+        <div class="ure-foot">
+          <span class="ure-status" id="ure-status"></span>
+          <button class="btn btn-ghost btn-sm" onclick="closeUserRoles()">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="ure-save" onclick="saveUserRoles()">Save roles</button>
         </div>
       </div>
     </div>
@@ -1660,35 +1703,141 @@ async function saveEdit() {
 }
 
 // ── Users ─────────────────────────────────────────────────
+// Holds the live user list so the role-editor modal can grab any user's
+// current role set without an extra round-trip.
+var USER_CACHE = []
+
 async function loadUsers() {
+  var body = document.getElementById('users-body')
+  body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></td></tr>'
   try {
-    const token = localStorage.getItem('movin_token')
-    const res = await fetch(window.MOVIN_API_URL + '/api/users/admin/all', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    })
-    if (!res.ok) throw new Error('Could not load users — endpoint may not be deployed yet')
-    const data = await res.json()
-    const users = data.users || []
-    const countEl = document.getElementById('user-count')
+    // Prefer the RBAC-aware endpoint — it returns each user's role list.
+    var data
+    try {
+      data = await window.API.adminRBAC.searchUsers('')
+    } catch (e) {
+      // Fall back to legacy endpoint (no roles column) so the table still
+      // works before the RBAC migration is run.
+      var token = localStorage.getItem('movin_token')
+      var res = await fetch(window.MOVIN_API_URL + '/api/users/admin/all', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      if (!res.ok) throw new Error('Could not load users')
+      data = await res.json()
+    }
+    var users = data.users || []
+    USER_CACHE = users
+    var countEl = document.getElementById('user-count')
     if (countEl) countEl.textContent = users.length + ' users'
-    document.getElementById('users-body').innerHTML = users.length ? users.map(u => `
-      <tr>
-        <td><div style="font-weight:500;font-size:13px">${u.name || '—'}</div></td>
-        <td style="font-size:13px;color:#888">${u.email}</td>
-        <td style="font-size:13px;color:#888">${u.phone || '—'}</td>
-        <td>
-          <span class="status-badge ${u.role === 'admin' ? 'status-active' : 'status-draft'}">${u.role || 'user'}</span>
-        </td>
-        <td style="font-size:13px;text-align:center">${u.listing_count || 0}</td>
-        <td style="text-align:center">${u.email_verified ? '✅' : '⏳'}</td>
-        <td style="font-size:12px;color:#aaa">${new Date(u.created_at).toLocaleDateString('en-IE')}</td>
-      </tr>`).join('') :
-      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No users yet</td></tr>'
-  } catch(e) {
-    document.getElementById('users-body').innerHTML =
-      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">' + e.message + '<br><small>You can also manage users in <a href="https://supabase.com/dashboard" target="_blank" style="color:#1a5c45">Supabase → Table Editor → users</a></small></td></tr>'
+
+    if (!users.length) {
+      body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">No users yet</td></tr>'
+      return
+    }
+
+    body.innerHTML = users.map(function(u){
+      var rolesHtml = ''
+      if (Array.isArray(u.roles) && u.roles.length) {
+        rolesHtml = u.roles.map(function(r){
+          var isSuper = /super/i.test(r.name || '')
+          return '<span class="role-chip' + (isSuper ? ' super' : '') + '">' + rEsc(r.name) + '</span>'
+        }).join('')
+      } else if (u.role === 'admin') {
+        rolesHtml = '<span class="role-chip super">Super Admin</span>'
+      } else {
+        rolesHtml = '<span class="role-chip empty">No roles</span>'
+      }
+      return '<tr>' +
+        '<td><div style="font-weight:500;font-size:13px">' + rEsc(u.name || '—') + '</div></td>' +
+        '<td style="font-size:13px;color:#888">' + rEsc(u.email) + '</td>' +
+        '<td style="font-size:13px;color:#888">' + rEsc(u.phone || '—') + '</td>' +
+        '<td><div class="user-roles-cell">' + rolesHtml +
+          '<button onclick="openUserRoles(\'' + u.id + '\')">Edit</button>' +
+        '</div></td>' +
+        '<td style="font-size:13px;text-align:center">' + (u.listing_count || 0) + '</td>' +
+        '<td style="text-align:center">' + (u.email_verified ? '✓' : '⏳') + '</td>' +
+        '<td style="font-size:12px;color:#aaa">' + (u.created_at ? new Date(u.created_at).toLocaleDateString('en-IE') : '—') + '</td>' +
+      '</tr>'
+    }).join('')
+  } catch (e) {
+    body.innerHTML =
+      '<tr><td colspan="7" style="text-align:center;padding:2rem;color:#aaa">' + rEsc(e.message) + '<br><small style="color:#999">If the RBAC migration hasn\'t run yet, role chips will appear after it\'s applied.</small></td></tr>'
   }
 }
+
+// ── User-role editor modal ───────────────────────────────────────────────
+var UREDIT = { userId: null, selected: new Set(), allRoles: [] }
+async function openUserRoles(userId){
+  var u = USER_CACHE.find(function(x){ return x.id === userId })
+  if (!u) return
+  UREDIT.userId = userId
+  UREDIT.selected = new Set(((u.roles) || []).map(function(r){ return r.id }))
+
+  var modal = document.getElementById('ure-modal')
+  modal.classList.add('open')
+  document.body.style.overflow = 'hidden'
+  document.getElementById('ure-title').textContent = 'Assign roles · ' + (u.name || u.email)
+  document.getElementById('ure-sub').innerHTML = rEsc(u.email)
+  document.getElementById('ure-status').textContent = ''
+  var bodyEl = document.getElementById('ure-body')
+  bodyEl.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></div>'
+
+  try {
+    if (!RBAC.roles.length) {
+      var r = await window.API.adminRBAC.listRoles()
+      RBAC.roles = r.roles || []
+    }
+    UREDIT.allRoles = RBAC.roles
+    bodyEl.innerHTML = UREDIT.allRoles.map(function(r){
+      var checked = UREDIT.selected.has(r.id)
+      var tags = []
+      if (r.is_super)  tags.push('<span class="super-tag">Super Admin</span>')
+      else if (r.is_system) tags.push('<span class="sys-tag">System</span>')
+      return '<label class="ure-row">' +
+        '<input type="checkbox" data-role-id="' + r.id + '"' + (checked?' checked':'') + ' onchange="toggleUserRole(\'' + r.id + '\', this.checked)"/>' +
+        '<div style="flex:1">' +
+          '<div class="ure-name">' + rEsc(r.name) + ' ' + tags.join('') + '</div>' +
+          (r.description ? '<div class="ure-desc">' + rEsc(r.description) + '</div>' : '') +
+          '<div class="ure-desc" style="margin-top:3px;font-size:11.5px;color:#999">' + r.perm_count + ' permission' + (r.perm_count===1?'':'s') + '</div>' +
+        '</div>' +
+      '</label>'
+    }).join('')
+  } catch (e) {
+    bodyEl.innerHTML = '<div style="padding:1rem;color:#dc2626">' + rEsc(e.message) + '</div>'
+  }
+}
+function toggleUserRole(roleId, on){
+  if (on) UREDIT.selected.add(roleId); else UREDIT.selected.delete(roleId)
+}
+function closeUserRoles(){
+  document.getElementById('ure-modal').classList.remove('open')
+  document.body.style.overflow = ''
+}
+async function saveUserRoles(){
+  if (!UREDIT.userId) return
+  var btn = document.getElementById('ure-save')
+  var status = document.getElementById('ure-status')
+  btn.disabled = true; btn.textContent = 'Saving…'
+  status.textContent = ''
+  try {
+    var ids = Array.from(UREDIT.selected)
+    var r = await window.API.adminRBAC.setUserRoles(UREDIT.userId, ids)
+    status.textContent = '✓ Saved (' + (r.count || ids.length) + ' role' + ((r.count||ids.length)===1?'':'s') + ')'
+    setTimeout(function(){ closeUserRoles(); loadUsers() }, 800)
+  } catch (e) {
+    status.textContent = e.message || 'Could not save'
+    btn.disabled = false; btn.textContent = 'Save roles'
+    return
+  }
+  btn.disabled = false; btn.textContent = 'Save roles'
+}
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape' && document.getElementById('ure-modal').classList.contains('open')) closeUserRoles()
+})
+window.openUserRoles  = openUserRoles
+window.toggleUserRole = toggleUserRole
+window.closeUserRoles = closeUserRoles
+window.saveUserRoles  = saveUserRoles
 
 // ── Init ──────────────────────────────────────────────────
 ;(function(){
