@@ -14,7 +14,7 @@
      ════════════════════════════════════════════════════════════════════════ -->
 <script>
 ;(function homepageVariantSwitch(){
-  var MOVIN_USE_LUXE_HOMEPAGE = true;   // ← flip to false to revert to original
+  var MOVIN_USE_LUXE_HOMEPAGE = false;   // ← flip to false to revert to original
   try {
     var u = new URLSearchParams(location.search);
     if (u.get('classic') === '1') return;             // explicit override → original
