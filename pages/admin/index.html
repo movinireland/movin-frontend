@@ -207,6 +207,23 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 .ag-status.approved{background:#ecfdf3;color:#1a7f4b}
 .ag-status.rejected{background:#fef2f2;color:#dc2626}
 @media(max-width:640px){.agent-card{flex-wrap:wrap}.agent-card .acts{flex-direction:row;width:100%}}
+
+/* ── Admin section search input ──────────────────────────────────────── */
+.admin-search{position:relative;display:inline-flex;align-items:center;background:#fff;border:1.5px solid var(--border,#e6e2d8);border-radius:999px;padding:4px 14px 4px 36px;min-width:240px;max-width:340px;transition:border-color .15s,box-shadow .15s}
+.admin-search:focus-within{border-color:#1a5c45;box-shadow:0 0 0 3px rgba(26,92,69,.12)}
+.admin-search > svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:#888;pointer-events:none}
+.admin-search input{flex:1;border:none;background:transparent;outline:none;padding:6px 0;font:inherit;font-size:13.5px;color:var(--ink,#1f2421);min-width:0}
+.admin-search input::placeholder{color:#9a9890}
+.admin-search input::-webkit-search-cancel-button{display:none}
+.admin-search-clear{border:none;background:transparent;color:#aaa;font-size:18px;line-height:1;width:22px;height:22px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin-left:4px;flex-shrink:0;transition:background .15s,color .15s}
+.admin-search:not(:focus-within) .admin-search-clear{visibility:hidden}
+.admin-search input:placeholder-shown ~ .admin-search-clear{visibility:hidden}
+.admin-search-clear:hover{background:#f1efe7;color:#0e3d2e}
+@media(max-width:520px){
+  .admin-search{min-width:0;width:100%;max-width:none}
+  .topbar-right{width:100%;flex-wrap:wrap}
+}
+.admin-empty-search{padding:2rem 1rem;text-align:center;color:#aaa;font-size:13.5px}
 </style>
 </head>
 <body>
@@ -352,7 +369,15 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
     <div id="section-users" class="section">
       <div class="topbar">
         <div class="topbar-title">Users</div>
-        <div class="topbar-right"><span id="user-count" style="font-size:13px;color:#888"></span></div>
+        <div class="topbar-right">
+          <div class="admin-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="users-search" placeholder="Search users by name or email…" autocomplete="off"
+                   oninput="filterAdminTable('users-body', this.value, 'user-count', 'users')"/>
+            <button type="button" class="admin-search-clear" onclick="this.previousElementSibling.value='';this.previousElementSibling.dispatchEvent(new Event('input'))" aria-label="Clear">×</button>
+          </div>
+          <span id="user-count" style="font-size:13px;color:#888"></span>
+        </div>
       </div>
       <style>
         .user-roles-cell{display:flex;flex-wrap:wrap;gap:4px;align-items:center;min-width:160px}
@@ -409,7 +434,18 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 
     <!-- ENQUIRIES -->
     <div id="section-enquiries" class="section">
-      <div class="topbar"><div class="topbar-title">All enquiries</div></div>
+      <div class="topbar">
+        <div class="topbar-title">All enquiries</div>
+        <div class="topbar-right">
+          <div class="admin-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="enqs-search" placeholder="Search by sender, email, property…" autocomplete="off"
+                   oninput="filterAdminTable('enqs-body', this.value, 'enqs-count', 'enquiries')"/>
+            <button type="button" class="admin-search-clear" onclick="this.previousElementSibling.value='';this.previousElementSibling.dispatchEvent(new Event('input'))" aria-label="Clear">×</button>
+          </div>
+          <span id="enqs-count" style="font-size:13px;color:#888"></span>
+        </div>
+      </div>
       <div class="content-card">
         <div style="overflow-x:auto">
           <table class="table">
@@ -422,7 +458,18 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 
     <!-- AGENTS -->
     <div id="section-agents" class="section">
-      <div class="topbar"><div class="topbar-title">Agent applications</div></div>
+      <div class="topbar">
+        <div class="topbar-title">Agent applications</div>
+        <div class="topbar-right">
+          <div class="admin-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="agents-search" placeholder="Search agency, name, email…" autocomplete="off"
+                   oninput="filterAdminCards('agents-list', this.value, 'agents-count', 'agencies', '.agent-card')"/>
+            <button type="button" class="admin-search-clear" onclick="this.previousElementSibling.value='';this.previousElementSibling.dispatchEvent(new Event('input'))" aria-label="Clear">×</button>
+          </div>
+          <span id="agents-count" style="font-size:13px;color:#888"></span>
+        </div>
+      </div>
       <div class="alert alert-info">New agents stay as standard users until you approve them here. Approving flips their role to <strong>agent</strong> and emails them a link to their dashboard.</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem" id="agents-filter">
         <button class="ag-filt active" data-st="pending"  onclick="loadAgents('pending',this)">Pending</button>
@@ -435,7 +482,18 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 
     <!-- REVIEWS -->
     <div id="section-reviews" class="section">
-      <div class="topbar"><div class="topbar-title">Reviews</div></div>
+      <div class="topbar">
+        <div class="topbar-title">Reviews</div>
+        <div class="topbar-right">
+          <div class="admin-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="reviews-search" placeholder="Search reviewer, agent, comment…" autocomplete="off"
+                   oninput="filterAdminTable('reviews-body', this.value, 'reviews-count', 'reviews')"/>
+            <button type="button" class="admin-search-clear" onclick="this.previousElementSibling.value='';this.previousElementSibling.dispatchEvent(new Event('input'))" aria-label="Clear">×</button>
+          </div>
+          <span id="reviews-count" style="font-size:13px;color:#888"></span>
+        </div>
+      </div>
       <div class="alert alert-info">Reviews from buyers and renters appear here once submitted.</div>
       <div class="content-card">
         <div style="overflow-x:auto">
@@ -528,6 +586,13 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
           <div class="topbar-sub">Granular RBAC — assign permissions to roles, roles to users. Super Admin bypasses every check.</div>
         </div>
         <div class="topbar-right">
+          <div class="admin-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="search" id="roles-search" placeholder="Search roles…" autocomplete="off"
+                   oninput="filterAdminCards('roles-list', this.value, 'roles-count', 'roles', '.role-card')"/>
+            <button type="button" class="admin-search-clear" onclick="this.previousElementSibling.value='';this.previousElementSibling.dispatchEvent(new Event('input'))" aria-label="Clear">×</button>
+          </div>
+          <span id="roles-count" style="font-size:13px;color:#888"></span>
           <button class="btn btn-ghost btn-sm" onclick="loadRoles()">↻ Refresh</button>
           <button class="btn btn-primary btn-sm" onclick="openCreateRole()">+ New role</button>
         </div>
@@ -953,6 +1018,94 @@ async function moderateReview(id, status, btn) {
 }
 window.loadReviews = loadReviews
 window.moderateReview = moderateReview
+
+// ── Generic in-page search helpers ────────────────────────────────────────
+// Filters already-loaded rows/cards by visible text. Fast, no extra API
+// calls, works on every section: just point at the right body / container.
+function _normalize(s){ return String(s == null ? '' : s).toLowerCase().trim() }
+function filterAdminTable(bodyId, q, countElId, label){
+  var body = document.getElementById(bodyId)
+  if (!body) return
+  var needle = _normalize(q)
+  var rows = body.querySelectorAll(':scope > tr')
+  // Remove any previous empty-state placeholder we added.
+  var prev = body.querySelector('tr[data-empty-search]')
+  if (prev) prev.remove()
+  var matched = 0, total = 0
+  rows.forEach(function(tr){
+    // Skip ones we control ourselves (placeholders).
+    if (tr.hasAttribute('data-empty-search')) return
+    total++
+    if (!needle) { tr.style.display = ''; matched++; return }
+    var txt = _normalize(tr.textContent || '')
+    var ok = txt.indexOf(needle) > -1
+    tr.style.display = ok ? '' : 'none'
+    if (ok) matched++
+  })
+  if (needle && matched === 0 && total > 0) {
+    var colCount = (body.parentElement && body.parentElement.querySelectorAll('thead th').length) || 7
+    var tr = document.createElement('tr')
+    tr.setAttribute('data-empty-search', '1')
+    tr.innerHTML = '<td colspan="' + colCount + '" class="admin-empty-search">No ' + (label||'rows') + ' match "<strong>' + (q||'').replace(/[<>&]/g, '') + '</strong>"</td>'
+    body.appendChild(tr)
+  }
+  var c = countElId && document.getElementById(countElId)
+  if (c) c.textContent = needle ? (matched + ' of ' + total + ' ' + (label||'')) : (total + ' ' + (label||''))
+}
+
+function filterAdminCards(containerId, q, countElId, label, cardSelector){
+  var box = document.getElementById(containerId)
+  if (!box) return
+  var needle = _normalize(q)
+  var cards = box.querySelectorAll(cardSelector || ':scope > *')
+  var prev = box.querySelector('[data-empty-search]')
+  if (prev) prev.remove()
+  var matched = 0, total = 0
+  cards.forEach(function(el){
+    if (el.hasAttribute('data-empty-search')) return
+    total++
+    if (!needle) { el.style.display = ''; matched++; return }
+    var ok = _normalize(el.textContent || '').indexOf(needle) > -1
+    el.style.display = ok ? '' : 'none'
+    if (ok) matched++
+  })
+  if (needle && matched === 0 && total > 0) {
+    var em = document.createElement('div')
+    em.setAttribute('data-empty-search', '1')
+    em.className = 'admin-empty-search'
+    em.innerHTML = 'No ' + (label||'items') + ' match "<strong>' + (q||'').replace(/[<>&]/g, '') + '</strong>"'
+    box.appendChild(em)
+  }
+  var c = countElId && document.getElementById(countElId)
+  if (c) c.textContent = needle ? (matched + ' of ' + total + ' ' + (label||'')) : (total + ' ' + (label||''))
+}
+window.filterAdminTable = filterAdminTable
+window.filterAdminCards = filterAdminCards
+
+// Re-apply the active search filter after a reload of each section.
+// Hooked into the existing loaders by listening for their completion via
+// MutationObserver — keeps the loaders untouched.
+;(function _wireSearchReapply(){
+  function reapply(searchId, tableHandler, cardHandler){
+    var input = document.getElementById(searchId)
+    if (!input || !input.value) return
+    input.dispatchEvent(new Event('input'))
+  }
+  // Re-trigger filters whenever a watched body/container is replaced.
+  var watchers = [
+    { id: 'users-body',    s: 'users-search'   },
+    { id: 'enqs-body',     s: 'enqs-search'    },
+    { id: 'reviews-body',  s: 'reviews-search' },
+    { id: 'agents-list',   s: 'agents-search'  },
+    { id: 'roles-list',    s: 'roles-search'   }
+  ]
+  watchers.forEach(function(w){
+    var node = document.getElementById(w.id)
+    if (!node || !('MutationObserver' in window)) return
+    var mo = new MutationObserver(function(){ reapply(w.s) })
+    mo.observe(node, { childList:true })
+  })
+})()
 
 // ════════════════════════════════════════════════════════════════════════════
 // RBAC — Roles, Permissions, Audit
