@@ -560,7 +560,9 @@ var _MV_ICONS = {
   mail:    '<rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/>',
   help:    '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 2-2.5 2-2.5 4"/><circle cx="12" cy="17" r=".6"/>',
   doc:     '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="14 3 14 9 20 9"/>',
-  lock:    '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'
+  lock:    '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  moon:    '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',
+  sun:     '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
 }
 function _mvIcon(name){
   var p = _MV_ICONS[name] || ''
@@ -640,6 +642,14 @@ function ensureNavDrawer(root, user, isLoggedIn, activePage){
           row(dashHref, 'dash', 'My dashboard') +
           row('', 'logout', 'Sign out', { button:true, onclick:'if(window.API)window.API.auth.logout()' })
         : '') +
+        '<div class="mv-drawer-section">Appearance</div>' +
+        '<button type="button" class="mv-drawer-item" id="mv-drawer-theme" onclick="toggleTheme();mvSyncDrawerTheme()">' +
+          '<span class="mv-drawer-ico" id="mv-drawer-theme-ico">' + _mvIcon('moon') + '</span>' +
+          '<span class="mv-drawer-label-text" id="mv-drawer-theme-label">Dark mode</span>' +
+          '<span class="mv-drawer-chev" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>' +
+          '</span>' +
+        '</button>' +
         '<div class="mv-drawer-section">Movin</div>' +
         row(root + 'pages/about.html',             'info', 'About') +
         row(root + 'pages/contact.html',           'mail', 'Contact') +
@@ -685,6 +695,20 @@ function mvGoBack(){
 window.mvOpenDrawer = mvOpenDrawer
 window.mvCloseDrawer = mvCloseDrawer
 window.mvGoBack      = mvGoBack
+
+// Sync the drawer's theme-toggle row (icon + label) with the current theme.
+// Called after toggleTheme() flips data-theme on <html>.
+function mvSyncDrawerTheme(){
+  var ico = document.getElementById('mv-drawer-theme-ico')
+  var lab = document.getElementById('mv-drawer-theme-label')
+  if (!ico || !lab) return
+  var isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+  ico.innerHTML = _mvIcon(isDark ? 'sun' : 'moon')
+  lab.textContent = isDark ? 'Light mode' : 'Dark mode'
+}
+window.mvSyncDrawerTheme = mvSyncDrawerTheme
+// Initial sync once DOM is ready
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(mvSyncDrawerTheme, 50) })
 
 // One-time stylesheet for the mini top bar + drawer.
 function mvInjectChromeStyles(){
@@ -872,6 +896,37 @@ function mvInjectChromeStyles(){
     '[data-theme="dark"] .mv-drawer-item:hover{ background:#1a1a17 }',
     '[data-theme="dark"] .mv-drawer-item:hover .mv-drawer-ico{ background:#0f120f }',
 
+    /* ────────────────────────────────────────────────────────────────────
+       DESKTOP nav (≥768px) — consistent brand chrome on every page.
+       Targets the renderNav() output to match the listing-page tokens.
+       ──────────────────────────────────────────────────────────────────── */
+    '@media (min-width: 768px){',
+    '  .nav{ background:#fff !important; border-bottom:1px solid var(--mvn-line) !important; box-shadow:0 1px 0 rgba(14,61,46,.04) !important; }',
+    '  .nav-logo{ color:var(--mvn-green) !important; letter-spacing:-.5px }',
+    '  .nav-logo span{ color:var(--mvn-orange) !important }',
+    '  .nav-links{ gap:1.75rem !important }',
+    '  .nav-links li{ color:var(--mvn-ink-2) !important; font-weight:500; font-size:14.5px; letter-spacing:.1px; transition:color .15s ease }',
+    '  .nav-links li:hover, .nav-links li.active{ color:var(--mvn-green) !important }',
+    '  .nav-right .theme-toggle{ width:40px !important; height:40px !important; border-radius:50% !important; background:#f5f1e6 !important; color:var(--mvn-green) !important; border:none !important; display:inline-flex !important; align-items:center; justify-content:center; transition:background .15s, color .15s; }',
+    '  .nav-right .theme-toggle:hover{ background:var(--mvn-green) !important; color:#fff !important }',
+    '  .nav-right > a.btn-primary{ background:var(--mvn-orange) !important; color:#fff !important; border:none !important; border-radius:999px !important; padding:9px 18px !important; font-weight:600 !important; box-shadow:0 6px 16px -8px rgba(224,123,63,.55) !important; transition:background .15s, transform .12s !important; }',
+    '  .nav-right > a.btn-primary:hover{ background:#c9642a !important; transform:translateY(-1px) }',
+    '  .nav-right > a.btn-ghost{ background:transparent !important; color:var(--mvn-green) !important; border:1.5px solid var(--mvn-green) !important; border-radius:999px !important; padding:7.5px 16px !important; font-weight:600 !important; transition:background .15s, color .15s !important; }',
+    '  .nav-right > a.btn-ghost:hover{ background:var(--mvn-green) !important; color:#fff !important }',
+    '  .nav-user{ border:1px solid var(--mvn-line) !important; padding:5px 12px 5px 5px !important }',
+    '  .nav-user:hover{ background:#f5f1e6 !important; border-color:var(--mvn-green) !important }',
+    '  .nav-avatar{ background:linear-gradient(135deg, var(--mvn-green), var(--mvn-ink)) !important; color:#fff !important; font-family:"Playfair Display", Georgia, serif !important; font-weight:900 !important; }',
+    '  .nav-user-name{ color:var(--mvn-ink) !important; font-weight:600 !important }',
+    '  .nav-tools-dropdown{ border:1px solid var(--mvn-line) !important; border-radius:14px !important; box-shadow:0 18px 40px -16px rgba(14,61,46,.18), 0 2px 6px rgba(14,61,46,.06) !important; padding:.5rem !important; }',
+    '  .ntd-item{ border-radius:10px !important; padding:.65rem .8rem !important; transition:background .15s !important; }',
+    '  .ntd-item:hover{ background:#f5f1e6 !important }',
+    '  .ntd-title{ color:var(--mvn-ink) !important; font-weight:600 !important }',
+    '  .ntd-sub{ color:var(--mvn-muted) !important }',
+    '  .ntd-icon{ background:#f5f1e6 !important; border-radius:10px !important; width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; }',
+    '  .ntd-icon svg{ stroke:var(--mvn-green) !important }',
+    '}',
+    '[data-theme="dark"] .nav{ background:#161613 !important; border-bottom-color:#2a2a2a !important }',
+
     /* ── Motion: respect reduce-motion ─────────────────────────────────── */
     '@media (prefers-reduced-motion: reduce){',
     '  .mv-drawer, .mv-scrim, .mv-mini-btn, .mv-drawer-item, .mv-drawer-ico, .mv-drawer-chev{',
@@ -892,6 +947,11 @@ function renderNav(activePage = '') {
 
   const nav = document.getElementById('main-nav')
   if (!nav) return
+
+  // Inject brand chrome stylesheet once — covers both mobile (mini topbar +
+  // drawer) and desktop (renderNav full nav) so every page picks up the
+  // brand-token treatment, not just the mobile non-homepage path.
+  mvInjectChromeStyles()
 
   // On non-homepage pages — MOBILE ONLY (≤ 767px) — render a compact top
   // bar (back ← logo ≡ menu) and inject a slide-in drawer with the full

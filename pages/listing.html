@@ -929,6 +929,56 @@
   .sticky-cta-price{ color:var(--mv-green) !important; font-weight:700 !important; font-family:'Playfair Display', Georgia, serif !important }
   .sticky-cta-btn{ height:46px !important; padding:0 22px !important }
 }
+
+/* ────────────────────────────────────────────────────────────────────────────
+   DESKTOP (≥768px) — Location & nearby is ALWAYS visible, never foldable.
+   Renders as a regular section: clean heading + map below.
+   ──────────────────────────────────────────────────────────────────────── */
+@media (min-width: 768px){
+  details.loc-section{
+    display:block;
+    padding:1.25rem 0 .25rem !important;
+    border-bottom:1px solid var(--border, #e8e4dc);
+    overflow:visible;
+  }
+  /* Native disclosure widget — neutralise toggle affordance */
+  details.loc-section > summary{
+    list-style:none;
+    cursor:default;
+    pointer-events:none;          /* clicks do nothing — section is fixed open */
+    display:flex; align-items:center; gap:12px;
+    padding:0 0 .85rem 0;
+    margin:0;
+    user-select:text;
+  }
+  details.loc-section > summary::-webkit-details-marker{ display:none }
+  details.loc-section > summary::marker{ content:'' }
+  details.loc-section > summary .loc-summary-chev{ display:none }
+  details.loc-section > summary .loc-summary-ico{
+    width:36px; height:36px; border-radius:10px;
+    background:#e9f4ef; color:#1a5c45;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  details.loc-section > summary .loc-summary-title{
+    font-family:'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-size:20px; font-weight:700; color:#0e3d2e; letter-spacing:-.2px;
+  }
+  details.loc-section > summary .loc-summary-sub{
+    font-size:13px; color:#6c6f6a; font-weight:500;
+  }
+  /* Body is ALWAYS rendered, regardless of [open] state */
+  details.loc-section .loc-body{
+    display:block !important;
+    padding:0 0 .5rem 0 !important;
+    animation:none !important;
+  }
+  details.loc-section #property-map{
+    height:280px !important;
+    border-radius:12px !important;
+    border:1px solid var(--border, #e8e4dc) !important;
+    margin-bottom:1rem;
+  }
+}
   </style>
 </head>
 <body>
@@ -2260,7 +2310,13 @@
         var _locSec = document.getElementById('loc-section')
         if (_locSec) {
           var _isPhone = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 767px)').matches
-          if (!_isPhone) _locSec.setAttribute('open', '')
+          if (!_isPhone) {
+            _locSec.setAttribute('open', '')
+            // Lock open on desktop — block any attempt to collapse it.
+            _locSec.addEventListener('toggle', function(){
+              if (!_locSec.hasAttribute('open')) _locSec.setAttribute('open', '')
+            })
+          }
         }
 
         var mapResult = await renderMap(L)
