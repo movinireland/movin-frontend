@@ -1079,6 +1079,41 @@
   [data-theme="dark"] .small-meta{ color:#a8a496 !important }
 }
 
+/* ════════════════════════════════════════════════════════════════════════
+   DARK MODE — Similar properties block (rendered with inline styles via JS)
+   Targets #similar-section by id so we beat the inline `background:#fff`
+   and `color:#111` injected at render time. Applies on ALL viewport sizes.
+   ════════════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] #similar-section > div:first-child{
+  /* Section heading "Similar properties" — Playfair, was #111 */
+  color:#f1ebdc !important;
+}
+[data-theme="dark"] #similar-list > div{
+  /* Each similar-property card */
+  background:#1c1b16 !important;
+  border-color:#38342a !important;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);
+}
+[data-theme="dark"] #similar-list > div:hover{
+  border-color:#7ec9a8 !important;
+}
+[data-theme="dark"] #similar-list > div > div:first-child{
+  /* Thumbnail wrapper (gradient placeholder when no photo) */
+  background:linear-gradient(135deg,#1f2421,#0e3d2e) !important;
+}
+[data-theme="dark"] #similar-list > div > div:last-child > div:nth-child(1){
+  /* Title — was color:#111 */
+  color:#f1ebdc !important;
+}
+[data-theme="dark"] #similar-list > div > div:last-child > div:nth-child(2){
+  /* Location — was color:#aaa */
+  color:#a8a496 !important;
+}
+[data-theme="dark"] #similar-list > div > div:last-child > div:nth-child(3){
+  /* Price — was color:var(--green) */
+  color:#7ec9a8 !important;
+}
+
 /* ────────────────────────────────────────────────────────────────────────────
    DESKTOP (≥768px) — Location & nearby is ALWAYS visible, never foldable.
    Renders as a regular section: clean heading + map below.

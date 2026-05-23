@@ -91,6 +91,223 @@ input, select, textarea, button { font-family: inherit; }
 [data-theme="dark"] a{ color:inherit }
 [data-theme="dark"] a.btn-ghost{ color:#2ecc8a !important; border-color:#2ecc8a !important }
 
+/* ──────────────────────────────────────────────────────────────────────
+   GLOBAL DARK-MODE SAFETY NET
+   Catches hardcoded light backgrounds / dark text colors found across
+   many pages (admin, dashboard, listing, tools, guides, etc.) that
+   bypass CSS variables via inline styles or page-local rules.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Backgrounds — hard-coded light surfaces become dark */
+[data-theme="dark"] [style*="background:#fff"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background:#ffffff"],
+[data-theme="dark"] [style*="background: #ffffff"],
+[data-theme="dark"] [style*="background-color:#fff"],
+[data-theme="dark"] [style*="background-color: #fff"],
+[data-theme="dark"] [style*="background:#fafafa"],
+[data-theme="dark"] [style*="background: #fafafa"],
+[data-theme="dark"] [style*="background:#fafaf6"],
+[data-theme="dark"] [style*="background:#faf7f0"],
+[data-theme="dark"] [style*="background:#f5f5f5"],
+[data-theme="dark"] [style*="background:#f5f2ec"],
+[data-theme="dark"] [style*="background:#f5f1e6"],
+[data-theme="dark"] [style*="background:#f8f8f8"],
+[data-theme="dark"] [style*="background:#fdf4e6"]{
+  background:#1c1b16 !important;
+  color:#f1ebdc !important;
+}
+
+/* Hard-coded near-black text → readable cream */
+[data-theme="dark"] [style*="color:#111"],
+[data-theme="dark"] [style*="color: #111"],
+[data-theme="dark"] [style*="color:#000"],
+[data-theme="dark"] [style*="color: #000"],
+[data-theme="dark"] [style*="color:#1f2421"],
+[data-theme="dark"] [style*="color:#222"],
+[data-theme="dark"] [style*="color: #222"],
+[data-theme="dark"] [style*="color:#333"],
+[data-theme="dark"] [style*="color: #333"],
+[data-theme="dark"] [style*="color:#444"],
+[data-theme="dark"] [style*="color: #444"],
+[data-theme="dark"] [style*="color:#0e3d2e"]{
+  color:#f1ebdc !important;
+}
+
+/* Hard-coded muted greys → readable muted cream (a8a496) */
+[data-theme="dark"] [style*="color:#666"],
+[data-theme="dark"] [style*="color: #666"],
+[data-theme="dark"] [style*="color:#777"],
+[data-theme="dark"] [style*="color: #777"],
+[data-theme="dark"] [style*="color:#888"],
+[data-theme="dark"] [style*="color: #888"],
+[data-theme="dark"] [style*="color:#999"],
+[data-theme="dark"] [style*="color: #999"],
+[data-theme="dark"] [style*="color:#aaa"],
+[data-theme="dark"] [style*="color: #aaa"],
+[data-theme="dark"] [style*="color:#bbb"],
+[data-theme="dark"] [style*="color: #bbb"],
+[data-theme="dark"] [style*="color:#555"],
+[data-theme="dark"] [style*="color: #555"],
+[data-theme="dark"] [style*="color:#6c6f6a"],
+[data-theme="dark"] [style*="color:#7a7a72"]{
+  color:#a8a496 !important;
+}
+
+/* Border tokens (default light shows seams on dark surfaces) */
+[data-theme="dark"] [style*="border:1px solid #e"],
+[data-theme="dark"] [style*="border: 1px solid #e"],
+[data-theme="dark"] [style*="border:1.5px solid #e"],
+[data-theme="dark"] [style*="border-color:#e8e4dc"],
+[data-theme="dark"] [style*="border-color: #e8e4dc"],
+[data-theme="dark"] [style*="border-color:#eee"],
+[data-theme="dark"] [style*="border-color: #eee"],
+[data-theme="dark"] [style*="border-bottom:1px solid #e"],
+[data-theme="dark"] [style*="border-top:1px solid #e"]{
+  border-color:#38342a !important;
+}
+
+/* Modals, drawers, popovers — common class names across pages */
+[data-theme="dark"] .modal,
+[data-theme="dark"] .modal-content,
+[data-theme="dark"] .modal-body,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer,
+[data-theme="dark"] .dialog,
+[data-theme="dark"] .popover,
+[data-theme="dark"] .dropdown,
+[data-theme="dark"] .sheet,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .section,
+[data-theme="dark"] .box{
+  background:#1c1b16 !important;
+  color:#f1ebdc !important;
+  border-color:#38342a !important;
+}
+
+/* Buttons that aren't already primary/orange */
+[data-theme="dark"] button:not(.btn-primary):not(.btn-orange):not(.mv-drawer-cta-primary):not(.sticky-cta-btn):not([class*="bg-"]) {
+  color:inherit;
+}
+[data-theme="dark"] .btn,
+[data-theme="dark"] .btn-secondary,
+[data-theme="dark"] .btn-outline{
+  background:#1c1b16; color:#f1ebdc; border-color:#38342a;
+}
+[data-theme="dark"] .btn-secondary:hover,
+[data-theme="dark"] .btn-outline:hover{
+  background:#242219; border-color:#2ecc8a; color:#7ec9a8;
+}
+
+/* Sticky CTAs / floating bars often hard-code white backgrounds */
+[data-theme="dark"] .sticky-cta,
+[data-theme="dark"] .sticky-bar,
+[data-theme="dark"] .bottom-bar,
+[data-theme="dark"] .floating-bar,
+[data-theme="dark"] .action-strip{
+  background:rgba(28,27,22,.94) !important;
+  border-color:#38342a !important;
+  color:#f1ebdc !important;
+}
+
+/* Tables — common in dashboard/admin */
+[data-theme="dark"] table{ color:#f1ebdc; border-color:#38342a }
+[data-theme="dark"] table th{ background:#242219 !important; color:#f1ebdc !important; border-color:#38342a !important }
+[data-theme="dark"] table td{ border-color:#38342a !important; color:#e8e4d6 !important }
+[data-theme="dark"] table tr:hover td{ background:#1f1d16 !important }
+
+/* Tag / badge / chip pills with light backgrounds */
+[data-theme="dark"] .tag,
+[data-theme="dark"] .chip,
+[data-theme="dark"] .badge,
+[data-theme="dark"] .pill,
+[data-theme="dark"] .feat-item,
+[data-theme="dark"] .feat-ico,
+[data-theme="dark"] .pc-badge:not(.pc-badge--new):not(.pc-badge--featured){
+  background:#242219 !important;
+  color:#e8e4d6 !important;
+  border-color:#38342a !important;
+}
+
+/* Light-gold/cream chip backgrounds (#f5f1e6 family) → dark equivalent */
+[data-theme="dark"] [class*="cream"],
+[data-theme="dark"] .mv-drawer-ico,
+[data-theme="dark"] .loc-summary-ico,
+[data-theme="dark"] .lag-stat,
+[data-theme="dark"] .ntd-icon{
+  background:#242219 !important;
+  color:#7ec9a8 !important;
+}
+
+/* Headings / section titles defaulting to hard #111 inside scoped rules */
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .hero-title,
+[data-theme="dark"] .page-title,
+[data-theme="dark"] .card-title,
+[data-theme="dark"] .lag-head-title,
+[data-theme="dark"] .lag-stat-num,
+[data-theme="dark"] .loc-summary-title,
+[data-theme="dark"] .feat-title,
+[data-theme="dark"] .ntd-title{
+  color:#f1ebdc !important;
+}
+
+/* Body text variants */
+[data-theme="dark"] .desc-text,
+[data-theme="dark"] .help-text,
+[data-theme="dark"] .muted,
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .lag-stat-label,
+[data-theme="dark"] .lag-radius-pill,
+[data-theme="dark"] .loc-summary-sub,
+[data-theme="dark"] .ntd-sub,
+[data-theme="dark"] .feat-sub,
+[data-theme="dark"] small{
+  color:#a8a496 !important;
+}
+
+/* Inputs across all variants — also covers search bars */
+[data-theme="dark"] .search-input,
+[data-theme="dark"] .sr-input,
+[data-theme="dark"] .qfc,
+[data-theme="dark"] .filter-input{
+  background:#1c1b16 !important;
+  color:#f1ebdc !important;
+  border-color:#38342a !important;
+}
+[data-theme="dark"] .search-input::placeholder,
+[data-theme="dark"] .sr-input::placeholder{ color:#7a7567 !important }
+
+/* Code, pre, kbd */
+[data-theme="dark"] code,
+[data-theme="dark"] pre,
+[data-theme="dark"] kbd{
+  background:#242219 !important;
+  color:#f0d9a4 !important;
+  border-color:#38342a !important;
+}
+
+/* Anchors that aren't styled green elsewhere */
+[data-theme="dark"] a:not(.btn):not(.nav-logo):not([class*="ghost"]):not(.mv-drawer-cta-primary):not(.mv-drawer-cta-ghost){
+  color:#7ec9a8;
+}
+[data-theme="dark"] a:hover:not(.btn){ color:#a0e0c0 }
+
+/* Tooltips */
+[data-theme="dark"] .tooltip,
+[data-theme="dark"] [role="tooltip"]{
+  background:#242219 !important;
+  color:#f1ebdc !important;
+  border-color:#38342a !important;
+}
+
+/* Scrollbar */
+[data-theme="dark"] *::-webkit-scrollbar-thumb{ background:#38342a }
+[data-theme="dark"] *::-webkit-scrollbar-track{ background:#14130f }
+
+/* Selection */
+[data-theme="dark"] ::selection{ background:#2ecc8a; color:#0e3d2e }
+
 /* ── Typography ────────────────────────────────────────────────── */
 .serif { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; }
 h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; font-weight: 700; line-height: 1.15; }
@@ -113,9 +330,12 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
   display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
 }
 .nav-logo {
+  /* Matches the homepage header logo exactly — single source of truth.
+     Same on desktop renderNav, mobile mini topbar and drawer head. */
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size: 26px; font-weight: 900; color: var(--green);
+  font-size: 22px; font-weight: 900; color: var(--green);
   cursor: pointer; flex-shrink: 0; letter-spacing: -0.5px;
+  line-height: 1;
 }
 .nav-logo span { color: var(--orange); }
 .nav-links {

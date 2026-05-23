@@ -759,12 +759,12 @@ function mvInjectChromeStyles(){
     '  outline:none; box-shadow:0 0 0 3px rgba(26,92,69,.18);',
     '}',
 
-    /* ── Logo — matches the rest of the site exactly ─────────────────── */
+    /* ── Logo — IDENTICAL to homepage .nav-logo (22px Playfair 900) ──── */
     '.mv-mini-logo{',
     '  justify-self:center;',
-    '  font-family:"Playfair Display", Georgia, serif;',
-    '  font-weight:900; font-size:23px; line-height:1;',
-    '  color:var(--mvn-green); text-decoration:none; letter-spacing:-.4px;',
+    '  font-family:"Playfair Display", Georgia, "Times New Roman", serif;',
+    '  font-weight:900; font-size:22px; line-height:1;',
+    '  color:var(--mvn-green); text-decoration:none; letter-spacing:-.5px;',
     '  padding:6px 4px; border-radius:8px;',
     '  transition:opacity .15s ease;',
     '}',
