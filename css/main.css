@@ -699,6 +699,7 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
    cream #faf7f0. No gold gradients, no teal, no purple.
    ═══════════════════════════════════════════════════════════════════════ */
 .prop-card {
+  position: relative;        /* anchor for the heart-save button on mobile */
   background: #ffffff;
   border-radius: 18px;
   overflow: hidden;
@@ -807,19 +808,47 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 .pc-badge--featured::after { display: none }   /* kill old animated sheen */
 
 /* ── Save heart button ──────────────────────────────────────────────── */
+/* Default (desktop): floats over the top-right of the image area.       */
 .prop-card-save {
-  position: absolute; top: 12px; right: 12px; z-index: 4;
+  position: absolute;
+  top: 12px; right: 12px;
+  z-index: 4;
   width: 36px; height: 36px;
   background: rgba(255,255,255,.96);
+  color: #0e3d2e;                  /* heart stroke uses currentColor */
   border: none; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(14,61,46,.18);
-  transition: transform .15s ease, background .15s ease;
+  transition: transform .15s ease, background .15s ease, color .15s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.prop-card-save:hover { transform: scale(1.08); background: #ffffff; }
-.prop-card-save.saved { background: #faf7f0; }
+.prop-card-save:hover {
+  transform: scale(1.08); background: #ffffff; color: #1a5c45;
+}
+.prop-card-save.saved {
+  background: #faf7f0;
+  color: #e07b3f;                  /* filled orange heart when saved */
+}
+.prop-card-save svg { display: block }
+
+/* MOBILE — heart sits at the bottom-right of the WHITE body card, not
+   over the image. Matches the reference design + keeps it well within
+   thumb reach without obscuring the photo. */
+@media (max-width: 767px){
+  .prop-card-save {
+    top: auto;
+    right: 10px;
+    bottom: 10px;
+    z-index: 5;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(14,61,46,.10);
+    border: 1px solid #e8e2d3;
+  }
+  /* Reserve space inside the body so the bed/bath icons don't run under
+     the heart button. */
+  .prop-card-icons { padding-right: 44px }
+}
 
 /* "Enquiry sent" indicator — shown when the logged-in user has previously
    contacted the lister about this property. Sits at the bottom-left of the
@@ -1351,8 +1380,30 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
 [data-theme="dark"] .prop-card-meta-sub { color: #a8a496 !important }
 [data-theme="dark"] .prop-card-icons { color: #a8a496 }
 [data-theme="dark"] .prop-card-icons svg { stroke: #7ec9a8 }
-[data-theme="dark"] .prop-card-save { background: rgba(36,34,25,.95) }
-[data-theme="dark"] .prop-card-save.saved { background: rgba(224,123,63,.18) }
+/* Dark-mode heart: cream stroke on a dark chip — always readable.
+   When saved → orange fill on a soft-orange tinted chip. */
+[data-theme="dark"] .prop-card-save {
+  background: rgba(36,34,25,.95);
+  color: #f1ebdc;
+  border-color: #38342a;
+  box-shadow: 0 2px 10px rgba(0,0,0,.45);
+}
+[data-theme="dark"] .prop-card-save:hover {
+  background: #2a2820;
+  color: #7ec9a8;
+}
+[data-theme="dark"] .prop-card-save.saved {
+  background: rgba(224,123,63,.22);
+  color: #e07b3f;
+  border-color: rgba(224,123,63,.45);
+}
+/* Mobile dark: same body-corner placement, swap to subtle dark chip */
+@media (max-width: 767px){
+  [data-theme="dark"] .prop-card-save {
+    background: #242219;
+    border-color: #38342a;
+  }
+}
 [data-theme="dark"] .pc-pill--new { background:#242219; color:#7ec9a8; border-color:#38342a }
 [data-theme="dark"] .pc-pill--premium { background:#0e3d2e; color:#faf7f0 }
 [data-theme="dark"] .pc-pill--type    { background:#1a5c45; color:#faf7f0 }

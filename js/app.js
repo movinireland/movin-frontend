@@ -2102,7 +2102,10 @@ function buildPropertyCard(listing, savedIds = []) {
   const peopleSvg = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 21v-1.5A4.5 4.5 0 0 1 7.5 15h3A4.5 4.5 0 0 1 15 19.5V21"/><path d="M16 15h1.5A3.5 3.5 0 0 1 21 18.5V21"/></svg>'
   const bathSvg   = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><path d="M9 7h2"/></svg>'
   const sizeSvg   = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="7 17 7 7 17 7"/><polyline points="17 7 17 17 7 17"/><line x1="7" y1="7" x2="17" y2="17"/></svg>'
-  const heartSvg  = (filled) => '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (filled ? '#e07b3f' : 'none') + '" stroke="' + (filled ? '#e07b3f' : '#0e3d2e') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+  // Heart uses currentColor so CSS controls the stroke/fill — keeps it
+  // visible in dark mode (cream stroke) and lets the .saved class flip
+  // to orange without inline overrides.
+  const heartSvg  = (filled) => '<svg width="18" height="18" viewBox="0 0 24 24" fill="' + (filled ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
 
   // Status pill — single source of truth. ONLY one shows: Premium > status > new.
   let statusPill = ''
@@ -2137,13 +2140,15 @@ function buildPropertyCard(listing, savedIds = []) {
           ${isPremium ? `<span class="pc-pill pc-pill--premium">Premium</span>` : ''}
           ${statusPill}
         </div>
-        <!-- Top-right: heart save button -->
-        <button class="prop-card-save ${isSaved ? 'saved' : ''}"
-          aria-label="${isSaved ? 'Unsave' : 'Save'} property"
-          onclick="event.stopPropagation();toggleSave('${listing.id}',this)">
-          ${heartSvg(isSaved)}
-        </button>
       </div>
+      <!-- Heart save button — sibling of .prop-card-img so it can be
+           positioned over the image on desktop and inside the white body
+           on mobile (CSS handles both placements). -->
+      <button class="prop-card-save ${isSaved ? 'saved' : ''}"
+        aria-label="${isSaved ? 'Unsave' : 'Save'} property"
+        onclick="event.stopPropagation();toggleSave('${listing.id}',this)">
+        ${heartSvg(isSaved)}
+      </button>
       <div class="prop-card-body">
         <!-- Price + bed/bath meta on one row, like the reference -->
         <div class="prop-card-price-row">
