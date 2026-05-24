@@ -301,7 +301,14 @@ body{
   font-size: 15px; font-weight: 400;
   padding: 14px 0; letter-spacing: .005em;
 }
-.lx-search-seg input::placeholder{ color: rgba(241,235,220,.55) }
+.lx-search-seg input::placeholder{
+  color: rgba(241,235,220,.55);
+  /* Smooth the per-character placeholder swaps so the typewriter reads
+     fluidly instead of snapping. Only opacity is animated, so it stays
+     cheap to render. */
+  transition: opacity .08s linear;
+}
+.lx-search-seg input{ caret-color: var(--lx-accent); }
 .lx-search-div{ width:1px; height:28px; background:rgba(250,247,240,.18); flex-shrink:0; margin:0 16px }
 .lx-search-type{
   position: relative;
@@ -1080,7 +1087,7 @@ body::before{
             <path d="M12 22s7-7.58 7-13a7 7 0 1 0-14 0c0 5.42 7 13 7 13z"/>
             <circle cx="12" cy="9" r="2.5"/>
           </svg>
-          <input type="text" id="lx-q" placeholder="County, Town or Eircode…" autocomplete="off" aria-label="Search location"/>
+          <input type="text" id="lx-q" placeholder="Search by County…" autocomplete="off" aria-label="Search location"/>
         </div>
 
         <div class="lx-search-div" aria-hidden="true"></div>
@@ -1274,6 +1281,102 @@ function luxeSearch(){
   window.location.href = 'pages/search.html?' + qs.toString()
 }
 window.luxeSearch = luxeSearch
+
+// ── Typewriter placeholder — rotates through Irish search phrases
+//    like Zoopla / Daft. Pauses when the input is focused or has text;
+//    resumes when blurred + empty. Respects prefers-reduced-motion. ─
+;(function lxTypewriter(){
+  var input = document.getElementById('lx-q')
+  if (!input) return
+
+  // Reduced-motion users get a clean static placeholder
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    input.placeholder = 'Search by County, Town or Eircode…'
+    return
+  }
+
+  var phrases = [
+    'Search by County…',
+    'Search by Town…',
+    'Search by Eircode…',
+    'Search near a train station…',
+    'Search by Area…',
+    'Search by Dublin postcode…',
+    'Search by neighbourhood…',
+    'Search by BER rating…'
+  ]
+  // Pace: ms per character + pause at each end. Tuned so the loop reads
+  // naturally — about 7s per phrase end-to-end.
+  var TYPE_MS  = 70
+  var ERASE_MS = 40
+  var HOLD_MS  = 1600          /* hold after typing the full phrase */
+  var GAP_MS   = 350           /* gap after erasing, before next phrase */
+
+  var pi = 0, ci = 0, mode = 'type', timer = null, paused = false
+
+  function tick(){
+    if (paused) return                   /* user is interacting — bail */
+    var current = phrases[pi]
+    if (mode === 'type'){
+      ci++
+      input.placeholder = current.slice(0, ci)
+      if (ci >= current.length){
+        mode = 'hold'
+        timer = setTimeout(function(){ mode = 'erase'; tick() }, HOLD_MS)
+        return
+      }
+      timer = setTimeout(tick, TYPE_MS)
+    } else if (mode === 'erase'){
+      ci--
+      input.placeholder = current.slice(0, ci)
+      if (ci <= 0){
+        pi = (pi + 1) % phrases.length
+        mode = 'type'
+        timer = setTimeout(tick, GAP_MS)
+        return
+      }
+      timer = setTimeout(tick, ERASE_MS)
+    }
+  }
+
+  function start(){
+    if (paused) return
+    if (input.value) return            /* don't compete with typed input */
+    if (timer) return                  /* already running */
+    ci = 0; mode = 'type'
+    input.placeholder = ''
+    timer = setTimeout(tick, GAP_MS)
+  }
+  function stop(){
+    paused = true
+    if (timer) { clearTimeout(timer); timer = null }
+  }
+  function resume(){
+    paused = false
+    if (!input.value && document.activeElement !== input) start()
+  }
+
+  // Pause as soon as the user starts interacting; restore a friendly
+  // static placeholder while focused so they have context to type
+  input.addEventListener('focus', function(){
+    stop()
+    input.placeholder = 'County, Town, Eircode, area…'
+  })
+  input.addEventListener('blur', function(){
+    if (!input.value) resume()
+  })
+  input.addEventListener('input', function(){
+    if (input.value) stop()
+    else resume()
+  })
+  // Pause when the tab is hidden so we don't burn cycles in the background
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) stop()
+    else resume()
+  })
+
+  start()
+})();
 
 // ── Google Places autocomplete on the hero input ────────────────────
 // Loaded asynchronously via the <script> tag at the bottom of the page;
