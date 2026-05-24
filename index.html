@@ -495,7 +495,114 @@ body.lx-home.lx-scrolled .nav{
 }
 .lx-county-arrow svg{ width: 14px; height: 14px }
 
-/* ═══════════ Why Movin pillars ═════════════════════════════════════════ */
+/* ═══════════ Why Movin — DESKTOP-ONLY editorial split section ════════════
+   Hidden on phones (<768px) where the screen real estate is too valuable
+   for marketing copy. Renders as an asymmetric two-column on tablet+:
+   • Left:  oversized Playfair statement + lede + link
+   • Right: three numbered pillars stacked vertically
+   ═══════════════════════════════════════════════════════════════════════ */
+.lx-why{ display: none }              /* hidden by default — see ≥ 768px below */
+
+@media (min-width: 768px){
+  .lx-why{ display: block }
+  .lx-why-grid{
+    display: grid !important;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .lx-why-lead{
+    position: sticky; top: 100px;
+  }
+}
+@media (min-width: 1100px){
+  .lx-why-grid{ grid-template-columns: 1fr 1fr; gap: 120px }
+}
+
+.lx-why-headline{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(40px, 5.4vw, 64px);
+  font-weight: 900;
+  color: var(--lx-ink);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  margin: 22px 0 28px;
+}
+.lx-why-headline em{
+  font-style: italic; font-weight: 400; color: var(--lx-accent);
+}
+.lx-why-lede{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 17px; line-height: 1.75;
+  color: var(--lx-muted-on-light);
+  font-weight: 400;
+  max-width: 48ch;
+  margin-bottom: 32px;
+}
+.lx-why-link{
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase;
+  color: var(--lx-accent); text-decoration: none;
+  padding: 12px 0;
+  border-bottom: 1.5px solid var(--lx-accent);
+  transition: gap .2s ease, color .2s ease;
+}
+.lx-why-link:hover{ gap: 14px; color: #c9642a }
+.lx-why-link svg{ transition: transform .2s ease }
+.lx-why-link:hover svg{ transform: translateX(2px) }
+
+/* Pillar list — vertical with numbered ticks */
+.lx-why-pillars{
+  display: flex; flex-direction: column; gap: 36px;
+}
+.lx-why-pillar{
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  padding: 28px 0;
+  border-top: 1px solid var(--lx-line);
+}
+.lx-why-pillar:first-child{ padding-top: 0; border-top: none }
+.lx-why-num{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 44px; font-weight: 900;
+  color: var(--lx-accent);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-style: italic;
+}
+.lx-why-title{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--lx-ink);
+  letter-spacing: -.02em;
+  line-height: 1.25;
+  margin: 0 0 10px;
+}
+.lx-why-body{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; line-height: 1.7;
+  color: var(--lx-muted-on-light);
+  font-weight: 400;
+  margin: 0;
+  max-width: 56ch;
+}
+
+/* Dark mode — Why Movin */
+[data-theme="dark"] .lx-why-headline{ color: var(--lx-paper) }
+[data-theme="dark"] .lx-why-headline em{ color: #ffb98a }
+[data-theme="dark"] .lx-why-lede{ color: var(--lx-muted-on-dark) }
+[data-theme="dark"] .lx-why-pillar{ border-top-color: #38342a }
+[data-theme="dark"] .lx-why-title{ color: var(--lx-paper) }
+[data-theme="dark"] .lx-why-body{ color: var(--lx-muted-on-dark) }
+[data-theme="dark"] .lx-why-num{ color: #ffb98a }
+[data-theme="dark"] .lx-why-link{ color: #ffb98a; border-bottom-color: #ffb98a }
+[data-theme="dark"] .lx-why-link:hover{ color: #fff }
+
+/* Legacy .lx-pillar* classes retained for any other consumers (no-op when
+   the new .lx-why section is the only user, but harmless to keep). */
 .lx-pillars{
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
 }
@@ -902,32 +1009,49 @@ body.lx-home.lx-scrolled .nav{
   </div>
 </section>
 
-<!-- ═══════════════ WHY MOVIN ═══════════════════════════════════════════ -->
-<section class="lx-band lx-band--cream">
-  <div class="lx-wrap">
-    <div class="lx-band-head">
-      <div>
-        <span class="lx-eyebrow">Why Movin</span>
-        <h2 class="lx-headline" style="margin-top:18px">
-          Ireland's fairest <em style="font-style:italic;font-weight:400;color:var(--lx-green)">property marketplace</em>.
-        </h2>
-      </div>
+<!-- ═══════════════ WHY MOVIN ═══════════════════════════════════════════
+     Desktop-only (hidden on phones via CSS). Redesigned as an editorial
+     split: oversized statement headline on the left, three vertical
+     pillars on the right with numbered ticks. Brand-only palette,
+     restrained orange for accents. ═══════════════════════════════════ -->
+<section class="lx-band lx-band--cream lx-why" id="lx-why">
+  <div class="lx-wrap lx-why-grid">
+    <div class="lx-why-lead">
+      <span class="lx-eyebrow">Why Movin</span>
+      <h2 class="lx-why-headline">
+        Ireland's <em>fairest</em> property marketplace.
+      </h2>
+      <p class="lx-why-lede">
+        We rebuilt the Irish property portal from the ground up — no listing
+        fees for private sellers, no inflated commission tiers for agents,
+        no algorithm games. Just the homes, presented the way they deserve.
+      </p>
+      <a href="pages/about.html" class="lx-why-link">
+        Read about Movin
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+      </a>
     </div>
-    <div class="lx-pillars">
-      <div class="lx-pillar">
-        <div class="lx-pillar-num">01 — Editorial</div>
-        <h3 class="lx-pillar-title">Photographed. Verified. Presented.</h3>
-        <p class="lx-pillar-body">Every listing is reviewed by our team within 24 hours. Photos are checked, BER ratings verified, and addresses validated — so you never waste a viewing.</p>
+    <div class="lx-why-pillars">
+      <div class="lx-why-pillar">
+        <span class="lx-why-num">01</span>
+        <div>
+          <h3 class="lx-why-title">Editorial. Verified. Presented.</h3>
+          <p class="lx-why-body">Every listing is reviewed by our team within 24 hours — photos checked, BER ratings verified, addresses validated. You never waste a viewing on a misleading listing.</p>
+        </div>
       </div>
-      <div class="lx-pillar">
-        <div class="lx-pillar-num">02 — Free</div>
-        <h3 class="lx-pillar-title">Your first listing is on us.</h3>
-        <p class="lx-pillar-body">Private sellers and landlords list their first property completely free. Agents start with one free listing, then a flat rate that beats every legacy portal in the country.</p>
+      <div class="lx-why-pillar">
+        <span class="lx-why-num">02</span>
+        <div>
+          <h3 class="lx-why-title">Your first listing is on us.</h3>
+          <p class="lx-why-body">Private sellers and landlords list their first property completely free. Agents start with one free listing, then a flat rate that beats every legacy portal in the country.</p>
+        </div>
       </div>
-      <div class="lx-pillar">
-        <div class="lx-pillar-num">03 — Local</div>
-        <h3 class="lx-pillar-title">Made in Ireland 🇮🇪</h3>
-        <p class="lx-pillar-body">Built in Ireland for the Irish market — Eircode-aware, BER-aware, county-aware, and tuned to how Irish people actually search for homes.</p>
+      <div class="lx-why-pillar">
+        <span class="lx-why-num">03</span>
+        <div>
+          <h3 class="lx-why-title">Made in Ireland.</h3>
+          <p class="lx-why-body">Built in Ireland for the Irish market — Eircode-aware, BER-aware, county-aware, tuned to how Irish people actually search for homes.</p>
+        </div>
       </div>
     </div>
   </div>
