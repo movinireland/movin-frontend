@@ -217,10 +217,40 @@ body{
   color: var(--lx-paper);
   overflow: hidden;
   display: flex; flex-direction: column;
+  /* Fallback green gradient so the hero never paints empty before
+     the photo ::before layer is composited */
+  background: linear-gradient(160deg, var(--lx-ink) 0%, var(--lx-ink-deep) 100%);
+  isolation: isolate;
+}
+/* Photo layer — sits behind everything, gets the slow Ken Burns animation.
+   Slightly oversized (110%) + offset so the transform stays within the
+   hero crop without showing edges. */
+.lx-hero::before{
+  content: ""; position: absolute; inset: -5%;
+  background-image: var(--lx-hero-image-url);
+  background-size: cover;
+  background-position: center;
+  z-index: -2;
+  transform: scale(1.04);
+  animation: lxKenBurns 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Cinematic vignette overlay — dark at the edges, transparent in the
+   middle so the photo breathes and the headline reads cleanly */
+.lx-hero::after{
+  content: ""; position: absolute; inset: 0;
   background:
-    linear-gradient(180deg, rgba(7,37,28,.45) 0%, rgba(7,37,28,.40) 40%, rgba(7,37,28,.78) 100%),
-    var(--lx-hero-image-url) center/cover no-repeat,
-    linear-gradient(160deg, var(--lx-ink) 0%, var(--lx-ink-deep) 100%);
+    linear-gradient(180deg, rgba(7,37,28,.45) 0%, rgba(7,37,28,.40) 40%, rgba(7,37,28,.82) 100%),
+    radial-gradient(ellipse 110% 80% at 50% 30%, transparent 0%, rgba(7,37,28,.25) 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Slow zoom + pan — barely perceptible movement, ~28s loop */
+@keyframes lxKenBurns{
+  0%   { transform: scale(1.04) translate3d(0, 0, 0) }
+  50%  { transform: scale(1.10) translate3d(-1.5%, -1%, 0) }
+  100% { transform: scale(1.06) translate3d(1%, -.8%, 0) }
 }
 .lx-hero-inner{
   position: relative; z-index: 1;
@@ -705,9 +735,131 @@ body.lx-home.lx-scrolled .nav{
   box-shadow: 0 12px 28px -8px rgba(224,123,63,.6) !important;
 }
 
+/* ═══════════ HOMEPAGE ANIMATIONS ════════════════════════════════════════
+   Tasteful, editorial — slow Ken Burns hero, staggered hero entrance,
+   soft pulse on the Search CTA, scroll-revealed band sections. Everything
+   respects prefers-reduced-motion (block at the bottom of this file).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Hero copy entrance — staggered fade-up (headline → lede → search → stats)
+   The .lx-hero-inner is direct child of .lx-hero, so we target its children
+   in order. Each item starts invisible and slides up into place. */
+.lx-hero-copy > .lx-display,
+.lx-hero-copy > .lx-lede,
+.lx-hero-copy > .lx-search-pill,
+.lx-hero-copy > .lx-hero-stats{
+  opacity: 0;
+  transform: translateY(24px);
+  animation: lxHeroIn .9s cubic-bezier(.2,.7,.2,1) both;
+}
+.lx-hero-copy > .lx-display     { animation-delay: .15s }
+.lx-hero-copy > .lx-lede        { animation-delay: .35s }
+.lx-hero-copy > .lx-search-pill { animation-delay: .55s }
+.lx-hero-copy > .lx-hero-stats  { animation-delay: .80s }
+@keyframes lxHeroIn{
+  to{ opacity: 1; transform: none }
+}
+
+/* Soft pulse on the orange Search button — gentle outward halo that
+   fades out, repeating every 3.6s. Draws the eye without being noisy. */
+.lx-search-go{ position: relative; overflow: visible }
+.lx-search-go::before{
+  content: ""; position: absolute; inset: 0;
+  border-radius: inherit;
+  border: 2px solid var(--lx-accent);
+  pointer-events: none;
+  opacity: 0;
+  animation: lxPulseRing 3.6s ease-out 1.4s infinite;
+}
+@keyframes lxPulseRing{
+  0%   { opacity: 0;   transform: scale(1)    }
+  20%  { opacity: .55; transform: scale(1)    }
+  100% { opacity: 0;   transform: scale(1.18) }
+}
+
+/* Hero ART tag + arrows + scroll affordance — micro-motion */
+@keyframes lxFloatIn{
+  0%   { opacity: 0; transform: translateY(8px) }
+  100% { opacity: 1; transform: none }
+}
+
+/* Scroll-revealed sections — each band fades up as it enters the viewport.
+   The .lx-reveal class is toggled by a tiny IntersectionObserver at the
+   bottom of the page. The initial state hides the content; the revealed
+   state shows it with a smooth fade-up. */
+.lx-band.lx-reveal{
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1);
+  will-change: opacity, transform;
+}
+.lx-band.lx-reveal.lx-in{
+  opacity: 1;
+  transform: none;
+}
+
+/* County tiles stagger when their parent band reveals */
+.lx-band.lx-reveal .lx-county{
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.lx-band.lx-reveal.lx-in .lx-county{ opacity: 1; transform: none }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(1){ transition-delay: .05s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(2){ transition-delay: .10s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(3){ transition-delay: .15s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(4){ transition-delay: .20s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(5){ transition-delay: .25s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(6){ transition-delay: .30s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(7){ transition-delay: .35s }
+.lx-band.lx-reveal.lx-in .lx-county:nth-child(8){ transition-delay: .40s }
+
+/* Featured property cards stagger the same way */
+.lx-band.lx-reveal .lx-featured-grid > .prop-card{
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .6s cubic-bezier(.2,.7,.2,1), transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card{ opacity: 1; transform: none }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(1){ transition-delay: .08s }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(2){ transition-delay: .16s }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(3){ transition-delay: .24s }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(4){ transition-delay: .32s }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(5){ transition-delay: .40s }
+.lx-band.lx-reveal.lx-in .lx-featured-grid > .prop-card:nth-child(6){ transition-delay: .48s }
+
+/* Slow atmospheric drift on the body radial tints — barely perceptible */
+body::before{
+  animation: lxAtmoDrift 40s ease-in-out infinite alternate;
+}
+@keyframes lxAtmoDrift{
+  0%   { transform: translate3d(0, 0, 0) }
+  50%  { transform: translate3d(2%, 1%, 0) }
+  100% { transform: translate3d(-1%, 2%, 0) }
+}
+
+/* Search-pill hover lift (in addition to the existing button hover) */
+.lx-search-pill{ transition: box-shadow .25s ease, transform .25s ease }
+.lx-search-pill:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 30px 64px -20px rgba(0,0,0,.6);
+}
+
+/* Reduce-motion safety net — kills every homepage animation */
 @media (prefers-reduced-motion: reduce){
   .lx-county, .lx-featured-grid .prop-card,
-  .lx-btn, .lx-county-arrow{ transition: none !important; animation: none !important }
+  .lx-btn, .lx-county-arrow,
+  .lx-hero::before, .lx-search-go::before,
+  body::before,
+  .lx-hero-copy > *, .lx-band.lx-reveal,
+  .lx-band.lx-reveal .lx-county,
+  .lx-band.lx-reveal .lx-featured-grid > .prop-card,
+  .lx-search-pill{
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 /* ═══════════ MOBILE TUNING (≤ 767px) ════════════════════════════════════
@@ -1208,6 +1360,32 @@ async function loadLuxeFeatured(){
     }).join('')
   } catch(e){ /* leave grid empty silently */ }
 }
+
+// ── Scroll-reveal — fade-up band sections (Featured, Explore, Why Movin,
+//    Final CTA) as they enter the viewport. The hero animates on load
+//    without needing the observer. Respects prefers-reduced-motion: if
+//    the user has it on, we skip the observer entirely and content
+//    starts visible. ────────────────────────────────────────────────
+;(function lxScrollReveal(){
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (prefersReduced || !('IntersectionObserver' in window)) return
+
+  // Tag every band that's NOT the hero so the CSS hides them by default,
+  // then reveals once each enters the viewport.
+  var bands = document.querySelectorAll('.lx-band')
+  bands.forEach(function(b){ b.classList.add('lx-reveal') })
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        e.target.classList.add('lx-in')
+        io.unobserve(e.target)            // one-shot — don't re-animate on scroll-up
+      }
+    })
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' })
+
+  bands.forEach(function(b){ io.observe(b) })
+})();
 
 // Boot
 if (typeof renderNav === 'function') renderNav('')
