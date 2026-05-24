@@ -1530,23 +1530,74 @@ details.mort-section{
   font-weight: 400 !important;
 }
 
-/* Features grid */
+/* Features grid — responsive: 2 columns on phones, 3+ on wider viewports.
+   Compact tiles so 20+ features don't stretch the page vertically. */
 .feat-grid{
   display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
-  gap: 12px !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 10px !important;
+}
+@media (min-width: 560px){
+  .feat-grid{ grid-template-columns: repeat(3, 1fr) !important; gap: 12px !important }
+}
+@media (min-width: 900px){
+  .feat-grid{ grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; gap: 12px !important }
+}
+
+/* Collapsible — show first 6, hide the rest until the toggle is clicked.
+   Applied only when there are > 6 features (server-injected modifier class). */
+.feat-grid.feat-grid--collapsible > .feat-item:nth-child(n+7){ display: none }
+.feat-grid.feat-grid--collapsible.open > .feat-item:nth-child(n+7){ display: flex }
+
+/* "Show all N features" / "Show fewer" toggle button */
+.feat-toggle{
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 14px;
+  padding: 11px 18px;
+  background: transparent;
+  border: 1.5px solid var(--ll-line);
+  border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ll-ink);
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.feat-toggle:hover{ background: var(--ll-paper); border-color: var(--ll-accent); color: var(--ll-accent) }
+.feat-toggle:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(224,123,63,.30);
+}
+.feat-toggle svg{ transition: transform .25s cubic-bezier(.2,.7,.2,1) }
+.feat-toggle[data-open="1"] svg{ transform: rotate(180deg) }
+[data-theme="dark"] .feat-toggle{
+  color: #f1ebdc; border-color: #38342a;
+}
+[data-theme="dark"] .feat-toggle:hover{
+  background: #242219; border-color: var(--ll-accent); color: var(--ll-accent);
 }
 .feat-item{
-  display: flex !important; align-items: center; gap: 12px !important;
+  display: flex !important; align-items: center; gap: 10px !important;
   background: var(--ll-paper) !important;
   border: 1px solid var(--ll-line) !important;
-  border-radius: 14px !important;
-  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  padding: 11px 14px !important;
   font-family: 'DM Sans', sans-serif !important;
-  font-size: 14px !important;
+  font-size: 13.5px !important;
   font-weight: 500 !important;
   color: var(--ll-ink) !important;
+  line-height: 1.25;
+  min-height: 56px;            /* comfortable WCAG tap target */
+  /* Truncate long labels (e.g. "High-speed broadband") on narrow screens */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: border-color .18s ease, transform .15s ease, background .18s ease;
+}
+@media (min-width: 560px){
+  .feat-item{ font-size: 14px !important; padding: 13px 16px !important; min-height: 60px }
 }
 .feat-item:hover{
   border-color: var(--ll-accent) !important;
@@ -1554,14 +1605,18 @@ details.mort-section{
   transform: translateY(-1px);
 }
 .feat-ico{
-  width: 36px !important; height: 36px !important;
-  border-radius: 10px !important;
+  width: 32px !important; height: 32px !important;
+  border-radius: 9px !important;
   background: rgba(26,92,69,.10) !important;
   color: var(--ll-green) !important;
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.feat-ico svg{ color: var(--ll-green) !important; stroke: var(--ll-green) !important }
+.feat-ico svg{ color: var(--ll-green) !important; stroke: var(--ll-green) !important; width: 16px; height: 16px }
+@media (min-width: 560px){
+  .feat-ico{ width: 36px !important; height: 36px !important; border-radius: 10px !important }
+  .feat-ico svg{ width: 18px; height: 18px }
+}
 
 /* ── Right sidebar — agent + price + actions ──────────────────────── */
 .rp-card{
@@ -1834,12 +1889,12 @@ details[open] > summary .loc-summary-chev{ transform: rotate(180deg) }
   margin-bottom: 1.5rem !important;
   text-align: center !important;
 }
-/* Share grid — 4 columns on phones, slight breathing room */
+/* Share grid — 3 columns (WhatsApp · Facebook · Copy link) */
 .share-grid{
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 14px !important;
-  max-width: 460px;
+  max-width: 380px;
   margin: 0 auto;
 }
 .share-opt{
@@ -3121,60 +3176,111 @@ details.mort-section,
 
         var galleryHTML = buildGallery(L)
 
-        // ── Features grid — data-driven so every amenity (original + Phase 1)
-        //    renders the same way and adding a new flag is one row. Falls back
-        //    to a clean check SVG for features without a custom icon.
+        // ── Features grid — data-driven, every amenity has a semantically
+        //    correct inline SVG so the icon always matches the label.
+        //    All icons share the same 24×24 viewBox, 2px stroke, currentColor
+        //    treatment so they read as one icon set.
+        var FEAT_SVG = {
+          parking:         '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 17V8h3.5a2.5 2.5 0 0 1 0 5H9"/>',
+          garden:          '<path d="M12 22V11"/><path d="M12 11c0-4 3-7 7-7-1 4-3 7-7 7z"/><path d="M12 14c0-3-2-5-5-5 1 3 2 5 5 5z"/>',
+          garage:          '<path d="M3 11 12 4l9 7"/><path d="M5 10v11h14V10"/><line x1="7" y1="14" x2="17" y2="14"/><line x1="7" y1="18" x2="17" y2="18"/>',
+          alarm:           '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+          wheelchair:      '<circle cx="13" cy="4" r="2"/><path d="M11 6v6h5l2 4"/><circle cx="11" cy="18" r="4"/>',
+          ensuite:         '<path d="M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path d="M6 12V6a2 2 0 0 1 2-2 2 2 0 0 1 2 2"/><line x1="9" y1="7" x2="11" y2="7"/><line x1="6" y1="20" x2="6" y2="22"/><line x1="18" y1="20" x2="18" y2="22"/>',
+          dishwasher:      '<rect x="4" y="3" width="16" height="18" rx="2"/><line x1="4" y1="9" x2="20" y2="9"/><circle cx="8" cy="6" r=".8" fill="currentColor" stroke="none"/><circle cx="11" cy="6" r=".8" fill="currentColor" stroke="none"/><path d="M9 14h6"/><path d="M9 17h6"/>',
+          washer_dryer:    '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="5"/><circle cx="12" cy="13" r="2"/><circle cx="8" cy="6" r=".8" fill="currentColor" stroke="none"/>',
+          fireplace:       '<path d="M12 22c4-2 6-5 6-9 0-3-2-5-3-7 0 3-3 3-3 6 0-4-3-5-3-9-2 2-3 5-3 9 0 4 2 7 6 10z"/>',
+          central_heating: '<rect x="3" y="5" width="18" height="14" rx="1"/><line x1="7" y1="5" x2="7" y2="19"/><line x1="11" y1="5" x2="11" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/><line x1="19" y1="5" x2="19" y2="19"/>',
+          air_con:         '<rect x="2" y="5" width="20" height="7" rx="1"/><line x1="6" y1="8" x2="18" y2="8"/><path d="M7 16c0 1.5 1 1.5 1 3"/><path d="M12 16c0 1.5 1 1.5 1 3"/><path d="M17 16c0 1.5 1 1.5 1 3"/>',
+          balcony:         '<rect x="5" y="3" width="14" height="9" rx="1"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="5" y1="12" x2="5" y2="21"/><line x1="19" y1="12" x2="19" y2="21"/><line x1="9" y1="12" x2="9" y2="21"/><line x1="13" y1="12" x2="13" y2="21"/><line x1="2" y1="21" x2="22" y2="21"/>',
+          terrace:         '<path d="M2 21h20"/><path d="M4 21V10h16v11"/><line x1="4" y1="14" x2="20" y2="14"/><line x1="4" y1="17" x2="20" y2="17"/>',
+          patio:           '<path d="M3 21h18"/><path d="M6 21V11h12v10"/><path d="M3 11h18l-2-4H5z"/><line x1="10" y1="14" x2="10" y2="21"/><line x1="14" y1="14" x2="14" y2="21"/>',
+          broadband:       '<path d="M2 9a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r="1.2" fill="currentColor" stroke="none"/>',
+          solar_panels:    '<circle cx="6" cy="6" r="2"/><line x1="6" y1="2" x2="6" y2="3"/><line x1="2" y1="6" x2="3" y2="6"/><line x1="3.2" y1="3.2" x2="3.9" y2="3.9"/><rect x="3" y="12" width="18" height="9" rx="1"/><line x1="3" y1="16.5" x2="21" y2="16.5"/><line x1="9" y1="12" x2="9" y2="21"/><line x1="15" y1="12" x2="15" y2="21"/>',
+          ev_charger:      '<rect x="6" y="3" width="12" height="14" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/><path d="M10 17v4"/><path d="M14 17v4"/><path d="M9 21h6"/>',
+          heat_pump:       '<rect x="2" y="6" width="20" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M12 9.5l1.5 2.5h-3z"/><line x1="5" y1="9" x2="6" y2="9"/><line x1="18" y1="9" x2="19" y2="9"/>',
+          pet_friendly:    '<circle cx="6" cy="9" r="1.6"/><circle cx="10" cy="5" r="1.6"/><circle cx="14" cy="5" r="1.6"/><circle cx="18" cy="9" r="1.6"/><path d="M9 13a3 3 0 0 1 6 0c0 2.5 3 3.5 3 6a3 3 0 0 1-3 3 3 3 0 0 1-3-1 3 3 0 0 1-3 1 3 3 0 0 1-3-3c0-2.5 3-3.5 3-6z"/>',
+          furnished:       '<path d="M4 18v-5a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v5"/><path d="M2 18h20v2H2z"/><path d="M6 20v2"/><path d="M18 20v2"/><path d="M7 10V8a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/>',
+          gated:           '<rect x="4" y="11" width="16" height="10" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.2" fill="currentColor" stroke="none"/>',
+          lift:            '<rect x="4" y="3" width="16" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><polyline points="7 9 9 7 11 9"/><polyline points="13 15 15 17 17 15"/>',
+          pool:            '<path d="M2 16c2 0 2 1.6 4 1.6s2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6"/><path d="M2 20c2 0 2 1.6 4 1.6s2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6"/><path d="M7 13V5a2 2 0 0 1 4 0"/><path d="M13 13V5a2 2 0 0 1 4 0"/>',
+          hot_tub:         '<path d="M3 11h18v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/><path d="M3 11V8a2 2 0 0 1 4 0v3"/><circle cx="9" cy="4" r="1"/><circle cx="12" cy="5" r=".8"/><circle cx="14" cy="3.5" r=".7"/>',
+          view_sea:        '<path d="M2 11h20"/><path d="M2 15c2 0 2 1.6 4 1.6s2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6"/><path d="M2 19c2 0 2 1.6 4 1.6s2-1.6 4-1.6 2 1.6 4 1.6 2-1.6 4-1.6 2 1.6 4 1.6"/><circle cx="17" cy="6" r="2"/>',
+          view_mountain:   '<path d="M3 20l6-10 4 6 3-4 5 8H3z"/><circle cx="8" cy="6" r="1.5"/>',
+          view_city:       '<rect x="3" y="9" width="5" height="12"/><rect x="10" y="3" width="5" height="18"/><rect x="17" y="13" width="4" height="8"/>',
+          view_river:      '<path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/><path d="M3 13c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/><path d="M3 18c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>'
+        }
+        function _featSvg(key){
+          var p = FEAT_SVG[key]
+          if (!p) {
+            // Fallback — clean check, in case a new flag is added without an icon
+            return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+          }
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'
+        }
         var FEAT_SPECS = [
           // Core
-          ['parking',         'Parking',           'icon-parking'],
-          ['garden',          'Garden',            'icon-garden'],
-          ['garage',          'Garage',            'icon-garage'],
-          ['alarm',           'Alarm',             'icon-alarm'],
-          ['wheelchair',      'Wheelchair access', 'icon-wheelchair'],
-          ['ensuite',         'Ensuite bathroom',  'icon-bath'],
+          ['parking',         'Parking',              'parking'],
+          ['garden',          'Garden',               'garden'],
+          ['garage',          'Garage',               'garage'],
+          ['alarm',           'Alarm',                'alarm'],
+          ['wheelchair',      'Wheelchair access',    'wheelchair'],
+          ['ensuite',         'Ensuite bathroom',     'ensuite'],
           // Comfort & climate
-          ['dishwasher',      'Dishwasher',        ''],
-          ['washer_dryer',    'Washer / dryer',    ''],
-          ['fireplace',       'Fireplace',         ''],
-          ['central_heating', 'Central heating',   ''],
-          ['air_con',         'Air conditioning',  ''],
+          ['dishwasher',      'Dishwasher',           'dishwasher'],
+          ['washer_dryer',    'Washer / dryer',       'washer_dryer'],
+          ['fireplace',       'Fireplace',            'fireplace'],
+          ['central_heating', 'Central heating',      'central_heating'],
+          ['air_con',         'Air conditioning',     'air_con'],
           // Outdoor
-          ['balcony',         'Balcony',           ''],
-          ['terrace',         'Terrace',           ''],
-          ['patio',           'Patio',             ''],
+          ['balcony',         'Balcony',              'balcony'],
+          ['terrace',         'Terrace',              'terrace'],
+          ['patio',           'Patio',                'patio'],
           // Energy & connectivity
-          ['broadband',       'High-speed broadband', ''],
-          ['solar_panels',    'Solar panels',      ''],
-          ['ev_charger',      'EV charger',        ''],
-          ['heat_pump',       'Heat pump',         ''],
+          ['broadband',       'High-speed broadband', 'broadband'],
+          ['solar_panels',    'Solar panels',         'solar_panels'],
+          ['ev_charger',      'EV charger',           'ev_charger'],
+          ['heat_pump',       'Heat pump',            'heat_pump'],
           // Lifestyle & building
-          ['pet_friendly',    'Pet-friendly',      'icon-pets'],
-          ['furnished',       'Furnished',         'icon-sofa'],
-          ['gated',           'Gated community',   ''],
-          ['lift',            'Lift',              ''],
+          ['pet_friendly',    'Pet-friendly',         'pet_friendly'],
+          ['furnished',       'Furnished',            'furnished'],
+          ['gated',           'Gated community',      'gated'],
+          ['lift',            'Lift',                 'lift'],
           // Summer-rental
-          ['pool',            'Swimming pool',     ''],
-          ['hot_tub',         'Hot tub / Jacuzzi', '']
+          ['pool',            'Swimming pool',        'pool'],
+          ['hot_tub',         'Hot tub / Jacuzzi',    'hot_tub']
         ]
-        var VIEW_LABELS = { sea:'Sea view', mountain:'Mountain view', city:'City view', river:'River / lake view' }
-        var checkSvg =
-          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1a5c45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-            '<polyline points="20 6 9 17 4 12"/></svg>'
+        var VIEW_LABELS = {
+          sea:      ['Sea view',         'view_sea'],
+          mountain: ['Mountain view',    'view_mountain'],
+          city:     ['City view',        'view_city'],
+          river:    ['River / lake view','view_river']
+        }
 
         var featRows = ''
         FEAT_SPECS.forEach(function(spec){
           if (!L[spec[0]]) return
-          var ico = spec[2]
-            ? '<svg width="14" height="14" style="color:#1a5c45"><use href="/icons.svg#' + spec[2] + '"/></svg>'
-            : checkSvg
-          featRows += '<div class="feat-item"><div class="feat-ico">' + ico + '</div>' + spec[1] + '</div>'
+          featRows += '<div class="feat-item"><div class="feat-ico">' + _featSvg(spec[2]) + '</div>' + spec[1] + '</div>'
         })
         // view_type is a single-value enum — render the matching label only
         if (L.view_type && VIEW_LABELS[L.view_type]) {
-          featRows += '<div class="feat-item"><div class="feat-ico">' + checkSvg + '</div>' + VIEW_LABELS[L.view_type] + '</div>'
+          var v = VIEW_LABELS[L.view_type]
+          featRows += '<div class="feat-item"><div class="feat-ico">' + _featSvg(v[1]) + '</div>' + v[0] + '</div>'
         }
+        // Count features so we can collapse beyond a threshold on mobile.
+        var _featCount = (featRows.match(/feat-item/g) || []).length
         var featuresHTML = featRows
-          ? '<div class="detail-section"><h2>Features</h2><div class="feat-grid">' + featRows + '</div></div>'
+          ? '<div class="detail-section"><h2>Features</h2>' +
+              '<div class="feat-grid' + (_featCount > 6 ? ' feat-grid--collapsible' : '') + '" data-count="' + _featCount + '">' +
+                featRows +
+              '</div>' +
+              (_featCount > 6
+                ? '<button type="button" class="feat-toggle" onclick="this.previousElementSibling.classList.toggle(\'open\');this.dataset.open=this.previousElementSibling.classList.contains(\'open\')?\'1\':\'0\';this.querySelector(\'span\').textContent=this.dataset.open===\'1\'?\'Show fewer\':\'Show all \'+(' + _featCount + ')+\' features\'">' +
+                    '<span>Show all ' + _featCount + ' features</span>' +
+                    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>' +
+                  '</button>'
+                : '') +
+            '</div>'
           : ''
 
         var callBtn = L.lister_phone
@@ -3336,10 +3442,6 @@ details.mort-section,
               '<div class="share-opt" onclick="copyLink();closeShareDrawer()">' +
                 '<div class="share-icon si-copy"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>' +
                 '<span class="share-label">Copy link</span>' +
-              '</div>' +
-              '<div class="share-opt" onclick="window.print();closeShareDrawer()">' +
-                '<div class="share-icon si-print"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#e07b3f" stroke-width="2" stroke-linecap="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>' +
-                '<span class="share-label">Print</span>' +
               '</div>' +
             '</div>' +
           '</div>' +
