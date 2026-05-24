@@ -433,12 +433,83 @@
     padding: 0 18px 14px !important;
     color: var(--lxs-paper);
   }
-  /* Hide the old free-text search row + the Buy/Rent type pills
-     (these are still active in JS, just visually replaced by the new
-     compact chip rail below) */
+  /* Hide the old free-text search row (revealed on demand via the
+     header search icon) and the legacy in-bar search-chip wrap.
+     The type-pill row (.sr-pills) stays — it's the primary listing-type
+     selector and we re-skin it as editorial tabs below. */
   body.lx-search .sr-search-row{ display: none !important }
-  body.lx-search .sr-pills{ display: none !important }
   body.lx-search #search-chip-wrap{ display: none !important }
+
+  /* ── Listing-type tabs (Buy / Rent / Room for rent / Summer / New) ── */
+  /* This row is the most important navigation on the page — show it
+     prominently directly under the header, ABOVE the filter chip rail. */
+  body.lx-search .sr-pills{
+    display: flex !important;
+    align-items: center;
+    gap: 8px !important;
+    padding: 10px 0 14px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid rgba(250,247,240,.08);
+    margin-bottom: 14px;
+  }
+  body.lx-search .sr-pills::-webkit-scrollbar{ display: none }
+
+  /* Individual type pill */
+  body.lx-search .sr-pills .pill{
+    flex-shrink: 0;
+    height: 38px;
+    padding: 0 18px !important;
+    border: 1px solid rgba(250,247,240,.22) !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    color: rgba(250,247,240,.85) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    letter-spacing: .04em !important;
+    line-height: 1 !important;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .12s ease !important;
+    white-space: nowrap;
+  }
+  body.lx-search .sr-pills .pill:hover{
+    background: rgba(250,247,240,.08) !important;
+    border-color: rgba(250,247,240,.40) !important;
+    color: var(--lxs-paper) !important;
+  }
+  body.lx-search .sr-pills .pill:active{ transform: scale(.96) }
+  body.lx-search .sr-pills .pill.active{
+    background: var(--lxs-accent) !important;
+    border-color: var(--lxs-accent) !important;
+    color: #fff !important;
+    box-shadow: 0 6px 16px -6px rgba(224,123,63,.55);
+  }
+  body.lx-search .sr-pills .pill:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(224,123,63,.32);
+  }
+
+  /* Hide the inline Filters button — the new header already has one,
+     keeping two filter triggers in the same band creates confusion. */
+  body.lx-search .sr-pills .filter-btn{ display: none !important }
+
+  /* Subtle "more →" affordance: fade the right edge of the scrolling
+     pill rail so users know they can scroll for the 5th tab on phones */
+  body.lx-search .sr-topbar{ position: relative }
+  body.lx-search .sr-topbar::after{
+    content: "";
+    position: absolute; right: 0; top: 60px; bottom: 14px;
+    width: 36px; pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--lxs-ink));
+    opacity: 0;
+    transition: opacity .15s ease;
+  }
+  @media (max-width: 600px){
+    body.lx-search .sr-topbar::after{ opacity: 1 }
+  }
 
   /* ── Filter chip rail — neutral by default, brand-orange when active ─ */
   /* Wrap the select inside a position:relative span so we can paint a
@@ -889,6 +960,25 @@
   [data-theme="dark"] body.lx-search .qf-chip{
     color: var(--lxs-paper) !important;
     border-color: rgba(250,247,240,.18) !important;
+  }
+  [data-theme="dark"] body.lx-search .sr-pills{
+    border-bottom-color: rgba(250,247,240,.08) !important;
+  }
+  [data-theme="dark"] body.lx-search .sr-pills .pill{
+    color: rgba(241,235,220,.85) !important;
+    border-color: rgba(250,247,240,.18) !important;
+  }
+  [data-theme="dark"] body.lx-search .sr-pills .pill:hover{
+    background: rgba(126,201,168,.10) !important;
+    border-color: rgba(126,201,168,.40) !important;
+  }
+  [data-theme="dark"] body.lx-search .sr-pills .pill.active{
+    background: var(--lxs-accent) !important;
+    border-color: var(--lxs-accent) !important;
+    color: #fff !important;
+  }
+  [data-theme="dark"] body.lx-search .sr-topbar::after{
+    background: linear-gradient(90deg, transparent, #0a0f0c) !important;
   }
 
   /* ── Mobile tuning ─────────────────────────────────────────────── */
