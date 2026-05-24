@@ -1590,10 +1590,12 @@ details.mort-section{
   color: var(--ll-ink) !important;
   line-height: 1.25;
   min-height: 56px;            /* comfortable WCAG tap target */
-  /* Truncate long labels (e.g. "High-speed broadband") on narrow screens */
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* Long labels (e.g. "High-speed broadband", "Wheelchair access",
+     "Gated community") wrap onto a second line instead of being
+     truncated with an ellipsis — clarity over compactness. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   transition: border-color .18s ease, transform .15s ease, background .18s ease;
 }
 @media (min-width: 560px){
@@ -1780,11 +1782,18 @@ details[open] > summary .loc-summary-chev{ transform: rotate(180deg) }
   color: var(--ll-muted) !important;
   text-transform: none;
 }
-.loc-summary-title{
+.loc-summary-title,
+/* Mortgage summary's inner title <span> has no class — target it
+   positionally so it matches Location & nearby's title exactly. */
+details.mort-section > summary > .mort-label > span:first-child{
   font-family: 'Playfair Display', Georgia, serif !important;
   font-size: clamp(20px, 2.6vw, 26px) !important;
   font-weight: 900 !important; color: var(--ll-ink) !important;
   letter-spacing: -.02em !important;
+  line-height: 1.15 !important;
+}
+[data-theme="dark"] details.mort-section > summary > .mort-label > span:first-child{
+  color: #f1ebdc !important;
 }
 
 /* Property map */
