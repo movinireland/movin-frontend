@@ -1131,18 +1131,16 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════
-     CRITICAL OVERRIDES — these win against every conflicting rule in
-     css/main.css (image fills the card, body overlays the bottom).
-     Uses doubled class selectors for maximum specificity + !important
-     on every property so cascade order can't break the layout.
+     CRITICAL OVERRIDES — full-bleed editorial overlay cards in GRID view
+     only. Scoped to `.listings-grid:not(.listings-list)` so the same
+     selectors don't override list-view cards (which should render in
+     the homepage Featured style — vertical, photo on top, body below).
      ════════════════════════════════════════════════════════════════════ */
-  body.lx-search .prop-card.prop-card{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card{
     aspect-ratio: 3 / 4 !important;
-    display: block !important;          /* override flex from main.css */
+    display: block !important;
   }
-  /* Image container fills the card — kill the 4:3 / 4:5 aspect-ratio
-     and the flex centering from main.css */
-  body.lx-search .prop-card.prop-card > .prop-card-img{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card > .prop-card-img{
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -1154,10 +1152,8 @@
     display: block !important;
     overflow: hidden !important;
   }
-  /* Image element fills its container — override the position:relative
-     from main.css line 1467 that breaks the overlay */
-  body.lx-search .prop-card.prop-card > .prop-card-img > img,
-  body.lx-search .prop-card.prop-card .prop-card-img img{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card > .prop-card-img > img,
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card .prop-card-img img{
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
@@ -1169,14 +1165,10 @@
     margin: 0 !important;
     display: block !important;
   }
-  /* Kill the shimmer-skeleton ::before in main.css line 1458 that
-     leaves a pale-mint band visible if the image takes a beat to load */
-  body.lx-search .prop-card.prop-card > .prop-card-img::before{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card > .prop-card-img::before{
     display: none !important;
   }
-  /* Body overlays the bottom — defeat the white background + static
-     positioning from main.css line 873 */
-  body.lx-search .prop-card.prop-card > .prop-card-body{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card > .prop-card-body{
     position: absolute !important;
     left: 0 !important; right: 0 !important; bottom: 0 !important;
     top: auto !important;
@@ -1187,18 +1179,36 @@
     flex-direction: column !important;
     gap: 8px !important;
   }
-  /* The save-heart button must sit above the body and the photo gradient */
-  body.lx-search .prop-card.prop-card > .prop-card-save{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card > .prop-card-save{
     position: absolute !important;
     top: 18px !important; right: 18px !important;
     bottom: auto !important; left: auto !important;
     z-index: 5 !important;
   }
-  /* Tags row sits above the photo gradient as well */
-  body.lx-search .prop-card.prop-card .prop-card-tags{
+  body.lx-search .listings-grid:not(.listings-list) .prop-card.prop-card .prop-card-tags{
     position: absolute !important;
     top: 18px !important; left: 18px !important;
     z-index: 5 !important;
+  }
+
+  /* ════════════════════════════════════════════════════════════════════
+     LIST-VIEW CRITICAL OVERRIDES — kill the global main.css rules that
+     would otherwise leak through (img `position:relative` from the
+     shimmer block, `.prop-card-img > span` defaults, etc.). These mirror
+     the homepage Featured card behaviour exactly.
+     ════════════════════════════════════════════════════════════════════ */
+  body.lx-search .listings-list .prop-card.prop-card > .prop-card-img > img,
+  body.lx-search .listings-list .prop-card.prop-card .prop-card-img img{
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    display: block !important;
+  }
+  body.lx-search .listings-list .prop-card.prop-card > .prop-card-img::before{
+    display: none !important;
   }
   </style>
 </head>
