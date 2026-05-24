@@ -1229,14 +1229,15 @@ body{
   color: var(--ll-ink-2) !important;
   font-family: 'DM Sans', system-ui, -apple-system, sans-serif !important;
 }
+/* Atmospheric paper texture — pseudo on body sits at z-index:-1 so it
+   never interferes with fixed overlays (.share-drawer, .sticky-cta,
+   .enq-modal, .fsmap) or normal-flow content. */
 body::before{
-  content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
     radial-gradient(900px circle at 90% -10%, rgba(224,123,63,.04) 0%, transparent 60%),
     radial-gradient(700px circle at -10% 90%, rgba(26,92,69,.04) 0%, transparent 60%);
 }
-.nav, .breadcrumb, .listing-page-wrap, .sticky-cta, #similar-section,
-.fsmap, .share-drawer, .enq-modal, footer{ position: relative; z-index: 1 }
 
 /* ── Breadcrumb — editorial caps ─────────────────────────────────── */
 .breadcrumb{
@@ -1806,16 +1807,113 @@ details[open] > summary .loc-summary-chev{ transform: rotate(180deg) }
 }
 
 /* ── Share drawer ─────────────────────────────────────────────────── */
+/* Scrim — deeper backdrop so the cream sheet pops off the page */
+.share-drawer-bg{
+  background: rgba(7,37,28,.55) !important;
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
 .share-drawer{
   background: var(--ll-card) !important;
-  border-radius: 24px 24px 0 0 !important;
-  padding: 1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  border-radius: 28px 28px 0 0 !important;
+  padding: 1.25rem 1.5rem calc(2rem + env(safe-area-inset-bottom, 0px)) !important;
+  box-shadow: 0 -16px 48px -10px rgba(14,61,46,.30) !important;
+  max-width: 560px !important;
+}
+/* Drag handle — universal "this is a sheet" affordance */
+.share-handle{
+  width: 44px !important; height: 4px !important;
+  background: var(--ll-line) !important;
+  border-radius: 999px !important;
+  margin: 0 auto 1rem !important;
 }
 .share-title{
   font-family: 'Playfair Display', Georgia, serif !important;
-  font-size: 22px !important; font-weight: 900 !important;
+  font-size: 24px !important; font-weight: 900 !important;
   color: var(--ll-ink) !important;
-  letter-spacing: -.02em !important;
+  letter-spacing: -.025em !important;
+  margin-bottom: 1.5rem !important;
+  text-align: center !important;
+}
+/* Share grid — 4 columns on phones, slight breathing room */
+.share-grid{
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 14px !important;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.share-opt{
+  display: flex !important; flex-direction: column !important;
+  align-items: center; gap: 10px !important;
+  padding: 8px 4px !important;
+  border-radius: 16px !important;
+  cursor: pointer;
+  text-decoration: none !important;
+  -webkit-tap-highlight-color: transparent;
+  transition: background .18s ease, transform .15s ease;
+  min-height: 96px;            /* comfortable WCAG tap target */
+}
+.share-opt:hover{ background: var(--ll-paper) !important }
+.share-opt:active{ transform: scale(.96) }
+.share-opt:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(224,123,63,.30);
+}
+.share-icon{
+  width: 56px !important; height: 56px !important;
+  border-radius: 18px !important;
+  display: flex !important; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.share-opt:hover .share-icon{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -8px rgba(14,61,46,.25);
+}
+/* Brand-tinted backgrounds — keep brand identifiers, brand neutrals for utilities */
+.si-whatsapp{ background: #e8faf1 !important }
+.si-facebook{ background: #e8f0fd !important }
+.si-copy    { background: var(--ll-paper) !important; border: 1px solid var(--ll-line) }
+.si-print   { background: rgba(224,123,63,.12) !important }
+.si-copy svg{ stroke: var(--ll-ink) !important }
+.si-print svg{ stroke: var(--ll-accent) !important }
+
+.share-label{
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: .04em !important;
+  color: var(--ll-muted) !important;
+  text-align: center !important;
+  line-height: 1.3;
+}
+
+/* ── Desktop centering — sheet becomes a modal at ≥ 768px ────────── */
+@media (min-width: 768px){
+  .share-drawer-bg.open{
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+  .share-drawer{
+    position: relative !important;
+    inset: auto !important;
+    bottom: auto !important; left: auto !important; right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    border-radius: 24px !important;
+    padding: 1.75rem 1.75rem 1.75rem !important;
+    box-shadow: 0 32px 64px -24px rgba(14,61,46,.40) !important;
+    animation: lxShareIn .26s cubic-bezier(.2,.7,.2,1) both;
+  }
+  .share-drawer.open{ transform: none !important }
+  .share-handle{ display: none !important }
+  @keyframes lxShareIn{
+    from{ opacity: 0; transform: scale(.96) translateY(8px) }
+    to{   opacity: 1; transform: scale(1) translateY(0)   }
+  }
 }
 
 /* ── Enquiry modal ────────────────────────────────────────────────── */
@@ -1959,13 +2057,26 @@ details[open] > summary .loc-summary-chev{ transform: rotate(180deg) }
 }
 [data-theme="dark"] #similar-list > div:hover{ border-color: var(--ll-accent) !important }
 
+[data-theme="dark"] .share-drawer-bg{
+  background: rgba(7,15,12,.70) !important;
+}
 [data-theme="dark"] .share-drawer,
 [data-theme="dark"] .enq-modal-card{
   background: #1c1b16 !important; border-color: #38342a !important;
   box-shadow: 0 32px 64px -24px rgba(0,0,0,.7) !important;
 }
+[data-theme="dark"] .share-handle{ background: #38342a !important }
 [data-theme="dark"] .share-title,
 [data-theme="dark"] .enq-modal-head h2{ color: #f1ebdc !important }
+[data-theme="dark"] .share-label{ color: #a8a496 !important }
+[data-theme="dark"] .share-opt:hover{ background: #242219 !important }
+[data-theme="dark"] .si-whatsapp{ background: rgba(37,211,102,.14) !important }
+[data-theme="dark"] .si-facebook{ background: rgba(24,119,242,.18) !important }
+[data-theme="dark"] .si-copy{
+  background: #242219 !important; border-color: #38342a !important;
+}
+[data-theme="dark"] .si-copy svg{ stroke: #f1ebdc !important }
+[data-theme="dark"] .si-print{ background: rgba(224,123,63,.18) !important }
 [data-theme="dark"] .enq-modal .form-input,
 [data-theme="dark"] .enq-modal .form-textarea{
   background: #14130f !important;
