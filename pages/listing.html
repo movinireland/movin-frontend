@@ -2945,6 +2945,33 @@
   }
   window.openEnquiryModal  = openEnquiryModal
   window.closeEnquiryModal = closeEnquiryModal
+
+  // ── Deep-link: ?enquire=1 auto-opens the enquiry modal once the
+  //    listing data has finished rendering. Used by the "Enquire Now"
+  //    button on the search-page property cards so users can enquire
+  //    in one tap from the results list. ────────────────────────────
+  ;(function autoOpenEnquireFromUrl(){
+    try{
+      var qs = new URLSearchParams(window.location.search)
+      if (qs.get('enquire') !== '1') return
+      var tries = 0
+      var iv = setInterval(function(){
+        tries++
+        if (window.__listing) {
+          clearInterval(iv)
+          // Strip the param so a refresh / back doesn't loop the modal open
+          try {
+            qs.delete('enquire')
+            var clean = window.location.pathname + (qs.toString() ? ('?' + qs.toString()) : '') + window.location.hash
+            window.history.replaceState({}, '', clean)
+          } catch(_) {}
+          openEnquiryModal()
+        } else if (tries > 60) {
+          clearInterval(iv)  /* give up after ~6s if listing never loads */
+        }
+      }, 100)
+    } catch(_) {}
+  })();
   document.addEventListener('keydown', function(e){
     if (e.key === 'Escape' &&
         document.getElementById('enq-modal') &&

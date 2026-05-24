@@ -568,6 +568,36 @@ body.lx-home.lx-scrolled .nav{
 [data-theme="dark"] .pac-item-query{ color: var(--lx-paper) !important }
 [data-theme="dark"] body.lx-home.lx-scrolled .nav{ background: rgba(10,15,12,.85) !important }
 
+/* ── Dark-mode hero search pill — more refined, professional glass ─── */
+/* In light mode the pill sits over a photo, so the dark vignette gives
+   it enough contrast. In dark mode the page-chrome is already deep,
+   so a softer mint-tinted glass reads as a deliberate UI surface
+   rather than a flat overlay. */
+[data-theme="dark"] .lx-search-pill{
+  background: linear-gradient(180deg, rgba(28,27,22,.78) 0%, rgba(10,15,12,.82) 100%) !important;
+  border: 1px solid rgba(126,201,168,.22) !important;
+  box-shadow:
+    0 24px 56px -20px rgba(0,0,0,.75),
+    0 0 0 1px rgba(126,201,168,.06) inset !important;
+}
+[data-theme="dark"] .lx-search-seg input{ color: #f1ebdc !important }
+[data-theme="dark"] .lx-search-seg input::placeholder{ color: rgba(241,235,220,.55) !important }
+[data-theme="dark"] .lx-search-seg svg{ color: #7ec9a8 !important; opacity: 1 !important }
+[data-theme="dark"] .lx-search-div{ background: rgba(126,201,168,.18) !important }
+[data-theme="dark"] .lx-search-type{ color: #f1ebdc !important }
+[data-theme="dark"] .lx-search-type svg.lx-house{ color: #7ec9a8 !important; opacity: 1 !important }
+[data-theme="dark"] .lx-search-type .lx-caret{ color: rgba(241,235,220,.6) !important }
+[data-theme="dark"] .lx-search-type-label{ color: #f1ebdc !important }
+/* Mobile dark variant — tighten chips inside the pill */
+@media (max-width: 720px){
+  [data-theme="dark"] .lx-search-seg{ background: rgba(126,201,168,.06) !important }
+  [data-theme="dark"] .lx-search-type{ background: rgba(126,201,168,.06) !important }
+}
+/* Search button — keep its solid orange but deepen the glow in dark mode */
+[data-theme="dark"] .lx-search-go{
+  box-shadow: 0 12px 28px -8px rgba(224,123,63,.6) !important;
+}
+
 @media (prefers-reduced-motion: reduce){
   .lx-county, .lx-featured-grid .prop-card,
   .lx-btn, .lx-county-arrow{ transition: none !important; animation: none !important }
