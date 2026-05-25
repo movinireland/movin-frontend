@@ -1825,19 +1825,21 @@ details.mort-section > summary > .mort-label > span:first-child{
   overflow: hidden;
 }
 
-/* ── In-page Enquire buttons hidden — the sticky bottom bar is now
-   the single source of truth for enquiries (matches the LÉXIRE-style
-   reference). The phone-call button + share button + agent card stay
-   visible so users still have full contact context. ───────────────── */
-.rp-btn-enq,
-.btn-enquire{
-  display: none !important;
-}
-/* If the action-strip is now empty (Enquire was its only child), hide
-   it entirely. With phone + share still present, it stays. */
-.action-strip:empty,
-.action-strip:has(> .btn-enquire:only-child){
-  display: none !important;
+/* ── In-page Enquire buttons — MOBILE ONLY: hide them so the sticky
+   bottom bar is the single source of truth for enquiries. On desktop,
+   the sidebar "Send enquiry" button and the action-strip Enquire stay
+   exactly as the original layout intended (per user request to keep
+   the desktop experience untouched). ───────────────────────────────── */
+@media (max-width: 767px){
+  .rp-btn-enq,
+  .btn-enquire{
+    display: none !important;
+  }
+  /* If the action-strip is now empty (Enquire was its only child),
+     hide it entirely. With phone + share still present, it stays. */
+  .action-strip:has(> .btn-enquire:only-child){
+    display: none !important;
+  }
 }
 
 /* ── Sticky bottom CTA — floating dark-glass PILL (LÉXIRE reference)
@@ -4112,11 +4114,17 @@ details.mort-section,
           reveals.forEach(function(el){ el.classList.add('in') })
         }
 
-        // 2) Build sticky mobile CTA from rendered price + listing type
+        // 2) Build sticky mobile CTA — slide it in after a beat. The
+        //    new layout (heart + share + Enquire) doesn't need the
+        //    price element, so we just trigger .show. The optional
+        //    .sticky-cta-price is filled if present (legacy renders).
         var price = pc.querySelector('.d-price')
         var bar = document.getElementById('sticky-cta')
-        if (price && bar){
-          bar.querySelector('.sticky-cta-price').textContent = price.textContent.trim()
+        if (bar){
+          var stickyPrice = bar.querySelector('.sticky-cta-price')
+          if (price && stickyPrice) {
+            stickyPrice.textContent = price.textContent.trim()
+          }
           // Show after a beat so the entrance feels deliberate
           setTimeout(function(){
             bar.classList.add('show')
