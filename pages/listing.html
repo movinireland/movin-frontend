@@ -1289,17 +1289,38 @@ body::before{
   background: var(--ll-paper);
 }
 .gallery-hero{
-  height: clamp(340px, 56vh, 580px) !important;
+  /* Mobile-first sizing — shorter so even a letterboxed source photo
+     doesn't leave huge dark bands. Scales up on tablets / desktop. */
+  height: clamp(260px, 44vh, 580px) !important;
   position: relative;
   cursor: zoom-in;
   background: var(--ll-ink-deep) !important;
+  /* Hard reset of any flex centering inherited from earlier rules — a
+     direct-child <img> with width/height 100% must paint edge-to-edge. */
+  display: block !important;
 }
-.gallery-hero img{
-  width: 100%; height: 100%; object-fit: cover;
+@media (min-width: 768px){
+  .gallery-hero{ height: clamp(380px, 56vh, 580px) !important }
+}
+.gallery-hero img,
+.gallery-hero img#gallery-main-img{
+  /* Force the photo to fill the hero with maximum specificity — defeats
+     every legacy `.gallery-hero img` rule including ones that set
+     object-fit: contain or display: inline. */
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block !important;
   transition: transform .6s cubic-bezier(.2,.7,.2,1) !important;
 }
 .gallery-hero:hover img{ transform: scale(1.02) }
 .gallery-hero-placeholder{
+  position: absolute; inset: 0;
   width: 100%; height: 100%;
   display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, var(--ll-mint), var(--ll-paper)) !important;
