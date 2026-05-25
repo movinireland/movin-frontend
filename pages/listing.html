@@ -930,17 +930,9 @@
     height:220px !important;
   }
 
-  /* ── Sticky bottom CTA — same orange button as Enquire ───────────── */
-  .sticky-cta{
-    background:rgba(255,255,255,.94) !important;
-    backdrop-filter:saturate(1.4) blur(14px);
-    -webkit-backdrop-filter:saturate(1.4) blur(14px);
-    border-top:1px solid var(--mv-line) !important;
-    box-shadow:0 -6px 22px rgba(14,61,46,.06) !important;
-    padding:10px 14px !important;
-  }
-  .sticky-cta-price{ color:var(--mv-green) !important; font-weight:700 !important; font-family:'Playfair Display', Georgia, serif !important }
-  .sticky-cta-btn{ height:46px !important; padding:0 22px !important }
+  /* (Legacy .sticky-cta opaque-white styling removed — the
+     transparent-glass treatment in lx-listing-skin is the single
+     source of truth for the sticky bar in both themes.) */
 
   /* ════════════════════════════════════════════════════════════════════════
      DARK MODE — mobile listing layer
@@ -1052,12 +1044,8 @@
   /* Property map embed border */
   [data-theme="dark"] details.loc-section #property-map{ border-color:#38342a !important }
 
-  /* Sticky bottom CTA — translucent dark */
-  [data-theme="dark"] .sticky-cta{
-    background:rgba(20,19,15,.94) !important;
-    border-top-color:#38342a !important;
-    box-shadow:0 -6px 22px rgba(0,0,0,.5) !important;
-  }
+  /* (Sticky CTA dark-mode rule removed — handled by the transparent
+     glass treatment in the lx-listing-skin block.) */
 
   /* Breadcrumb / search-back row at top */
   [data-theme="dark"] .breadcrumb,
@@ -1842,29 +1830,32 @@ details.mort-section > summary > .mort-label > span:first-child{
   }
 }
 
-/* ── Sticky bottom CTA — floating dark-glass PILL (LÉXIRE reference)
-   Pill-shaped bar that floats inset from the screen edges with full-
-   rounded corners, dark-green translucent surface, cream-outlined
-   icon circles + solid orange "Enquire Now" pill. ─────────────────── */
+/* ── Sticky bottom CTA — MOBILE-ONLY floating glass pill ───────────
+   True frosted-glass: no brand colour fill, just a heavy backdrop blur
+   so the bar adopts whatever is behind it. Adapts to both light and
+   dark themes via background-alpha pairs. Hidden on desktop. ──────── */
 .sticky-cta{
   /* Float — inset from edges, pill-shaped */
   left: 12px !important;
   right: 12px !important;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  top: auto !important;
   width: auto !important;
   max-width: 720px !important;
   margin: 0 auto !important;
 
-  background: rgba(7,37,28,.88) !important;
-  -webkit-backdrop-filter: saturate(1.4) blur(20px);
-  backdrop-filter: saturate(1.4) blur(20px);
-  border: 1px solid rgba(250,247,240,.10) !important;
-  border-top: 1px solid rgba(250,247,240,.10) !important;   /* override the legacy "border-top only" */
+  /* Glass surface — very low alpha + heavy blur. The blur is what
+     gives the frosted-glass feel; the tint is just enough for icons
+     to remain legible against varied content behind the bar. */
+  background: rgba(255,255,255,.30) !important;
+  -webkit-backdrop-filter: saturate(1.6) blur(28px);
+  backdrop-filter: saturate(1.6) blur(28px);
+  border: 1px solid rgba(255,255,255,.55) !important;
   border-radius: 999px !important;
   box-shadow:
-    0 16px 40px -12px rgba(0,0,0,.45),
-    0 4px 12px rgba(0,0,0,.20) !important;
-  padding: 8px !important;                                    /* tight padding — children sit inside the pill */
+    0 16px 40px -12px rgba(14,61,46,.25),
+    0 0 0 1px rgba(14,61,46,.04) inset !important;
+  padding: 8px !important;
   padding-left: 8px !important;
   padding-right: 8px !important;
 
@@ -1872,10 +1863,30 @@ details.mort-section > summary > .mort-label > span:first-child{
   align-items: center;
   gap: 8px;
 }
+
+/* MOBILE-ONLY visibility — sticky bar shows on phones (≤ 767px) and
+   stays hidden on tablets/desktop. Desktop keeps the original in-page
+   Enquire button per user request. */
+@media (min-width: 768px){
+  .sticky-cta{ display: none !important }
+}
+
+/* DARK MODE — flip the glass tint and the icon stroke colour. Keeps
+   the SAME frosted-glass feel, just inverted alphas. */
+[data-theme="dark"] .sticky-cta{
+  background: rgba(20,19,15,.40) !important;
+  border-color: rgba(250,247,240,.18) !important;
+  box-shadow:
+    0 16px 40px -12px rgba(0,0,0,.55),
+    0 0 0 1px rgba(250,247,240,.04) inset !important;
+}
 /* Hide the legacy price element if it's still in the DOM from an
    older render — the new layout uses heart + share + button only. */
 .sticky-cta-price{ display: none !important }
 
+/* Icon buttons — adapt to whatever theme is active. In light mode the
+   glass is bright, so stroke = brand ink. In dark mode the glass is
+   dark, so stroke = cream. */
 .sticky-cta-icon{
   width: 44px !important;
   height: 44px !important;
@@ -1884,18 +1895,17 @@ details.mort-section > summary > .mort-label > span:first-child{
   align-items: center;
   justify-content: center;
   background: transparent !important;
-  border: 1.5px solid rgba(250,247,240,.32) !important;
+  border: 1.5px solid rgba(14,61,46,.30) !important;
   border-radius: 50% !important;
-  color: var(--ll-paper) !important;
+  color: var(--ll-ink) !important;
   cursor: pointer;
   transition: background .18s ease, border-color .18s ease, color .18s ease, transform .12s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .sticky-cta-icon svg{ width: 19px; height: 19px; stroke-width: 1.8 }
 .sticky-cta-icon:hover{
-  background: rgba(250,247,240,.10) !important;
-  border-color: rgba(250,247,240,.55) !important;
-  color: #fff !important;
+  background: rgba(255,255,255,.30) !important;
+  border-color: var(--ll-ink) !important;
 }
 .sticky-cta-icon:active{ transform: scale(.94) }
 .sticky-cta-icon:focus-visible{
@@ -1908,6 +1918,21 @@ details.mort-section > summary > .mort-label > span:first-child{
   color: var(--ll-accent) !important;
 }
 .sticky-cta-icon.saved svg{ fill: currentColor }
+
+/* Dark-mode icon treatment */
+[data-theme="dark"] .sticky-cta-icon{
+  border-color: rgba(250,247,240,.35) !important;
+  color: var(--ll-paper) !important;
+}
+[data-theme="dark"] .sticky-cta-icon:hover{
+  background: rgba(250,247,240,.10) !important;
+  border-color: var(--ll-paper) !important;
+}
+[data-theme="dark"] .sticky-cta-icon.saved{
+  background: rgba(224,123,63,.22) !important;
+  border-color: var(--ll-accent) !important;
+  color: var(--ll-accent) !important;
+}
 
 .sticky-cta-btn{
   flex: 1 1 auto !important;
@@ -1932,28 +1957,9 @@ details.mort-section > summary > .mort-label > span:first-child{
   box-shadow: 0 12px 28px -8px rgba(224,123,63,.70) !important;
 }
 
-/* Dark theme keeps the same dark-glass treatment — only deepen the
-   shadow and tweak the icon-border alpha. */
-[data-theme="dark"] .sticky-cta{
-  background: rgba(7,15,12,.92) !important;
-  border-top-color: rgba(250,247,240,.06) !important;
-  box-shadow: 0 -12px 36px rgba(0,0,0,.55) !important;
-}
-[data-theme="dark"] .sticky-cta-icon{
-  background: transparent !important;
-  border-color: rgba(250,247,240,.28) !important;
-  color: var(--ll-paper) !important;
-}
-[data-theme="dark"] .sticky-cta-icon:hover{
-  background: rgba(250,247,240,.08) !important;
-  border-color: rgba(250,247,240,.50) !important;
-  color: #fff !important;
-}
-[data-theme="dark"] .sticky-cta-icon.saved{
-  background: rgba(224,123,63,.20) !important;
-  border-color: var(--ll-accent) !important;
-  color: var(--ll-accent) !important;
-}
+/* (Legacy dark-mode .sticky-cta override removed — the transparent-
+   glass treatment + dark-mode pair earlier in this skin is the single
+   source of truth now.) */
 
 /* ── "Listed by" agent / agency concierge card ──────────────────── */
 .lx-lb-card{
