@@ -1813,19 +1813,19 @@ details.mort-section > summary > .mort-label > span:first-child{
   overflow: hidden;
 }
 
-/* ── In-page Enquire buttons — MOBILE ONLY: hide them so the sticky
-   bottom bar is the single source of truth for enquiries. On desktop,
-   the sidebar "Send enquiry" button and the action-strip Enquire stay
-   exactly as the original layout intended (per user request to keep
-   the desktop experience untouched). ───────────────────────────────── */
+/* ── In-page Enquire / action-strip — MOBILE ONLY: hide everything
+   so the sticky bottom bar is the single source of truth for save +
+   share + enquire. On desktop, the sidebar "Send enquiry" button and
+   the action-strip stay exactly as the original layout intended. ──── */
 @media (max-width: 767px){
   .rp-btn-enq,
   .btn-enquire{
     display: none !important;
   }
-  /* If the action-strip is now empty (Enquire was its only child),
-     hide it entirely. With phone + share still present, it stays. */
-  .action-strip:has(> .btn-enquire:only-child){
+  /* The action-strip (Enquire + phone + 3-dot share) sits above
+     "About this property" on mobile and duplicates the sticky bar's
+     functionality — hide it entirely on phones. */
+  .action-strip{
     display: none !important;
   }
 }
