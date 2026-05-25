@@ -1804,13 +1804,15 @@ details.mort-section > summary > .mort-label > span:first-child{
   overflow: hidden;
 }
 
-/* ── Sticky bottom CTA — heart + share + Enquire Now ──────────────── */
+/* ── Sticky bottom CTA — dark glass with heart + share + Enquire Now
+   Matches the reference: translucent dark-green panel, cream-outlined
+   circular icon buttons, brand-orange CTA pill on the right. ──────── */
 .sticky-cta{
-  background: rgba(255,255,255,.94) !important;
-  -webkit-backdrop-filter: saturate(1.4) blur(16px);
-  backdrop-filter: saturate(1.4) blur(16px);
-  border-top: 1px solid var(--ll-line) !important;
-  box-shadow: 0 -10px 32px rgba(14,61,46,.10) !important;
+  background: rgba(7,37,28,.88) !important;
+  -webkit-backdrop-filter: saturate(1.4) blur(18px);
+  backdrop-filter: saturate(1.4) blur(18px);
+  border-top: 1px solid rgba(250,247,240,.10) !important;
+  box-shadow: 0 -12px 36px rgba(0,0,0,.30) !important;
   padding: 12px 18px !important;
   padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
   display: flex !important;
@@ -1822,32 +1824,32 @@ details.mort-section > summary > .mort-label > span:first-child{
 .sticky-cta-price{ display: none !important }
 
 .sticky-cta-icon{
-  width: 46px !important;
-  height: 46px !important;
+  width: 48px !important;
+  height: 48px !important;
   flex-shrink: 0;
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
-  background: var(--ll-paper) !important;
-  border: 1px solid var(--ll-line) !important;
+  background: transparent !important;
+  border: 1.5px solid rgba(250,247,240,.32) !important;
   border-radius: 50% !important;
-  color: var(--ll-ink) !important;
+  color: var(--ll-paper) !important;
   cursor: pointer;
   transition: background .18s ease, border-color .18s ease, color .18s ease, transform .12s ease;
   -webkit-tap-highlight-color: transparent;
 }
 .sticky-cta-icon:hover{
-  background: #fff !important;
-  border-color: var(--ll-ink) !important;
-  color: var(--ll-accent) !important;
+  background: rgba(250,247,240,.10) !important;
+  border-color: rgba(250,247,240,.55) !important;
+  color: #fff !important;
 }
 .sticky-cta-icon:active{ transform: scale(.94) }
 .sticky-cta-icon:focus-visible{
   outline: none;
-  box-shadow: 0 0 0 3px rgba(224,123,63,.30);
+  box-shadow: 0 0 0 3px rgba(224,123,63,.40);
 }
 .sticky-cta-icon.saved{
-  background: rgba(224,123,63,.12) !important;
+  background: rgba(224,123,63,.18) !important;
   border-color: var(--ll-accent) !important;
   color: var(--ll-accent) !important;
 }
@@ -1856,23 +1858,44 @@ details.mort-section > summary > .mort-label > span:first-child{
 .sticky-cta-btn{
   flex: 1 1 auto !important;
   width: auto !important;
-  padding: 0 24px !important;
-  height: 50px !important;
-  margin-left: auto;
+  padding: 0 28px !important;
+  height: 52px !important;
+  margin-left: auto !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em !important;
+  text-transform: none !important;
+  border-radius: 999px !important;
+  background: var(--ll-accent) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 10px 24px -8px rgba(224,123,63,.55) !important;
+}
+.sticky-cta-btn:hover{
+  background: var(--ll-accent-deep) !important;
+  box-shadow: 0 14px 32px -8px rgba(224,123,63,.70) !important;
 }
 
+/* Dark theme keeps the same dark-glass treatment — only deepen the
+   shadow and tweak the icon-border alpha. */
+[data-theme="dark"] .sticky-cta{
+  background: rgba(7,15,12,.92) !important;
+  border-top-color: rgba(250,247,240,.06) !important;
+  box-shadow: 0 -12px 36px rgba(0,0,0,.55) !important;
+}
 [data-theme="dark"] .sticky-cta-icon{
-  background: rgba(36,34,25,.95) !important;
-  border-color: #38342a !important;
-  color: #f1ebdc !important;
+  background: transparent !important;
+  border-color: rgba(250,247,240,.28) !important;
+  color: var(--ll-paper) !important;
 }
 [data-theme="dark"] .sticky-cta-icon:hover{
-  background: #2a2820 !important;
-  border-color: var(--ll-accent) !important;
-  color: var(--ll-accent) !important;
+  background: rgba(250,247,240,.08) !important;
+  border-color: rgba(250,247,240,.50) !important;
+  color: #fff !important;
 }
 [data-theme="dark"] .sticky-cta-icon.saved{
-  background: rgba(224,123,63,.18) !important;
+  background: rgba(224,123,63,.20) !important;
   border-color: var(--ll-accent) !important;
   color: var(--ll-accent) !important;
 }
