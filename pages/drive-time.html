@@ -328,15 +328,22 @@ body{
 }
 .dt-back:hover{ background: rgba(250,247,240,.18) !important }
 
-/* Point A / Point B input pills */
+/* Point A / Point B input pills — fluid width, no min-width that
+   could push the input off-screen on narrow phones. The input
+   shrinks/grows to fit its container so long location names scroll
+   inside the field instead of overflowing it. */
 .dt-loc{
   background: rgba(250,247,240,.08) !important;
   border: 1px solid rgba(250,247,240,.18) !important;
   border-radius: 999px !important;
   color: #faf7f0 !important;
   padding: 8px 14px !important;
-  min-height: 42px;
-  display: inline-flex !important; align-items: center; gap: 10px;
+  min-height: 44px;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 320px;          /* grow to fill, shrink if needed */
+  min-width: 0;             /* allow shrink below content size */
 }
 .dt-loc:focus-within{
   border-color: var(--lt-accent) !important;
@@ -348,7 +355,10 @@ body{
   font-family: 'DM Sans', sans-serif !important;
   font-size: 14px !important;
   border: none !important; outline: none !important;
-  min-width: 200px;
+  flex: 1 1 auto;           /* fill remaining space in the pill */
+  width: 100%;
+  min-width: 0;             /* this is critical — without it the input
+                               refuses to shrink and text overflows */
 }
 .dt-loc input::placeholder{ color: rgba(241,235,220,.55) !important }
 .dt-loc-tag{
@@ -582,13 +592,27 @@ body{
   .dt-result{ transition: none !important; transform: none !important }
 }
 
-/* Mobile — compact card */
+/* Mobile — compact card + stacked toolbar inputs */
 @media (max-width: 767px){
+  /* Toolbar: back button + Buy pill share row 1; each location input
+     gets its OWN row so long text never overflows the right edge. */
+  .dt-toolbar-row1{ gap: 8px !important }
+  .dt-toolbar-row1 .dt-loc{
+    flex: 1 1 100% !important;   /* full width per row */
+    min-width: 0 !important;
+  }
+  /* Point A / Point B inputs grow to fill their full row */
+  .dt-loc input{ font-size: 15px !important }
+  /* Result card density */
   .dt-result-img{ width: 80px !important; height: 64px !important }
   .dt-result-price{ font-size: 16px !important }
   .dt-result-title{ font-size: 13px !important }
   .dt-distance-row{ font-size: 11px !important }
   .dt-distance-modes{ gap: 8px !important }
+}
+/* Very narrow phones (≤ 380px) — back button + Buy stack too */
+@media (max-width: 380px){
+  .dt-toolbar-row1 .dt-buy-pill{ flex: 1 1 calc(100% - 56px) }
 }
 </style>
 </head>
