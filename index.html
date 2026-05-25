@@ -275,18 +275,24 @@ body{
   color: rgba(241,235,220,.85); font-weight: 400;
 }
 
-/* Unified search pill */
+/* Unified search pill — fully transparent glass in both light and dark.
+   The vignette behind the hero photo guarantees enough contrast for the
+   white text + placeholder, so the pill only needs a hairline edge + a
+   deep backdrop blur to read as a UI surface. */
 .lx-search-pill{
   position: relative;
   display: flex; align-items: center; gap: 0;
   width: min(880px, 100%);
   margin: 0 auto;
-  background: rgba(10,20,17,.55);
-  border: 1px solid rgba(250,247,240,.14);
+  background: rgba(250,247,240,.08);
+  border: 1px solid rgba(250,247,240,.22);
   border-radius: var(--lx-pill);
   padding: 8px 8px 8px 22px;
-  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-  box-shadow: 0 24px 56px -20px rgba(0,0,0,.55);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  backdrop-filter: blur(22px) saturate(1.2);
+  box-shadow:
+    0 24px 56px -20px rgba(0,0,0,.45),
+    0 0 0 1px rgba(250,247,240,.04) inset;
 }
 .lx-search-seg{
   display: flex; align-items: center; gap: 10px;
@@ -712,13 +718,12 @@ body.lx-home.lx-scrolled .nav{
 [data-theme="dark"] .pac-item-query{ color: var(--lx-paper) !important }
 [data-theme="dark"] body.lx-home.lx-scrolled .nav{ background: rgba(10,15,12,.85) !important }
 
-/* ── Dark-mode hero search pill — more refined, professional glass ─── */
-/* In light mode the pill sits over a photo, so the dark vignette gives
-   it enough contrast. In dark mode the page-chrome is already deep,
-   so a softer mint-tinted glass reads as a deliberate UI surface
-   rather than a flat overlay. */
+/* ── Dark-mode hero search pill — same transparent glass treatment ─── */
+/* The hero is already a dark vignette over the photo in both themes —
+   the pill stays as a glass element on top, no fill swap needed. Dark
+   mode just deepens the shadow + uses a mint-tinted hairline edge. */
 [data-theme="dark"] .lx-search-pill{
-  background: linear-gradient(180deg, rgba(28,27,22,.78) 0%, rgba(10,15,12,.82) 100%) !important;
+  background: rgba(7,15,12,.18) !important;
   border: 1px solid rgba(126,201,168,.22) !important;
   box-shadow:
     0 24px 56px -20px rgba(0,0,0,.75),
@@ -967,25 +972,42 @@ body::before{
     letter-spacing: .14em !important;
   }
 
-  /* ── Hero stats — 2 columns, no dividers, condensed ── */
+  /* ── Hero stats — full-width 4-column row on mobile ── */
+  /* Stays on a single row across the hero width so the four numbers
+     read as a continuous editorial ledger ("Live listings · 32 · €0 ·
+     100%"). Compact typography keeps every label legible at 360px. */
   .lx-hero-stats{
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 22px 16px !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0 !important;
     margin-top: 36px !important;
     padding-top: 22px !important;
+    width: 100% !important;
   }
   .lx-hero-stat{
     padding: 0 6px !important;
-    border-right: none !important;
-    text-align: left;
+    border-right: 1px solid rgba(250,247,240,.10) !important;
+    text-align: center !important;
+    min-width: 0;          /* allow tight fit */
   }
+  .lx-hero-stat:last-child{ border-right: none !important }
   .lx-hero-stat-num{
-    font-size: 26px !important;
+    font-size: clamp(18px, 5.4vw, 24px) !important;
     margin-bottom: 4px !important;
+    letter-spacing: -.025em !important;
   }
   .lx-hero-stat-label{
-    font-size: 10px !important;
-    letter-spacing: .22em !important;
+    font-size: 8.5px !important;
+    letter-spacing: .14em !important;
+    line-height: 1.25;
+    /* Wrap long labels onto two lines so "Counties covered" / "Private
+       seller fee" still fit a 4-column row on narrow phones. */
+    white-space: normal;
+  }
+  /* Extra-narrow phones (≤ 360px) keep the 4-column ledger but trim the
+     numbers a touch further so no label gets cut. */
+  @media (max-width: 360px){
+    .lx-hero-stat-num{ font-size: 16px !important }
+    .lx-hero-stat-label{ font-size: 8px !important; letter-spacing: .1em !important }
   }
 
   /* ── Google Places dropdown — full-width tile on mobile ── */
@@ -1112,7 +1134,7 @@ body::before{
       </form>
 
       <div class="lx-hero-stats">
-        <div class="lx-hero-stat"><div class="lx-hero-stat-num">24/7</div><div class="lx-hero-stat-label">Live listings</div></div>
+        <div class="lx-hero-stat"><div class="lx-hero-stat-num" id="lx-hero-live-count">—</div><div class="lx-hero-stat-label">Live listings</div></div>
         <div class="lx-hero-stat"><div class="lx-hero-stat-num">32</div><div class="lx-hero-stat-label">Counties covered</div></div>
         <div class="lx-hero-stat"><div class="lx-hero-stat-num"><em>€0</em></div><div class="lx-hero-stat-label">Private seller fee</div></div>
         <div class="lx-hero-stat"><div class="lx-hero-stat-num">100%</div><div class="lx-hero-stat-label">Irish owned</div></div>
@@ -1464,6 +1486,39 @@ async function loadLuxeFeatured(){
   } catch(e){ /* leave grid empty silently */ }
 }
 
+// ── Live-listings counter — replaces the static "24/7" in the hero
+//    stats with the actual number of active listings on the site.
+//    Uses the same search endpoint and reads `total` (the unfiltered
+//    count returned by the API), falling back to listings.length.
+//    Animates the number from 0 to the live count over ~1.2s. ──────
+async function loadLuxeLiveCount(){
+  var el = document.getElementById('lx-hero-live-count')
+  if (!el || !window.API) return
+  try{
+    var data = await window.API.listings.search({ limit: 1 })
+    var n = (data && data.total) || (data && data.listings ? data.listings.length : 0)
+    if (!n) { el.textContent = '—'; return }
+
+    // Respect reduced-motion — show the final number immediately
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      el.textContent = n.toLocaleString('en-IE')
+      return
+    }
+
+    // Smooth count-up
+    var start = 0
+    var dur   = 1200
+    var t0    = performance.now()
+    function tick(t){
+      var p = Math.min(1, (t - t0) / dur)
+      var v = Math.floor(start + (n - start) * (1 - Math.pow(1 - p, 3)))
+      el.textContent = v.toLocaleString('en-IE')
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  } catch(e){ el.textContent = '—' }
+}
+
 // ── Scroll-reveal — fade-up band sections (Featured, Explore, Why Movin,
 //    Final CTA) as they enter the viewport. The hero animates on load
 //    without needing the observer. Respects prefers-reduced-motion: if
@@ -1494,6 +1549,7 @@ async function loadLuxeFeatured(){
 if (typeof renderNav === 'function') renderNav('')
 if (typeof renderFooter === 'function') setTimeout(renderFooter, 0)
 loadLuxeFeatured()
+loadLuxeLiveCount()
 </script>
 
 <!-- Google Maps + Places — loads asynchronously, calls initLuxeHeroSearch -->
