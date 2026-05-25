@@ -1804,28 +1804,207 @@ details.mort-section > summary > .mort-label > span:first-child{
   overflow: hidden;
 }
 
-/* ── Sticky bottom CTA — refined glass ────────────────────────────── */
+/* ── Sticky bottom CTA — heart + share + Enquire Now ──────────────── */
 .sticky-cta{
-  background: rgba(255,255,255,.92) !important;
+  background: rgba(255,255,255,.94) !important;
   -webkit-backdrop-filter: saturate(1.4) blur(16px);
   backdrop-filter: saturate(1.4) blur(16px);
   border-top: 1px solid var(--ll-line) !important;
   box-shadow: 0 -10px 32px rgba(14,61,46,.10) !important;
   padding: 12px 18px !important;
   padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
 }
-.sticky-cta-price{
-  font-family: 'Playfair Display', Georgia, serif !important;
-  font-weight: 900 !important;
-  color: var(--ll-green) !important;
-  font-size: 22px !important;
+/* Hide the legacy price element if it's still in the DOM from an
+   older render — the new layout uses heart + share + button only. */
+.sticky-cta-price{ display: none !important }
+
+.sticky-cta-icon{
+  width: 46px !important;
+  height: 46px !important;
+  flex-shrink: 0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--ll-paper) !important;
+  border: 1px solid var(--ll-line) !important;
+  border-radius: 50% !important;
+  color: var(--ll-ink) !important;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sticky-cta-icon:hover{
+  background: #fff !important;
+  border-color: var(--ll-ink) !important;
+  color: var(--ll-accent) !important;
+}
+.sticky-cta-icon:active{ transform: scale(.94) }
+.sticky-cta-icon:focus-visible{
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(224,123,63,.30);
+}
+.sticky-cta-icon.saved{
+  background: rgba(224,123,63,.12) !important;
+  border-color: var(--ll-accent) !important;
+  color: var(--ll-accent) !important;
+}
+.sticky-cta-icon.saved svg{ fill: currentColor }
+
+.sticky-cta-btn{
+  flex: 1 1 auto !important;
+  width: auto !important;
+  padding: 0 24px !important;
+  height: 50px !important;
+  margin-left: auto;
+}
+
+[data-theme="dark"] .sticky-cta-icon{
+  background: rgba(36,34,25,.95) !important;
+  border-color: #38342a !important;
+  color: #f1ebdc !important;
+}
+[data-theme="dark"] .sticky-cta-icon:hover{
+  background: #2a2820 !important;
+  border-color: var(--ll-accent) !important;
+  color: var(--ll-accent) !important;
+}
+[data-theme="dark"] .sticky-cta-icon.saved{
+  background: rgba(224,123,63,.18) !important;
+  border-color: var(--ll-accent) !important;
+  color: var(--ll-accent) !important;
+}
+
+/* ── "Listed by" agent / agency concierge card ──────────────────── */
+.lx-lb-card{
+  display: block;
+  max-width: 1240px;
+  margin: 2rem auto 0;
+  padding: 2.25rem 2rem 1.75rem;
+  background: linear-gradient(155deg, var(--ll-ink) 0%, var(--ll-ink-deep) 100%);
+  color: var(--ll-paper);
+  border-radius: 22px;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 18px 44px -20px rgba(14,61,46,.30);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.lx-lb-card:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 28px 56px -20px rgba(14,61,46,.40);
+}
+.lx-lb-card::before{
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle 400px at 90% -20%, rgba(224,123,63,.18) 0%, transparent 60%),
+    radial-gradient(circle 300px at -10% 110%, rgba(126,201,168,.12) 0%, transparent 60%);
+}
+.lx-lb-card > *{ position: relative; z-index: 1 }
+
+.lx-lb-eyebrow{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .24em; text-transform: uppercase;
+  color: var(--ll-accent);
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+.lx-lb-eyebrow::before{
+  content: ""; display: inline-block; width: 28px; height: 1px;
+  background: var(--ll-accent);
+}
+.lx-lb-name{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 900;
+  color: var(--ll-paper);
+  letter-spacing: -.025em;
+  line-height: 1.05;
+  margin: 0 0 14px;
+}
+.lx-lb-sub{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; line-height: 1.6;
+  color: rgba(241,235,220,.78);
+  font-weight: 400;
+  max-width: 56ch;
+  margin: 0 0 24px;
+}
+.lx-lb-meta{
+  display: flex; align-items: center; gap: 16px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(250,247,240,.14);
+}
+.lx-lb-logo,
+.lx-lb-initial{
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+.lx-lb-logo{
+  background: #fff;
+  object-fit: contain;
+  padding: 6px;
+  border: 1px solid rgba(250,247,240,.10);
+}
+.lx-lb-initial{
+  background: rgba(250,247,240,.10);
+  border: 1px solid rgba(250,247,240,.18);
+  color: var(--ll-paper);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px; font-weight: 900;
   letter-spacing: -.02em;
 }
-.sticky-cta-btn{
-  width: auto !important;
-  padding: 0 28px !important;
-  height: 50px !important;
+.lx-lb-meta-text{ flex: 1; min-width: 0 }
+.lx-lb-agent{
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px; font-weight: 700;
+  color: var(--ll-paper);
+  letter-spacing: -.01em;
 }
+.lx-lb-role{
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: .04em;
+  color: var(--ll-accent);
+  margin-top: 4px;
+}
+.lx-lb-arrow{
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(250,247,240,.10);
+  border: 1px solid rgba(250,247,240,.18);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ll-paper);
+  flex-shrink: 0;
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.lx-lb-arrow svg{ width: 16px; height: 16px }
+.lx-lb-card:hover .lx-lb-arrow{
+  background: var(--ll-accent);
+  border-color: var(--ll-accent);
+  transform: rotate(-12deg);
+}
+
+@media (max-width: 767px){
+  .lx-lb-card{
+    margin: 1.5rem 1rem 0;
+    padding: 1.75rem 1.5rem 1.5rem;
+    border-radius: 18px;
+  }
+  .lx-lb-name{ font-size: clamp(24px, 7vw, 30px) }
+  .lx-lb-sub{ font-size: 14px; margin-bottom: 18px }
+  .lx-lb-meta{ gap: 12px; padding-top: 16px }
+  .lx-lb-logo, .lx-lb-initial{ width: 48px; height: 48px; border-radius: 12px }
+  .lx-lb-arrow{ width: 38px; height: 38px }
+}
+
+/* No dark-mode override needed — the card is already dark in both
+   themes (it's a brand-green panel by design). */
 
 /* ── Similar properties — editorial heading ───────────────────────── */
 #similar-section{
@@ -3562,6 +3741,43 @@ details.mort-section,
           '<div class="listing-col-right">' + rpPanel + '</div>' +
           '</div>' +
 
+          // ── "Listed by" agent / agency concierge card ────────────────
+          //    Full-width editorial card above Similar Properties.
+          //    Clicking it navigates to the agent/agency profile page.
+          (function(){
+            var isAgent = (L.lister_role === 'agent') || !!L.agency_name
+            var who = (isAgent && L.agency_name) ? L.agency_name : (L.lister_name || 'Private seller')
+            var safeWho = String(who).replace(/[<>"]/g,'')
+            var safeLister = String(L.lister_name || '').replace(/[<>"]/g,'')
+            var href = (window.agentUrl ? window.agentUrl(L) : '/pages/agent.html?id=' + (L.agency_id || L.user_id || ''))
+            var avatar = (isAgent && L.agency_logo_url)
+              ? '<img src="' + L.agency_logo_url + '" alt="' + safeWho + '" class="lx-lb-logo"/>'
+              : '<div class="lx-lb-initial">' + String(who).charAt(0).toUpperCase() + '</div>'
+            var eyebrow = isAgent ? 'Listed by · Verified agency' : 'Listed by'
+            var subline = isAgent
+              ? 'Browse every home in their portfolio and speak with a dedicated advisor.'
+              : 'Dedicated advisor for this property — typical reply within a few hours.'
+            var roleLine = isAgent
+              ? 'Senior Advisor' + (L.agent_county ? ' · ' + String(L.agent_county).replace(/[<>"]/g,'') : '')
+              : 'Owner · Private listing'
+            return ''
+              + '<a class="lx-lb-card" href="' + href + '" aria-label="View ' + safeWho + ' profile">'
+              +   '<div class="lx-lb-eyebrow">' + eyebrow + '</div>'
+              +   '<h3 class="lx-lb-name">' + safeWho + '</h3>'
+              +   '<p class="lx-lb-sub">' + subline + '</p>'
+              +   '<div class="lx-lb-meta">'
+              +     avatar
+              +     '<div class="lx-lb-meta-text">'
+              +       '<div class="lx-lb-agent">' + (safeLister || safeWho) + '</div>'
+              +       '<div class="lx-lb-role">' + roleLine + '</div>'
+              +     '</div>'
+              +     '<span class="lx-lb-arrow" aria-hidden="true">'
+              +       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>'
+              +     '</span>'
+              +   '</div>'
+              + '</a>'
+          })() +
+
           '<div id="similar-section" style="padding:1rem;max-width:1240px;margin:0 auto">' +
             '<div style="font-family:Playfair Display,serif;font-size:18px;font-weight:700;color:#111;margin-bottom:1rem">Similar properties</div>' +
             '<div id="similar-list"><div class="loading-wrap"><div class="spinner"></div></div></div>' +
@@ -3708,6 +3924,11 @@ details.mort-section,
         if (rpIcon) { rpIcon.setAttribute('fill', isSaved?'#e07b3f':'none'); rpIcon.setAttribute('stroke', isSaved?'#e07b3f':'currentColor') }
         if (rpLabel) rpLabel.textContent = isSaved ? 'Saved' : 'Save'
         if (rpBtn) rpBtn.style.color = isSaved ? '#e07b3f' : '#555'
+        // Update sticky CTA heart
+        var stickyBtn  = document.getElementById('sticky-save-btn')
+        var stickyIcon = document.getElementById('sticky-save-icon')
+        if (stickyBtn)  stickyBtn.classList.toggle('saved', isSaved)
+        if (stickyIcon) stickyIcon.setAttribute('fill', isSaved ? 'currentColor' : 'none')
         toast(isSaved ? 'Saved ♥' : 'Removed from saved')
       } catch(e) { toast(e.message, 'error') }
     }
@@ -3847,12 +4068,20 @@ details.mort-section,
     })()
   </script>
 
-  <!-- Sticky mobile CTA bar — populated post-render -->
+  <!-- Sticky mobile CTA bar — heart + share + enquire. Matches the
+       luxury concierge reference: two circular utility buttons on the
+       left, primary orange "Enquire Now" pill on the right. -->
   <div class="sticky-cta" id="sticky-cta" role="region" aria-label="Property quick actions">
-    <div class="sticky-cta-price">€—</div>
-    <button class="sticky-cta-btn" onclick="openEnquiryModal()">
-      Enquire
+    <button class="sticky-cta-icon" id="sticky-save-btn" onclick="handleSave()" aria-label="Save property">
+      <svg id="sticky-save-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
     </button>
+    <button class="sticky-cta-icon" onclick="openShareDrawer()" aria-label="Share property">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+    </button>
+    <button class="sticky-cta-btn" onclick="openEnquiryModal()">Enquire Now</button>
   </div>
 
   <!-- Lightbox -->
