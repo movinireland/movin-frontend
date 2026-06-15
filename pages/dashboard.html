@@ -3,7 +3,7 @@
   <script>
 (function(){
   var t=localStorage.getItem('movin_theme');
-  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+  if(t&&t!=='auto'&&window.MOVIN_DARK_MODE_ENABLED===true) document.documentElement.setAttribute('data-theme',t); else document.documentElement.setAttribute('data-theme','light');
 })()
 </script>
 <head>
@@ -707,7 +707,7 @@ body::after{
         var statusLabel = (l.status||'draft').replace(/_/g,' ')
         var dotClass = 'dot-' + (l.status||'draft')
         var payBtn = l.status === 'pending_payment'
-          ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\')">Pay to publish</button>'
+          ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\', this)">Pay to publish</button>'
           : ''
         // Status control — only for live listings. Sale listings can be marked
         // "Sale agreed"; rent/share listings "Let agreed". Revertible.
@@ -847,17 +847,44 @@ body::after{
     if (badge) badge.remove()
   }
 
-  async function payForListing(id) {
+  async function payForListing(id, btn) {
+    // The backend route is POST /api/payments/checkout/:listingId — the
+    // listing id goes in the PATH, not the body. (The old code posted to
+    // /api/payments/checkout with the id in the body, which matched no
+    // route, so the button did nothing.)
+    if (btn) { btn.disabled = true; btn.dataset._label = btn.textContent; btn.textContent = 'Loading…' }
+    function restore(){ if (btn) { btn.disabled = false; btn.textContent = btn.dataset._label || 'Pay to publish' } }
     try {
       var token = localStorage.getItem('movin_token')
-      var res = await fetch(window.MOVIN_API_URL + '/api/payments/checkout', {
+      var res = await fetch(window.MOVIN_API_URL + '/api/payments/checkout/' + encodeURIComponent(id), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ listing_id: id })
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
       })
-      var data = await res.json()
-      if (data.checkout_url) window.location.href = data.checkout_url
-    } catch(e) { alert('Payment error: ' + e.message) }
+      var data = {}
+      try { data = await res.json() } catch(_) {}
+
+      if (!res.ok) {
+        alert(data.error || ('Payment could not be started (error ' + res.status + ').'))
+        restore()
+        return
+      }
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url   // → Stripe Checkout
+        return
+      }
+      if (data.free) {
+        // Nothing was owed — listing went straight to review. Refresh the list.
+        alert(data.message || 'No payment required — your listing has been submitted for review.')
+        if (typeof loadListings === 'function') loadListings()
+        else window.location.reload()
+        return
+      }
+      alert('Unexpected response from the payment service. Please try again.')
+      restore()
+    } catch(e) {
+      alert('Payment error: ' + (e.message || 'network problem'))
+      restore()
+    }
   }
 
   // ── Styled confirm modal (replaces window.confirm) ───────────────────
