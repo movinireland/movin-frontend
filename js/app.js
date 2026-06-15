@@ -301,10 +301,37 @@ window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 })()
 
 // ── Dark mode ────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════════
+//  DARK-MODE FEATURE FLAG
+//  ─────────────────────────────────────────────────────────────────────────
+//  false → dark mode is HIDDEN site-wide. The theme toggle button disappears
+//          from every header / mobile menu / drawer. Theme is locked to
+//          light and any previously-saved 'dark' preference is wiped so
+//          returning visitors don't get stuck in dark mode.
+//  true  → dark mode is back. Toggle button shows everywhere, users can
+//          switch to dark, light, or 'auto' (follow system).
+//
+//  TO RE-ENABLE DARK MODE: change this single boolean to `true` and reload.
+//  No other code change required.
+// ═══════════════════════════════════════════════════════════════════════════
+window.MOVIN_DARK_MODE_ENABLED = false
+
 function getSystemTheme() {
   return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 function initTheme() {
+  // Hard-lock to light when dark mode is disabled. Strip any previously
+  // saved dark preference + remove any data-theme attribute the boot
+  // inline-script may have already applied.
+  if (!window.MOVIN_DARK_MODE_ENABLED) {
+    try { localStorage.removeItem('movin_theme') } catch(_) {}
+    document.documentElement.removeAttribute('data-theme')
+    document.documentElement.setAttribute('data-theme', 'light')
+    // Hide every visible theme toggle (desktop nav button, drawer row,
+    // mobile-menu item). Sweep on initial load and after renderNav fires.
+    hideThemeToggles()
+    return
+  }
   var saved = localStorage.getItem('movin_theme')
   if (!saved || saved === 'auto') {
     document.documentElement.removeAttribute('data-theme')
@@ -314,6 +341,35 @@ function initTheme() {
   }
   updateToggleBtn()
 }
+
+// Sweep every theme-toggle UI element across the site and hide it.
+// Run on boot AND after renderNav / drawer renders so new instances
+// get hidden too.
+function hideThemeToggles(){
+  var sel = '.theme-toggle, #mm-theme-toggle, .mm-theme-toggle, #mv-drawer-theme'
+  document.querySelectorAll(sel).forEach(function(el){
+    el.style.setProperty('display', 'none', 'important')
+    // Also remove from tab order so keyboard users don't focus a hidden button
+    el.setAttribute('tabindex', '-1')
+    el.setAttribute('aria-hidden', 'true')
+  })
+}
+// Re-sweep periodically for the first few seconds in case async renders
+// inject new theme buttons after init.
+if (!window.MOVIN_DARK_MODE_ENABLED){
+  var _hideAttempts = 0
+  var _hideInterval = setInterval(function(){
+    hideThemeToggles()
+    if (++_hideAttempts > 12) clearInterval(_hideInterval)   // ~6 seconds
+  }, 500)
+  // Also observe DOM for new injections (e.g. drawer opens later)
+  if (typeof MutationObserver === 'function') {
+    new MutationObserver(hideThemeToggles).observe(document.body || document.documentElement, {
+      childList: true, subtree: true
+    })
+  }
+}
+window.hideThemeToggles = hideThemeToggles
 function updateToggleBtn() {
   var saved = localStorage.getItem('movin_theme') || 'auto'
   var isDark = saved === 'dark' || (saved === 'auto' && getSystemTheme() === 'dark')
@@ -2312,7 +2368,7 @@ function renderFooter() {
       // To bring them back: uncomment the block below and drop real hrefs in.
       // '<div class="footer-apps">…</div>' +
       '<div class="footer-bottom">' +
-        '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Limited · Republic of Ireland</div>' +
+        '<div class="footer-copy">© ' + new Date().getFullYear() + ' Movin Technologies Limited · Registered in the Republic of Ireland · Company No. 817953</div>' +
         '<div class="footer-legal">' +
           '<a href="' + root + 'pages/privacy-policy.html">Privacy</a>' +
           '<a href="' + root + 'pages/terms-of-service.html">Terms</a>' +

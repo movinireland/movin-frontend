@@ -398,6 +398,21 @@
           <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0"/>
           <div class="form-hint" id="price-hint">Enter monthly rent in € for rentals</div>
         </div>
+
+        <!-- Online offers toggle — sale listings only. Lets buyers submit
+             offers through Movin instead of contacting you outside the
+             platform. Hidden for rent / share / summer. -->
+        <div class="form-group" id="offers-toggle-wrap" style="display:none">
+          <label class="form-label">Accept online offers</label>
+          <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;background:#faf7f0;border:1.5px solid #e8e2d3;border-radius:14px;padding:14px 16px;transition:border-color .18s,background .18s" id="offers-toggle-label">
+            <input type="checkbox" id="accept_online_offers" style="margin-top:3px;width:18px;height:18px;accent-color:#e07b3f;cursor:pointer;flex-shrink:0"/>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Playfair Display',Georgia,serif;font-weight:700;color:#0e3d2e;font-size:15px;letter-spacing:-.01em">Let interested buyers submit offers through Movin</div>
+              <div style="font-size:12.5px;color:#6c6f6a;margin-top:4px;line-height:1.55">When enabled, your listing shows a <strong style="color:#e07b3f">Make an offer</strong> button. Buyers enter an amount and a message; you receive every offer by email and can review them in your dashboard. You decide which to accept — no automated acceptance, no commitment.</div>
+            </div>
+          </label>
+        </div>
+
         <div style="display:flex;justify-content:flex-end">
           <button class="btn btn-primary" onclick="goStep(2)">Next: Location →</button>
         </div>
@@ -1039,6 +1054,17 @@
       // Summer-only fields wrap
       var summerWrap = document.getElementById('summer-fields')
       if (summerWrap) summerWrap.style.display = (t === 'summer') ? '' : 'none'
+      // Online offers — sale listings only (you can't take an "offer" on
+      // a monthly rent; that's just a deal). Hide + uncheck for non-sale.
+      var offersWrap = document.getElementById('offers-toggle-wrap')
+      if (offersWrap){
+        var isSale = (t === 'sale' || t === '' || !t)
+        offersWrap.style.display = isSale ? '' : 'none'
+        if (!isSale){
+          var cb = document.getElementById('accept_online_offers')
+          if (cb) cb.checked = false
+        }
+      }
     }
     document.getElementById('listing_type').addEventListener('change', refreshListingTypeFields)
     refreshListingTypeFields()
@@ -1190,6 +1216,11 @@
           garage:          document.getElementById('f-garage').checked,
           alarm:           document.getElementById('f-alarm').checked,
           wheelchair:      document.getElementById('f-wheelchair').checked,
+          // Online offers — only meaningful for sale listings; backend
+          // stores as a boolean column on listings.
+          accept_online_offers: (document.getElementById('listing_type').value === 'sale') &&
+                                !!(document.getElementById('accept_online_offers') &&
+                                   document.getElementById('accept_online_offers').checked),
           ensuite:         !!(document.getElementById('f-ensuite') && document.getElementById('f-ensuite').checked),
           available_from:  document.getElementById('available_from') && document.getElementById('available_from').value || null,
           plan:            (document.querySelector('.plan-opt.on')?.dataset.plan) || 'standard',

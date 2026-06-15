@@ -224,6 +224,30 @@ const enquiries = {
   }
 }
 
+// ── Online offers ─────────────────────────────────────────────────────────────
+// Used when a listing has accept_online_offers=true. Buyers submit an offer
+// amount + their contact details; the lister gets notified by email and can
+// review every offer in their dashboard. Accepting an offer is a separate
+// out-of-band conversation (Movin doesn't auto-bind anyone).
+const offers = {
+  // Submit a new offer on a property
+  async send(listingId, data) {
+    return request('POST', `/api/listings/${listingId}/offer`, data)
+  },
+  // Lister: list every offer received on their listings
+  async inbox() {
+    return request('GET', '/api/offers/inbox')
+  },
+  // Buyer: list every offer they've made
+  async sent() {
+    return request('GET', '/api/offers/sent')
+  },
+  // Lister: mark an offer accepted / rejected / withdrawn (audit only)
+  async respond(id, status) {
+    return request('PUT', `/api/offers/${id}/respond`, { status })
+  }
+}
+
 // ── Payments ──────────────────────────────────────────────────────────────────
 
 const payments = {
