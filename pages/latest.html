@@ -3,10 +3,19 @@
 <script>
 (function(){
   var t=localStorage.getItem('movin_theme');
-  if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);
+  if(t&&t!=='auto'&&window.MOVIN_DARK_MODE_ENABLED===true) document.documentElement.setAttribute('data-theme',t); else document.documentElement.setAttribute('data-theme','light');
 })()
 </script>
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3M2PD5K606"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3M2PD5K606');
+</script>
+
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <title>Latest Listings – Movin.ie</title>
