@@ -83,7 +83,6 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 .status-active{background:#dcfce7;color:#16a34a}
 .status-pending_review{background:#fef3c7;color:#d97706}
 .status-pending{background:#fef3c7;color:#d97706}
-.status-pending_payment{background:#fef3c7;color:#d97706}
 .status-draft{background:#f3f4f6;color:#6b7280}
 .status-expired{background:#fee2e2;color:#dc2626}
 .status-rejected{background:#fee2e2;color:#dc2626}
@@ -596,8 +595,7 @@ body::before{
 }
 .status-active{ background: rgba(26,92,69,.12) !important; color: var(--la-green) !important; border-color: rgba(26,92,69,.30) !important }
 .status-pending,
-.status-pending_review,
-.status-pending_payment{
+.status-pending_review{
   background: rgba(217,119,6,.10) !important; color: #b45309 !important; border-color: rgba(217,119,6,.30) !important;
 }
 .status-draft{ background: rgba(108,111,106,.10) !important; color: var(--la-muted) !important; border-color: rgba(108,111,106,.22) !important }
@@ -783,8 +781,7 @@ body::before{
 [data-theme="dark"] .change-up{ background: rgba(126,201,168,.10) !important; color: #7ec9a8 !important }
 [data-theme="dark"] .status-active{ background: rgba(126,201,168,.10) !important; color: #7ec9a8 !important; border-color: rgba(126,201,168,.30) !important }
 [data-theme="dark"] .status-pending,
-[data-theme="dark"] .status-pending_review,
-[data-theme="dark"] .status-pending_payment{
+[data-theme="dark"] .status-pending_review{
   background: rgba(224,123,63,.10) !important; color: #ffb98a !important; border-color: rgba(224,123,63,.30) !important;
 }
 [data-theme="dark"] .status-draft{ background: rgba(168,164,150,.08) !important; color: #a8a496 !important; border-color: rgba(168,164,150,.22) !important }
@@ -934,7 +931,6 @@ body::before{
               <option value="">All status</option>
               <option value="pending_review">⚠️ Pending review</option>
               <option value="active">Active</option>
-              <option value="pending_payment">Pending payment</option>
               <option value="draft">Draft</option>
               <option value="rejected">Rejected</option>
             </select>
@@ -1317,7 +1313,6 @@ body::before{
         <select class="form-input form-select" id="edit-status">
           <option value="active">Active</option>
           <option value="pending_review">Pending review</option>
-          <option value="pending_payment">Pending payment</option>
           <option value="draft">Draft</option>
           <option value="expired">Expired</option>
           <option value="rejected">Rejected</option>

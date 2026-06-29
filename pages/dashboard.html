@@ -70,7 +70,7 @@
     .listing-actions{display:flex;gap:6px;flex-shrink:0}
     .status-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
     .dot-active{background:#2aaa50}
-    .dot-pending,.dot-pending_review,.dot-pending_payment{background:var(--o)}
+    .dot-pending,.dot-pending_review{background:var(--o)}
     .dot-expired,.dot-rejected{background:#ccc}
     .dot-draft{background:#aaa}
 
@@ -402,7 +402,7 @@ body::after{
 /* Status dots */
 .status-dot{ width: 8px !important; height: 8px !important }
 .dot-active{ background: var(--ld-green) !important; box-shadow: 0 0 0 3px rgba(26,92,69,.15) }
-.dot-pending,.dot-pending_review,.dot-pending_payment{
+.dot-pending,.dot-pending_review{
   background: var(--ld-accent) !important; box-shadow: 0 0 0 3px rgba(224,123,63,.15);
 }
 
@@ -713,11 +713,20 @@ body::after{
       el.innerHTML = listings.map(function(l) {
         var photoUrl = getPhoto(l.primary_photo)
         var thumb = photoUrl ? '<img src="' + photoUrl + '" alt="' + l.title + '" loading="lazy"/>' : '🏡'
-        var statusLabel = (l.status||'draft').replace(/_/g,' ')
-        var dotClass = 'dot-' + (l.status||'draft')
-        var payBtn = l.status === 'pending_payment'
-          ? '<button class="btn btn-orange btn-sm" onclick="payForListing(\'' + l.id + '\', this)">Pay to publish</button>'
-          : ''
+        // Normalise status — listings are free now, so any legacy
+        // pending_payment is treated as pending_review ("Under review").
+        var rawStatus = (l.status === 'pending_payment') ? 'pending_review' : (l.status || 'draft')
+        var STATUS_LABELS = {
+          pending_review: 'Under review',
+          active:         'Live',
+          draft:          'Draft',
+          rejected:       'Changes needed',
+          sale_agreed:    'Sale agreed',
+          let_agreed:     'Let agreed',
+          expired:        'Expired'
+        }
+        var statusLabel = STATUS_LABELS[rawStatus] || rawStatus.replace(/_/g,' ')
+        var dotClass = 'dot-' + rawStatus
         // Status control — only for live listings. Sale listings can be marked
         // "Sale agreed"; rent/share listings "Let agreed". Revertible.
         var statusCtrl = ''
@@ -748,7 +757,6 @@ body::after{
             '<a href="listing.html?id=' + l.id + '" class="btn btn-ghost btn-sm">View</a>' +
             '<a href="list.html?edit=' + l.id + '" class="btn btn-ghost btn-sm">Edit</a>' +
             statusCtrl +
-            payBtn +
             '<button class="btn btn-sm" style="background:#fdf2f2;color:#b91c1c;border:1px solid #fecaca" onclick="deleteListing(\'' + l.id + '\',this)">Delete</button>' +
           '</div>' +
         '</div>'
@@ -856,45 +864,7 @@ body::after{
     if (badge) badge.remove()
   }
 
-  async function payForListing(id, btn) {
-    // The backend route is POST /api/payments/checkout/:listingId — the
-    // listing id goes in the PATH, not the body. (The old code posted to
-    // /api/payments/checkout with the id in the body, which matched no
-    // route, so the button did nothing.)
-    if (btn) { btn.disabled = true; btn.dataset._label = btn.textContent; btn.textContent = 'Loading…' }
-    function restore(){ if (btn) { btn.disabled = false; btn.textContent = btn.dataset._label || 'Pay to publish' } }
-    try {
-      var token = localStorage.getItem('movin_token')
-      var res = await fetch(window.MOVIN_API_URL + '/api/payments/checkout/' + encodeURIComponent(id), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
-      })
-      var data = {}
-      try { data = await res.json() } catch(_) {}
-
-      if (!res.ok) {
-        alert(data.error || ('Payment could not be started (error ' + res.status + ').'))
-        restore()
-        return
-      }
-      if (data.checkout_url) {
-        window.location.href = data.checkout_url   // → Stripe Checkout
-        return
-      }
-      if (data.free) {
-        // Nothing was owed — listing went straight to review. Refresh the list.
-        alert(data.message || 'No payment required — your listing has been submitted for review.')
-        if (typeof loadListings === 'function') loadListings()
-        else window.location.reload()
-        return
-      }
-      alert('Unexpected response from the payment service. Please try again.')
-      restore()
-    } catch(e) {
-      alert('Payment error: ' + (e.message || 'network problem'))
-      restore()
-    }
-  }
+  // (payForListing removed — listings are free, there is no pay-to-publish step.)
 
   // ── Styled confirm modal (replaces window.confirm) ───────────────────
   function movinConfirm(opts){
