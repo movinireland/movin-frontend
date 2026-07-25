@@ -149,6 +149,11 @@
     [data-theme="dark"] .rf-group-label{color:#a8a496}
     [data-theme="dark"] .rf-pill{background:#242219;border-color:#38342a;color:#f1ebdc}
     [data-theme="dark"] .rf-pill--social{background:rgba(126,201,168,.12);border-color:rgba(126,201,168,.35);color:#7ec9a8}
+    /* Floor plan section */
+    .floorplan-grid{display:flex;flex-wrap:wrap;gap:12px}
+    .floorplan-item{display:block;border:1px solid var(--mvn-line,#e8e2d3);border-radius:12px;overflow:hidden;background:#fff;max-width:100%}
+    .floorplan-item img{display:block;max-width:100%;max-height:520px;width:auto;height:auto;object-fit:contain;background:#fff}
+    [data-theme="dark"] .floorplan-item{border-color:#38342a}
     /* ── Co-Living lifestyle match (room listings) ─────────────────── */
     .clv-card{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(26,92,69,.06),rgba(224,123,63,.06));border:1.5px solid var(--mvn-line,#e8e2d3);border-radius:16px;padding:1rem 1.1rem}
     .clv-ring{position:relative;width:64px;height:64px;flex-shrink:0}
@@ -3711,6 +3716,22 @@ details.mort-section,
             '</div>'
           : ''
 
+        // ── Floor plan(s) — own section, click to open full size. Empty when
+        //    the listing has no floor-plan-flagged photos.
+        var floorPlanHTML = ''
+        ;(function(){
+          var fps = (L.photos || []).filter(function(p){ return p.is_floor_plan == 1 || p.is_floor_plan === true })
+          if (!fps.length) return
+          floorPlanHTML = '<div class="detail-section"><h2>Floor plan</h2>' +
+            '<div class="floorplan-grid">' +
+              fps.map(function(p){
+                return '<a href="' + p.url + '" target="_blank" rel="noopener" class="floorplan-item" title="Open floor plan full size">' +
+                    '<img src="' + p.url + '" alt="Floor plan for ' + (L.title || 'this property') + '" loading="lazy"/>' +
+                  '</a>'
+              }).join('') +
+            '</div></div>'
+        })()
+
         // ── "Who can apply" (rental_features) — pills, social housing first.
         //    Null / empty / non-rental listings render nothing (never errors).
         var rentalFeaturesHTML = ''
@@ -3909,6 +3930,7 @@ details.mort-section,
           // Features show BEFORE the mortgage calculator so buyers can scan
           // the property's amenities first.
           featuresHTML +
+          floorPlanHTML +
           rentalFeaturesHTML +
 
           // Co-Living lifestyle match — room (share) listings only. Populated
