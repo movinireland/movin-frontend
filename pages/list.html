@@ -587,6 +587,14 @@
             .feat-chk input{accent-color:var(--green,#1a5c45);width:17px;height:17px;cursor:pointer;flex-shrink:0}
             .feat-view{display:inline-flex;align-items:center;gap:6px;font-size:14px}
             .feat-view select{font:inherit;font-size:14px;border:1.5px solid var(--border,#e6e2d8);border-radius:8px;padding:6px 10px;background:#fff}
+            /* Co-living lifestyle profile — single-select pills per question */
+            .ls-field{margin-top:.7rem}
+            .ls-field-label{font-size:12.5px;font-weight:600;color:var(--ink,#1f2421);margin-bottom:.4rem}
+            .ls-opts{display:flex;flex-wrap:wrap;gap:6px}
+            .ls-opt{cursor:pointer}
+            .ls-opt input{position:absolute;opacity:0;pointer-events:none}
+            .ls-opt span{display:inline-flex;align-items:center;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;background:#fff;border:1.5px solid var(--border,#e6e2d8);color:var(--ink,#1f2421);transition:all .15s ease;-webkit-tap-highlight-color:transparent}
+            .ls-opt input:checked + span{background:var(--green,#1a5c45);border-color:var(--green,#1a5c45);color:#fff}
           </style>
           <!-- Core (always shown) -->
           <div class="feat-grp">
@@ -672,6 +680,12 @@
               <label class="feat-chk rf-room-only" style="display:none"><input type="checkbox" class="rf-chk" value="own_room_ensuite"/> Own room / ensuite</label>
             </div>
           </div>
+        </div>
+
+        <div class="form-group" id="lifestyle-wrap" style="display:none">
+          <label class="form-label">Your co-living lifestyle</label>
+          <div class="form-hint" style="margin-bottom:.5rem">Optional — for room shares. Seekers with a profile see how well they'd share with you. We only ever show a match score, never your individual answers.</div>
+          <div id="lifestyle-fields"></div>
         </div>
 
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
@@ -1102,9 +1116,69 @@
       // "Own room / ensuite" only makes sense for a room (share) listing.
       var roomOnly = document.querySelector('.rf-room-only')
       if (roomOnly) roomOnly.style.display = (t === 'share') ? 'inline-flex' : 'none'
+      // Co-living lifestyle profile — room (share) listings only.
+      var lsWrap = document.getElementById('lifestyle-wrap')
+      if (lsWrap) lsWrap.style.display = (t === 'share') ? '' : 'none'
+    }
+
+    // ── Co-living lifestyle profile (per-user, room shares) ──────────────────
+    // Mirrors CLV_FIELDS in listing.html and the backend field definitions.
+    var LS_FIELDS = [
+      { key: 'cleanliness', label: 'Cleanliness',   opts: [['very_tidy','Very tidy'],['average','Average'],['relaxed','Relaxed']] },
+      { key: 'social',      label: 'Social level',   opts: [['very_social','Very social'],['balanced','Balanced'],['keep_to_myself','Keep to myself']] },
+      { key: 'work',        label: 'Work schedule',  opts: [['9_5','9–5'],['shift','Shift work'],['wfh','Work from home'],['student','Student']] },
+      { key: 'sleep',       label: 'Sleep schedule', opts: [['early_bird','Early bird'],['night_owl','Night owl'],['flexible','Flexible']] },
+      { key: 'smoking',     label: 'Smoking',        opts: [['yes','Yes'],['no','No']] },
+      { key: 'pets',        label: 'Pets',           opts: [['have_pets','Have pets'],['no_pets','No pets'],['dont_mind',"Don't mind"]] },
+      { key: 'guests',      label: 'Guests',         opts: [['often','Often'],['sometimes','Sometimes'],['rarely','Rarely']] },
+      { key: 'noise',       label: 'Noise',          opts: [['quiet','Quiet home'],['some_noise','Some noise fine'],['lively','Lively home']] }
+    ]
+    var _lifestyleRendered = false
+    function renderLifestyleFields() {
+      var host = document.getElementById('lifestyle-fields')
+      if (!host || _lifestyleRendered) return
+      host.innerHTML = LS_FIELDS.map(function (f) {
+        var opts = f.opts.map(function (o) {
+          return '<label class="ls-opt"><input type="radio" name="ls_' + f.key + '" value="' + o[0] + '"/><span>' + o[1] + '</span></label>'
+        }).join('')
+        return '<div class="ls-field"><div class="ls-field-label">' + f.label + '</div><div class="ls-opts">' + opts + '</div></div>'
+      }).join('')
+      _lifestyleRendered = true
+    }
+    // Pre-tick any existing saved answers so an edit shows the current profile.
+    async function prefillLifestyle() {
+      if (!API.auth || !API.auth.isLoggedIn || !API.auth.isLoggedIn()) return
+      try {
+        var r = await API.lifestyle.me()
+        var p = r && r.profile
+        if (!p) return
+        LS_FIELDS.forEach(function (f) {
+          if (!p[f.key]) return
+          var el = document.querySelector('input[name="ls_' + f.key + '"][value="' + p[f.key] + '"]')
+          if (el) el.checked = true
+        })
+      } catch (_) { /* no profile yet — leave blank */ }
+    }
+    function collectLifestyle() {
+      var out = {}
+      LS_FIELDS.forEach(function (f) {
+        var sel = document.querySelector('input[name="ls_' + f.key + '"]:checked')
+        if (sel) out[f.key] = sel.value
+      })
+      return out
+    }
+    // Best-effort save — never blocks the listing itself. Only for room shares.
+    async function saveLifestyleIfRoom(listingType) {
+      if (listingType !== 'share') return
+      var profile = collectLifestyle()
+      if (!Object.keys(profile).length) return   // nothing chosen — skip
+      try { await API.lifestyle.save(profile) } catch (_) { /* non-blocking */ }
     }
     document.getElementById('listing_type').addEventListener('change', refreshListingTypeFields)
     refreshListingTypeFields()
+    // Build the co-living lifestyle inputs once, then pre-tick any saved answers.
+    renderLifestyleFields()
+    prefillLifestyle()
 
     var zone = document.getElementById('upload-zone')
     zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over') })
@@ -1324,6 +1398,10 @@
         // so an edit can clear a previously-saved link. Backend validates it.
         var _videoEl = document.getElementById('video_url')
         if (_videoEl) payload.video_url = _videoEl.value.trim()
+
+        // Co-living lifestyle profile (per-user) — saved for room shares only.
+        // Best-effort so it never blocks the listing from saving.
+        await saveLifestyleIfRoom(payload.listing_type)
 
         // ── Edit mode: update the existing listing instead of creating ────
         if (window.EDIT_LISTING_ID) {
