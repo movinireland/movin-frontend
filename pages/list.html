@@ -81,6 +81,14 @@
     .photo-set-main{position:absolute;bottom:5px;right:5px;background:rgba(255,255,255,.9);color:#1a5c45;border:none;border-radius:20px;font-size:9px;font-weight:700;padding:2px 6px;cursor:pointer;display:none;letter-spacing:.3px;text-transform:uppercase}
     .photo-item:hover .photo-set-main{display:block}
     .photo-item.is-primary .photo-set-main{display:none}
+    /* Floor-plan marking (sale listings) */
+    .photo-fp{position:absolute;top:5px;left:5px;background:rgba(255,255,255,.92);color:#1a5c45;border:none;border-radius:20px;font-size:9px;font-weight:700;padding:3px 8px;cursor:pointer;display:none;align-items:center;gap:4px;letter-spacing:.3px;text-transform:uppercase;z-index:2}
+    .photo-fp svg{width:10px;height:10px}
+    .photo-item:hover .photo-fp{display:inline-flex}
+    .photo-item.is-floor .photo-fp{display:inline-flex;background:#0e3d2e;color:#fff}
+    .photo-item.is-floor{border-color:#0e3d2e;box-shadow:0 0 0 3px rgba(14,61,46,.15)}
+    .photo-fp-badge{position:absolute;bottom:5px;left:5px;background:#0e3d2e;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:20px;letter-spacing:.3px;text-transform:uppercase}
+    [data-theme="dark"] .photo-fp{background:rgba(36,34,25,.92);color:#7ec9a8}
 
     .photo-tip{font-size:12px;color:#888;margin-top:.5rem;text-align:center}
     .photo-count{font-size:13px;color:#1a5c45;font-weight:500;margin-top:.5rem}
@@ -776,7 +784,14 @@
     renderNav('list')
 
     var selectedPhotos = []
+    var photoIsFloorPlan = []   // parallel to selectedPhotos: true = marked floor plan
+    var photoDataUrls = []      // parallel: cached preview data URLs (for sync redraw)
     var primaryIndex = 0
+    // Floor-plan marking is offered when listing a property for sale.
+    function floorPlansAllowed() {
+      var t = document.getElementById('listing_type')
+      return !!t && t.value === 'sale'
+    }
     var createdListingId = null
     var listingCategory = 'residential'
 
@@ -1119,6 +1134,11 @@
       // Co-living lifestyle profile — room (share) listings only.
       var lsWrap = document.getElementById('lifestyle-wrap')
       if (lsWrap) lsWrap.style.display = (t === 'share') ? '' : 'none'
+      // Floor-plan marking is sale-only; clear flags + redraw thumbs on change.
+      if (typeof redrawPhotoGrid === 'function') {
+        if (t !== 'sale') photoIsFloorPlan = photoIsFloorPlan.map(function(){ return false })
+        redrawPhotoGrid()
+      }
     }
 
     // ── Co-living lifestyle profile (per-user, room shares) ──────────────────
@@ -1193,8 +1213,10 @@
         if (file.size > 10 * 1024 * 1024) { toast(file.name + ' is too large (max 10MB)', 'error'); return }
         var idx = selectedPhotos.length
         selectedPhotos.push(file)
+        photoIsFloorPlan.push(false)
+        photoDataUrls.push(null)
         var reader = new FileReader()
-        reader.onload = function(e) { addPhotoThumb(e.target.result, idx); updatePhotoUI() }
+        reader.onload = function(e) { photoDataUrls[idx] = e.target.result; addPhotoThumb(e.target.result, idx); updatePhotoUI() }
         reader.readAsDataURL(file)
       })
     }
@@ -1203,15 +1225,56 @@
       var div = document.createElement('div')
       div.className = 'photo-item' + (idx === primaryIndex ? ' is-primary' : '')
       div.id = 'photo-' + idx
+      var isFloor = !!photoIsFloorPlan[idx]
+      if (isFloor) div.className += ' is-floor'
+      var fpSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M9 3v18M3 9h6M15 3v6M15 9h6"/></svg>'
       div.innerHTML =
         '<img src="' + src + '" alt="Photo ' + (idx + 1) + '"/>' +
-        (idx === primaryIndex ? '<div class="photo-badge">Main photo</div>' : '') +
+        (idx === primaryIndex && !isFloor ? '<div class="photo-badge">Main photo</div>' : '') +
+        (isFloor ? '<div class="photo-fp-badge">Floor plan</div>' : '') +
         '<button class="photo-del" onclick="removePhoto(' + idx + ')">×</button>' +
+        (floorPlansAllowed()
+          ? '<button class="photo-fp" onclick="toggleFloorPlan(' + idx + ')" title="Mark as floor plan">' + fpSvg + (isFloor ? 'Floor plan ✓' : 'Floor plan') + '</button>'
+          : '') +
         '<button class="photo-set-main" onclick="setMainPhoto(' + idx + ')">Set as main</button>'
       grid.appendChild(div)
     }
+    // Toggle whether a selected photo is a floor plan. A floor plan is never
+    // the cover photo, so marking the current main reassigns the cover.
+    function toggleFloorPlan(idx) {
+      if (!selectedPhotos[idx]) return
+      photoIsFloorPlan[idx] = !photoIsFloorPlan[idx]
+      if (photoIsFloorPlan[idx] && idx === primaryIndex) {
+        var nextIdx = selectedPhotos.findIndex(function(p, i) { return p && i !== idx && !photoIsFloorPlan[i] })
+        if (nextIdx !== -1) primaryIndex = nextIdx
+      }
+      redrawPhotoGrid()
+    }
+    // Re-render every thumb (synchronously, from cached previews) so
+    // badges/primary/floor states stay in sync and order is preserved.
+    function redrawPhotoGrid() {
+      var grid = document.getElementById('photo-grid')
+      if (!grid) return
+      grid.innerHTML = ''
+      selectedPhotos.forEach(function(f, i) {
+        if (!f || !photoDataUrls[i]) return
+        addPhotoThumb(photoDataUrls[i], i)
+      })
+    }
+    // Build the files + parallel floor-plan flags in upload order (cover first,
+    // then the rest), so the backend can match each flag to its file.
+    function buildUploadArrays() {
+      var files = [], floors = []
+      function add(i) { files.push(selectedPhotos[i]); floors.push(photoIsFloorPlan[i] ? 1 : 0) }
+      if (selectedPhotos[primaryIndex]) add(primaryIndex)
+      selectedPhotos.forEach(function(f, i) { if (f && i !== primaryIndex) add(i) })
+      return { files: files, floors: floors }
+    }
+
     function removePhoto(idx) {
       selectedPhotos[idx] = null
+      photoIsFloorPlan[idx] = null
+      photoDataUrls[idx] = null
       var el = document.getElementById('photo-' + idx); if (el) el.remove()
       if (idx === primaryIndex) {
         var nextIdx = selectedPhotos.findIndex(function(p, i) { return p !== null && i !== idx })
@@ -1408,12 +1471,10 @@
           await API.listings.update(window.EDIT_LISTING_ID, payload)
           createdListingId = window.EDIT_LISTING_ID
 
-          var editFiles = []
-          if (selectedPhotos[primaryIndex]) editFiles.push(selectedPhotos[primaryIndex])
-          selectedPhotos.forEach(function(f, i) { if (f && i !== primaryIndex) editFiles.push(f) })
-          if (editFiles.length > 0) {
+          var editUp = buildUploadArrays()
+          if (editUp.files.length > 0) {
             btn.textContent = 'Uploading photos…'
-            try { await API.photos.upload(createdListingId, editFiles) }
+            try { await API.photos.upload(createdListingId, editUp.files, editUp.floors) }
             catch(e) { console.warn('Photo upload failed:', e.message) }
           }
           toast('✓ Changes saved — your listing is back in review and will be live again shortly.')
@@ -1431,12 +1492,10 @@
         // the listing still saved, just without the video.
         if (res.video_error) toast('Listing saved, but the video link wasn\'t recognised so it was skipped.', 'info')
 
-        var filesToUpload = []
-        if (selectedPhotos[primaryIndex]) filesToUpload.push(selectedPhotos[primaryIndex])
-        selectedPhotos.forEach(function(f, i) { if (f && i !== primaryIndex) filesToUpload.push(f) })
-        if (filesToUpload.length > 0) {
+        var up = buildUploadArrays()
+        if (up.files.length > 0) {
           btn.textContent = 'Uploading photos…'
-          try { await API.photos.upload(createdListingId, filesToUpload) }
+          try { await API.photos.upload(createdListingId, up.files, up.floors) }
           catch(e) { console.warn('Photo upload failed:', e.message) }
         }
 

@@ -3371,7 +3371,8 @@ details.mort-section,
     var PLAY_SVG = '<svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
 
     function buildGallery(listing) {
-      galleryPhotos = listing.photos || []
+      // Floor plans are shown in their own section, not the photo carousel.
+      galleryPhotos = (listing.photos || []).filter(function(p){ return !(p.is_floor_plan == 1 || p.is_floor_plan === true) })
       galleryIndex  = 0
       galleryVideoEmbed = videoEmbedUrl(listing.video_url)
 

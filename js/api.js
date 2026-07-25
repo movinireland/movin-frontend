@@ -189,9 +189,14 @@ const listings = {
 // ── Photos ────────────────────────────────────────────────────────────────────
 
 const photos = {
-  async upload(listingId, files) {
+  // `floorPlans` (optional) is an array of 0/1 in the same order as `files`,
+  // marking which uploads are floor plans.
+  async upload(listingId, files, floorPlans) {
     const formData = new FormData()
     Array.from(files).forEach(f => formData.append('photos', f))
+    if (Array.isArray(floorPlans) && floorPlans.length) {
+      formData.append('floor_plans', JSON.stringify(floorPlans.map(v => (v ? 1 : 0))))
+    }
     return request('POST', `/api/listings/${listingId}/photos`, formData, true)
   },
 
