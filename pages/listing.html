@@ -2027,7 +2027,10 @@ details.mort-section > summary > .mort-label > span:first-child{
 .lx-lb-card{
   display: block;
   max-width: 1240px;
-  margin: 2rem auto 0;
+  /* Bottom margin keeps the card off the footer when "Similar properties"
+     is hidden (listings with no comparables), and gives a clean gap before
+     the Similar section when it is shown. */
+  margin: 2rem auto 2.5rem;
   padding: 2.25rem 2rem 1.75rem;
   background: linear-gradient(155deg, var(--ll-ink) 0%, var(--ll-ink-deep) 100%);
   color: var(--ll-paper);
@@ -2285,23 +2288,27 @@ details.mort-section > summary > .mort-label > span:first-child{
     justify-content: center;
     padding: 1.5rem;
   }
-  .share-drawer{
-    position: relative !important;
-    inset: auto !important;
-    bottom: auto !important; left: auto !important; right: auto !important;
-    transform: none !important;
-    width: 100% !important;
+  /* Closed: the drawer keeps its base `position:fixed` + translateY(100%),
+     so it stays off-screen and never flows into the page (previously it was
+     forced to position:relative here, which made it show inline above
+     "About this property"). Open: a true centered modal, fixed so it can't
+     take up document space regardless of where it sits in the DOM. */
+  .share-drawer.open{
+    position: fixed !important;
+    top: 50% !important; left: 50% !important;
+    right: auto !important; bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 3rem) !important;
     max-width: 480px !important;
     border-radius: 24px !important;
-    padding: 1.75rem 1.75rem 1.75rem !important;
+    padding: 1.75rem !important;
     box-shadow: 0 32px 64px -24px rgba(14,61,46,.40) !important;
     animation: lxShareIn .26s cubic-bezier(.2,.7,.2,1) both;
   }
-  .share-drawer.open{ transform: none !important }
   .share-handle{ display: none !important }
   @keyframes lxShareIn{
-    from{ opacity: 0; transform: scale(.96) translateY(8px) }
-    to{   opacity: 1; transform: scale(1) translateY(0)   }
+    from{ opacity: 0; transform: translate(-50%, -50%) scale(.96) }
+    to{   opacity: 1; transform: translate(-50%, -50%) scale(1)   }
   }
 }
 
