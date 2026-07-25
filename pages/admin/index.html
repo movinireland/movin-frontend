@@ -1013,6 +1013,56 @@ body::before{
       </div>
     </div>
 
+    <!-- Listing review modal — preview + approve / reject with reason -->
+    <style>
+      .lr-modal{position:fixed;inset:0;background:rgba(14,30,22,.55);z-index:320;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(2px)}
+      .lr-modal.open{display:flex}
+      .lr-card{background:#fff;border-radius:18px;max-width:640px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 50px -12px rgba(14,61,46,.35);overflow:hidden}
+      [data-theme="dark"] .lr-card{background:#1c1a15;color:#f1ebdc}
+      .lr-head{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border,#e6e2d8);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+      .lr-head h2{font-family:'Playfair Display',Georgia,serif;font-size:19px;color:var(--gd,#0e3d2e);margin:0;font-weight:900}
+      [data-theme="dark"] .lr-head h2{color:#7ec9a8}
+      .lr-close{background:none;border:none;font-size:22px;line-height:1;cursor:pointer;color:#999;padding:0 4px}
+      .lr-body{padding:1.1rem 1.4rem;overflow-y:auto;flex:1}
+      .lr-photos{display:flex;gap:8px;overflow-x:auto;margin-bottom:1rem;-webkit-overflow-scrolling:touch}
+      .lr-photos img{height:150px;border-radius:12px;flex-shrink:0;object-fit:cover}
+      .lr-photos .lr-noimg{height:150px;width:100%;border-radius:12px;background:linear-gradient(135deg,#f5f1e6,#e9f4ef);display:flex;align-items:center;justify-content:center;font-size:40px}
+      .lr-meta{display:flex;flex-wrap:wrap;gap:6px 10px;font-size:13px;color:#555;margin-bottom:.85rem}
+      [data-theme="dark"] .lr-meta{color:#a8a496}
+      .lr-meta b{color:var(--gd,#0e3d2e)} [data-theme="dark"] .lr-meta b{color:#f1ebdc}
+      .lr-price{font-size:22px;font-weight:800;color:var(--g,#1a5c45);font-family:'Playfair Display',Georgia,serif;margin-bottom:.5rem}
+      .lr-desc{font-size:13.5px;line-height:1.65;color:#444;white-space:pre-wrap} [data-theme="dark"] .lr-desc{color:#cfcabb}
+      .lr-reason{margin-top:1rem;display:none}
+      .lr-reason.show{display:block}
+      .lr-reason label{display:block;font-size:12.5px;font-weight:600;margin-bottom:.35rem;color:#b91c1c}
+      .lr-reason textarea{width:100%;border:1.5px solid #e6b0ab;border-radius:10px;padding:10px 12px;font-size:13.5px;font-family:inherit;min-height:80px;resize:vertical;background:#fff;color:#333}
+      .lr-foot{padding:1rem 1.4rem;border-top:1px solid var(--border,#e6e2d8);display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+      .lr-foot .lr-status{margin-right:auto;font-size:12.5px;color:var(--muted,#7a7a72)}
+      .lr-btn{border:none;border-radius:10px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit}
+      .lr-open{background:#eff6ff;color:#1d4ed8}
+      .lr-appr{background:#16a34a;color:#fff}
+      .lr-rej{background:#fee2e2;color:#dc2626}
+      .lr-rej-go{background:#dc2626;color:#fff}
+      .lr-btn:disabled{opacity:.55;cursor:default}
+    </style>
+    <div id="lr-modal" class="lr-modal" onclick="if(event.target===this)closeListingReview()">
+      <div class="lr-card" role="dialog" aria-modal="true" aria-labelledby="lr-title">
+        <div class="lr-head">
+          <h2 id="lr-title">Listing review</h2>
+          <button class="lr-close" onclick="closeListingReview()" aria-label="Close">&times;</button>
+        </div>
+        <div class="lr-body" id="lr-body">
+          <div style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></div>
+        </div>
+        <div class="lr-foot">
+          <span class="lr-status" id="lr-status"></span>
+          <button class="lr-btn lr-open" id="lr-open-btn" onclick="lrOpenFull()">Open full page ↗</button>
+          <button class="lr-btn lr-rej"  id="lr-rej-btn"  onclick="lrToggleReject()">✗ Reject</button>
+          <button class="lr-btn lr-appr" id="lr-appr-btn" onclick="lrApprove()">✓ Approve &amp; publish</button>
+        </div>
+      </div>
+    </div>
+
     <!-- ENQUIRIES -->
     <div id="section-enquiries" class="section">
       <div class="topbar">
@@ -2101,10 +2151,7 @@ async function loadDashboard() {
         <td><span class="status-badge status-${l.status}">${l.status.replace('_',' ')}</span></td>
         <td>${l.views || 0}</td>
         <td>
-          ${l.status === 'pending_review'
-            ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a" onclick="approveListing('${l.id}')">✓ Approve</button>`
-            : `<button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>`
-          }
+          <button class="btn btn-sm" style="background:${l.status === 'pending_review' ? '#fef3c7;color:#d97706' : '#eff6ff;color:#1d4ed8'};font-weight:600" onclick="openListingReview('${l.id}')">${l.status === 'pending_review' ? '⚠️ Review' : 'View'}</button>
         </td>
       </tr>`).join('') || '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:#aaa">No listings yet</td></tr>'
 
@@ -2165,7 +2212,7 @@ function renderListingsTable(listings) {
       <td style="font-size:12px;color:#aaa">${new Date(l.created_at).toLocaleDateString('en-IE')}</td>
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="window.open('../listing.html?id=${l.id}','_blank')">View</button>
+          <button class="btn btn-sm" style="background:${l.status==='pending_review'?'#fef3c7;color:#d97706':'#eff6ff;color:#1d4ed8'};font-weight:600" onclick="openListingReview('${l.id}')">${l.status==='pending_review'?'⚠️ Review':'View'}</button>
           <button class="btn btn-sm" style="background:#eff6ff;color:#1d4ed8" onclick="openEditModal('${l.id}')">✏️ Edit</button>
           ${l.status === 'pending_review'
             ? `<button class="btn btn-sm" style="background:#dcfce7;color:#16a34a;font-weight:600" onclick="approveListing('${l.id}')">✓ Approve</button>
@@ -2225,6 +2272,143 @@ async function rejectListing(id) {
     alert('❌ Listing rejected. The lister has been emailed.')
     loadAllListings()
   } catch(e) {
+    alert('Error rejecting listing.')
+  }
+}
+
+// ── Listing review modal (preview → approve / reject with reason) ────────────
+var _lrId = null
+function esc(s){ return String(s == null ? '' : s).replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c])) }
+
+async function openListingReview(id) {
+  _lrId = id
+  var modal = document.getElementById('lr-modal')
+  modal.classList.add('open')
+  document.getElementById('lr-status').textContent = ''
+  lrResetFooter()
+  var body = document.getElementById('lr-body')
+  body.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></div>'
+  try {
+    var token = localStorage.getItem('movin_token')
+    var res = await fetch(window.MOVIN_API_URL + '/api/listings/' + id, {
+      headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+    })
+    var L = await res.json()
+    if (!res.ok || !L || !L.id) throw new Error('load failed')
+    lrRenderBody(L)
+  } catch(e) {
+    body.innerHTML = '<div class="alert alert-err">Could not load the listing preview.</div>'
+  }
+}
+
+function lrRenderBody(L) {
+  var photos = (L.photos || []).map(function(p){ return p.url }).filter(Boolean)
+  var typeMap = { sale:'For sale', rent:'To rent', share:'Room share', summer:'Summer let' }
+  var priceSuffix = (L.listing_type === 'rent' || L.listing_type === 'share') ? '/mo' : (L.listing_type === 'summer' ? '/wk' : '')
+  document.getElementById('lr-title').textContent = L.title || 'Listing review'
+  document.getElementById('lr-body').innerHTML =
+    '<div class="lr-photos">' +
+      (photos.length ? photos.map(function(u){ return '<img src="' + esc(u) + '" alt="" loading="lazy"/>' }).join('')
+                     : '<div class="lr-noimg">🏠</div>') +
+    '</div>' +
+    '<div class="lr-price">€' + (parseInt(L.price) || 0).toLocaleString('en-IE') + priceSuffix + '</div>' +
+    '<div class="lr-meta">' +
+      '<span><b>Status:</b> ' + esc((L.status||'').replace(/_/g,' ')) + '</span>' +
+      '<span><b>Type:</b> ' + esc(typeMap[L.listing_type] || L.listing_type || '—') + '</span>' +
+      (L.property_type ? '<span><b>Property:</b> ' + esc(L.property_type) + '</span>' : '') +
+      (L.bedrooms ? '<span><b>Beds:</b> ' + esc(L.bedrooms) + '</span>' : '') +
+      (L.bathrooms ? '<span><b>Baths:</b> ' + esc(L.bathrooms) + '</span>' : '') +
+      (L.ber_rating ? '<span><b>BER:</b> ' + esc(L.ber_rating) + '</span>' : '') +
+    '</div>' +
+    '<div class="lr-meta">' +
+      '<span><b>Address:</b> ' + esc([L.address_line1, L.address_area, L.county].filter(Boolean).join(', ')) + (L.eircode ? ' · ' + esc(L.eircode) : '') + '</span>' +
+    '</div>' +
+    '<div class="lr-meta"><span><b>Lister:</b> ' + esc(L.lister_name || '—') + (L.lister_email ? ' · ' + esc(L.lister_email) : '') + '</span></div>' +
+    (L.video_url ? '<div class="lr-meta"><span><b>Video:</b> <a href="' + esc(L.video_url) + '" target="_blank" rel="noopener">' + esc(L.video_url) + '</a></span></div>' : '') +
+    '<div class="lr-desc">' + esc(L.description || '') + '</div>' +
+    '<div class="lr-reason" id="lr-reason">' +
+      '<label for="lr-reason-text">Reason for rejection (required — emailed to the lister)</label>' +
+      '<textarea id="lr-reason-text" placeholder="e.g. Photos are blurry, or the price looks like a typo. Tell them what to fix so they can resubmit."></textarea>' +
+    '</div>'
+}
+
+function lrResetFooter() {
+  var r = document.getElementById('lr-reason'); if (r) r.classList.remove('show')
+  var rej = document.getElementById('lr-rej-btn')
+  rej.textContent = '✗ Reject'
+  rej.className = 'lr-btn lr-rej'
+  rej.onclick = lrToggleReject
+  var ap = document.getElementById('lr-appr-btn'); ap.disabled = false
+}
+
+function closeListingReview() {
+  document.getElementById('lr-modal').classList.remove('open')
+  _lrId = null
+}
+function lrOpenFull() { if (_lrId) window.open('../listing.html?id=' + _lrId, '_blank') }
+
+// First "Reject" click reveals the reason box; the button becomes "Confirm".
+function lrToggleReject() {
+  document.getElementById('lr-reason').classList.add('show')
+  var t = document.getElementById('lr-reason-text'); if (t) t.focus()
+  var rej = document.getElementById('lr-rej-btn')
+  rej.textContent = 'Confirm rejection'
+  rej.className = 'lr-btn lr-rej-go'
+  rej.onclick = lrReject
+}
+
+async function lrApprove() {
+  if (!_lrId) return
+  var st = document.getElementById('lr-status')
+  document.getElementById('lr-appr-btn').disabled = true
+  document.getElementById('lr-rej-btn').disabled = true
+  st.textContent = 'Approving…'
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + _lrId, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ status: 'active' })
+    })
+    if (!res.ok) throw new Error('failed')
+    closeListingReview()
+    if (typeof loadAllListings === 'function') loadAllListings()
+    if (typeof loadDashboard === 'function') loadDashboard()
+  } catch(e) {
+    st.textContent = ''
+    lrResetFooter()
+    alert('Error approving listing. Check you are logged in as admin.')
+  }
+}
+
+async function lrReject() {
+  if (!_lrId) return
+  var reason = String(document.getElementById('lr-reason-text').value || '').trim()
+  if (!reason) {
+    document.getElementById('lr-status').textContent = 'A reason is required to reject.'
+    document.getElementById('lr-reason-text').focus()
+    return
+  }
+  var st = document.getElementById('lr-status')
+  document.getElementById('lr-appr-btn').disabled = true
+  document.getElementById('lr-rej-btn').disabled = true
+  st.textContent = 'Rejecting & emailing lister…'
+  try {
+    const token = localStorage.getItem('movin_token')
+    const res = await fetch(window.MOVIN_API_URL + '/api/listings/' + _lrId, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ status: 'rejected', reason: reason })
+    })
+    if (!res.ok) throw new Error('failed')
+    closeListingReview()
+    alert('❌ Listing rejected. The lister has been emailed the reason and can edit & resubmit.')
+    if (typeof loadAllListings === 'function') loadAllListings()
+    if (typeof loadDashboard === 'function') loadDashboard()
+  } catch(e) {
+    st.textContent = ''
+    document.getElementById('lr-appr-btn').disabled = false
+    document.getElementById('lr-rej-btn').disabled = false
     alert('Error rejecting listing.')
   }
 }

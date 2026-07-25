@@ -4303,6 +4303,25 @@ details.mort-section,
       var alertEl = isModal ? document.getElementById('enq-modal-alert') : document.getElementById('enq-alert')
       lid = lid || (window.__listing && window.__listing.id)
       if (!lid) return
+
+      // ── Co-Living gate: a room (share) enquiry requires a completed
+      //    lifestyle profile so the lister can see the match. Block early with
+      //    a clear path to log in / create the profile.
+      var Lt = (window.__listing && window.__listing.listing_type)
+      if (Lt === 'share') {
+        if (!API.auth || !API.auth.isLoggedIn || !API.auth.isLoggedIn()) {
+          if (alertEl) alertEl.innerHTML = '<div class="alert alert-err">Please <a href="/pages/login.html?redirect=' + encodeURIComponent(location.pathname + location.search) + '" style="color:inherit;font-weight:700;text-decoration:underline">log in</a> and add your co-living lifestyle profile to enquire about a room.</div>'
+          return
+        }
+        var hasProfile = false
+        try { var _me = await API.lifestyle.me(); hasProfile = !!(_me && _me.profile) } catch (_) {}
+        if (!hasProfile) {
+          if (alertEl) alertEl.innerHTML = '<div class="alert alert-err">Add your co-living lifestyle profile first — it lets the lister see how well you\'d share.</div>'
+          if (typeof openLifestyleModal === 'function') openLifestyleModal()
+          return
+        }
+      }
+
       btn.disabled = true
       btn.textContent = 'Sending…'
       if (alertEl) alertEl.innerHTML = ''
@@ -4330,6 +4349,10 @@ details.mort-section,
         if (err && /already enquired/i.test(err.message || '')) {
           markEnquired(lid)
           disableEnquireButtons()
+        }
+        // Backend fallback for the Co-Living gate — offer to create the profile.
+        if (err && /lifestyle profile/i.test(err.message || '') && typeof openLifestyleModal === 'function') {
+          openLifestyleModal()
         }
         if (alertEl) {
           alertEl.innerHTML = '<div class="alert alert-err">' + (err.message || 'Could not send enquiry.') + '</div>'
