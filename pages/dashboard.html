@@ -94,6 +94,14 @@
     .form-input:focus{border-color:var(--g);background:var(--white,#fff)}
     .form-hint{font-size:11px;color:#aaa;margin-top:3px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+    /* Co-living lifestyle profile — single-select pills per question */
+    .ls-field{margin-top:.75rem}
+    .ls-field-label{font-size:12.5px;font-weight:600;color:#333;margin-bottom:.4rem}
+    .ls-opts{display:flex;flex-wrap:wrap;gap:6px}
+    .ls-opt{cursor:pointer}
+    .ls-opt input{position:absolute;opacity:0;pointer-events:none}
+    .ls-opt span{display:inline-flex;align-items:center;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;background:var(--white,#fff);border:1.5px solid var(--border);color:#333;transition:all .15s ease;-webkit-tap-highlight-color:transparent}
+    .ls-opt input:checked + span{background:var(--g);border-color:var(--g);color:#fff}
 
     .btn{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;font-weight:500;border:none;border-radius:50px;transition:all .2s;white-space:nowrap;-webkit-tap-highlight-color:transparent;text-decoration:none;font-size:13px}
     .btn:active{transform:scale(.97)}
@@ -620,6 +628,16 @@ body::after{
             <button type="submit" class="btn btn-primary" id="profile-btn">Save changes</button>
           </form>
         </div>
+
+        <div class="card" style="max-width:560px">
+          <div class="card-title">Co-living lifestyle</div>
+          <div class="card-sub">For room shares. Seekers with a profile see how well they'd share with you — we only ever show a match score, never your individual answers. Update it any time.</div>
+          <div id="ls-alert"></div>
+          <form onsubmit="saveLifestyle(event)">
+            <div id="lifestyle-fields-db"></div>
+            <button type="submit" class="btn btn-primary" id="ls-btn" style="margin-top:1.1rem">Save lifestyle</button>
+          </form>
+        </div>
       </div>
     </main>
   </div>
@@ -667,6 +685,7 @@ body::after{
     if (tab === 'listings')  loadListings()
     if (tab === 'enquiries') loadEnquiries()
     if (tab === 'saved')     loadSaved()
+    if (tab === 'profile')   loadLifestyleDb()
   }
 
   async function loadListings() {
@@ -978,6 +997,71 @@ body::after{
     }
     btn.disabled = false; btn.textContent = 'Save changes'
   }
+
+  // ── Co-living lifestyle profile (per-user, room shares) ─────────────────────
+  // Field defs mirror list.html / listing.html and the backend.
+  var LS_FIELDS = [
+    { key: 'cleanliness', label: 'Cleanliness',   opts: [['very_tidy','Very tidy'],['average','Average'],['relaxed','Relaxed']] },
+    { key: 'social',      label: 'Social level',   opts: [['very_social','Very social'],['balanced','Balanced'],['keep_to_myself','Keep to myself']] },
+    { key: 'work',        label: 'Work schedule',  opts: [['9_5','9–5'],['shift','Shift work'],['wfh','Work from home'],['student','Student']] },
+    { key: 'sleep',       label: 'Sleep schedule', opts: [['early_bird','Early bird'],['night_owl','Night owl'],['flexible','Flexible']] },
+    { key: 'smoking',     label: 'Smoking',        opts: [['yes','Yes'],['no','No']] },
+    { key: 'pets',        label: 'Pets',           opts: [['have_pets','Have pets'],['no_pets','No pets'],['dont_mind',"Don't mind"]] },
+    { key: 'guests',      label: 'Guests',         opts: [['often','Often'],['sometimes','Sometimes'],['rarely','Rarely']] },
+    { key: 'noise',       label: 'Noise',          opts: [['quiet','Quiet home'],['some_noise','Some noise fine'],['lively','Lively home']] }
+  ]
+  var _lsRendered = false
+  function renderLifestyleDb() {
+    var host = document.getElementById('lifestyle-fields-db')
+    if (!host || _lsRendered) return
+    host.innerHTML = LS_FIELDS.map(function (f) {
+      var opts = f.opts.map(function (o) {
+        return '<label class="ls-opt"><input type="radio" name="lsd_' + f.key + '" value="' + o[0] + '"/><span>' + o[1] + '</span></label>'
+      }).join('')
+      return '<div class="ls-field"><div class="ls-field-label">' + f.label + '</div><div class="ls-opts">' + opts + '</div></div>'
+    }).join('')
+    _lsRendered = true
+  }
+  var _lsLoaded = false
+  async function loadLifestyleDb() {
+    renderLifestyleDb()
+    if (_lsLoaded) return
+    _lsLoaded = true
+    try {
+      var r = await API.lifestyle.me()
+      var p = r && r.profile
+      if (!p) return
+      LS_FIELDS.forEach(function (f) {
+        if (!p[f.key]) return
+        var el = document.querySelector('input[name="lsd_' + f.key + '"][value="' + p[f.key] + '"]')
+        if (el) el.checked = true
+      })
+    } catch (_) { /* no profile yet */ }
+  }
+  async function saveLifestyle(e) {
+    e.preventDefault()
+    var btn = document.getElementById('ls-btn')
+    var alertEl = document.getElementById('ls-alert')
+    var profile = {}
+    LS_FIELDS.forEach(function (f) {
+      var sel = document.querySelector('input[name="lsd_' + f.key + '"]:checked')
+      if (sel) profile[f.key] = sel.value
+    })
+    if (!Object.keys(profile).length) {
+      alertEl.innerHTML = '<div class="alert-error">Please answer at least one question.</div>'
+      return
+    }
+    btn.disabled = true; btn.textContent = 'Saving…'
+    alertEl.innerHTML = ''
+    try {
+      await API.lifestyle.save(profile)
+      alertEl.innerHTML = '<div class="alert-success">✓ Lifestyle saved.</div>'
+    } catch (err) {
+      alertEl.innerHTML = '<div class="alert-error">' + (err.message || 'Could not save your lifestyle.') + '</div>'
+    }
+    btn.disabled = false; btn.textContent = 'Save lifestyle'
+  }
+  window.saveLifestyle = saveLifestyle
 
   // ── Push notification helpers (global so banner buttons can call them) ──
   var _pushVapidKey = null
