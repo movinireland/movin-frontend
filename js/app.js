@@ -2206,6 +2206,7 @@ function buildPropertyCard(listing, savedIds = []) {
           ${isPremium ? `<span class="pc-pill pc-pill--premium">Premium</span>` : ''}
           ${statusPill}
         </div>
+        ${listing.video_url ? `<span class="pc-video"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>Video</span>` : ''}
       </div>
       <!-- Heart save button — sibling of .prop-card-img so it can be
            positioned over the image on desktop and inside the white body

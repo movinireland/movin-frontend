@@ -403,6 +403,16 @@
           <div class="form-hint" id="ai-rewrite-hint">Write rough notes, then let AI turn them into a polished, customer-attracting description. It never invents facts.</div>
         </div>
         <div class="form-group">
+          <label class="form-label" for="video_url">Video walkthrough <span style="color:var(--muted,#6c6f6a);font-weight:400">(optional)</span></label>
+          <input class="form-input" type="url" id="video_url" inputmode="url" autocomplete="off"
+            placeholder="Paste a YouTube or Vimeo link"/>
+          <div class="form-hint" id="video-hint">Upload your video to YouTube or Vimeo, then paste the link here.</div>
+          <div class="form-hint-warn" id="video-warn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="video-warn-text">Please enter a valid YouTube or Vimeo link</span>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="form-label">Asking price (€) <span class="req">*</span></label>
           <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0"/>
           <div class="form-hint" id="price-hint">Enter monthly rent in € for rentals</div>
@@ -840,6 +850,7 @@
         // Step 1 — basics
         setVal('title', listing.title)
         setVal('description', listing.description)
+        if (listing.video_url) setVal('video_url', listing.video_url)
         setVal('listing_type', listing.listing_type)
         if (listing.property_style) setVal('property_style', listing.property_style)
         // Activate the matching property-type button
@@ -1166,10 +1177,32 @@
       }
     }
 
+    // Client-side mirror of the backend YouTube/Vimeo validation. Empty is OK
+    // (the field is optional). Kept in sync with normaliseVideoUrl() server-side.
+    function isValidVideoLink(s) {
+      s = String(s || '').trim()
+      if (!s) return true
+      var yt = /^(https?:\/\/)?(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|embed\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i
+      var vm = /^(https?:\/\/)?(www\.)?(vimeo\.com\/(channels\/[\w-]+\/)?\d{6,}|player\.vimeo\.com\/video\/\d{6,})/i
+      return yt.test(s) || vm.test(s)
+    }
+    function showVideoWarn(on) {
+      var w = document.getElementById('video-warn')
+      if (w) w.classList.toggle('show', !!on)
+    }
+
     function goStep(n) {
       if (n === 2) {
         if (!document.getElementById('title').value.trim()) { toast('Please enter a listing title', 'error'); return }
         if (!document.getElementById('description').value.trim()) { toast('Please add a description', 'error'); return }
+        var _vv = document.getElementById('video_url')
+        if (_vv && !isValidVideoLink(_vv.value)) {
+          showVideoWarn(true)
+          toast('Please enter a valid YouTube or Vimeo link, or clear the video field', 'error')
+          _vv.focus()
+          return
+        }
+        showVideoWarn(false)
         if (!document.getElementById('price').value) { toast('Please enter a price', 'error'); return }
       }
       if (n === 3) {
@@ -1287,6 +1320,11 @@
         var vt = document.getElementById('f-view_type')
         if (vt && vt.value) payload.view_type = vt.value
 
+        // Optional video walkthrough (YouTube/Vimeo). Always sent (even empty)
+        // so an edit can clear a previously-saved link. Backend validates it.
+        var _videoEl = document.getElementById('video_url')
+        if (_videoEl) payload.video_url = _videoEl.value.trim()
+
         // ── Edit mode: update the existing listing instead of creating ────
         if (window.EDIT_LISTING_ID) {
           await API.listings.update(window.EDIT_LISTING_ID, payload)
@@ -1311,6 +1349,9 @@
 
         var res = await API.listings.create(payload)
         createdListingId = res.listing.id
+        // Backend accepted the listing but couldn't validate the video link —
+        // the listing still saved, just without the video.
+        if (res.video_error) toast('Listing saved, but the video link wasn\'t recognised so it was skipped.', 'info')
 
         var filesToUpload = []
         if (selectedPhotos[primaryIndex]) filesToUpload.push(selectedPhotos[primaryIndex])

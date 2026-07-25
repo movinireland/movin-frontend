@@ -66,6 +66,19 @@
     .gallery-thumb-item:hover{opacity:.85}
     .gallery-thumb-item.active{opacity:1;border-color:#e07b3f}
     .gallery-thumb-item img{width:100%;height:100%;object-fit:cover;display:block}
+    /* ── Video walkthrough in the gallery ──────────────────────────── */
+    .gallery-video-wrap{position:absolute;inset:0;background:#000;z-index:2}
+    .gallery-video-wrap iframe{width:100%;height:100%;border:0;display:block}
+    /* "Video" pill on the hero — brand green, SVG play icon */
+    .gallery-video-pill{position:absolute;top:12px;left:12px;z-index:3;display:inline-flex;align-items:center;gap:6px;background:var(--mvn-green,#1a5c45);color:#fff;border:none;border-radius:20px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 2px 10px rgba(0,0,0,.25);-webkit-tap-highlight-color:transparent;transition:background .15s,transform .15s}
+    .gallery-video-pill:hover{background:var(--mvn-green-d,#0e3d2e)}
+    .gallery-video-pill:active{transform:scale(.94)}
+    .gallery-video-pill svg{width:13px;height:13px;flex-shrink:0}
+    /* Video thumbnail — poster image with a play overlay */
+    .gallery-thumb-video{position:relative}
+    .gallery-thumb-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(14,61,46,.34)}
+    .gallery-thumb-play svg{width:20px;height:20px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
+    [data-theme="dark"] .gallery-video-wrap{background:#000}
     /* Lightbox */
     .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center}
     .lightbox.open{display:flex}
@@ -3339,32 +3352,75 @@ details.mort-section,
 
     var galleryPhotos = []
     var galleryIndex  = 0
+    var galleryVideoEmbed = null   // embed URL for the optional walkthrough, or null
     var lbPhotos      = []
     var lbIndex       = 0
+
+    // Convert a raw YouTube/Vimeo watch URL to its embeddable form. Returns null
+    // if it isn't a recognised YouTube/Vimeo link (mirrors backend validation).
+    function videoEmbedUrl(raw) {
+      if (!raw) return null
+      var s = String(raw).trim(), m
+      m = s.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{6,})/i)
+      if (m) return 'https://www.youtube.com/embed/' + m[1]
+      m = s.match(/vimeo\.com\/(?:video\/|channels\/[\w-]+\/)?(\d{6,})/i)
+      if (m) return 'https://player.vimeo.com/video/' + m[1]
+      return null
+    }
+
+    var PLAY_SVG = '<svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
 
     function buildGallery(listing) {
       galleryPhotos = listing.photos || []
       galleryIndex  = 0
+      galleryVideoEmbed = videoEmbedUrl(listing.video_url)
 
-      if (!galleryPhotos.length) {
+      // Nothing to show at all → house placeholder.
+      if (!galleryPhotos.length && !galleryVideoEmbed) {
         return '<div class="gallery-wrap"><div class="gallery-hero-placeholder">🏠</div></div>'
       }
 
-      var heroHtml =
-        '<div class="gallery-wrap">' +
-          '<div class="gallery-hero" onclick="openLightbox(0)" id="gallery-hero">' +
-            '<img id="gallery-main-img" src="' + galleryPhotos[0].url + '" alt="' + listing.title + '" loading="eager"/>' +
-            (galleryPhotos.length > 1 ?
-              '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
-              '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
-            '<div class="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
-            '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()" aria-label="Save listing">' +
-            '<svg id="save-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
-          '</button>' +
-          '</div>'
+      var hasPhotos = galleryPhotos.length > 0
+      var saveBtn =
+        '<button class="gallery-save-btn" id="save-btn" onclick="event.stopPropagation();handleSave()" aria-label="Save listing">' +
+          '<svg id="save-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' +
+        '</button>'
 
-      if (galleryPhotos.length > 1) {
+      // Hero: photo (when present) + a lazily-filled video container. When there
+      // are no photos, the video is shown immediately as the hero.
+      var heroInner = ''
+      if (hasPhotos) {
+        heroInner +=
+          '<img id="gallery-main-img" src="' + galleryPhotos[0].url + '" alt="' + listing.title + '" loading="eager"/>' +
+          '<div class="gallery-video-wrap" id="gallery-video-wrap" style="display:none"></div>' +
+          (galleryVideoEmbed ?
+            '<button class="gallery-video-pill" onclick="event.stopPropagation();showGalleryVideo()">' + PLAY_SVG + ' Video</button>' : '') +
+          (galleryPhotos.length > 1 ?
+            '<button class="gallery-nav gallery-prev" onclick="event.stopPropagation();slideGallery(-1)">&#8249;</button>' +
+            '<button class="gallery-nav gallery-next" onclick="event.stopPropagation();slideGallery(1)">&#8250;</button>' : '') +
+          '<div class="gallery-counter" id="gallery-counter">📷 <span id="gallery-cur">1</span>/' + galleryPhotos.length + '</div>' +
+          saveBtn
+      } else {
+        // Video-only listing: embed straight away.
+        heroInner +=
+          '<div class="gallery-video-wrap" id="gallery-video-wrap">' +
+            '<iframe src="' + galleryVideoEmbed + '?rel=0" title="Property video walkthrough" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>' +
+          '</div>' + saveBtn
+      }
+
+      var heroOpen = hasPhotos ? ' onclick="openLightbox(0)"' : ''
+      var heroHtml = '<div class="gallery-wrap"><div class="gallery-hero" id="gallery-hero"' + heroOpen + '>' + heroInner + '</div>'
+
+      // Thumbnails — the video (if any) is the first item, then the photos.
+      var showThumbs = (hasPhotos && galleryPhotos.length > 1) || (hasPhotos && galleryVideoEmbed)
+      if (showThumbs) {
         heroHtml += '<div class="gallery-thumbs" id="gallery-thumbs">'
+        if (galleryVideoEmbed) {
+          heroHtml += '<div class="gallery-thumb-item gallery-thumb-video" data-video="1" onclick="showGalleryVideo()">' +
+              '<img src="' + galleryPhotos[0].url + '" loading="lazy" alt="Play video walkthrough"/>' +
+              '<span class="gallery-thumb-play">' + PLAY_SVG + '</span>' +
+            '</div>'
+        }
         for (var i = 0; i < galleryPhotos.length; i++) {
           heroHtml += '<div class="gallery-thumb-item' + (i===0?' active':'') + '" data-idx="' + i + '" onclick="goToPhoto(' + i + ')">' +
             '<img src="' + galleryPhotos[i].url + '" loading="lazy"/>' +
@@ -3377,6 +3433,35 @@ details.mort-section,
       return heroHtml
     }
 
+    // Swap the hero from photo → video (lazily creating the iframe on first use).
+    function showGalleryVideo() {
+      if (!galleryVideoEmbed) return
+      var wrap = document.getElementById('gallery-video-wrap')
+      var img  = document.getElementById('gallery-main-img')
+      if (!wrap) return
+      if (!wrap.querySelector('iframe')) {
+        wrap.innerHTML = '<iframe src="' + galleryVideoEmbed + '?rel=0&autoplay=1" title="Property video walkthrough" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>'
+      }
+      wrap.style.display = ''
+      if (img) img.style.visibility = 'hidden'
+      var ctr = document.getElementById('gallery-counter'); if (ctr) ctr.style.display = 'none'
+      document.querySelectorAll('.gallery-nav').forEach(function(el){ el.style.display = 'none' })
+      // thumbnail active states
+      document.querySelectorAll('.gallery-thumb-item').forEach(function(el){
+        el.classList.toggle('active', el.dataset.video === '1')
+      })
+    }
+
+    // Hide the video (stopping playback) and show the photo hero again.
+    function hideGalleryVideo() {
+      var wrap = document.getElementById('gallery-video-wrap')
+      var img  = document.getElementById('gallery-main-img')
+      if (wrap) { wrap.innerHTML = ''; wrap.style.display = 'none' }   // clearing src stops playback
+      if (img) img.style.visibility = ''
+      var ctr = document.getElementById('gallery-counter'); if (ctr) ctr.style.display = ''
+      document.querySelectorAll('.gallery-nav').forEach(function(el){ el.style.display = '' })
+    }
+
     function slideGallery(dir) {
       if (!galleryPhotos.length) return
       galleryIndex = (galleryIndex + dir + galleryPhotos.length) % galleryPhotos.length
@@ -3384,13 +3469,14 @@ details.mort-section,
     }
 
     function goToPhoto(idx) {
+      if (galleryVideoEmbed) hideGalleryVideo()   // leaving the video, back to photos
       galleryIndex = idx
       var img = document.getElementById('gallery-main-img')
       var cur = document.getElementById('gallery-cur')
       if (img) img.src = galleryPhotos[idx].url
       if (cur) cur.textContent = idx + 1
       document.querySelectorAll('.gallery-thumb-item').forEach(function(el) {
-        el.classList.toggle('active', parseInt(el.dataset.idx) === idx)
+        el.classList.toggle('active', el.dataset.video !== '1' && parseInt(el.dataset.idx) === idx)
       })
       // Scroll thumb into view
       var thumbEl = document.querySelector('.gallery-thumb-item[data-idx="' + idx + '"]')
