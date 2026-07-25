@@ -125,6 +125,59 @@
     [data-theme="dark"] .btn-phone{background:#1a1a1a;border-color:#2ecc8a;color:#2ecc8a}
     .detail-section{padding:1rem;border-bottom:1px solid var(--border)}
     .detail-section h2{font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:17px;font-weight:700;margin-bottom:.75rem}
+    /* "Who can apply" (rental_features) pills — brand tokens, dark-mode aware */
+    .rf-section .rf-group{margin-bottom:.9rem}
+    .rf-section .rf-group:last-child{margin-bottom:0}
+    .rf-group-label{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--mvn-muted,#6c6f6a);margin-bottom:.5rem}
+    .rf-pills{display:flex;flex-wrap:wrap;gap:8px}
+    .rf-pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;background:var(--mvn-paper,#faf7f0);border:1px solid var(--mvn-line,#e8e2d3);color:var(--mvn-ink-2,#1f2421);line-height:1}
+    .rf-pill svg{width:13px;height:13px;flex-shrink:0}
+    .rf-pill--social{background:rgba(26,92,69,.10);border-color:rgba(26,92,69,.30);color:var(--mvn-green,#1a5c45);font-weight:600}
+    [data-theme="dark"] .rf-group-label{color:#a8a496}
+    [data-theme="dark"] .rf-pill{background:#242219;border-color:#38342a;color:#f1ebdc}
+    [data-theme="dark"] .rf-pill--social{background:rgba(126,201,168,.12);border-color:rgba(126,201,168,.35);color:#7ec9a8}
+    /* ── Co-Living lifestyle match (room listings) ─────────────────── */
+    .clv-card{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(26,92,69,.06),rgba(224,123,63,.06));border:1.5px solid var(--mvn-line,#e8e2d3);border-radius:16px;padding:1rem 1.1rem}
+    .clv-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+    .clv-ring svg{width:64px;height:64px;transform:rotate(-90deg)}
+    .clv-ring .clv-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--mvn-green,#1a5c45);font-family:'Playfair Display',Georgia,serif}
+    .clv-body{flex:1;min-width:0}
+    .clv-head{font-size:15px;font-weight:700;color:var(--mvn-ink-2,#1f2421);margin-bottom:2px}
+    .clv-head strong{color:var(--mvn-orange,#e07b3f)}
+    .clv-sub{font-size:12.5px;color:var(--mvn-muted,#6c6f6a);line-height:1.5}
+    .clv-prompt{display:flex;align-items:center;gap:14px;background:var(--mvn-paper,#faf7f0);border:1.5px dashed var(--mvn-line,#e8e2d3);border-radius:16px;padding:1rem 1.1rem}
+    .clv-prompt-ico{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:rgba(26,92,69,.10);display:flex;align-items:center;justify-content:center}
+    .clv-prompt-ico svg{width:22px;height:22px;stroke:var(--mvn-green,#1a5c45)}
+    .clv-btn{margin-top:.55rem;display:inline-flex;align-items:center;gap:7px;background:var(--mvn-green,#1a5c45);color:#fff;border:none;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s ease}
+    .clv-btn:hover{background:var(--mvn-green-d,#0e3d2e)}
+    .clv-btn svg{width:14px;height:14px}
+    [data-theme="dark"] .clv-card{background:linear-gradient(135deg,rgba(126,201,168,.10),rgba(224,123,63,.08));border-color:#38342a}
+    [data-theme="dark"] .clv-ring .clv-pct{color:#7ec9a8}
+    [data-theme="dark"] .clv-head{color:#f1ebdc}
+    [data-theme="dark"] .clv-sub,[data-theme="dark"] .clv-prompt{color:#a8a496}
+    [data-theme="dark"] .clv-prompt{background:#242219;border-color:#38342a}
+    /* Lifestyle profile modal */
+    .clv-modal-bg{position:fixed;inset:0;background:rgba(15,20,17,.55);z-index:1000;display:none;align-items:flex-end;justify-content:center}
+    .clv-modal-bg.open{display:flex}
+    @media(min-width:600px){.clv-modal-bg{align-items:center}}
+    .clv-modal{background:var(--mvn-white,#fff);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:1.25rem 1.25rem 1.5rem}
+    @media(min-width:600px){.clv-modal{border-radius:20px}}
+    [data-theme="dark"] .clv-modal{background:#1c1a15;color:#f1ebdc}
+    .clv-modal h3{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;margin-bottom:.25rem}
+    .clv-modal .clv-intro{font-size:13px;color:var(--mvn-muted,#6c6f6a);margin-bottom:1.1rem}
+    .clv-field{margin-bottom:1rem}
+    .clv-field-label{font-size:13px;font-weight:600;margin-bottom:.45rem;color:var(--mvn-ink-2,#1f2421)}
+    [data-theme="dark"] .clv-field-label{color:#f1ebdc}
+    .clv-opts{display:flex;flex-wrap:wrap;gap:7px}
+    .clv-opt{cursor:pointer}
+    .clv-opt input{position:absolute;opacity:0;pointer-events:none}
+    .clv-opt span{display:inline-flex;align-items:center;font-size:12.5px;font-weight:500;padding:7px 13px;border-radius:999px;background:var(--mvn-paper,#faf7f0);border:1.5px solid var(--mvn-line,#e8e2d3);color:var(--mvn-ink-2,#1f2421);transition:all .15s ease}
+    .clv-opt input:checked + span{background:var(--mvn-green,#1a5c45);border-color:var(--mvn-green,#1a5c45);color:#fff}
+    [data-theme="dark"] .clv-opt span{background:#242219;border-color:#38342a;color:#f1ebdc}
+    .clv-modal-actions{display:flex;gap:10px;margin-top:1.25rem}
+    .clv-save{flex:1;background:var(--mvn-green,#1a5c45);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+    .clv-save:disabled{opacity:.6;cursor:default}
+    .clv-cancel{background:none;border:1.5px solid var(--mvn-line,#e8e2d3);border-radius:12px;padding:12px 18px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;color:var(--mvn-muted,#6c6f6a)}
     .desc-text{font-size:14px;color:#666;line-height:1.8;font-weight:300}
     .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem}
     .feat-item{display:flex;align-items:center;gap:12px;font-size:15px;font-weight:500;color:var(--text,#333);background:var(--white,#fff);border:1.5px solid var(--border,#e8e4dc);border-radius:12px;padding:.75rem 1rem}
@@ -3564,6 +3617,36 @@ details.mort-section,
             '</div>'
           : ''
 
+        // ── "Who can apply" (rental_features) — pills, social housing first.
+        //    Null / empty / non-rental listings render nothing (never errors).
+        var rentalFeaturesHTML = ''
+        ;(function(){
+          var rf = L.rental_features
+          if (typeof rf === 'string') { try { rf = JSON.parse(rf) } catch(_) { rf = [] } }
+          if (!Array.isArray(rf) || !rf.length) return
+          var RF_LABELS = {
+            hap: 'HAP accepted', ras: 'RAS accepted',
+            pets_considered: 'Pets considered', students_welcome: 'Students welcome',
+            non_smokers: 'Non-smokers only', references_required: 'References required',
+            couples_ok: 'Suitable for couples', own_room_ensuite: 'Own room / ensuite'
+          }
+          var tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+          var social = ['hap','ras'].filter(function(k){ return rf.indexOf(k) > -1 })
+          var other  = rf.filter(function(k){ return ['hap','ras'].indexOf(k) < 0 && RF_LABELS[k] })
+          function pill(k, social){ return '<span class="rf-pill' + (social ? ' rf-pill--social' : '') + '">' + (social ? tick : '') + RF_LABELS[k] + '</span>' }
+          var html = '<div class="detail-section rf-section"><h2>Who can apply</h2>'
+          if (social.length){
+            html += '<div class="rf-group"><div class="rf-group-label">Social housing supports accepted</div>' +
+              '<div class="rf-pills">' + social.map(function(k){ return pill(k, true) }).join('') + '</div></div>'
+          }
+          if (other.length){
+            html += '<div class="rf-group"><div class="rf-group-label">Other criteria</div>' +
+              '<div class="rf-pills">' + other.map(function(k){ return pill(k, false) }).join('') + '</div></div>'
+          }
+          html += '</div>'
+          rentalFeaturesHTML = html
+        })()
+
         var callBtn = L.lister_phone
           ? '<div class="divider-text"><span>or</span></div><button class="call-btn" onclick="window.location.href=\'tel:' + L.lister_phone + '\'">📞 ' + L.lister_phone + '</button>'
           : ''
@@ -3732,6 +3815,14 @@ details.mort-section,
           // Features show BEFORE the mortgage calculator so buyers can scan
           // the property's amenities first.
           featuresHTML +
+          rentalFeaturesHTML +
+
+          // Co-Living lifestyle match — room (share) listings only. Populated
+          // asynchronously by initCoLiving() once we know the viewer's login
+          // state and whether both parties have a lifestyle profile.
+          (L.listing_type === 'share'
+            ? '<div class="detail-section" id="coliving-section" style="display:none"><h2>Co-Living match</h2><div id="coliving-body"></div></div>'
+            : '') +
 
           // Mortgage calculator — collapsed by default. Sale listings only.
           // Clicking the summary expands the form; first open auto-calculates.
@@ -3903,6 +3994,9 @@ details.mort-section,
         // Load similar properties
         loadSimilar(L)
 
+        // Co-Living lifestyle match (room listings only)
+        try { initCoLiving(L) } catch (_) {}
+
         // Render footer
         if (typeof renderFooter === 'function') renderFooter()
 
@@ -3914,6 +4008,165 @@ details.mort-section,
             '<p style="color:#aaa;margin-bottom:1rem">' + e.message + '</p>' +
             '<button class="btn btn-primary" onclick="window.location.href=\'search.html\'">Back to search</button>' +
           '</div>'
+      }
+    }
+
+    // ── Co-Living lifestyle matchmaking ──────────────────────────────────────
+    // Field definitions mirror the backend (src/lib/lifestyle-match.js /
+    // routes/lifestyle.js). Order of options is display order.
+    var CLV_FIELDS = [
+      { key: 'cleanliness', label: 'Cleanliness',   opts: [['very_tidy','Very tidy'],['average','Average'],['relaxed','Relaxed']] },
+      { key: 'social',      label: 'Social level',   opts: [['very_social','Very social'],['balanced','Balanced'],['keep_to_myself','Keep to myself']] },
+      { key: 'work',        label: 'Work schedule',  opts: [['9_5','9–5'],['shift','Shift work'],['wfh','Work from home'],['student','Student']] },
+      { key: 'sleep',       label: 'Sleep schedule', opts: [['early_bird','Early bird'],['night_owl','Night owl'],['flexible','Flexible']] },
+      { key: 'smoking',     label: 'Smoking',        opts: [['yes','Yes'],['no','No']] },
+      { key: 'pets',        label: 'Pets',           opts: [['have_pets','Have pets'],['no_pets','No pets'],['dont_mind',"Don't mind"]] },
+      { key: 'guests',      label: 'Guests',         opts: [['often','Often'],['sometimes','Sometimes'],['rarely','Rarely']] },
+      { key: 'noise',       label: 'Noise',          opts: [['quiet','Quiet home'],['some_noise','Some noise fine'],['lively','Lively home']] }
+    ]
+
+    // Render the match result (or a gentle prompt) into the room listing.
+    async function initCoLiving(L) {
+      if (!L || L.listing_type !== 'share') return
+      var sec = document.getElementById('coliving-section')
+      var body = document.getElementById('coliving-body')
+      if (!sec || !body) return
+
+      // Only relevant to logged-in seekers. Logged-out users see a soft nudge.
+      if (!API.auth || !API.auth.isLoggedIn || !API.auth.isLoggedIn()) {
+        body.innerHTML =
+          '<div class="clv-prompt">' +
+            '<div class="clv-prompt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>' +
+            '<div><div class="clv-head">See how well you\'d share</div>' +
+            '<div class="clv-sub">Log in and set up a quick lifestyle profile to see your compatibility with this room.</div></div>' +
+          '</div>'
+        sec.style.display = ''
+        return
+      }
+
+      var res
+      try { res = await API.lifestyle.match(L.id) } catch (_) { return }
+      if (!res) return
+
+      // Your own room listing: prompt you to set up a profile so seekers can
+      // see their match with you.
+      if (res.own) {
+        var mine = null
+        try { var mr = await API.lifestyle.me(); mine = mr && mr.profile } catch (_) {}
+        body.innerHTML =
+          '<div class="clv-prompt">' +
+            '<div class="clv-prompt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
+            '<div><div class="clv-head">' + (mine ? 'Your lifestyle profile is set' : 'Help seekers find their match') + '</div>' +
+            '<div class="clv-sub">' + (mine
+              ? 'Seekers with a profile will see how well they\'d share with you.'
+              : 'Add a quick lifestyle profile so seekers can see their co-living compatibility with you.') + '</div>' +
+            '<button class="clv-btn" onclick="openLifestyleModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>' + (mine ? 'Edit my profile' : 'Create my profile') + '</button></div>' +
+          '</div>'
+        sec.style.display = ''
+        return
+      }
+      if (res.applicable === false) return  // not a room listing
+
+      if (res.needsProfile === 'me') {
+        body.innerHTML =
+          '<div class="clv-prompt">' +
+            '<div class="clv-prompt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>' +
+            '<div><div class="clv-head">Are you two a good match?</div>' +
+            '<div class="clv-sub">Set up your lifestyle profile to see your co-living compatibility with this room.</div>' +
+            '<button class="clv-btn" onclick="openLifestyleModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Create my profile</button></div>' +
+          '</div>'
+      } else if (res.needsProfile === 'lister') {
+        body.innerHTML =
+          '<div class="clv-prompt">' +
+            '<div class="clv-prompt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>' +
+            '<div><div class="clv-head">This lister hasn\'t added a lifestyle profile yet</div>' +
+            '<div class="clv-sub">We can\'t show a match score until they do — but your profile is ready to go.</div></div>' +
+          '</div>'
+      } else if (typeof res.score === 'number') {
+        var pct = Math.max(0, Math.min(100, res.score))
+        var C = 2 * Math.PI * 28  // r = 28
+        var dash = (pct / 100) * C
+        var word = pct >= 80 ? 'a great' : pct >= 60 ? 'a strong' : pct >= 40 ? 'a fair' : 'a low'
+        body.innerHTML =
+          '<div class="clv-card">' +
+            '<div class="clv-ring"><svg viewBox="0 0 64 64">' +
+              '<circle cx="32" cy="32" r="28" fill="none" stroke="rgba(26,92,69,.15)" stroke-width="6"/>' +
+              '<circle cx="32" cy="32" r="28" fill="none" stroke="var(--mvn-green,#1a5c45)" stroke-width="6" stroke-linecap="round" stroke-dasharray="' + dash + ' ' + C + '"/>' +
+            '</svg><div class="clv-pct">' + pct + '%</div></div>' +
+            '<div class="clv-body">' +
+              '<div class="clv-head">You\'re <strong>' + word + ' ' + pct + '%</strong> lifestyle match</div>' +
+              '<div class="clv-sub">Based on your co-living preferences and the lister\'s. <a href="#" onclick="openLifestyleModal();return false" style="color:var(--mvn-green,#1a5c45);font-weight:600">Update your profile</a></div>' +
+            '</div>' +
+          '</div>'
+      } else { return }
+      sec.style.display = ''
+    }
+
+    // Build + open the lifestyle profile modal, pre-filling any saved answers.
+    async function openLifestyleModal() {
+      if (!API.auth || !API.auth.isLoggedIn || !API.auth.isLoggedIn()) {
+        window.location.href = '/pages/login.html'
+        return
+      }
+      var existing = {}
+      try {
+        var r = await API.lifestyle.me()
+        if (r && r.profile) existing = r.profile
+      } catch (_) {}
+
+      var fieldsHTML = CLV_FIELDS.map(function (f) {
+        var opts = f.opts.map(function (o) {
+          var checked = existing[f.key] === o[0] ? ' checked' : ''
+          return '<label class="clv-opt"><input type="radio" name="clv_' + f.key + '" value="' + o[0] + '"' + checked + '/><span>' + o[1] + '</span></label>'
+        }).join('')
+        return '<div class="clv-field"><div class="clv-field-label">' + f.label + '</div><div class="clv-opts">' + opts + '</div></div>'
+      }).join('')
+
+      var bg = document.createElement('div')
+      bg.className = 'clv-modal-bg'
+      bg.id = 'clv-modal-bg'
+      bg.innerHTML =
+        '<div class="clv-modal" role="dialog" aria-modal="true" aria-label="Lifestyle profile">' +
+          '<h3>Your co-living profile</h3>' +
+          '<div class="clv-intro">Answer a few quick questions so we can show compatibility on room listings. Only your match score is ever shown to others — never your individual answers.</div>' +
+          fieldsHTML +
+          '<div id="clv-modal-err" style="color:#c0392b;font-size:12.5px;min-height:16px"></div>' +
+          '<div class="clv-modal-actions">' +
+            '<button class="clv-save" id="clv-save-btn" onclick="saveLifestyleProfile()">Save profile</button>' +
+            '<button class="clv-cancel" onclick="closeLifestyleModal()">Cancel</button>' +
+          '</div>' +
+        '</div>'
+      bg.addEventListener('click', function (e) { if (e.target === bg) closeLifestyleModal() })
+      document.body.appendChild(bg)
+      requestAnimationFrame(function () { bg.classList.add('open') })
+    }
+
+    function closeLifestyleModal() {
+      var bg = document.getElementById('clv-modal-bg')
+      if (bg) bg.remove()
+    }
+
+    async function saveLifestyleProfile() {
+      var payload = {}
+      CLV_FIELDS.forEach(function (f) {
+        var sel = document.querySelector('input[name="clv_' + f.key + '"]:checked')
+        if (sel) payload[f.key] = sel.value
+      })
+      var err = document.getElementById('clv-modal-err')
+      if (!Object.keys(payload).length) {
+        if (err) err.textContent = 'Please answer at least one question.'
+        return
+      }
+      var btn = document.getElementById('clv-save-btn')
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+      try {
+        await API.lifestyle.save(payload)
+        closeLifestyleModal()
+        var L = window.__listing
+        if (L) { try { await initCoLiving(L) } catch (_) {} }
+      } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Save profile' }
+        if (err) err.textContent = (e && e.message) || 'Could not save your profile.'
       }
     }
 

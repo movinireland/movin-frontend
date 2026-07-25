@@ -326,7 +326,7 @@
       <span style="font-size:22px;flex-shrink:0;line-height:1">🎉</span>
       <div>
         <strong style="color:var(--green,#1a5c45)">Listing on Movin.ie is completely free — for everyone, forever.</strong>
-        <span style="display:block;margin-top:4px;color:#555;font-size:13px">Private sellers, landlords and estate agents all list at no cost, with no subscriptions and no per-listing fees. The only optional extra is a Featured upgrade (€14.99) that boosts a single listing to the top of search. See our <a href="terms-of-service.html#pricing" target="_blank" rel="noopener" style="color:var(--green,#1a5c45);font-weight:500;text-decoration:underline">Terms of Service</a>.</span>
+        <span style="display:block;margin-top:4px;color:#555;font-size:13px">Private sellers, landlords and estate agents all list at no cost, with no subscriptions and no per-listing fees. The only optional extra is a Featured upgrade (€13.99) that boosts a single listing to the top of search. See our <a href="terms-of-service.html#pricing" target="_blank" rel="noopener" style="color:var(--green,#1a5c45);font-weight:500;text-decoration:underline">Terms of Service</a>.</span>
       </div>
     </div>
 
@@ -639,6 +639,31 @@
             </div>
           </div>
         </div>
+
+        <!-- ── Who can apply — rent / room / summer only. Multi-select. ── -->
+        <div class="form-group" id="rental-features-wrap" style="display:none">
+          <label class="form-label">Who can apply</label>
+          <div class="form-hint" style="margin-bottom:.5rem">Optional — let renters know what you accept. Tick all that apply.</div>
+          <div class="feat-grp">
+            <div class="feat-grp-title">Social housing supports accepted</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="hap"/> HAP (Housing Assistance Payment)</label>
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="ras"/> RAS (Rental Accommodation Scheme)</label>
+            </div>
+          </div>
+          <div class="feat-grp">
+            <div class="feat-grp-title">Other criteria</div>
+            <div class="feat-grid">
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="pets_considered"/> Pets considered</label>
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="students_welcome"/> Students welcome</label>
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="non_smokers"/> Non-smokers only</label>
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="references_required"/> References required</label>
+              <label class="feat-chk"><input type="checkbox" class="rf-chk" value="couples_ok"/> Suitable for couples</label>
+              <label class="feat-chk rf-room-only" style="display:none"><input type="checkbox" class="rf-chk" value="own_room_ensuite"/> Own room / ensuite</label>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:space-between;margin-top:.5rem">
           <button class="btn btn-ghost" onclick="goStep(2)">← Back</button>
           <button class="btn btn-primary" onclick="goStep(4)">Next: Photos →</button>
@@ -862,6 +887,16 @@
         if (listing.available_until)        setVal('available_until', String(listing.available_until).slice(0,10))
         setChk('f-pool',    listing.pool)
         setChk('f-hot_tub', listing.hot_tub)
+        // "Who can apply" (rental_features) — accepts a JSON string or an
+        // array; re-tick the matching checkboxes. Missing/null is fine.
+        ;(function(){
+          var rf = listing.rental_features
+          if (typeof rf === 'string') { try { rf = JSON.parse(rf) } catch(_) { rf = [] } }
+          if (!Array.isArray(rf)) return
+          document.querySelectorAll('.rf-chk').forEach(function(cb){
+            cb.checked = rf.indexOf(cb.value) > -1
+          })
+        })()
         if (typeof refreshListingTypeFields === 'function') refreshListingTypeFields()
 
         // Plan
@@ -1049,6 +1084,13 @@
       // Summer-only fields wrap
       var summerWrap = document.getElementById('summer-fields')
       if (summerWrap) summerWrap.style.display = (t === 'summer') ? '' : 'none'
+      // "Who can apply" (rental_features) — rent / room (share) / summer only.
+      var rfWrap = document.getElementById('rental-features-wrap')
+      var isRental = (t === 'rent' || t === 'share' || t === 'summer')
+      if (rfWrap) rfWrap.style.display = isRental ? '' : 'none'
+      // "Own room / ensuite" only makes sense for a room (share) listing.
+      var roomOnly = document.querySelector('.rf-room-only')
+      if (roomOnly) roomOnly.style.display = (t === 'share') ? 'inline-flex' : 'none'
     }
     document.getElementById('listing_type').addEventListener('change', refreshListingTypeFields)
     refreshListingTypeFields()
@@ -1217,6 +1259,20 @@
           if (_poolEl) payload.pool    = !!_poolEl.checked
           if (_htEl)   payload.hot_tub = !!_htEl.checked
         }
+        // ── "Who can apply" (rental_features) — rent / room / summer only.
+        //    Collected as an array of ticked values; sent as a JSON string
+        //    so it slots into a single optional text column server-side.
+        if (['rent','share','summer'].indexOf(payload.listing_type) > -1) {
+          var rf = Array.prototype.slice
+            .call(document.querySelectorAll('.rf-chk'))
+            .filter(function(cb){
+              // Skip room-only options for non-room types (belt-and-braces)
+              if (cb.value === 'own_room_ensuite' && payload.listing_type !== 'share') return false
+              return cb.checked
+            })
+            .map(function(cb){ return cb.value })
+          payload.rental_features = JSON.stringify(rf)   // e.g. '["hap","students_welcome"]'
+        }
         // ── Phase 1 extra amenities — only sent when the matching field
         //    exists on the page (so the room/share flow doesn't break).
         ;[
@@ -1289,7 +1345,7 @@
 
         // OPTIONAL Premium upsell — only if the lister chose the Featured
         // upgrade. The listing is already submitted regardless; this sends
-        // them to the €14.99 Featured checkout. If they cancel at Stripe the
+        // them to the €13.99 Featured checkout. If they cancel at Stripe the
         // listing simply stays a standard (still free, still live) listing.
         if (res.featured_selected) {
           try {

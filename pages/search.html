@@ -1497,6 +1497,24 @@
         </div>
       </div>
 
+      <!-- Rental-only filters (rent / room / summer). Shown via applyTypeAwareFilters(). -->
+      <div class="filter-section" id="filters-rental" style="display:none">
+        <div class="filter-section-label">Social housing supports accepted</div>
+        <div class="cb-col">
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="hap"/><label>HAP accepted</label></label>
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="ras"/><label>RAS accepted</label></label>
+        </div>
+        <div class="filter-section-label" style="margin-top:1rem">Who can apply</div>
+        <div class="cb-col">
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="pets_considered"/><label>Pets considered</label></label>
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="students_welcome"/><label>Students welcome</label></label>
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="non_smokers"/><label>Non-smokers only</label></label>
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="references_required"/><label>References required</label></label>
+          <label class="cb-row"><input type="checkbox" class="rf-filter" data-key="couples_ok"/><label>Suitable for couples</label></label>
+          <label class="cb-row rf-filter-room" style="display:none"><input type="checkbox" class="rf-filter" data-key="own_room_ensuite"/><label>Own room / ensuite</label></label>
+        </div>
+      </div>
+
       <div style="display:flex;gap:8px;margin-top:.75rem">
         <button class="btn btn-ghost" style="flex:1" onclick="resetFilters()">Reset</button>
         <button class="btn btn-primary" style="flex:2" onclick="applyFilters()">Apply filters</button>
@@ -2025,6 +2043,16 @@
       if (bedSec && bedSec.parentElement) {
         bedSec.parentElement.style.display = (key === 'share') ? 'none' : ''
       }
+      // "Who can apply" filters — rent / room / summer only.
+      var rfSec = document.getElementById('filters-rental')
+      var isRental = (key === 'rent' || key === 'share' || key === 'summer')
+      if (rfSec) rfSec.style.display = isRental ? '' : 'none'
+      var rfRoom = document.querySelector('.rf-filter-room')
+      if (rfRoom) rfRoom.style.display = (key === 'share') ? '' : 'none'
+      // Leaving a rental type: clear rental filters so they can't leak into a sale search.
+      if (!isRental) {
+        document.querySelectorAll('.rf-filter').forEach(function(cb){ cb.checked = false })
+      }
     }
     // Run once on initial page load so the filters match whatever
     // listing_type came in via URL (e.g. ?listing_type=rent).
@@ -2051,6 +2079,8 @@
         var el = document.getElementById(id); if (el) el.checked = false
       })
       var vt = document.getElementById('f-view_type'); if (vt) vt.value = ''
+      // "Who can apply" (rental_features) filters
+      document.querySelectorAll('.rf-filter').forEach(function(cb){ cb.checked = false })
     }
 
     // Show/hide buy-only filter section based on active listing type.
@@ -2121,6 +2151,13 @@
       if ((!activeType || activeType === 'sale')) {
         if (document.getElementById('f-auction')?.checked) filters.is_auction = '1'
         if (document.getElementById('f-newdev')?.checked)  filters.is_new_dev = '1'
+      }
+      // "Who can apply" filters (rental_features) — rent / room / summer only.
+      // Sent as rf_<key>=1; the backend LIKE-matches the stored JSON.
+      if (['rent','share','summer'].indexOf(activeType) > -1) {
+        document.querySelectorAll('.rf-filter').forEach(function(cb){
+          if (cb.checked && cb.dataset.key) filters['rf_' + cb.dataset.key] = '1'
+        })
       }
       filters.sort  = document.getElementById('sort-sel').value
       filters.page  = page

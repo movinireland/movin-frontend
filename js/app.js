@@ -311,8 +311,14 @@ window.MOVIN_API_URL = 'https://movin-backend-production-1fb3.up.railway.app'
 //  true  → dark mode is back. Toggle button shows everywhere, users can
 //          switch to dark, light, or 'auto' (follow system).
 //
-//  TO RE-ENABLE DARK MODE: change this single boolean to `true` and reload.
-//  No other code change required.
+//  TO RE-ENABLE DARK MODE (two steps):
+//    1. Set this boolean to `true` (below).
+//    2. Revert the per-page boot-script lock that forces light before CSS
+//       paints. From movin-frontend/ run:
+//         grep -rl "MOVIN_DARK_MODE_ENABLED===true) document.documentElement" pages/*.html \
+//           | xargs perl -i -pe "s/if\(t&&t!=='auto'&&window.MOVIN_DARK_MODE_ENABLED===true\) document.documentElement.setAttribute\('data-theme',t\); else document.documentElement.setAttribute\('data-theme','light'\);/if(t&&t!=='auto') document.documentElement.setAttribute('data-theme',t);/g"
+//    (Step 1 alone still works — there's just a brief light→dark flash on
+//     pages that have a boot script. Step 2 removes that flash.)
 // ═══════════════════════════════════════════════════════════════════════════
 window.MOVIN_DARK_MODE_ENABLED = false
 
