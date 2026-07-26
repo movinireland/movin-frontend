@@ -94,10 +94,11 @@
         <tbody>
           <tr>
             <td><span class="req">title, description, listing_type, property_type, price, county, address_line1</span></td>
-            <td>address_area, eircode, bedrooms, bathrooms, floor_size_m2, ber_rating, property_style, parking, garden, garage, alarm, wheelchair, is_auction, is_new_dev, available_from, ensuite, plan, images</td>
+            <td>address_area, eircode, bedrooms, bathrooms, floor_size_m2, ber_rating, property_style, parking, garden, garage, alarm, wheelchair, is_auction, is_new_dev, available_from, ensuite, video_url, rental_features, plan, images, floor_plan_images</td>
           </tr>
         </tbody>
       </table>
+      <p style="margin-top:.6rem;font-size:13px;color:#555"><b>New optional columns:</b> <code>video_url</code> — a YouTube or Vimeo walkthrough link. <code>rental_features</code> — for rent/share/summer only, a semicolon list of what you accept (<code>hap; ras; students_welcome; pets_considered; non_smokers; references_required; couples_ok; own_room_ensuite</code>). <code>floor_plan_images</code> — which of your <code>images</code> filenames are floor plans (semicolon-separated); they show in their own “Floor plan” section, never as the cover photo.</p>
       <p style="margin-top:.6rem"><code>listing_type</code>: sale · rent · share &nbsp;|&nbsp; <code>property_type</code>: house · apartment · bungalow · site · office · retail · industrial · land · commercial &nbsp;|&nbsp; <code>plan</code>: standard · featured</p>
       <div style="margin-top:1rem">
         <button class="bu-btn bu-btn-ghost" id="bu-tpl">⬇ Download template (.xlsx)</button>
