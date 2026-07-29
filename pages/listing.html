@@ -3363,11 +3363,14 @@ details.mort-section,
 
     // Convert a raw YouTube/Vimeo watch URL to its embeddable form. Returns null
     // if it isn't a recognised YouTube/Vimeo link (mirrors backend validation).
+    // Uses youtube-nocookie.com — YouTube's privacy-friendly embed domain that
+    // isn't blocked by browser tracker protection / uBlock (which was showing
+    // "This content is blocked. Contact the site owner…" on youtube.com/embed).
     function videoEmbedUrl(raw) {
       if (!raw) return null
       var s = String(raw).trim(), m
       m = s.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/|embed\/|live\/)|youtu\.be\/)([\w-]{6,})/i)
-      if (m) return 'https://www.youtube.com/embed/' + m[1]
+      if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1]
       m = s.match(/vimeo\.com\/(?:video\/|channels\/[\w-]+\/)?(\d{6,})/i)
       if (m) return 'https://player.vimeo.com/video/' + m[1]
       return null
