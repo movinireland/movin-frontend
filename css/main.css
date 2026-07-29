@@ -785,9 +785,12 @@ h1,h2,h3 { font-family: 'Playfair Display', Georgia, 'Times New Roman', serif; f
   background: #e07b3f; color: #ffffff;
 }
 
-/* ── "Video" badge — bottom-left of the card image, brand green ──────── */
+/* ── "Video" badge — bottom-left of the card image, brand green.
+   !important is needed because `.prop-card-img > span` further down forces
+   `position: relative` on all direct-child spans (for the shimmer-loader). */
+.prop-card-img > .pc-video,
 .pc-video {
-  position: absolute; left: 12px; bottom: 12px; z-index: 4;
+  position: absolute !important; left: 12px; bottom: 12px; z-index: 4 !important;
   display: inline-flex; align-items: center; gap: 5px;
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 11px; font-weight: 700; line-height: 1;
