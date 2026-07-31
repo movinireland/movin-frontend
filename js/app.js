@@ -569,8 +569,11 @@ function requireLogin() {
  
 // ── Is this the homepage? (only place the full top nav shows) ──────────────
 function _mvIsHomepage(){
+  // Must match ONLY the site root, not any nested */index.html (e.g.
+  // /pages/admin/index.html was previously matching the tail-regex and
+  // getting the site's bottom tab bar injected on top of the admin UI).
   var p = (location.pathname || '').replace(/\/+$/,'') || '/'
-  return p === '' || p === '/' || /\/index\.html?$/i.test(p)
+  return p === '' || p === '/' || p === '/index.html' || p === '/index.htm'
 }
 
 // ── Compact top bar for non-homepage pages: [← Back] [logo] [≡ Menu] ───────
