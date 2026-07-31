@@ -182,6 +182,12 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
   .card-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
   .table{min-width:640px;white-space:nowrap}
   .table th{position:sticky;top:0;background:#fafaf8;z-index:1}
+  .table th, .table td{ padding:.55rem .7rem; font-size:12.5px }
+  /* Every table needs a horizontal-scroll wrapper on mobile. Many tables
+     sit inside <div style="overflow-x:auto">, but as a safety net make
+     `.content-card` itself scroll so nothing overflows the viewport. */
+  .content-card{ overflow-x:auto; -webkit-overflow-scrolling:touch }
+
   /* "swipe to see more" affordance on cards that hold a wide table */
   .content-card.has-wide-table{position:relative}
   .content-card.has-wide-table::after{
@@ -189,6 +195,30 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
     font-size:11px;color:#999;text-align:center;
     padding:6px;background:#faf8f2;border-top:1px solid var(--border)
   }
+
+  /* Action-button clusters inside a table row (Review / Edit / Approve /
+     Reject / Delete) wrap onto two rows on narrow screens and stay full-tap. */
+  .table td .btn, .table td button.btn{ min-height:36px; padding:6px 10px; font-size:12px }
+  .table td div[style*="flex-wrap"]{ min-width:150px }
+
+  /* Filter rows (search + status dropdown) stack instead of squeezing side-by-side. */
+  .content-card > div[style*="flex-wrap:wrap"]{ gap:.55rem !important }
+  .admin-search{ width:100%; max-width:none }
+
+  /* Modals sit against the viewport edges cleanly. */
+  .modal{ max-width:none; width:calc(100vw - 1.5rem); max-height:88vh; border-radius:14px }
+  .ure-card, .lr-card{ max-width:none; width:calc(100vw - 1rem) }
+  .ure-head, .ure-body, .ure-foot, .lr-head, .lr-body, .lr-foot{ padding-left:1rem; padding-right:1rem }
+  .lr-foot{ flex-wrap:wrap; gap:6px }
+  .lr-foot .lr-btn{ flex:1; min-width:0 }
+  .lr-photos img{ height:110px }
+}
+/* Extra-narrow phones: shrink further so nothing clips. */
+@media(max-width:400px){
+  .stat-card-n{ font-size:22px !important }
+  .stat-card{ padding:.85rem !important }
+  .topbar-title{ font-size:18px !important }
+  .btn{ font-size:12.5px !important }
 }
 @media(min-width:769px){
   .admin-topbar,.admin-scrim{display:none!important}
