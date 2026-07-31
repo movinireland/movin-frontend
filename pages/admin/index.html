@@ -117,10 +117,38 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
 .mobile-nav{display:none}            /* old pill bar retired on every size */
 
 @media(max-width:768px){
-  /* Kill any horizontal overflow at the root — cards, tables, or wide
-     buttons can no longer force the whole page wider than the phone. */
-  html, body{ overflow-x:hidden !important; max-width:100vw !important }
+  /* Hard viewport lock — every container is capped to 100vw with
+     box-sizing:border-box, so no card / table / button / topbar can
+     ever push the page wider than the phone screen. The skin's
+     `.main { max-width: 1320px !important }` was letting a wide flex
+     layout appear on mobile and Safari was showing horizontal scroll. */
+  html, body{
+    overflow-x:hidden !important;
+    max-width:100vw !important;
+    width:100% !important;
+  }
   body{ padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px) }
+  .layout, .main, .section,
+  .topbar, .topbar-right, .content-card, .stat-card, .stats-grid{
+    max-width:100% !important;
+    box-sizing:border-box !important;
+    min-width:0 !important;
+  }
+  .main{ width:100% !important; }
+
+  /* CRITICAL: `.layout` has `position:relative; z-index:1` (skin rule for
+     the topbar). That creates a stacking context that TRAPS the sidebar's
+     z-index inside `.layout`, so the sidebar renders BEHIND the scrim
+     (which sits on the root stacking context). Result: the drawer looked
+     open but every tap hit the scrim, which is why nothing was clickable
+     unless you rotated to landscape (landscape hides the mobile drawer
+     entirely and shows the desktop sidebar). Lift `.layout` above the
+     scrim so its child sidebar wins the stack. */
+  .layout{ z-index:250 !important; isolation:isolate }
+  /* Absolute belt-and-braces: keep the scrim BELOW the drawer, no matter
+     what stacking context it lives in. */
+  .admin-scrim{ z-index:100 !important }
+  .sidebar{ z-index:300 !important }
 
   /* Top bar — !important on z-index/display/position so unconditional
      rules further down the stylesheet can never bury it under content
