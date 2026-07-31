@@ -167,7 +167,26 @@ body{font-family:'DM Sans',sans-serif;background:#eef0ea;color:var(--ink);min-he
   body.admin-menu-open .admin-scrim{opacity:1;pointer-events:auto}
   body.admin-menu-open{overflow:hidden}
   body.admin-menu-open .main{ overflow:hidden }
+  /* Close (X) button inside the drawer — clear affordance for phone users. */
+  .sidebar-close{
+    display:flex; align-items:center; justify-content:center;
+    position:absolute; top:10px; right:10px;
+    width:36px; height:36px;
+    background:rgba(255,255,255,.10); color:#fff;
+    border:none; border-radius:10px; cursor:pointer;
+    -webkit-tap-highlight-color:transparent; z-index:5;
+  }
+  .sidebar-close:active{ background:rgba(255,255,255,.20) }
+}
+/* Hide the drawer-close button whenever the sidebar is a permanent
+   desktop rail (≥769px). No stray X in desktop admin. */
+@media(min-width:769px){
+  .sidebar-close{ display:none !important }
+}
 
+/* Mobile rules continue — touch targets, layout, tables. Split from the
+   block above so the close-button desktop-hide rule can sit on its own. */
+@media(max-width:768px){
   /* Touch targets — 44px min, 16px inputs (stops iOS auto-zoom) */
   .nav-item{padding:13px 1.25rem;font-size:15px;min-height:44px}
   .nav-item-icon{font-size:18px;width:24px}
@@ -869,6 +888,9 @@ body::before{
 
 <div class="layout">
   <div class="sidebar">
+    <button class="sidebar-close" aria-label="Close menu" onclick="closeAdminMenu()">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
     <div class="sidebar-logo">mov<span>in</span><small>Admin Panel</small></div>
     <nav>
       <div class="nav-section">
