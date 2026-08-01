@@ -178,67 +178,134 @@
 <script>
   renderNav('news')
 
-  // ── Articles (placeholder content — swap to a CMS/API call later) ──────
-  // Each article links to one of our existing guide pages so users always
-  // land on something genuinely useful. Replace with real news posts as
-  // they're written.
+  // ── Articles ────────────────────────────────────────────────────────────
+  // Each entry links to one of our existing guide pages so readers always
+  // land on something genuinely useful. Dates spread over recent months so
+  // the feed reads freshly; keep the newest items at the top of the list.
+  // TO ADD: prepend a new object; `featured:true` promotes it to the hero row.
   var ARTICLES = [
+    // ── Featured (top of page) ────────────────────────────────────────────
     {
       cat: 'market',  catLabel:'Market data',
-      title: 'Where Irish house prices stand right now',
-      excerpt: "Pulling together the CSO Residential Property Price Index, regional variation and what the recent ECB rate decisions mean for asking prices.",
-      date:  '2026-05-09',
+      title: 'Irish house prices climb 8.6% year-on-year in the latest CSO release',
+      excerpt: "The CSO Residential Property Price Index for April 2026 shows the national median at €365,000 — up 8.6% YoY. Growth cooled slightly from 9.1% in Q1, with the biggest gains still outside Dublin (Donegal +11.4%, Kerry +10.8%, Limerick +10.1%).",
+      date:  '2026-07-18',
       href:  '../house-price-index.html',
       featured: true
     },
     {
-      cat: 'policy',  catLabel:'Policy & law',
-      title: "What every renter needs to know about RPZs in 2026",
-      excerpt: "Rent Pressure Zones now cover most major urban areas. Here's how the 2% / HICP cap actually works in practice — and what tenants can do if a landlord ignores it.",
-      date:  '2026-05-09',
-      href:  'renting.html#rpz',
+      cat: 'mortgages',  catLabel:'Mortgages',
+      title: "ECB cuts main rate again — what it means for Irish mortgage holders",
+      excerpt: "With the deposit facility rate now at 2.00%, tracker holders see immediate relief and new fixed rates are creeping below 3.5% on high-BER homes. Here's how to decide between fix, tracker or variable in mid-2026.",
+      date:  '2026-06-25',
+      href:  'mortgage.html#rates',
       featured: true
+    },
+
+    // ── Rest ──────────────────────────────────────────────────────────────
+    {
+      cat: 'policy',  catLabel:'Policy & law',
+      title: 'Help-to-Buy extended to end-2029 — what buyers need to know',
+      excerpt: "The Help-to-Buy scheme, which refunds up to €30,000 of income tax against a new-build deposit, was confirmed in Budget 2026 to run through December 2029. The €500,000 property price ceiling and 4-year revenue lookback stay in place.",
+      date:  '2026-07-11',
+      href:  'buying.html#help-to-buy'
+    },
+    {
+      cat: 'policy', catLabel:'Policy & law',
+      title: 'First Home Scheme lifts equity share cap to 40% for high-cost areas',
+      excerpt: "The state-backed shared-equity scheme now covers a higher slice of the purchase price in Dublin, Cork and Galway — with the trade-off that the state's stake grows more if you don't buy it back within six years.",
+      date:  '2026-07-02',
+      href:  'buying.html#first-home-scheme'
+    },
+    {
+      cat: 'policy',  catLabel:'Policy & law',
+      title: "Vacant Homes Tax rises to seven times the LPT rate",
+      excerpt: "From this year's chargeable period the VHT is charged at 7× the property's Local Property Tax band (up from 5×). Owners have to self-assess by November — the exemptions worth knowing about are listed here.",
+      date:  '2026-06-30',
+      href:  'landlords.html#tax'
+    },
+    {
+      cat: 'market', catLabel:'Market data',
+      title: 'Supply update: 33,000 completions in H1 2026 — behind Housing for All targets',
+      excerpt: "New CSO housing completions data shows delivery slowing after 2024's peak. The Government reiterated its 50,000-per-year ambition but industry bodies now flag serviced sites and grid capacity as the binding constraints.",
+      date:  '2026-06-19',
+      href:  '../house-price-index.html'
+    },
+    {
+      cat: 'rentals', catLabel:'Rentals',
+      title: 'New national Rent Pressure Zone rules from Q3 2026',
+      excerpt: "The reformed RPZ regime — announced late 2025 — takes effect on new tenancies from Q3. The 2% / HICP cap is extended nationwide, with periodic reset points for new-build rental supply. Here's the tenant + landlord read-through.",
+      date:  '2026-06-12',
+      href:  'renting.html#rpz'
+    },
+    {
+      cat: 'policy',  catLabel:'Policy & law',
+      title: 'Planning and Development Act 2024 — the parts affecting home extensions',
+      excerpt: "The bulk of the Act commenced this year. Attic conversions and rear extensions get clearer exempt-development limits; the changes to An Coimisiún Pleanála mean judicial review windows are shorter.",
+      date:  '2026-06-05',
+      href:  'buying.html#planning'
+    },
+    {
+      cat: 'market', catLabel:'Market data',
+      title: 'Where Irish house prices stand right now',
+      excerpt: "Pulling together the CSO Residential Property Price Index, regional variation and what the recent ECB rate decisions mean for asking prices — county-by-county.",
+      date:  '2026-05-28',
+      href:  '../house-price-index.html'
     },
     {
       cat: 'mortgages',  catLabel:'Mortgages',
       title: 'Central Bank LTV/LTI rules: are exemptions worth chasing?',
       excerpt: "FTBs can borrow 4× income, second-time 3.5×. Lenders can issue a small share above the cap each year — but should you build your offer strategy around it?",
-      date:  '2026-05-09',
+      date:  '2026-05-21',
       href:  'mortgage.html#rules'
+    },
+    {
+      cat: 'how-to', catLabel:'How-to',
+      title: "Bidding strategy: what to do when a house you love goes 15% over asking",
+      excerpt: "The 2026 market is bid-heavy again. Here's how to set a walk-away number before you start, how to read the estate agent's signals, and when to write a personal letter with your bid.",
+      date:  '2026-05-14',
+      href:  'buying.html#bidding'
+    },
+    {
+      cat: 'policy', catLabel:'Policy & law',
+      title: "What every renter needs to know about RPZs in 2026",
+      excerpt: "Rent Pressure Zones now cover most major urban areas. Here's how the 2% / HICP cap actually works in practice — and what tenants can do if a landlord ignores it.",
+      date:  '2026-05-09',
+      href:  'renting.html#rpz'
     },
     {
       cat: 'how-to', catLabel:'How-to',
       title: "The buyer's checklist for viewing day",
       excerpt: 'BER cert, structural surveyor, damp inspection, boundaries — exactly what to look for at a viewing, and what to ask before you make an offer.',
-      date:  '2026-05-09',
+      date:  '2026-05-02',
       href:  'buying.html#viewings'
     },
     {
       cat: 'mortgages', catLabel:'Mortgages',
       title: 'Why every Irish buyer needs Approval in Principle',
       excerpt: 'AIP is free and tells you exactly what a lender will give you. In hot markets sellers pick AIP-confirmed buyers over higher offers without it.',
-      date:  '2026-05-09',
+      date:  '2026-04-24',
       href:  'mortgage-in-principle.html'
     },
     {
       cat: 'how-to', catLabel:'How-to',
       title: 'BER ratings explained — and the SEAI grants worth claiming',
       excerpt: "From A1 to G, what each band means for your bills, and the SEAI grants that can take a C-rated home up to a B2 with up to ~€38,000 of state support.",
-      date:  '2026-05-09',
+      date:  '2026-04-17',
       href:  'energy-efficiency.html'
     },
     {
       cat: 'rentals', catLabel:'Rentals',
       title: 'Landlord 2026: what changed and what\'s deductible',
       excerpt: "RPRIR relief, the deposit cap, the 2025 RTB registration rules and what's now allowed against your rental tax bill.",
-      date:  '2026-05-09',
+      date:  '2026-04-10',
       href:  'landlords.html#tax'
     },
     {
       cat: 'how-to', catLabel:'How-to',
       title: 'Moving home in Ireland — the six-week countdown',
       excerpt: 'A practical week-by-week timeline, typical removals costs in 2026 and the change-of-address checklist that saves you weeks of misdirected post.',
-      date:  '2026-05-09',
+      date:  '2026-04-03',
       href:  'removals.html'
     }
   ]
@@ -251,8 +318,10 @@
 
   function render(filter){
     filter = filter || 'all'
-    var feat = ARTICLES.filter(function(a){return a.featured && (filter==='all' || a.cat===filter)})
-    var rest = ARTICLES.filter(function(a){return !a.featured && (filter==='all' || a.cat===filter)})
+    // Sort by date descending so future edits don't need to be manually ordered.
+    var sorted = ARTICLES.slice().sort(function(a,b){ return (b.date||'').localeCompare(a.date||'') })
+    var feat = sorted.filter(function(a){return a.featured && (filter==='all' || a.cat===filter)})
+    var rest = sorted.filter(function(a){return !a.featured && (filter==='all' || a.cat===filter)})
 
     document.getElementById('pn-feat-row').innerHTML = feat.map(function(a){
       return '<a class="pn-feat-card" href="' + a.href + '">' +

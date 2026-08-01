@@ -134,6 +134,28 @@
     .enq-contact{display:flex;gap:10px;margin-top:.85rem;font-size:12.5px;flex-wrap:wrap}
     .enq-contact a{color:var(--g);text-decoration:none;font-weight:500;display:inline-flex;align-items:center;gap:5px}
     .enq-contact a:hover{text-decoration:underline}
+    /* Co-living match block on a room enquiry (agent view) */
+    .clv-enq{margin-top:.85rem;padding:.85rem 1rem;border-radius:12px;background:var(--gl,#e9f4ef);border:1px solid rgba(26,92,69,.18)}
+    .clv-enq-head{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--gd,#0e3d2e);margin-bottom:.6rem;flex-wrap:wrap}
+    .clv-enq-head svg{flex-shrink:0}
+    .clv-score{margin-left:auto;background:var(--g);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+    .clv-score--none{background:transparent;color:var(--o,#e07b3f);border:1px dashed rgba(224,123,63,.5);font-weight:600}
+    .clv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:5px 14px}
+    .clv-row{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:2px 0;border-bottom:1px dashed rgba(26,92,69,.12)}
+    .clv-k{color:#6c6f6a}
+    .clv-v{color:#1f2421;font-weight:600;text-align:right}
+    [data-theme="dark"] .clv-enq{background:rgba(126,201,168,.10);border-color:rgba(126,201,168,.25)}
+    [data-theme="dark"] .clv-enq-head{color:#7ec9a8}
+    [data-theme="dark"] .clv-k{color:#a8a496}
+    [data-theme="dark"] .clv-v{color:#f1ebdc}
+    /* Lifestyle profile — single-select pills per question */
+    .ls-field{margin-top:.75rem}
+    .ls-field-label{font-size:12.5px;font-weight:600;color:#333;margin-bottom:.4rem}
+    .ls-opts{display:flex;flex-wrap:wrap;gap:6px}
+    .ls-opt{cursor:pointer}
+    .ls-opt input{position:absolute;opacity:0;pointer-events:none}
+    .ls-opt span{display:inline-flex;align-items:center;font-size:13px;font-weight:500;padding:6px 12px;border-radius:999px;background:#fff;border:1.5px solid var(--border);color:#333;transition:all .15s ease;-webkit-tap-highlight-color:transparent}
+    .ls-opt input:checked + span{background:var(--g);border-color:var(--g);color:#fff}
 
     /* ── Profile form ────────────────────────────────────────────── */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
@@ -193,6 +215,14 @@
 
     /* ── Mobile ─────────────────────────────────────────────────── */
     @media(max-width:768px){
+      /* Hard viewport lock — no card, table, banner or button can push the
+         page wider than the phone screen. Same guard I added to admin. */
+      html, body{ overflow-x:hidden !important; max-width:100vw !important; width:100% !important }
+      body{ padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px) }
+      .ag-main, .ag-banner, .ag-banner-inner, .section, .form-grid,
+      .stats-grid, .stat-card, .lst-row, .enq-row, .tab-pane{
+        max-width:100% !important; box-sizing:border-box !important; min-width:0 !important
+      }
       .ag-banner{padding:1.25rem 1rem 1rem}
       .ag-banner-inner{flex-direction:column;align-items:flex-start;gap:1rem}
       .ag-actions{width:100%}
@@ -456,6 +486,22 @@
           </div>
         </form>
       </div>
+
+      <div class="section">
+        <div class="section-h">
+          <div>
+            <h3 class="section-t">Co-living lifestyle</h3>
+            <div class="section-sub">For room-share listings. Seekers with a profile see how well they'd share with you — we only ever show a match score, never your individual answers. Update it any time.</div>
+          </div>
+        </div>
+        <div id="ls-alert"></div>
+        <form onsubmit="event.preventDefault();saveLifestyle()">
+          <div id="lifestyle-fields-agent"></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:1.1rem">
+            <button class="btn btn-primary" id="ls-btn-agent" type="submit">Save lifestyle</button>
+          </div>
+        </form>
+      </div>
     </section>
 
   </main>
@@ -537,6 +583,8 @@
       document.querySelectorAll('.ag-tab').forEach(function(t){t.classList.toggle('active', t.dataset.tab === name)})
       document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display = (p.id === 'pane-' + name ? '' : 'none')})
       history.replaceState(null, '', '?tab=' + name)
+      // Lazily build the co-living lifestyle form + pre-fill the user's answers.
+      if (name === 'profile' && typeof loadLifestyleAgent === 'function') loadLifestyleAgent()
     }
 
     function escapeHtml(s){return (s == null ? '' : String(s)).replace(/[&<>"']/g, function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -770,6 +818,100 @@
     window.changeStatus = changeStatus
 
     // ── Enquiries ─────────────────────────────────────────────────────────
+    // ── Co-living lifestyle (per-user, room shares) ─────────────────────────
+    // Field defs mirror list.html / listing.html / dashboard.html / backend.
+    var LS_FIELDS = [
+      { key: 'cleanliness', label: 'Cleanliness',   opts: [['very_tidy','Very tidy'],['average','Average'],['relaxed','Relaxed']] },
+      { key: 'social',      label: 'Social level',   opts: [['very_social','Very social'],['balanced','Balanced'],['keep_to_myself','Keep to myself']] },
+      { key: 'work',        label: 'Work schedule',  opts: [['9_5','9–5'],['shift','Shift work'],['wfh','Work from home'],['student','Student']] },
+      { key: 'sleep',       label: 'Sleep schedule', opts: [['early_bird','Early bird'],['night_owl','Night owl'],['flexible','Flexible']] },
+      { key: 'smoking',     label: 'Smoking',        opts: [['yes','Yes'],['no','No']] },
+      { key: 'pets',        label: 'Pets',           opts: [['have_pets','Have pets'],['no_pets','No pets'],['dont_mind',"Don't mind"]] },
+      { key: 'guests',      label: 'Guests',         opts: [['often','Often'],['sometimes','Sometimes'],['rarely','Rarely']] },
+      { key: 'noise',       label: 'Noise',          opts: [['quiet','Quiet home'],['some_noise','Some noise fine'],['lively','Lively home']] }
+    ]
+    var _lsRenderedAgent = false, _lsLoadedAgent = false
+    function renderLifestyleAgent() {
+      var host = document.getElementById('lifestyle-fields-agent')
+      if (!host || _lsRenderedAgent) return
+      host.innerHTML = LS_FIELDS.map(function (f) {
+        var opts = f.opts.map(function (o) {
+          return '<label class="ls-opt"><input type="radio" name="lsa_' + f.key + '" value="' + o[0] + '"/><span>' + o[1] + '</span></label>'
+        }).join('')
+        return '<div class="ls-field"><div class="ls-field-label">' + f.label + '</div><div class="ls-opts">' + opts + '</div></div>'
+      }).join('')
+      _lsRenderedAgent = true
+    }
+    async function loadLifestyleAgent() {
+      renderLifestyleAgent()
+      if (_lsLoadedAgent) return
+      _lsLoadedAgent = true
+      try {
+        var r = await API.lifestyle.me()
+        var p = r && r.profile
+        if (!p) return
+        LS_FIELDS.forEach(function (f) {
+          if (!p[f.key]) return
+          var el = document.querySelector('input[name="lsa_' + f.key + '"][value="' + p[f.key] + '"]')
+          if (el) el.checked = true
+        })
+      } catch (_) { /* no profile yet */ }
+    }
+    async function saveLifestyle() {
+      var btn = document.getElementById('ls-btn-agent')
+      var alertEl = document.getElementById('ls-alert')
+      var profile = {}
+      LS_FIELDS.forEach(function (f) {
+        var sel = document.querySelector('input[name="lsa_' + f.key + '"]:checked')
+        if (sel) profile[f.key] = sel.value
+      })
+      if (!Object.keys(profile).length) {
+        if (alertEl) alertEl.innerHTML = '<div style="color:#c0392b;font-size:13px;margin-bottom:.5rem">Please answer at least one question.</div>'
+        return
+      }
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+      if (alertEl) alertEl.innerHTML = ''
+      try {
+        await API.lifestyle.save(profile)
+        if (alertEl) alertEl.innerHTML = '<div style="color:var(--g);font-size:13px;margin-bottom:.5rem">✓ Lifestyle saved.</div>'
+      } catch (err) {
+        if (alertEl) alertEl.innerHTML = '<div style="color:#c0392b;font-size:13px;margin-bottom:.5rem">' + ((err && err.message) || 'Could not save your lifestyle.') + '</div>'
+      }
+      if (btn) { btn.disabled = false; btn.textContent = 'Save lifestyle' }
+    }
+    window.saveLifestyle = saveLifestyle
+
+    // Map a stored lifestyle value to its human label.
+    function lifestyleLabel(key, val) {
+      var f = LS_FIELDS.filter(function (x) { return x.key === key })[0]
+      if (!f) return val
+      var o = f.opts.filter(function (x) { return x[0] === val })[0]
+      return o ? o[1] : val
+    }
+    // Co-living match + details block for a room enquiry. Empty for non-room
+    // enquiries or when no snapshot was captured.
+    function lifestyleSummaryHtml(e) {
+      if (!e || e.listing_type !== 'share' || !e.lifestyle_snapshot) return ''
+      var snap
+      try { snap = JSON.parse(e.lifestyle_snapshot) } catch (_) { return '' }
+      if (!snap || typeof snap !== 'object') return ''
+      var rows = LS_FIELDS.filter(function (f) { return snap[f.key] }).map(function (f) {
+        return '<div class="clv-row"><span class="clv-k">' + f.label + '</span>' +
+               '<span class="clv-v">' + lifestyleLabel(f.key, snap[f.key]) + '</span></div>'
+      }).join('')
+      if (!rows) return ''
+      var score = (typeof e.lifestyle_score === 'number')
+        ? '<span class="clv-score">' + e.lifestyle_score + '% match</span>'
+        : '<span class="clv-score clv-score--none">Add your profile to see match</span>'
+      return '<div class="clv-enq" onclick="event.stopPropagation()">' +
+        '<div class="clv-enq-head">' +
+          '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+          'Co-living match' + score +
+        '</div>' +
+        '<div class="clv-grid">' + rows + '</div>' +
+      '</div>'
+    }
+
     async function loadEnquiries(){
       try {
         var data = await API.enquiries.inbox()
@@ -807,6 +949,7 @@
             '<a href="mailto:' + encodeURIComponent(e.sender_email) + '" onclick="event.stopPropagation()">✉ ' + escapeHtml(e.sender_email) + '</a>' +
             (e.sender_phone ? '<a href="tel:' + encodeURIComponent(e.sender_phone) + '" onclick="event.stopPropagation()">📞 ' + escapeHtml(e.sender_phone) + '</a>' : '') +
           '</div>' +
+          lifestyleSummaryHtml(e) +
         '</div>'
       }).join('')
     }

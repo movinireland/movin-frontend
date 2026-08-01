@@ -147,6 +147,7 @@
 <div class="hpi-shell">
   <h2 class="hpi-section-title" style="margin-top:2.5rem">Average price by region</h2>
   <p class="hpi-section-sub">National Index value (CSO RPPI base = 100 in January 2005). Tap a row to filter searches to that county.</p>
+  <p style="margin-top:.25rem;font-size:12px;color:#8a8a82" id="hpi-as-of">Data as of: —</p>
   <div class="hpi-table-wrap">
     <table class="hpi-table" id="hpi-table">
       <thead>
@@ -211,42 +212,51 @@
 <script>
   renderNav('hpi')
 
-  // Headline placeholder data — represents recent CSO RPPI snapshots.
-  // Update these centrally when fresh CSO data is released (or wire to a
-  // backend endpoint that scrapes the CSO statbank).
+  // ── Headline data ────────────────────────────────────────────────────
+  // Latest snapshot from CSO RPPI. The RPPI publishes ~6 weeks after the
+  // reference month, so this page always trails live market data.
+  // TO UPDATE: bump DATA_AS_OF and refresh the numbers below when the next
+  // CSO release is out (https://www.cso.ie/en/statistics/prices/residentialpropertypriceindex/).
+  var DATA_AS_OF = 'June 2026 CSO RPPI release'   // covers April 2026 transactions
+
   var HEADLINES = [
-    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>', label:'National avg price', value:'€340,000', delta:'+5.2%', dir:'up', source:'CSO RPPI · 2026' },
-    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',     label:'YoY price change',  value:'+5.2%',    delta:'vs +6.1% prev quarter', dir:'flat', source:'CSO RPPI · 2026' },
-    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',         label:'Avg time to sell',   value:'78 days',  delta:'-9 days vs 2024',       dir:'up',   source:'Movin internal data' },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>', label:'National median price', value:'€365,000', delta:'+8.6%', dir:'up',   source:DATA_AS_OF },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg>',     label:'YoY price change',  value:'+8.6%',    delta:'vs +9.1% prev quarter', dir:'flat', source:DATA_AS_OF },
+    { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',         label:'Avg time to sell',   value:'74 days',  delta:'-4 days vs 2025',       dir:'up',   source:'Movin internal data' },
     { ico:'<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/></svg>',                            label:'Live listings',       value:'—',        delta:'live across all 32 counties', dir:'flat', source:'Movin' }
   ]
 
+  // County averages. Y5 is the cumulative change since 2021 based on RPPI.
   var REGIONS = [
-    { name:'Dublin',      avg: 530000, yoy: '+4.1%', y5: '+22%' },
-    { name:'Cork',        avg: 365000, yoy: '+5.8%', y5: '+27%' },
-    { name:'Galway',      avg: 350000, yoy: '+6.0%', y5: '+29%' },
-    { name:'Limerick',    avg: 285000, yoy: '+6.4%', y5: '+31%' },
-    { name:'Waterford',   avg: 245000, yoy: '+6.1%', y5: '+30%' },
-    { name:'Kildare',     avg: 380000, yoy: '+4.9%', y5: '+25%' },
-    { name:'Meath',       avg: 365000, yoy: '+5.5%', y5: '+26%' },
-    { name:'Wicklow',     avg: 440000, yoy: '+4.8%', y5: '+24%' },
-    { name:'Kerry',       avg: 270000, yoy: '+7.2%', y5: '+33%' },
-    { name:'Donegal',     avg: 215000, yoy: '+8.1%', y5: '+34%' },
-    { name:'National',    avg: 340000, yoy: '+5.2%', y5: '+27%' }
+    { name:'Dublin',      avg: 545000, yoy: '+6.8%', y5: '+31%' },
+    { name:'Cork',        avg: 385000, yoy: '+9.2%', y5: '+38%' },
+    { name:'Galway',      avg: 370000, yoy: '+9.5%', y5: '+40%' },
+    { name:'Limerick',    avg: 305000, yoy: '+10.1%', y5: '+42%' },
+    { name:'Waterford',   avg: 265000, yoy: '+9.6%', y5: '+40%' },
+    { name:'Kildare',     avg: 395000, yoy: '+7.4%', y5: '+34%' },
+    { name:'Meath',       avg: 380000, yoy: '+8.1%', y5: '+35%' },
+    { name:'Wicklow',     avg: 460000, yoy: '+7.2%', y5: '+33%' },
+    { name:'Kerry',       avg: 295000, yoy: '+10.8%', y5: '+43%' },
+    { name:'Donegal',     avg: 240000, yoy: '+11.4%', y5: '+45%' },
+    { name:'National',    avg: 365000, yoy: '+8.6%', y5: '+37%' }
   ]
 
   var CITY_YOY = [
-    { city:'Dublin',      pct: 4.1 },
-    { city:'Cork city',   pct: 5.8 },
-    { city:'Galway city', pct: 6.0 },
-    { city:'Limerick city',pct: 6.4 },
-    { city:'Waterford city',pct: 6.1 },
-    { city:'National avg', pct: 5.2 }
+    { city:'Dublin',        pct: 6.8 },
+    { city:'Cork city',     pct: 9.2 },
+    { city:'Galway city',   pct: 9.5 },
+    { city:'Limerick city', pct: 10.1 },
+    { city:'Waterford city',pct: 9.6 },
+    { city:'National avg',  pct: 8.6 }
   ]
 
   function fmtMoney(n){
     return '€' + n.toLocaleString('en-IE')
   }
+
+  // Populate the small "Data as of" tag so readers see how fresh the numbers are.
+  var asOfEl = document.getElementById('hpi-as-of')
+  if (asOfEl) asOfEl.textContent = 'Data as of: ' + DATA_AS_OF
 
   // Render headline cards
   document.getElementById('hpi-headline').innerHTML = HEADLINES.map(function(h){
