@@ -421,9 +421,14 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Asking price (€) <span class="req">*</span></label>
+          <label class="form-label" id="price-label">Asking price (€) <span class="req" id="price-req">*</span></label>
           <input class="form-input" type="number" id="price" placeholder="e.g. 595000" min="0"/>
           <div class="form-hint" id="price-hint">Enter monthly rent in € for rentals</div>
+          <label class="feat-chk" style="margin-top:.6rem;display:inline-flex;align-items:center;gap:7px;font-size:14px;cursor:pointer">
+            <input type="checkbox" id="price_on_application" style="accent-color:var(--green,#1a5c45);width:17px;height:17px;cursor:pointer;flex-shrink:0"/>
+            Price on Application (P.O.A.)
+          </label>
+          <div class="form-hint" style="margin-top:4px">Tick this if you'd rather buyers enquire for the price instead of publishing it.</div>
         </div>
 
         <div style="display:flex;justify-content:flex-end">
@@ -903,7 +908,16 @@
           ev.setAttribute('aria-checked', show ? 'true' : 'false')
         }
         // Step 3 — specs
-        setVal('price', listing.price)
+        // Price + Price on Application. When POA is on, we stored 0 as
+        // a placeholder — don't restore that into the input.
+        if (listing.price_on_application) {
+          var _poaR = document.getElementById('price_on_application')
+          if (_poaR) { _poaR.checked = true }
+          setVal('price', '')
+        } else {
+          setVal('price', listing.price)
+        }
+        if (typeof refreshPoaState === 'function') refreshPoaState()
         setVal('bedrooms', listing.bedrooms)
         setVal('bathrooms', listing.bathrooms)
         setVal('floor_size_m2', listing.floor_size_m2)
@@ -1199,6 +1213,28 @@
     // Build the co-living lifestyle inputs once, then pre-tick any saved answers.
     renderLifestyleFields()
     prefillLifestyle()
+    // Price on Application — when ticked, drop the required marker + soften
+    // the placeholder. When unticked, restore the normal required price input.
+    function refreshPoaState(){
+      var poa = document.getElementById('price_on_application')
+      var price = document.getElementById('price')
+      var req = document.getElementById('price-req')
+      if (!poa || !price) return
+      if (poa.checked){
+        price.value = ''
+        price.disabled = true
+        price.placeholder = 'Buyers will enquire for the price'
+        if (req) req.style.display = 'none'
+      } else {
+        price.disabled = false
+        price.placeholder = 'e.g. 595000'
+        if (req) req.style.display = ''
+      }
+    }
+    window.refreshPoaState = refreshPoaState
+    var _poaChk = document.getElementById('price_on_application')
+    if (_poaChk) _poaChk.addEventListener('change', refreshPoaState)
+    refreshPoaState()
 
     var zone = document.getElementById('upload-zone')
     zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('drag-over') })
@@ -1340,7 +1376,9 @@
           return
         }
         showVideoWarn(false)
-        if (!document.getElementById('price').value) { toast('Please enter a price', 'error'); return }
+        var _poaEl = document.getElementById('price_on_application')
+        var _poaOn = !!(_poaEl && _poaEl.checked)
+        if (!_poaOn && !document.getElementById('price').value) { toast('Please enter a price, or tick "Price on Application"', 'error'); return }
       }
       if (n === 3) {
         if (!document.getElementById('address_line1').value.trim()) { toast('Please enter the address', 'error'); return }
@@ -1402,7 +1440,8 @@
           eircode_visible: !!document.getElementById('eircode-vis').classList.contains('on'),
           latitude:        parseFloat(document.getElementById('latitude').value)  || null,
           longitude:       parseFloat(document.getElementById('longitude').value) || null,
-          price:           parseInt(document.getElementById('price').value),
+          price:                 parseInt(document.getElementById('price').value) || 0,
+          price_on_application:  !!(document.getElementById('price_on_application') && document.getElementById('price_on_application').checked),
           bedrooms:        document.getElementById('bedrooms').value || null,
           bathrooms:       document.getElementById('bathrooms').value || null,
           floor_size_m2:   document.getElementById('floor_size_m2').value || null,

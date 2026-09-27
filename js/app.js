@@ -538,7 +538,17 @@ function toast(message, type = 'success', duration = 3500) {
 }
 
 // ── Format price ──────────────────────────────────────────────────────────────
-function formatPrice(price, type) {
+// Backward-compatible: keeps the same (price, type) call sites working, but
+// also accepts a listing object OR a third `poaFlag` argument so callers can
+// surface "P.O.A." (Price on Application) instead of a number.
+function formatPrice(price, type, poaFlag) {
+  // If a listing object is passed as the first arg, pull fields off it.
+  if (price && typeof price === 'object') {
+    poaFlag = poaFlag !== undefined ? poaFlag : price.price_on_application
+    type    = type    !== undefined ? type    : price.listing_type
+    price   = price.price
+  }
+  if (poaFlag) return 'P.O.A.'
   const p = '€' + Number(price).toLocaleString('en-IE')
   return type === 'rent' ? `${p}/mo` : p
 }
@@ -2222,7 +2232,7 @@ function buildPropertyCard(listing, savedIds = []) {
       <div class="prop-card-body">
         <!-- Price + bed/bath meta on one row, like the reference -->
         <div class="prop-card-price-row">
-          <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type)}</div>
+          <div class="prop-card-price">${formatPrice(listing.price, listing.listing_type, listing.price_on_application)}</div>
           <div class="prop-card-icons">
             ${listing.bedrooms  ? `<span>${bedSvg}${listing.bedrooms}</span>` : ''}
             ${listing.bathrooms ? `<span>${bathSvg}${listing.bathrooms}</span>` : ''}

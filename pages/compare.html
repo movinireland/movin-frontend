@@ -120,7 +120,7 @@ async function loadCompare() {
       var photo = l.photos && l.photos.length ? l.photos[0].url : null
       return '<th class="prop-col">' +
         (photo ? '<img src="' + photo + '" class="prop-photo"/>' : '<div class="prop-photo-placeholder">🏡</div>') +
-        '<div class="prop-price">' + formatPrice(l.price, l.listing_type) + '</div>' +
+        '<div class="prop-price">' + formatPrice(l.price, l.listing_type, l.price_on_application) + '</div>' +
         '<div class="prop-name">' + l.title + '</div>' +
         '<a href="listing.html?id=' + l.id + '" class="btn btn-primary btn-sm" style="margin-bottom:.5rem">View →</a>' +
         '<button onclick="removeFromCompare(\'' + l.id + '\')" style="background:none;border:none;color:#aaa;font-size:12px;cursor:pointer;display:block;margin:0 auto">Remove</button>' +

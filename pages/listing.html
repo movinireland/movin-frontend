@@ -3142,7 +3142,14 @@ details.mort-section,
       lagLoadCurrent()
     }
 
-    function fmtPrice(price, type) {
+    function fmtPrice(price, type, poaFlag) {
+      // Accept a listing object as first arg to pick up POA + type in one call.
+      if (price && typeof price === 'object') {
+        poaFlag = poaFlag !== undefined ? poaFlag : price.price_on_application
+        type    = type    !== undefined ? type    : price.listing_type
+        price   = price.price
+      }
+      if (poaFlag) return 'P.O.A.'
       var suffix = ''
       if (type === 'rent')   suffix = '/mo'
       if (type === 'share')  suffix = '/mo'
@@ -3177,7 +3184,13 @@ details.mort-section,
                 + '&zoom=15&size=320x200&scale=2&maptype=roadmap'
                 + sty
                 + '&key=' + window.GOOGLE_MAPS_KEY
-        thumb = '<img src="' + url + '" alt="Map of ' + escAttr(addr) + '" loading="lazy"/>'
+        // Graceful fallback if the Static Maps API rejects the request
+        // (billing disabled, quota exhausted, key restrictions, etc.) — we
+        // swap the broken image for a soft branded tile so the card never
+        // looks broken. Google returns 403 as `text/plain`, so `onerror`
+        // fires; we also don't count on any specific error style.
+        thumb = '<img src="' + url + '" alt="Map of ' + escAttr(addr) + '" loading="lazy"'
+              + ' onerror="this.parentNode.innerHTML=\'<div style=&quot;display:flex;align-items:center;justify-content:center;height:100%;background:linear-gradient(135deg,#e9f4ef,#c8dfd4);color:#1a5c45;font-size:22px&quot; aria-hidden=&quot;true&quot;>📍</div>\'"/>'
       }
 
       var pinSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 C7 2 4 6 4 10 C4 14 12 22 12 22 C12 22 20 14 20 10 C20 6 17 2 12 2"/><circle cx="12" cy="10" r="2.5"/></svg>'
@@ -3552,10 +3565,10 @@ details.mort-section,
             history.replaceState(null, '', cleanPath + location.hash)
           }
         } catch (_) {}
-        document.getElementById('og-title').content = L.title + ' – ' + fmtPrice(L.price, L.listing_type) + ' | Movin.ie'
+        document.getElementById('og-title').content = L.title + ' – ' + fmtPrice(L) + ' | Movin.ie'
         document.getElementById('og-desc').content  = L.description ? L.description.substring(0, 160) : 'View this property on Movin.ie'
         document.getElementById('og-url').content   = canonUrl
-        document.getElementById('tw-title').content = L.title + ' – ' + fmtPrice(L.price, L.listing_type)
+        document.getElementById('tw-title').content = L.title + ' – ' + fmtPrice(L)
         document.getElementById('tw-desc').content  = (L.bedrooms ? L.bedrooms + ' bed · ' : '') + (L.bathrooms ? L.bathrooms + ' bath · ' : '') + L.county + ' · Movin.ie'
         document.getElementById('canonical').href   = canonUrl
         if (L.photos && L.photos.length) {
@@ -3778,7 +3791,7 @@ details.mort-section,
         // ── Build right panel ──────────────────────────────────────────
         var rpPanel =
           '<div class="rp-card">' +
-            '<div class="rp-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
+            '<div class="rp-price">' + fmtPrice(L) + '</div>' +
             '<div class="rp-price-sub">' + (L.listing_type==='rent'?'Per calendar month':'Asking price') + '</div>' +
             '<button class="rp-btn-enq" onclick="openEnquiryModal()">' +
               '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
@@ -3827,7 +3840,7 @@ details.mort-section,
               (L.ber_rating?'<div class="rp-detail-item"><div class="rp-detail-ico" style="font-size:9px;font-weight:700;color:#1a5c45">BER</div>' + L.ber_rating + '</div>':'') +
               (L.property_type?'<div class="rp-detail-item" style="grid-column:1/-1;text-transform:capitalize">' + L.property_type + (L.county?' · '+L.county:'') + '</div>':'') +
             '</div>' +
-            (L.floor_size_m2&&L.price?'<div style="font-size:12px;color:#aaa;margin-top:.25rem">€' + Math.round(parseInt(L.price)/parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</div>':'') +
+            (L.floor_size_m2 && L.price && L.listing_type === 'sale' && !L.price_on_application ? '<div style="font-size:12px;color:#aaa;margin-top:.25rem">€' + Math.round(parseInt(L.price)/parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</div>' : '') +
           '</div>' +
           '<div class="rp-actions">' +
             '<button class="rp-action-btn" onclick="openShareDrawer()">' +
@@ -3863,7 +3876,7 @@ details.mort-section,
             '</div>' +
             '<h1 class="d-title">' + L.title + '</h1>' +
             '<div class="d-loc">📍 ' + L.address_line1 + (L.address_area ? ', ' + L.address_area : '') + ', ' + L.county + (eircodeDisplay(L) ? ' · ' + eircodeDisplay(L) : '') + '</div>' +
-            '<div class="d-price">' + fmtPrice(L.price, L.listing_type) + '</div>' +
+            '<div class="d-price">' + fmtPrice(L) + '</div>' +
             '<div class="d-stats">' +
               (L.bedrooms ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bed"/></svg> ' + L.bedrooms + ' beds</span>' : '') +
               (L.bathrooms ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-bath"/></svg> ' + L.bathrooms + ' baths</span>' : '') +
@@ -3877,7 +3890,7 @@ details.mort-section,
               (L.ber_rating ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-ber"/></svg> ' + L.ber_rating + '</span>' : '') +
               '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-eye"/></svg> ' + (L.views || 0) + ' views</span>' +
               (L.available_from ? '<span class="d-stat" style="color:#1a5c45;font-weight:600"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-approve"/></svg> Available ' + new Date(L.available_from).toLocaleDateString('en-IE',{day:'numeric',month:'short',year:'numeric'}) + '</span>' : '') +
-              (L.floor_size_m2 && L.price ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-euro"/></svg> €' + Math.round(parseInt(L.price) / parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</span>' : '') +
+              (L.floor_size_m2 && L.price && L.listing_type === 'sale' && !L.price_on_application ? '<span class="d-stat"><svg width="13" height="13" style="color:#1a5c45;vertical-align:middle"><use href="/icons.svg#icon-euro"/></svg> €' + Math.round(parseInt(L.price) / parseInt(L.floor_size_m2)).toLocaleString('en-IE') + '/m²</span>' : '') +
               // Top-line highlight amenities (only render when true — keeps the
               // row clean for properties without them). Uses a shared inline
               // check SVG for items that don't have a brand icon in icons.svg.
@@ -3913,7 +3926,7 @@ details.mort-section,
             '<div class="share-handle"></div>' +
             '<div class="share-title">Share this property</div>' +
             '<div class="share-grid">' +
-              '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' — ' + fmtPrice(L.price, L.listing_type) + '\n' + window.location.href) + '" target="_blank" class="share-opt">' +
+              '<a href="https://wa.me/?text=' + encodeURIComponent('Check out this property on Movin.ie: ' + L.title + ' — ' + fmtPrice(L) + '\n' + window.location.href) + '" target="_blank" class="share-opt">' +
                 '<div class="share-icon si-whatsapp"><svg width="28" height="28" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></div>' +
                 '<span class="share-label">WhatsApp</span>' +
               '</a>' +
