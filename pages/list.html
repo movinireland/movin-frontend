@@ -349,6 +349,30 @@
 
     <!-- Step 1 -->
     <div id="step-1">
+      <!-- URL importer — paste a link to a listing that already lives on your
+           own website (or any public page) and we'll pre-fill the form + photos
+           for you. Best-effort: uses schema.org / Open Graph metadata + text
+           heuristics, and you can edit everything before publishing. -->
+      <div class="card" id="import-card" style="margin-bottom:1.25rem;border:1.5px dashed var(--green,#1a5c45);background:var(--green-light,#e9f4ef)">
+        <div class="card-title" style="display:flex;align-items:center;gap:10px">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--green,#1a5c45);flex-shrink:0" aria-hidden="true">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          Import from a URL <span style="font-size:11px;background:var(--green,#1a5c45);color:#fff;padding:2px 8px;border-radius:20px;margin-left:4px;font-weight:600">New</span>
+        </div>
+        <div class="card-sub" style="margin-bottom:.85rem">Already have this listing on your website? Paste the link and we'll pull the details + photos so you don't have to type it all again.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <input class="form-input" type="url" id="import-url" inputmode="url" autocomplete="off"
+            placeholder="https://your-agency.ie/listings/…" style="flex:1;min-width:220px"/>
+          <button type="button" class="btn btn-primary" id="import-btn" onclick="importFromUrl()" style="flex-shrink:0">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px" aria-hidden="true"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>
+            Import
+          </button>
+        </div>
+        <div class="form-hint" id="import-status" style="margin-top:.5rem;min-height:16px"></div>
+      </div>
+
       <div class="card" style="margin-bottom:1.25rem">
         <div class="card-title" id="type-card-title">What type of property is it?</div>
         <div class="card-sub" id="type-card-sub">Choose the best match</div>
@@ -716,7 +740,7 @@
         <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-input').click()">
           <div class="upload-zone-icon"><svg width="40" height="40" style="color:#1a5c45;flex-shrink:0;display:inline-block;vertical-align:middle" aria-hidden="true"><use href="/icons.svg#icon-camera"/></svg></div>
           <div class="upload-zone-text">Tap to add photos</div>
-          <div class="upload-zone-hint">JPG, PNG or WEBP · Max 10MB each · Up to 20 photos</div>
+          <div class="upload-zone-hint">JPG, PNG or WEBP · Max 10MB each · Up to 50 photos</div>
         </div>
         <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" onchange="handlePhotos(this.files)"/>
         <div id="photo-count" class="photo-count" style="display:none"></div>
@@ -1118,6 +1142,109 @@
     }
     window.aiRewriteDescription = aiRewriteDescription
 
+    // ── URL importer ─────────────────────────────────────────────────────────
+    // Fetch the URL server-side, pre-fill every recognised field, and download
+    // each candidate image through the backend proxy so it slots into the
+    // normal `selectedPhotos` flow. Non-blocking on individual image failures.
+    async function importFromUrl() {
+      var btn = document.getElementById('import-btn')
+      var input = document.getElementById('import-url')
+      var status = document.getElementById('import-status')
+      var url = (input.value || '').trim()
+      if (!url) { toast('Paste a listing URL first', 'error'); input.focus(); return }
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url
+      btn.disabled = true; btn.textContent = 'Reading page…'
+      status.textContent = 'Fetching the page and reading its details…'
+      status.style.color = ''
+      var res
+      try { res = await API.scrape.listing(url) }
+      catch (e) {
+        btn.disabled = false; btn.innerHTML = 'Import'
+        status.textContent = (e && e.message) || 'Could not read that URL.'
+        status.style.color = '#c0392b'
+        return
+      }
+      var f = (res && res.fields) || {}
+      // ── Populate the visible fields we know about ─────────────────────────
+      var setVal = function(id, v){ var el = document.getElementById(id); if (el && v != null && v !== '') el.value = v }
+      setVal('title',           f.title)
+      setVal('description',     f.description)
+      if (f.price && !document.getElementById('price_on_application').checked) setVal('price', f.price)
+      setVal('bedrooms',        f.bedrooms)
+      setVal('bathrooms',       f.bathrooms)
+      setVal('floor_size_m2',   f.floor_size_m2)
+      setVal('ber_rating',      f.ber_rating)
+      setVal('address_line1',   f.address_line1)
+      setVal('address_area',    f.address_area)
+      setVal('eircode',          f.eircode ? String(f.eircode).toUpperCase() : '')
+      if (f.county) {
+        var countySel = document.getElementById('county')
+        if (countySel) {
+          for (var i = 0; i < countySel.options.length; i++) {
+            if (countySel.options[i].value.toLowerCase() === String(f.county).toLowerCase()) {
+              countySel.selectedIndex = i; break
+            }
+          }
+        }
+      }
+      if (f.latitude != null && document.getElementById('latitude'))   document.getElementById('latitude').value  = f.latitude
+      if (f.longitude != null && document.getElementById('longitude')) document.getElementById('longitude').value = f.longitude
+      // Listing type + refresh dependent fields
+      if (f.listing_type) {
+        var lt = document.getElementById('listing_type')
+        if (lt) { lt.value = f.listing_type; if (typeof refreshListingTypeFields === 'function') refreshListingTypeFields() }
+      }
+      // Property type — activate the matching type button in the current grid
+      if (f.property_type) {
+        var grid = document.getElementById('type-grid-residential')
+        if (grid && grid.style.display === 'none') grid = document.getElementById('type-grid-commercial')
+        if (grid) {
+          var target = grid.querySelector('.type-btn[data-val="' + f.property_type + '"]')
+          if (target) {
+            grid.querySelectorAll('.type-btn').forEach(function(b){ b.classList.remove('on') })
+            target.classList.add('on')
+          }
+        }
+      }
+      // ── Download images through the proxy and add them to selectedPhotos ──
+      var urls = (res.images || []).slice(0, 50)
+      var got = 0, failed = 0
+      if (urls.length) {
+        status.textContent = 'Downloading ' + urls.length + ' photo' + (urls.length === 1 ? '' : 's') + '…'
+        for (var i = 0; i < urls.length; i++) {
+          if (selectedPhotos.filter(Boolean).length >= 50) break
+          try {
+            var blob = await API.scrape.image(urls[i])
+            // Give the file a friendly name based on its position + inferred extension
+            var ext = (blob.type && blob.type.split('/')[1]) || 'jpg'
+            if (ext === 'jpeg') ext = 'jpg'
+            var name = 'imported-' + (i + 1) + '.' + ext
+            var file = new File([blob], name, { type: blob.type || 'image/jpeg' })
+            var idx = selectedPhotos.length
+            selectedPhotos.push(file)
+            photoIsFloorPlan.push(false)
+            photoDataUrls.push(null)
+            var reader = new FileReader()
+            ;(function(idxCap){
+              reader.onload = function(e){ photoDataUrls[idxCap] = e.target.result; addPhotoThumb(e.target.result, idxCap); updatePhotoUI() }
+            })(idx)
+            reader.readAsDataURL(file)
+            got++
+          } catch (_) { failed++ }
+          status.textContent = 'Downloading photos… ' + (got + failed) + ' / ' + urls.length
+        }
+      }
+      // Summary
+      var parts = []
+      if (f.title || f.price || f.bedrooms) parts.push('details filled')
+      if (got) parts.push(got + ' photo' + (got === 1 ? '' : 's') + ' added')
+      if (failed) parts.push(failed + ' photo' + (failed === 1 ? '' : 's') + ' failed')
+      status.textContent = '✓ Imported — ' + (parts.join(' · ') || 'no data found; fill the form manually') + '. Review everything before you publish.'
+      status.style.color = 'var(--green,#1a5c45)'
+      btn.disabled = false; btn.innerHTML = 'Re-import'
+    }
+    window.importFromUrl = importFromUrl
+
     function refreshListingTypeFields(){
       var t = document.getElementById('listing_type').value
       var hint = document.getElementById('price-hint')
@@ -1245,7 +1372,7 @@
 
     function handlePhotos(files) {
       Array.from(files).forEach(function(file) {
-        if (selectedPhotos.filter(Boolean).length >= 20) { toast('Max 20 photos allowed', 'error'); return }
+        if (selectedPhotos.filter(Boolean).length >= 50) { toast('Max 50 photos allowed', 'error'); return }
         if (file.size > 10 * 1024 * 1024) { toast(file.name + ' is too large (max 10MB)', 'error'); return }
         var idx = selectedPhotos.length
         selectedPhotos.push(file)

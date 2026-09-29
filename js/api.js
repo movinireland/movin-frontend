@@ -359,4 +359,24 @@ const adminRBAC = {
   }
 }
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, lifestyle, adminRBAC, getUser, getToken, postAuthDest }
+// ── Listing importer — paste a listing URL, get back structured fields + images
+const scrape = {
+  // Ask the backend to fetch + parse the URL. Returns
+  // { source_url, fields: {...}, images: [url,...] }
+  async listing(url) {
+    return request('POST', '/api/scrape/listing', { url })
+  },
+  // Fetch a single source image through our backend proxy (bypasses CORS
+  // + the source's hotlink protection). Returns a Blob you can wrap in a
+  // File and drop into the normal photo-upload flow.
+  async image(sourceUrl) {
+    const t = getToken()
+    const r = await fetch(`${getApiUrl()}/api/scrape/image?url=${encodeURIComponent(sourceUrl)}`, {
+      headers: t ? { 'Authorization': 'Bearer ' + t } : {}
+    })
+    if (!r.ok) throw new Error('image fetch failed (' + r.status + ')')
+    return r.blob()
+  }
+}
+
+window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, lifestyle, scrape, adminRBAC, getUser, getToken, postAuthDest }
