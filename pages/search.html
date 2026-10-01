@@ -2198,14 +2198,30 @@
     }
     if (urlP.get('property_type')) {
       urlPropertyType = urlP.get('property_type')
+      // Hydrate the UI so the URL property_type pre-selects in the dropdown
+      // + modal, and the user can see what's currently filtered.
+      setTimeout(function(){
+        var qfType = document.getElementById('qf-type')
+        if (qfType) qfType.value = urlPropertyType
+        document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]').forEach(function(cb){
+          cb.checked = (cb.value === urlPropertyType)
+        })
+      }, 0)
     }
     if (urlP.get('min_price')) {
-      var fMin = document.getElementById('f-min')
-      if (fMin) fMin.value = urlP.get('min_price')
+      var _urlMin = urlP.get('min_price')
+      var fMin  = document.getElementById('f-min');  if (fMin)  fMin.value  = _urlMin
+      var qfMin = document.getElementById('qf-min'); if (qfMin) qfMin.value = _urlMin
     }
     if (urlP.get('max_price')) {
-      var fMax = document.getElementById('f-max')
-      if (fMax) fMax.value = urlP.get('max_price')
+      var _urlMax = urlP.get('max_price')
+      var fMax  = document.getElementById('f-max');  if (fMax)  fMax.value  = _urlMax
+      var qfMax = document.getElementById('qf-max'); if (qfMax) qfMax.value = _urlMax
+    }
+    if (urlP.get('bedrooms')) {
+      var _urlBeds = urlP.get('bedrooms')
+      var qfBedsEl = document.getElementById('qf-beds'); if (qfBedsEl) qfBedsEl.value = _urlBeds
+      var fBedsEl  = document.getElementById('f-beds');  if (fBedsEl)  fBedsEl.value  = _urlBeds
     }
     if (urlP.get('bedrooms')) {
       var bedTarget = urlP.get('bedrooms')
@@ -2332,12 +2348,25 @@
       var params = { listing_type: activeType || 'sale' }
       var q = document.getElementById('search-q').value.trim()
       if (q) params.county = q
-      var beds = document.getElementById('f-beds') ? document.getElementById('f-beds').value : ''
-      var min  = document.getElementById('f-min')  ? document.getElementById('f-min').value  : ''
-      var max  = document.getElementById('f-max')  ? document.getElementById('f-max').value  : ''
+      // Prefer dropdown value, fall back to modal — matches doSearch so an
+      // alert captures whatever the user actually filtered by.
+      var _p = function(a,b){ var x=document.getElementById(a); var y=document.getElementById(b); return (x&&x.value)||(y&&y.value)||'' }
+      var beds = _p('qf-beds','f-beds')
+      var min  = _p('qf-min', 'f-min')
+      var max  = _p('qf-max', 'f-max')
       if (beds) params.bedrooms  = beds
       if (min)  params.min_price = min
       if (max)  params.max_price = max
+      // Property type — same priority chain as doSearch (dropdown → modal
+      // checkbox → url). Lets Create-alert carry the current type through.
+      var qfType = document.getElementById('qf-type')
+      var propType = (qfType && qfType.value) ? qfType.value : ''
+      if (!propType) {
+        var cb = document.querySelector('#filter-modal .cb-col input[type="checkbox"][value]:checked')
+        if (cb) propType = cb.value
+      }
+      if (!propType && typeof urlPropertyType !== 'undefined' && urlPropertyType) propType = urlPropertyType
+      if (propType) params.property_type = propType
       return params
     }
 
@@ -2581,6 +2610,11 @@
     function resetFilters() {
       document.getElementById('f-min').value = ''
       document.getElementById('f-max').value = ''
+      // Also clear the quick-filter dropdowns and the property-type checkboxes.
+      ;['qf-min','qf-max','qf-beds','qf-type','f-beds'].forEach(function(id){
+        var el = document.getElementById(id); if (el) el.value = ''
+      })
+      document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]').forEach(function(cb){ cb.checked = false })
       document.querySelectorAll('.f-opt').forEach(o => o.classList.remove('on'))
       document.querySelectorAll('.ber-btn').forEach(b => b.classList.remove('on'))
       ;['f-parking','f-garden','f-garage','f-alarm','f-wheelchair','f-auction','f-newdev',
@@ -2621,6 +2655,44 @@
       })
     )
 
+    // Property-type checkboxes in the modal: single-select behaviour (only
+    // one can be ticked at a time, since the API expects a single value)
+    // and keep the qf-type quick-filter in sync when the user ticks one.
+    document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        if (cb.checked) {
+          document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]').forEach(function(other){
+            if (other !== cb) other.checked = false
+          })
+          var qfType = document.getElementById('qf-type')
+          if (qfType) qfType.value = cb.value
+        } else {
+          var qfType2 = document.getElementById('qf-type')
+          if (qfType2 && qfType2.value === cb.value) qfType2.value = ''
+        }
+      })
+    })
+
+    // When the quick-filter dropdown changes, mirror the choice into the
+    // modal checkboxes so the two UIs stay consistent.
+    (function(){
+      var qfType = document.getElementById('qf-type')
+      if (!qfType) return
+      qfType.addEventListener('change', function(){
+        document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]').forEach(function(cb){
+          cb.checked = (cb.value === qfType.value)
+        })
+      })
+    })()
+
+    // Keep the quick-filter dropdowns (qf-*) and the modal (f-*) in sync for
+    // Min price, Max price, Beds. Change one → the other matches.
+    ;[['qf-min','f-min'],['qf-max','f-max'],['qf-beds','f-beds']].forEach(function(pair){
+      var qf = document.getElementById(pair[0]), f = document.getElementById(pair[1])
+      if (qf) qf.addEventListener('change', function(){ if (f) f.value = qf.value })
+      if (f)  f .addEventListener('change', function(){ if (qf) qf.value = f.value })
+    })
+
     // ── Main search ─────────────────────────────────────────────────────────
     async function doSearch(page = 1) {
       currentPage = page
@@ -2633,11 +2705,44 @@
       const filters = {}
       if (activeType)      filters.listing_type  = activeType
       if (searchCounty)    filters.county        = searchCounty
-      if (urlPropertyType) filters.property_type = urlPropertyType
+
+      // ── Property type ────────────────────────────────────────────────────
+      // Priority: the quick-filter dropdown (qf-type) → the modal checkboxes
+      // → the URL param (urlPropertyType). First match wins. This was the
+      // bug: previously ONLY `urlPropertyType` was read, so selecting
+      // "Apartment" in the dropdown did nothing.
+      var qfType = document.getElementById('qf-type')
+      var selectedPropType = (qfType && qfType.value) ? qfType.value : ''
+      if (!selectedPropType) {
+        var cbChecked = document.querySelectorAll('#filter-modal .cb-col input[type="checkbox"][value]:checked')
+        if (cbChecked.length) {
+          // The API only accepts one property_type; take the first ticked box.
+          // Mirror the choice into qf-type so the UI stays in sync.
+          selectedPropType = cbChecked[0].value
+          if (qfType) qfType.value = selectedPropType
+        }
+      }
+      if (!selectedPropType && urlPropertyType) selectedPropType = urlPropertyType
+      if (selectedPropType) filters.property_type = selectedPropType
+
       if (searchQuery && !searchCounty) filters.q = searchQuery
-      if (document.getElementById('f-min').value) filters.min_price = document.getElementById('f-min').value
-      if (document.getElementById('f-max').value) filters.max_price = document.getElementById('f-max').value
-      if (bedEl)        filters.bedrooms = bedEl.dataset.val
+
+      // ── Price + beds ─────────────────────────────────────────────────────
+      // Read whichever UI the user actually touched: the quick-filter
+      // dropdowns (qf-*) OR the modal (f-*). Previously ONLY the modal
+      // was read, so picking "€200k" in the dropdown row did nothing.
+      var _pick = function(qfId, fId){
+        var qf = document.getElementById(qfId)
+        var f  = document.getElementById(fId)
+        return (qf && qf.value) || (f && f.value) || ''
+      }
+      var _min  = _pick('qf-min',  'f-min')
+      var _max  = _pick('qf-max',  'f-max')
+      var _beds = _pick('qf-beds', 'f-beds')
+      if (_min)  filters.min_price = _min
+      if (_max)  filters.max_price = _max
+      if (_beds) filters.bedrooms  = _beds
+      else if (bedEl) filters.bedrooms = bedEl.dataset.val   // modal bed pill
       if (berEl.length) filters.ber = berEl[0]
       if (document.getElementById('f-parking')?.checked)    filters.parking    = '1'
       if (document.getElementById('f-garden')?.checked)     filters.garden     = '1'
