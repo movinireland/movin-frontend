@@ -1720,6 +1720,304 @@
   body.lx-search .f-opt.on{
     background: #0e3d2e !important; border-color: #0e3d2e !important; color: #fff !important;
   }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     HOUSE-FOR-SALE-STYLE LAYOUT · final override
+     Matches the clean "landing" look used on /pages/house-for-sale.html:
+     thin sticky search bar · big Playfair title · "Filter" chip row ·
+     type pills as sibling chips below · results count + sort · 4-col grid
+     ══════════════════════════════════════════════════════════════════════ */
+
+  /* 1. Thin search bar — pill input + green pill button */
+  body.lx-search .sr-topbar{
+    background: #fff !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+    box-shadow: 0 1px 0 rgba(14,61,46,.04) !important;
+    position: sticky !important; top: 0 !important; z-index: 50 !important;
+  }
+  body.lx-search .sr-search-row{
+    max-width: 1180px !important; margin: 0 auto !important;
+    display: flex !important; gap: 8px !important; align-items: center !important;
+    position: relative !important;
+  }
+  body.lx-search .sr-input{
+    flex: 1 !important; min-width: 0 !important;
+    border: 1.5px solid #e8e2d3 !important;
+    border-radius: 999px !important;
+    padding: 10px 18px 10px 42px !important;
+    font-size: 13.5px !important; font-weight: 500 !important;
+    font-family: inherit !important;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a8a82' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M21 21l-4.3-4.3'/></svg>") no-repeat 16px 50% !important;
+    background-size: 16px 16px !important;
+    color: #1f2421 !important;
+    outline: none !important;
+    display: block !important;
+  }
+  body.lx-search .sr-input::placeholder{ color: #a8a496 !important; font-weight: 400 !important }
+  body.lx-search .sr-input:focus{
+    border-color: #1a5c45 !important;
+    box-shadow: 0 0 0 3px rgba(26,92,69,.12) !important;
+  }
+  body.lx-search .sr-search-btn{
+    background: #1a5c45 !important; color: #fff !important;
+    border: none !important; border-radius: 999px !important;
+    padding: 10px 20px !important;
+    font-size: 13.5px !important; font-weight: 700 !important;
+    font-family: inherit !important;
+    display: inline-flex !important; align-items: center !important; gap: 6px !important;
+    cursor: pointer !important; white-space: nowrap !important;
+    letter-spacing: .01em;
+  }
+  body.lx-search .sr-search-btn:hover{ background: #0e3d2e !important }
+
+  /* 2. Hide the Buy/Rent/Share/Summer pills from inside the topbar — we'll
+     keep them in the sr-pills row and style it as the "siblings" chip row. */
+  body.lx-search .sr-topbar .sr-pills{ display: none !important }
+  /* But keep the OUTER .sr-pills visible if positioned outside the topbar.
+     Our markup has it inside the topbar, so it's hidden there and we build
+     a page-title block below. */
+
+  /* 3. Title section — mimics .tlp-titlewrap on house-for-sale */
+  body.lx-search::before{ content: '' }
+  body.lx-search .sr-topbar + div{
+    /* This is the secondary quick-filter row. Style it as the TITLE+FILTER
+       combined container so the search page gets the same hierarchy as
+       the landing pages. We split it visually with inner spacing. */
+    background: #fff !important;
+    max-width: 1180px !important; margin: 0 auto !important;
+    padding: 1rem 16px 1rem !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+    display: flex !important; gap: 8px !important; align-items: center !important;
+    flex-wrap: wrap !important; justify-content: flex-start !important;
+    box-shadow: none !important;
+  }
+  body.lx-search .sr-topbar + div::before{
+    content: 'Filter' !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 10px !important; font-weight: 700 !important;
+    color: #8a8a82 !important;
+    text-transform: uppercase !important; letter-spacing: .8px !important;
+    margin-right: 4px !important;
+  }
+  body.lx-search .qf-chip{
+    border: 1.5px solid #e8e2d3 !important;
+    background: #fff !important; color: #555 !important;
+    border-radius: 999px !important;
+    padding: 7px 14px !important;
+    font-size: 12.5px !important; font-weight: 600 !important;
+    min-height: 32px !important;
+    cursor: pointer !important;
+    transition: all .15s ease !important;
+    font-family: inherit !important;
+  }
+  body.lx-search .qf-chip:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+
+  /* 4. Build a hero title block via sr-pills repositioning. Move the
+     Buy/Rent/Share/Summer pills BELOW the filter row as sibling chips —
+     done by resetting their position. Already hidden above, so we re-show
+     them in a different context: */
+  body.lx-search .sr-pills{
+    display: flex !important;
+    position: relative !important;
+    background: #f5f2ec !important;
+    padding: 10px 16px !important;
+    margin: 0 !important;
+    max-width: none !important;
+    gap: 8px !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+    scrollbar-width: none !important;
+    align-items: center !important;
+  }
+  body.lx-search .sr-pills::-webkit-scrollbar{ display: none }
+  /* Re-show the pills row by overriding the earlier hide in the topbar — the
+     pills ARE inside .sr-topbar in the markup; keep the simpler approach:
+     show them, don't hide. */
+  body.lx-search .sr-topbar .sr-pills{ display: flex !important }
+  body.lx-search .sr-topbar{
+    padding-bottom: 10px !important;
+  }
+  body.lx-search .sr-topbar .sr-pills{
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 10px 0 0 !important;
+    max-width: 1180px !important; margin: 0 auto !important;
+    overflow-x: visible !important; flex-wrap: wrap !important;
+  }
+  body.lx-search .sr-pills .pill{
+    background: #fff !important; color: #555 !important;
+    border: 1.5px solid #e8e2d3 !important;
+    padding: 7px 16px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    border-radius: 999px !important;
+    cursor: pointer !important;
+    transition: all .15s ease !important;
+    font-family: inherit !important;
+  }
+  body.lx-search .sr-pills .pill:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+  body.lx-search .sr-pills .pill.active{
+    background: #0e3d2e !important; color: #fff !important;
+    border-color: #0e3d2e !important;
+  }
+  body.lx-search .filter-btn{
+    margin-left: auto !important;
+    background: #fff !important; color: #1a5c45 !important;
+    border: 1.5px solid #1a5c45 !important;
+    padding: 7px 16px !important;
+    font-size: 13px !important; font-weight: 700 !important;
+    border-radius: 999px !important;
+    display: inline-flex !important; align-items: center !important; gap: 6px !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+  }
+  body.lx-search .filter-btn svg{ stroke: #1a5c45 !important }
+  body.lx-search .filter-btn:hover{ background: #1a5c45 !important; color: #fff !important }
+  body.lx-search .filter-btn:hover svg{ stroke: #fff !important }
+
+  /* 5. Results header — count on left, sort pill on right, no border */
+  body.lx-search .results-header{
+    max-width: 1180px !important; margin: 0 auto !important;
+    background: transparent !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+    padding: 12px 16px !important;
+    align-items: center !important;
+    display: flex !important; justify-content: space-between !important;
+  }
+  body.lx-search .results-count{
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 13px !important; font-weight: 500 !important;
+    color: #555 !important;
+    letter-spacing: 0;
+  }
+  body.lx-search .results-count::before{
+    content: '';
+  }
+  body.lx-search .view-toggle{ display: none !important }
+  body.lx-search .sort-select{
+    border: 1.5px solid #e8e2d3 !important;
+    border-radius: 999px !important;
+    padding: 7px 14px !important;
+    font-size: 12.5px !important; font-weight: 600 !important;
+    background: #fff !important; color: #555 !important;
+    cursor: pointer !important;
+    font-family: inherit !important;
+    outline: none;
+  }
+
+  /* 6. Grid of listing cards — 4 columns on desktop, like the landing page */
+  body.lx-search #results-grid{
+    max-width: 1180px !important; margin: 0 auto !important;
+    padding: 16px 16px 48px !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 16px !important;
+    flex-direction: initial !important;
+  }
+  @media(max-width:1100px){ body.lx-search #results-grid{ grid-template-columns: repeat(3, 1fr) !important } }
+  @media(max-width:800px){  body.lx-search #results-grid{ grid-template-columns: repeat(2, 1fr) !important } }
+  @media(max-width:520px){  body.lx-search #results-grid{ grid-template-columns: 1fr !important } }
+
+  /* Reset the earlier LIST-view treatment so cards go back to vertical */
+  body.lx-search #results-grid .prop-card,
+  body.lx-search .listings-list .prop-card{
+    display: flex !important; flex-direction: column !important;
+    width: auto !important;
+    background: #fff !important;
+    border: 1px solid #e8e2d3 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 1px 2px rgba(14,61,46,.03) !important;
+    overflow: hidden !important;
+    transition: box-shadow .22s ease, border-color .22s ease, transform .18s ease !important;
+  }
+  body.lx-search #results-grid .prop-card:hover{
+    border-color: #c8c0ac !important;
+    box-shadow: 0 10px 24px -14px rgba(14,61,46,.22) !important;
+    transform: translateY(-2px) !important;
+  }
+  body.lx-search #results-grid .prop-card-img,
+  body.lx-search .listings-list .prop-card-img{
+    width: 100% !important; max-width: 100% !important;
+    aspect-ratio: 4/3 !important;
+    min-height: 0 !important;
+    flex: none !important;
+  }
+  body.lx-search #results-grid .prop-card-body,
+  body.lx-search .listings-list .prop-card-body{
+    flex: 1 !important; min-width: 0 !important;
+    padding: 14px 16px !important;
+    display: flex !important; flex-direction: column !important; gap: 6px !important;
+  }
+  body.lx-search #results-grid .prop-card-price,
+  body.lx-search .listings-list .prop-card-price{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 20px !important; font-weight: 900 !important;
+    color: #0e3d2e !important; line-height: 1 !important;
+  }
+  body.lx-search #results-grid .prop-card-title,
+  body.lx-search .listings-list .prop-card-title{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 14px !important; font-weight: 700 !important;
+    color: #1f2421 !important; line-height: 1.3 !important;
+    display: -webkit-box !important; -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important; overflow: hidden !important;
+  }
+  body.lx-search #results-grid .prop-card-icons,
+  body.lx-search .listings-list .prop-card-icons{
+    gap: 10px !important; font-size: 12px !important;
+    color: #555 !important; font-weight: 600 !important;
+  }
+  body.lx-search #results-grid .prop-card-meta,
+  body.lx-search .listings-list .prop-card-meta{
+    font-size: 11px !important; color: #8a8a82 !important;
+    margin-top: auto !important; padding-top: 4px !important; border-top: none !important;
+  }
+  body.lx-search .prop-card-save{
+    position: absolute !important; top: 10px !important; right: 10px !important;
+    width: 34px !important; height: 34px !important;
+    background: rgba(255,255,255,.96) !important;
+    border: none !important; border-radius: 50% !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    box-shadow: 0 3px 8px rgba(0,0,0,.1) !important; z-index: 3 !important;
+  }
+
+  /* 7. Pagination — clean matching pills */
+  body.lx-search #pagination{
+    max-width: 1180px !important; margin: 24px auto 56px !important;
+    padding: 0 16px; display: flex; justify-content: center;
+    align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  body.lx-search .pg-btn{
+    min-width: 38px !important; height: 38px !important; padding: 0 12px !important;
+    background: #fff !important; color: #1f2421 !important;
+    border: 1.5px solid #e8e2d3 !important; border-radius: 999px !important;
+    font-size: 13px !important; font-weight: 700 !important; font-family: inherit !important;
+    cursor: pointer !important;
+    display: inline-flex !important; align-items: center !important; justify-content: center !important;
+    transition: all .15s ease !important;
+  }
+  body.lx-search .pg-btn:hover:not(:disabled):not(.on){
+    border-color: #1a5c45 !important; color: #1a5c45 !important; background: #f7faf8 !important;
+  }
+  body.lx-search .pg-btn.on{
+    background: #0e3d2e !important; color: #fff !important; border-color: #0e3d2e !important;
+    cursor: default !important;
+  }
+
+  /* 8. Mobile tightening */
+  @media(max-width:639px){
+    body.lx-search .sr-topbar{ padding: 8px 12px !important }
+    body.lx-search .sr-input{ padding: 9px 16px 9px 38px !important; font-size: 13px !important; background-position: 14px 50% !important }
+    body.lx-search .sr-search-btn{ padding: 9px 16px !important; font-size: 12.5px !important }
+    body.lx-search .sr-topbar + div{ padding: 10px 12px !important; gap: 6px !important }
+    body.lx-search .qf-chip, body.lx-search .sr-pills .pill, body.lx-search .filter-btn{
+      padding: 6px 12px !important; font-size: 12px !important; min-height: 30px !important;
+    }
+    body.lx-search .results-header{ padding: 10px 12px !important }
+    body.lx-search #results-grid{ padding: 10px 10px 36px !important; gap: 10px !important }
+  }
   </style>
 </head>
 <body>
@@ -1864,9 +2162,9 @@
     </div>
   </div>
 
-  <!-- Results list (default). applyResultsView() may add/remove the
-       `listings-list` class based on the saved view preference on load. -->
-  <div id="results-grid" class="listings-grid listings-list">
+  <!-- Results grid (default). applyResultsView() adds the `listings-list`
+       class if the saved view preference is "list". -->
+  <div id="results-grid" class="listings-grid">
     <div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#aaa">
       <div class="spinner" style="margin:0 auto 1rem"></div>
       Loading properties…
@@ -2033,7 +2331,7 @@
   <script>
     // ── Grid / List view toggle ───────────────────────────────────────────
     // Preference persists across sessions and pages via localStorage.
-    function getView(){ try { return localStorage.getItem('movin_results_view') || 'list' } catch(_) { return 'list' } }
+    function getView(){ try { return localStorage.getItem('movin_results_view') || 'grid' } catch(_) { return 'grid' } }
     function applyResultsView(){
       var mode = getView() === 'list' ? 'list' : 'grid'
       var grid = document.getElementById('results-grid')
@@ -2045,7 +2343,7 @@
       }
     }
     function setView(mode){
-      if (mode !== 'grid' && mode !== 'list') mode = 'list'
+      if (mode !== 'grid' && mode !== 'list') mode = 'grid'
       try { localStorage.setItem('movin_results_view', mode) } catch(_) {}
       applyResultsView()
     }
