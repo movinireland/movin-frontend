@@ -3796,6 +3796,9 @@ details.mort-section,
         // ── Build right panel ──────────────────────────────────────────
         var rpPanel =
           '<div class="rp-card">' +
+            /* Listing reference chip at the top of the right panel so buyers
+               looking at the price see the shareable number right away. */
+            (L.ref_id ? '<div style="margin-bottom:.75rem"><span title="Tap to copy — paste into search to find this listing" role="button" tabindex="0" onclick="(function(){try{navigator.clipboard.writeText(\'#' + L.ref_id + '\');if(typeof toast===\'function\')toast(\'Copied #' + L.ref_id + '\')}catch(_){}}())" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.5px;background:#f5f2ec;color:#0e3d2e;border:1px solid #e8e2d3;padding:3px 10px;border-radius:999px;cursor:copy;font-family:\'DM Sans\',system-ui,sans-serif"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Listing #' + L.ref_id + '</span></div>' : '') +
             '<div class="rp-price">' + fmtPrice(L) + '</div>' +
             '<div class="rp-price-sub">' + (L.listing_type==='rent'?'Per calendar month':'Asking price') + '</div>' +
             '<button class="rp-btn-enq" onclick="openEnquiryModal()">' +
@@ -3877,7 +3880,10 @@ details.mort-section,
               '<span class="badge ' + badgeClass + '">' + typeLabel + '</span>' +
               (L.ber_rating ? '<span class="badge badge-g" style="background:#2aaa50">BER: ' + L.ber_rating + '</span>' : '') +
               '<span class="d-age">Listed ' + timeAgo(L.created_at) + '</span>' +
-              (L.ref_id ? '<span class="d-age" title="Share this number — buyers can paste it into the search bar to find your listing." style="cursor:copy" onclick="(function(){try{navigator.clipboard.writeText(\'' + L.ref_id + '\');if(typeof toast===\'function\')toast(\'Copied #' + L.ref_id + '\')}catch(_){}}())">#' + L.ref_id + '</span>' : '') +
+              /* Short public listing reference. Rendered as a tappable chip
+                 so buyers can share "Listing #1000020" and others can paste
+                 that number into the search bar to find the listing. */
+              (L.ref_id ? '<span class="d-ref" title="Tap to copy — paste this number into the search bar to find this listing again." role="button" tabindex="0" onclick="(function(){try{navigator.clipboard.writeText(\'#' + L.ref_id + '\');if(typeof toast===\'function\')toast(\'Copied #' + L.ref_id + '\')}catch(_){}}())" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;letter-spacing:.5px;background:#f5f2ec;color:#0e3d2e;border:1px solid #e8e2d3;padding:3px 10px;border-radius:999px;cursor:copy;font-family:\'DM Sans\',system-ui,sans-serif"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Listing #' + L.ref_id + '</span>' : '') +
               (((Date.now() - new Date(L.created_at).getTime()) / 86400000) < 7 ? '<span class="badge" style="background:#e07b3f;color:#fff;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600">NEW</span>' : '') +
             '</div>' +
             '<h1 class="d-title">' + L.title + '</h1>' +
