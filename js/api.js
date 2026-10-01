@@ -148,6 +148,12 @@ const listings = {
     return request('PUT', `/api/listings/${id}`, data)
   },
 
+  // Spreadsheet-style bulk edit — requires a reason string + an array of
+  // { id, title?, price?, status?, bedrooms?, bathrooms?, ber_rating? } rows.
+  async bulkEdit(reason, changes) {
+    return request('PUT', '/api/listings/bulk-edit', { reason, changes })
+  },
+
   async delete(id) {
     return request('DELETE', `/api/listings/${id}`)
   },

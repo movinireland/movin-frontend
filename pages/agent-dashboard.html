@@ -376,7 +376,13 @@
             <h3 class="section-t">Your listings</h3>
             <div class="section-sub" id="lst-count-sub">—</div>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="openListModal()">+ New listing</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" id="bulk-edit-btn" onclick="openBulkEditReasonModal()" title="Edit price / status / details for several listings at once">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px" aria-hidden="true"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+              Bulk edit
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openListModal()">+ New listing</button>
+          </div>
         </div>
 
         <div class="chips" id="lst-chips">
@@ -1058,9 +1064,199 @@
     function openListModal(){ document.getElementById('list-modal').classList.add('open') }
     function closeListModal(){ document.getElementById('list-modal').classList.remove('open') }
     function goList(cat){ location.href = 'list.html?cat=' + cat + '&from=agent' }
-    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeListModal() })
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        closeListModal()
+        closeBulkEditReasonModal()
+        closeBulkEditSheet()
+      }
+    })
+
+    // ── Bulk edit (spreadsheet) ──────────────────────────────────────────
+    // Workflow: click "Bulk edit" → reason modal → type a reason + Enter →
+    // spreadsheet view with every listing editable (title/price/beds/baths/BER/
+    // status) → "Save all changes" sends the diff to the backend with the reason.
+    function openBulkEditReasonModal(){
+      if (!STATE.listings || !STATE.listings.length) {
+        toast('You have no listings to edit yet.', 'error')
+        return
+      }
+      document.getElementById('be-reason').value = ''
+      document.getElementById('be-reason-modal').classList.add('open')
+      setTimeout(function(){ document.getElementById('be-reason').focus() }, 60)
+    }
+    function closeBulkEditReasonModal(){
+      document.getElementById('be-reason-modal').classList.remove('open')
+    }
+    function handleBeReasonKey(e){
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); confirmBulkEditReason() }
+    }
+    var BE_STATE = { reason: '', original: {}, dirty: new Set() }
+    function confirmBulkEditReason(){
+      var reason = (document.getElementById('be-reason').value || '').trim()
+      if (reason.length < 3) { toast('Please enter a reason (at least 3 characters).', 'error'); return }
+      BE_STATE.reason = reason
+      closeBulkEditReasonModal()
+      openBulkEditSheet()
+    }
+
+    function openBulkEditSheet(){
+      BE_STATE.original = {}
+      BE_STATE.dirty = new Set()
+      var tbody = document.getElementById('be-tbody')
+      var rows = STATE.listings.slice()
+      // Keep live listings on top so the common edits (price adjustments)
+      // are front of mind.
+      rows.sort(function(a,b){
+        var sa = a.status === 'active' ? 0 : 1
+        var sb = b.status === 'active' ? 0 : 1
+        if (sa !== sb) return sa - sb
+        return new Date(b.created_at) - new Date(a.created_at)
+      })
+      var STATUS_OPTS = ['active','pending_review','sale_agreed','let_agreed','sold','let','draft','rejected','expired','auction']
+      var BER_OPTS = ['','A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','E1','E2','F','G','Exempt']
+      tbody.innerHTML = rows.map(function(l){
+        BE_STATE.original[l.id] = {
+          title: l.title || '', price: l.price || 0, status: l.status || '',
+          bedrooms: l.bedrooms || '', bathrooms: l.bathrooms || '', ber_rating: l.ber_rating || ''
+        }
+        return '<tr data-id="' + l.id + '">' +
+          '<td style="font-size:11px;color:#aaa;white-space:nowrap">' + (l.ref_id ? '#' + l.ref_id : l.id.slice(0,6)) + '</td>' +
+          '<td><input class="be-i" data-f="title" value="' + escapeHtml(l.title || '') + '" style="min-width:180px"/></td>' +
+          '<td><input class="be-i" data-f="price" type="number" min="0" value="' + (l.price || 0) + '" style="width:100px"/></td>' +
+          '<td><select class="be-i" data-f="status">' +
+            STATUS_OPTS.map(function(s){ return '<option value="' + s + '"' + (s === l.status ? ' selected' : '') + '>' + s.replace(/_/g,' ') + '</option>' }).join('') +
+          '</select></td>' +
+          '<td><input class="be-i" data-f="bedrooms" type="number" min="0" value="' + (l.bedrooms || '') + '" style="width:60px"/></td>' +
+          '<td><input class="be-i" data-f="bathrooms" type="number" min="0" value="' + (l.bathrooms || '') + '" style="width:60px"/></td>' +
+          '<td><select class="be-i" data-f="ber_rating">' +
+            BER_OPTS.map(function(b){ return '<option value="' + b + '"' + (b === (l.ber_rating || '') ? ' selected' : '') + '>' + (b || '—') + '</option>' }).join('') +
+          '</select></td>' +
+        '</tr>'
+      }).join('')
+      // Mark rows dirty on edit so we only send the diff
+      tbody.addEventListener('input', beOnInput)
+      tbody.addEventListener('change', beOnInput)
+      document.getElementById('be-sheet').classList.add('open')
+      document.getElementById('be-stats').textContent = rows.length + ' listings · 0 changed'
+      var chip = document.getElementById('be-reason-chip')
+      if (chip) { chip.textContent = BE_STATE.reason; chip.title = BE_STATE.reason }
+    }
+    function beOnInput(e){
+      var tr = e.target.closest('tr'); if (!tr) return
+      BE_STATE.dirty.add(tr.dataset.id)
+      var n = BE_STATE.dirty.size
+      document.getElementById('be-stats').textContent = STATE.listings.length + ' listings · ' + n + ' changed'
+    }
+    function closeBulkEditSheet(){
+      document.getElementById('be-sheet').classList.remove('open')
+      var tbody = document.getElementById('be-tbody')
+      tbody.removeEventListener('input', beOnInput)
+      tbody.removeEventListener('change', beOnInput)
+    }
+    async function saveBulkEdit(){
+      if (!BE_STATE.dirty.size) { toast('No changes to save.', 'error'); return }
+      var changes = []
+      var tbody = document.getElementById('be-tbody')
+      BE_STATE.dirty.forEach(function(id){
+        var tr = tbody.querySelector('tr[data-id="' + id + '"]')
+        if (!tr) return
+        var orig = BE_STATE.original[id] || {}
+        var row = { id: id }
+        tr.querySelectorAll('.be-i').forEach(function(el){
+          var f = el.dataset.f
+          var v = el.value
+          if (f === 'price' || f === 'bedrooms' || f === 'bathrooms') v = v === '' ? '' : parseInt(v, 10)
+          if (String(v) !== String(orig[f])) row[f] = v
+        })
+        if (Object.keys(row).length > 1) changes.push(row)
+      })
+      if (!changes.length) { toast('No actual changes detected.', 'error'); return }
+      var btn = document.getElementById('be-save-btn')
+      btn.disabled = true; btn.textContent = 'Saving…'
+      try {
+        var res = await API.listings.bulkEdit(BE_STATE.reason, changes)
+        toast('✓ Updated ' + res.updated + ' of ' + res.total + ' listings')
+        closeBulkEditSheet()
+        await loadListings()
+      } catch (err) {
+        toast(err && err.message ? err.message : 'Bulk edit failed', 'error')
+      }
+      btn.disabled = false; btn.textContent = 'Save all changes'
+    }
+    window.openBulkEditReasonModal = openBulkEditReasonModal
+    window.closeBulkEditReasonModal = closeBulkEditReasonModal
+    window.confirmBulkEditReason = confirmBulkEditReason
+    window.handleBeReasonKey = handleBeReasonKey
+    window.closeBulkEditSheet = closeBulkEditSheet
+    window.saveBulkEdit = saveBulkEdit
 
     init()
   </script>
+
+  <!-- Bulk-edit reason gate -->
+  <div class="modal-bg" id="be-reason-modal" onclick="if(event.target===this)closeBulkEditReasonModal()">
+    <div class="modal" style="max-width:460px">
+      <button class="modal-close" onclick="closeBulkEditReasonModal()">✕</button>
+      <h2 class="modal-h">Why are you making these edits?</h2>
+      <p class="modal-sub">We log the reason so your team (and admins) can see why multiple listings changed at once. Press <kbd>Enter</kbd> to continue.</p>
+      <textarea id="be-reason" class="form-input" rows="3" maxlength="500"
+        placeholder="e.g. Rolling out July price adjustment across all rentals."
+        onkeydown="handleBeReasonKey(event)"
+        style="width:100%;resize:vertical;min-height:72px;margin-bottom:1rem"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">
+        <button class="btn btn-ghost" type="button" onclick="closeBulkEditReasonModal()">Cancel</button>
+        <button class="btn btn-primary" type="button" onclick="confirmBulkEditReason()">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spreadsheet editor — full-screen on mobile, sheet on desktop -->
+  <style>
+    .be-sheet{position:fixed;inset:0;background:rgba(14,30,22,.65);z-index:420;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:1rem;backdrop-filter:blur(2px)}
+    .be-sheet.open{display:flex}
+    .be-card{background:#fff;border-radius:18px;width:100%;max-width:1180px;max-height:94vh;display:flex;flex-direction:column;box-shadow:0 24px 50px -12px rgba(14,61,46,.4)}
+    [data-theme="dark"] .be-card{background:#1a1a1a;color:#f1ebdc}
+    .be-head{padding:1rem 1.25rem;border-bottom:1px solid var(--border,#e8e4dc);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .be-head h2{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:900;color:var(--gd,#0e3d2e);margin:0;flex:1;min-width:0}
+    [data-theme="dark"] .be-head h2{color:#7ec9a8}
+    .be-stats{font-size:12px;color:var(--muted,#7a7a72);font-weight:600}
+    .be-reason-chip{font-size:11px;background:var(--gl,#e9f4ef);color:var(--gd,#0e3d2e);padding:4px 10px;border-radius:999px;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    [data-theme="dark"] .be-reason-chip{background:rgba(126,201,168,.1);color:#7ec9a8}
+    .be-body{overflow:auto;flex:1;-webkit-overflow-scrolling:touch}
+    .be-table{width:100%;border-collapse:collapse;font-size:13px}
+    .be-table th{position:sticky;top:0;background:#faf9f5;z-index:1;text-align:left;padding:.6rem .75rem;font-size:11px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border,#e8e4dc)}
+    [data-theme="dark"] .be-table th{background:#242219;color:#a8a496;border-color:#38342a}
+    .be-table td{padding:.4rem .5rem;border-bottom:1px solid #f1efe7;vertical-align:middle}
+    [data-theme="dark"] .be-table td{border-color:#2a2a2a}
+    .be-i{border:1.5px solid transparent;border-radius:8px;padding:6px 9px;font-size:13px;font-family:inherit;background:transparent;color:inherit;outline:none;transition:border-color .15s,background .15s;width:100%;max-width:280px}
+    .be-i:focus,.be-i:hover{border-color:var(--g,#1a5c45);background:#fff}
+    [data-theme="dark"] .be-i:focus,[data-theme="dark"] .be-i:hover{background:#242219}
+    .be-foot{padding:1rem 1.25rem;border-top:1px solid var(--border,#e8e4dc);display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+    .be-foot .be-hint{margin-right:auto;font-size:12px;color:var(--muted,#7a7a72)}
+    @media(max-width:768px){ .be-sheet{padding:0} .be-card{max-height:100vh;border-radius:0} .be-i{min-width:80px} }
+  </style>
+  <div class="be-sheet" id="be-sheet" onclick="if(event.target===this)closeBulkEditSheet()">
+    <div class="be-card" role="dialog" aria-modal="true" aria-label="Bulk edit listings">
+      <div class="be-head">
+        <h2>Edit your listings</h2>
+        <span class="be-stats" id="be-stats">—</span>
+        <span class="be-reason-chip" id="be-reason-chip" title=""></span>
+      </div>
+      <div class="be-body">
+        <table class="be-table">
+          <thead>
+            <tr><th>Ref</th><th>Title</th><th>Price (€)</th><th>Status</th><th>Beds</th><th>Baths</th><th>BER</th></tr>
+          </thead>
+          <tbody id="be-tbody"></tbody>
+        </table>
+      </div>
+      <div class="be-foot">
+        <span class="be-hint">Only changed cells are sent. Non-admin edits send the listing back to review.</span>
+        <button class="btn btn-ghost" type="button" onclick="closeBulkEditSheet()">Cancel</button>
+        <button class="btn btn-primary" type="button" id="be-save-btn" onclick="saveBulkEdit()">Save all changes</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

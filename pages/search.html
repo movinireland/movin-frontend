@@ -1228,11 +1228,11 @@
   <div class="sr-topbar">
     <div class="sr-search-row">
       <input class="sr-input" type="text" id="search-q"
-             placeholder="Area, county, Eircode or D1, D2…"
+             placeholder="Area, Eircode, listing # or D1, D2…"
              autocomplete="off"
              oninput="handleSearchInput(this.value)"
              onkeydown="handleSearchKey(event)"/>
-      <button class="sr-search-btn" onclick="doSearch()">Search</button>
+      <button class="sr-search-btn" onclick="searchOrGoToRef()">Search</button>
       <div class="search-suggestions" id="suggestions"></div>
     </div>
     <div id="search-chip-wrap"></div>
@@ -1773,10 +1773,21 @@
       box.classList.add('open')
     }
 
+    // Shared helper — if the box has ONLY a 6-10 digit number (optionally
+    // '#'-prefixed) jump straight to that listing (MyHome.ie-style ref search).
+    // Otherwise do the regular filtered search.
+    function searchOrGoToRef() {
+      var raw = (document.getElementById('search-q').value || '').trim()
+      var refM = raw.match(/^#?(\d{6,10})$/)
+      if (refM) { window.location.href = '/pages/listing.html?id=' + refM[1]; return }
+      doSearch()
+    }
+    window.searchOrGoToRef = searchOrGoToRef
+
     function handleSearchKey(e) {
       if (e.key === 'Enter') {
         document.getElementById('suggestions').classList.remove('open')
-        doSearch()
+        searchOrGoToRef()
       }
       if (e.key === 'Escape') {
         document.getElementById('suggestions').classList.remove('open')

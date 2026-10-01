@@ -2109,7 +2109,13 @@ function listingUrl(listing){
     (listing.title || 'property') + '-' +
     (listing.county || listing.address_area || 'ireland')
   )
-  return '/property/' + (slug ? slug + '-' : '') + listing.id
+  // Append the short public reference number at the end (MyHome.ie style —
+  // e.g. .../3-bed-semi-rathmines-dublin-4823561). We still include the UUID
+  // in the path so the Vercel rewrite + legacy links keep working; the ref
+  // number sits as the trailing segment so it's the easy thing to share.
+  var tail = listing.id
+  if (listing.ref_id) tail = listing.id + '-' + listing.ref_id
+  return '/property/' + (slug ? slug + '-' : '') + tail
 }
 // SEO-friendly agent profile URL: /agent/<agency-or-name-slug>-<userId>
 // Accepts a user/agent object OR a listing object (uses agency_name →
@@ -2958,8 +2964,12 @@ if (document.readyState === 'loading') {
     }
 
     function submit(extra) {
-      var p   = new URLSearchParams()
       var q   = document.getElementById('qsearch-input').value.trim()
+      // Reference-number shortcut — bare 6-10 digit number jumps straight to
+      // that listing (MyHome.ie-style). Supports a leading '#'.
+      var refM = q.match(/^#?(\d{6,10})$/)
+      if (refM) { window.location.href = '/pages/listing.html?id=' + refM[1]; return }
+      var p   = new URLSearchParams()
       var beds= document.getElementById('qsearch-beds').value
       var min = document.getElementById('qsearch-min').value
       var max = document.getElementById('qsearch-max').value
