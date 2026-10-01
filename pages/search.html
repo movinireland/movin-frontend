@@ -2675,7 +2675,10 @@
 
     // When the quick-filter dropdown changes, mirror the choice into the
     // modal checkboxes so the two UIs stay consistent.
-    (function(){
+    // Leading `;` guards against ASI biting us: the previous statement is a
+    // `.forEach(…)` with no semicolon and this line opens with `(`, which JS
+    // would otherwise interpret as calling the forEach result as a function.
+    ;(function(){
       var qfType = document.getElementById('qf-type')
       if (!qfType) return
       qfType.addEventListener('change', function(){
