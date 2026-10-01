@@ -2025,6 +2025,78 @@
     body.lx-search .results-header{ padding: 10px 12px !important }
     body.lx-search #results-grid{ padding: 10px 10px 36px !important; gap: 10px !important }
   }
+
+  /* ──────────────────────────────────────────────────────────────────────
+     MOBILE POLISH — tighten search-page specifics on small screens:
+     fix the mv-drawer shadow leaking into the viewport, kill sticky-hover
+     green borders after taps, and compact the pill rows so filters fit
+     cleanly without wrapping onto 3 lines.
+     ────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 639px){
+    /* 1. mv-drawer sits off-screen with a large box-shadow — on mobile the
+       negative-x shadow leaks into the viewport as a dark-green strip on
+       the right edge of the search page. Suppress the shadow until the
+       drawer is actually open. */
+    body:not(.mv-drawer-open) #mv-drawer{ box-shadow: none !important }
+
+    /* 2. Kill sticky-hover state on touch devices (iOS Safari + Android
+       Chrome keep :hover active after a tap, which turns "All counties"
+       and other filter chips green until you tap elsewhere). */
+    @media (hover: none){
+      body.lx-search .qf-chip:hover,
+      body.lx-search .sr-pills .pill:hover,
+      body.lx-search .filter-btn:hover,
+      body.lx-search .pg-btn:hover{
+        border-color: #e8e2d3 !important;
+        color: #555 !important;
+        background: #fff !important;
+      }
+      body.lx-search .sr-pills .pill.active:hover{
+        background: #0e3d2e !important; color: #fff !important; border-color: #0e3d2e !important;
+      }
+    }
+
+    /* 3. Compact the Buy / Rent / Share pills row — single line, scroll
+       horizontally if needed, so the search bar + pills + filters all
+       fit in a tight stack. */
+    body.lx-search .sr-topbar .sr-pills{
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px !important;
+    }
+    body.lx-search .sr-topbar .sr-pills::-webkit-scrollbar{ display: none }
+    body.lx-search .sr-pills .pill,
+    body.lx-search .filter-btn{
+      flex-shrink: 0;
+      padding: 6px 12px !important;
+      font-size: 12.5px !important;
+    }
+    /* 4. Filter chip row (All counties / Any beds / Min / Max / Any type)
+       also goes single-line scroll — tidier than wrap. */
+    body.lx-search .sr-topbar + div{
+      flex-wrap: nowrap !important;
+      overflow-x: auto !important;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 10px 12px !important;
+    }
+    body.lx-search .sr-topbar + div::-webkit-scrollbar{ display: none }
+    body.lx-search .sr-topbar + div::before{
+      flex-shrink: 0;
+    }
+    body.lx-search .qf-chip{
+      flex-shrink: 0;
+      padding: 6px 12px !important;
+      font-size: 12px !important;
+      min-height: 30px !important;
+    }
+
+    /* 5. Keep the sticky topbar on top of everything else (iOS has a
+       quirk where position:sticky inside a flex wrap can lose z-order). */
+    body.lx-search .sr-topbar{ z-index: 60 !important }
+  }
   </style>
 </head>
 <body>
