@@ -2027,6 +2027,20 @@
   }
 
   /* ──────────────────────────────────────────────────────────────────────
+     Kill the dark-green fade-out gradient the OLD skin added as a
+     ".pills can be scrolled right" affordance. On the new white topbar
+     it reads as a dark-green shadow bleed down the right edge of the
+     search page. Not scoped to a media query — the fade is wrong at
+     every size now that the topbar is white, not dark forest green. */
+  body.lx-search .sr-topbar::after,
+  body.lx-search .sr-topbar::before{
+    background-image: none !important;
+    background: transparent !important;
+    content: none !important;
+    display: none !important;
+  }
+
+  /* ──────────────────────────────────────────────────────────────────────
      MOBILE POLISH — tighten search-page specifics on small screens:
      fix the mv-drawer shadow leaking into the viewport, kill sticky-hover
      green borders after taps, and compact the pill rows so filters fit
