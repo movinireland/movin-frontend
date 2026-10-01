@@ -20,8 +20,8 @@
   <title>Search Properties – Movin.ie</title>
   <link rel="stylesheet" href="../css/main.css"/>
   <link rel="manifest" href="/manifest.json"/>
-<link rel="apple-touch-icon" href="/icons/favicon-apple-touch-icon-180x180.png"/>
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png"/>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+  <link rel="apple-touch-icon" href="/favicon.svg"/>
   <meta name="theme-color" content="#1a5c45"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Movin"/>
@@ -1720,7 +1720,14 @@
   body.lx-search .f-opt.on{
     background: #0e3d2e !important; border-color: #0e3d2e !important; color: #fff !important;
   }
+  </style>
 
+  <!-- ══════════════════════════════════════════════════════════════════════
+       SEARCH PAGE FINAL LOOK — kept in its OWN <style> block so a parse
+       error anywhere in the big lx-search-skin block above can't take it
+       down (CSS parsers scope error-recovery to the stylesheet they're in).
+       ══════════════════════════════════════════════════════════════════════ -->
+  <style id="search-final-skin">
   /* ══════════════════════════════════════════════════════════════════════
      HOUSE-FOR-SALE-STYLE LAYOUT · final override
      Matches the clean "landing" look used on /pages/house-for-sale.html:
