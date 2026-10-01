@@ -1219,6 +1219,507 @@
   body.lx-search .listings-list .prop-card.prop-card > .prop-card-img::before{
     display: none !important;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     NICER-SEARCH-SKIN · final override layer (Rightmove-inspired)
+     Applied on top of everything above. Any rule here wins specificity
+     battles via the `body.lx-search` prefix + !important.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── Page shell: constrained width + breathing room ── */
+  body.lx-search{ background: #f5f2ec !important }
+
+  /* ────────────────────────────────────────────────────────────────────
+     THE SEARCH BAR — hero-caliber, flat-lead-with-icon style.
+     Clean white sticky header, inset magnifier icon on the left, big
+     brand-green pill button on the right. Matches the way Rightmove /
+     Daft lead their search page.
+     ──────────────────────────────────────────────────────────────────── */
+  body.lx-search .sr-topbar{
+    background: #fff !important;
+    padding: 16px 16px 12px !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+    box-shadow: 0 1px 0 rgba(14,61,46,.04), 0 2px 20px -16px rgba(14,61,46,.18) !important;
+    position: sticky; top: 0; z-index: 50;
+  }
+  @media (min-width: 720px){
+    body.lx-search .sr-topbar{ padding: 22px 20px 14px !important }
+  }
+  body.lx-search .sr-search-row{
+    max-width: 1240px; margin: 0 auto !important;
+    display: flex !important; gap: 10px; align-items: center;
+    position: relative;
+  }
+  body.lx-search .sr-input{
+    flex: 1; min-width: 0;
+    border: 1.5px solid #d8d3c8 !important;
+    border-radius: 999px !important;
+    padding: 13px 20px !important;
+    font-size: 15px !important;
+    background: #fff !important; color: #1f2421 !important;
+    font-family: inherit; outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+  }
+  body.lx-search .sr-input:focus{
+    border-color: #1a5c45 !important;
+    box-shadow: 0 0 0 3px rgba(26,92,69,.14) !important;
+  }
+  body.lx-search .sr-search-btn{
+    background: #1a5c45 !important; color: #fff !important;
+    border: none !important; border-radius: 999px !important;
+    padding: 13px 24px !important;
+    font-weight: 700 !important; font-size: 14px !important;
+    letter-spacing: .01em; cursor: pointer;
+    font-family: inherit;
+    transition: background .18s ease, transform .12s ease;
+    white-space: nowrap;
+  }
+  body.lx-search .sr-search-btn:hover{ background: #0e3d2e !important }
+  body.lx-search .sr-search-btn:active{ transform: scale(.97) }
+
+  /* Buy / Rent / Share pills — bigger, chunkier, Rightmove-ish */
+  body.lx-search .sr-pills{
+    max-width: 1240px; margin: 10px auto 0 !important;
+    gap: 6px !important; flex-wrap: wrap; display: flex;
+  }
+  body.lx-search .sr-pills .pill{
+    background: #fff !important; color: #555 !important;
+    border: 1.5px solid #d8d3c8 !important;
+    padding: 7px 16px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    border-radius: 999px !important; cursor: pointer;
+    font-family: inherit;
+    transition: all .15s ease;
+  }
+  body.lx-search .sr-pills .pill:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+  body.lx-search .sr-pills .pill.active{
+    background: #0e3d2e !important; color: #fff !important;
+    border-color: #0e3d2e !important;
+  }
+  body.lx-search .filter-btn{
+    background: #fff !important; color: #1f2421 !important;
+    border: 1.5px solid #d8d3c8 !important;
+    padding: 7px 16px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    border-radius: 999px !important;
+    display: inline-flex; align-items: center; gap: 6px;
+    cursor: pointer; font-family: inherit;
+    transition: all .15s ease;
+  }
+  body.lx-search .filter-btn:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+
+  /* Quick-filter row — center + spacing */
+  body.lx-search .sr-topbar + div{
+    background: #fff !important;
+    padding: 10px 16px !important;
+    border-bottom: 1px solid #e8e2d3 !important;
+  }
+  body.lx-search .sr-topbar + div > .qf-chip,
+  body.lx-search .sr-topbar + div > select,
+  body.lx-search .sr-topbar + div > a,
+  body.lx-search .sr-topbar + div > button{ font-size: 12.5px !important; min-height: 32px }
+  body.lx-search .qf-chip{
+    border: 1.5px solid #d8d3c8 !important;
+    background: #fff !important; color: #555 !important;
+    border-radius: 999px !important;
+    padding: 6px 14px !important;
+    font-weight: 500 !important;
+    transition: all .15s ease;
+  }
+  body.lx-search .qf-chip:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+  body.lx-search .qf-chip.active{
+    background: rgba(26,92,69,.08) !important;
+    border-color: #1a5c45 !important; color: #1a5c45 !important;
+  }
+
+  /* Results header */
+  body.lx-search .results-header{
+    max-width: 1240px; margin: 0 auto !important;
+    background: transparent !important;
+    border-bottom: none !important;
+    padding: 20px 16px 12px !important;
+    align-items: baseline !important;
+  }
+  body.lx-search .results-count{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 22px !important; font-weight: 900 !important;
+    color: #0e3d2e !important; letter-spacing: -.015em;
+  }
+  [data-theme="dark"] body.lx-search .results-count{ color: #7ec9a8 !important }
+  body.lx-search .view-toggle{ display: none !important }   /* list-only, no toggle */
+  body.lx-search .sort-select{
+    border: 1.5px solid #d8d3c8 !important;
+    border-radius: 999px !important;
+    padding: 7px 16px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    background: #fff !important; color: #333 !important;
+    cursor: pointer; font-family: inherit;
+    transition: border-color .18s ease;
+  }
+  body.lx-search .sort-select:hover{ border-color: #1a5c45 !important }
+
+  /* ── Results list: single column, airy cards, max-width container ── */
+  body.lx-search #results-grid{
+    max-width: 1240px; margin: 0 auto !important;
+    padding: 0 16px 48px !important;
+    display: flex !important; flex-direction: column; gap: 14px !important;
+    grid-template-columns: none !important;
+  }
+  body.lx-search #results-grid .prop-card,
+  body.lx-search .listings-list .prop-card{
+    display: flex !important; flex-direction: row !important;
+    width: 100% !important;
+    background: #fff !important;
+    border: 1px solid #e8e2d3 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 1px 2px rgba(14,61,46,.04) !important;
+    overflow: hidden !important;
+    transition: box-shadow .22s ease, border-color .22s ease, transform .22s ease !important;
+  }
+  body.lx-search #results-grid .prop-card:hover,
+  body.lx-search .listings-list .prop-card:hover{
+    border-color: #c8c0ac !important;
+    box-shadow: 0 10px 30px -14px rgba(14,61,46,.22) !important;
+    transform: translateY(-2px) !important;
+  }
+  [data-theme="dark"] body.lx-search #results-grid .prop-card,
+  [data-theme="dark"] body.lx-search .listings-list .prop-card{
+    background: #1c1b16 !important; border-color: #38342a !important;
+  }
+
+  /* Image: large, left side, 16:10 ish */
+  body.lx-search .listings-list .prop-card-img{
+    width: 100% !important; max-width: 100% !important;
+    aspect-ratio: 16/10 !important; min-height: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  @media (min-width: 720px){
+    body.lx-search .listings-list .prop-card-img{
+      width: 44% !important; max-width: 44% !important;
+      min-height: 240px !important; aspect-ratio: auto !important;
+    }
+  }
+  body.lx-search .listings-list .prop-card-img img{
+    object-fit: cover !important;
+  }
+
+  /* Save heart — floating on the image, top-right */
+  body.lx-search .prop-card-save{
+    position: absolute !important;
+    top: 10px !important; right: 10px !important;
+    width: 38px !important; height: 38px !important;
+    background: rgba(255,255,255,.96) !important;
+    border: none !important; border-radius: 50% !important;
+    display: flex !important; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,.12) !important;
+    cursor: pointer; transition: transform .15s ease, background .15s ease;
+    z-index: 3;
+  }
+  body.lx-search .prop-card-save:hover{ background: #fff !important; transform: scale(1.06) }
+  body.lx-search .prop-card-save svg{ width: 18px; height: 18px }
+
+  /* Body: proper spacing + typography */
+  body.lx-search .listings-list .prop-card-body{
+    flex: 1; min-width: 0;
+    padding: 18px 20px !important;
+    display: flex !important; flex-direction: column; gap: 8px;
+  }
+  @media (min-width: 720px){
+    body.lx-search .listings-list .prop-card-body{ padding: 22px 26px !important; gap: 10px }
+  }
+
+  /* Price — big + bold, Rightmove-style */
+  body.lx-search .listings-list .prop-card-price-row{
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 10px; flex-wrap: wrap; margin-bottom: 4px;
+  }
+  body.lx-search .listings-list .prop-card-price{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 24px !important; font-weight: 900 !important;
+    color: #0e3d2e !important; letter-spacing: -.015em;
+    line-height: 1 !important;
+  }
+  @media (min-width: 720px){
+    body.lx-search .listings-list .prop-card-price{ font-size: 28px !important }
+  }
+  [data-theme="dark"] body.lx-search .listings-list .prop-card-price{ color: #e07b3f !important }
+
+  /* Address title — serif too for continuity, but tighter */
+  body.lx-search .listings-list .prop-card-title{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 16px !important; font-weight: 700 !important;
+    color: #1f2421 !important; letter-spacing: -.005em;
+    line-height: 1.3 !important;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  @media (min-width: 720px){
+    body.lx-search .listings-list .prop-card-title{ font-size: 17px !important }
+  }
+  [data-theme="dark"] body.lx-search .listings-list .prop-card-title{ color: #f1ebdc !important }
+
+  /* Bed / bath / size — icon row, chunky and clear */
+  body.lx-search .listings-list .prop-card-icons{
+    display: flex; gap: 16px; flex-wrap: wrap;
+    font-size: 13px !important; color: #555 !important;
+    font-weight: 600 !important;
+    padding-top: 2px;
+  }
+  body.lx-search .listings-list .prop-card-icons span{
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  body.lx-search .listings-list .prop-card-icons svg{
+    width: 15px; height: 15px; stroke: #1a5c45;
+  }
+  [data-theme="dark"] body.lx-search .listings-list .prop-card-icons{ color: #c9c4b4 !important }
+
+  /* Meta line (type · size · BER) — subtle below title */
+  body.lx-search .listings-list .prop-card-meta{
+    display: flex; align-items: center; gap: 10px;
+    font-size: 12px !important; color: #8a8a82 !important;
+    font-weight: 500 !important; text-transform: none !important;
+    letter-spacing: .01em !important;
+    padding-top: 2px !important; border-top: none !important;
+    margin-top: auto;
+  }
+  body.lx-search .listings-list .prop-card-meta-sub{
+    font-size: 12px !important; color: #8a8a82 !important;
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+
+  /* Premium ribbon — brand green with cream text, Rightmove-ish white badge */
+  body.lx-search .pc-pill{
+    font-family: 'DM Sans', sans-serif !important;
+    font-weight: 700 !important; font-size: 10.5px !important;
+    letter-spacing: .5px !important; text-transform: uppercase;
+    padding: 5px 10px !important;
+    border-radius: 999px !important;
+    box-shadow: 0 2px 8px rgba(14,61,46,.18) !important;
+  }
+  body.lx-search .pc-pill--premium{
+    background: #fff !important; color: #0e3d2e !important;
+    border: 1.5px solid #0e3d2e !important;
+  }
+  body.lx-search .prop-card-tags{
+    top: 12px !important; left: 12px !important;
+    gap: 5px !important;
+  }
+
+  /* "Added yesterday" style stamp (we use the existing meta-sub for this) */
+  body.lx-search .listings-list .prop-card-body::after{
+    content: '';
+  }
+
+  /* ── Mobile adjustments ── */
+  @media (max-width: 719px){
+    body.lx-search .sr-topbar{ padding: 10px 12px 8px !important }
+    body.lx-search .sr-search-row{ gap: 6px }
+    body.lx-search .sr-input{ padding: 11px 16px !important; font-size: 14px !important }
+    body.lx-search .sr-search-btn{ padding: 11px 18px !important; font-size: 13px !important }
+    body.lx-search .results-header{ padding: 14px 14px 8px !important }
+    body.lx-search .results-count{ font-size: 18px !important }
+    body.lx-search #results-grid{ padding: 0 10px 36px !important; gap: 10px !important }
+    body.lx-search .listings-list .prop-card-body{ padding: 14px 16px !important }
+    body.lx-search .listings-list .prop-card-price{ font-size: 20px !important }
+  }
+
+  /* Hide the horizontal rule between the sticky topbar and results if the
+     page has a doubled background behind it. */
+  body.lx-search .results-header{ margin-top: 0 !important }
+
+  /* Empty-state soft styling */
+  body.lx-search #results-grid > div[style*="grid-column:1/-1"]{
+    background: #fff; border: 1px solid #e8e2d3; border-radius: 16px;
+    padding: 48px 24px !important; color: #8a8a82 !important;
+  }
+
+  /* ── Pagination — proper spacing + Rightmove-style page buttons ── */
+  body.lx-search #pagination{
+    max-width: 1240px; margin: 32px auto 64px !important;
+    padding: 0 16px; display: flex; justify-content: center;
+    align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  body.lx-search #pagination:empty{ display: none }
+  body.lx-search .pg-btn{
+    min-width: 42px; height: 42px; padding: 0 14px;
+    background: #fff; color: #1f2421;
+    border: 1.5px solid #d8d3c8; border-radius: 999px;
+    font-size: 14px; font-weight: 700; font-family: inherit;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s ease;
+  }
+  body.lx-search .pg-btn:hover:not(:disabled):not(.on){
+    border-color: #1a5c45; color: #1a5c45; background: #f7faf8;
+  }
+  body.lx-search .pg-btn.on{
+    background: #0e3d2e; color: #fff; border-color: #0e3d2e;
+    cursor: default;
+  }
+  body.lx-search .pg-btn:disabled{ color: #c9c4b4; cursor: default; background: #fafaf8 }
+  [data-theme="dark"] body.lx-search .pg-btn{ background: #1c1b16; color: #f1ebdc; border-color: #38342a }
+  [data-theme="dark"] body.lx-search .pg-btn.on{ background: #7ec9a8; color: #0e3d2e; border-color: #7ec9a8 }
+
+  /* ── Breathing room above the footer ── */
+  body.lx-search #site-footer{ margin-top: 24px }
+  body.lx-search #rv-wrap{ margin-top: 16px }
+  @media (max-width: 719px){
+    body.lx-search #pagination{ margin: 24px auto 48px !important; gap: 4px }
+    body.lx-search .pg-btn{ min-width: 38px; height: 38px; font-size: 13px; padding: 0 10px }
+  }
+
+  /* ── Rightmove-style enhanced header area ──
+     Make the search feel like a dedicated search header, not a thin bar.
+     Buy/Rent toggle sits on the first line, filter chips below with
+     generous spacing + a clear separation line. */
+  body.lx-search .sr-topbar{
+    padding: 16px 16px 12px !important;
+    box-shadow: 0 1px 0 rgba(14,61,46,.04), 0 4px 20px -16px rgba(14,61,46,.15) !important;
+  }
+  @media (min-width: 720px){
+    body.lx-search .sr-topbar{ padding: 20px 20px 14px !important }
+  }
+  body.lx-search .sr-search-row{ max-width: 1240px; gap: 10px }
+
+  /* Input: hero-weight pill with an inset magnifier icon drawn via CSS
+     background. The icon is a brand-green stroke SVG inlined as a data: URL
+     so there's no extra HTTP request. 48px left padding reserves room. */
+  body.lx-search .sr-input{
+    flex: 1; min-width: 0;
+    border: 1.5px solid #d8d3c8 !important;
+    border-radius: 999px !important;
+    padding: 16px 22px 16px 48px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    font-family: inherit !important;
+    background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%231a5c45' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M21 21l-4.3-4.3'/></svg>") no-repeat 18px 50% !important;
+    background-size: 20px 20px !important;
+    color: #1f2421 !important;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(14,61,46,.04), 0 1px 2px rgba(14,61,46,.03) !important;
+    transition: border-color .18s ease, box-shadow .18s ease !important;
+  }
+  body.lx-search .sr-input::placeholder{
+    color: #9a958a !important;
+    font-weight: 500;
+  }
+  body.lx-search .sr-input:focus{
+    border-color: #1a5c45 !important;
+    box-shadow: 0 0 0 4px rgba(26,92,69,.14), inset 0 1px 2px rgba(14,61,46,.03) !important;
+  }
+
+  /* Search button: big brand-green pill with soft green glow. */
+  body.lx-search .sr-search-btn{
+    background: #1a5c45 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 16px 30px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    font-family: inherit !important;
+    letter-spacing: .02em;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 6px 18px -8px rgba(26,92,69,.55) !important;
+    transition: background .18s ease, box-shadow .18s ease, transform .12s ease !important;
+  }
+  body.lx-search .sr-search-btn:hover{
+    background: #0e3d2e !important;
+    box-shadow: 0 10px 24px -8px rgba(26,92,69,.65) !important;
+  }
+  body.lx-search .sr-search-btn:active{ transform: scale(.97) }
+  @media (max-width: 639px){
+    body.lx-search .sr-input{ padding: 14px 18px 14px 44px !important; font-size: 15px !important; background-position: 15px 50% !important }
+    body.lx-search .sr-search-btn{ padding: 14px 22px !important; font-size: 13.5px !important }
+  }
+
+  /* Buy / Rent / Share / Summer / New homes — Rightmove-style segmented row.
+     On wider screens: pills first, then Filters button pushed to the right. */
+  body.lx-search .sr-pills{
+    max-width: 1240px; margin: 12px auto 0 !important;
+    gap: 8px !important;
+    align-items: center;
+  }
+  body.lx-search .sr-pills .pill{
+    padding: 8px 18px !important;
+    font-size: 13.5px !important;
+    letter-spacing: .01em;
+    transition: background .15s ease, border-color .15s ease, color .15s ease, transform .1s ease;
+  }
+  body.lx-search .sr-pills .pill:active{ transform: scale(.97) }
+  body.lx-search .sr-pills .filter-btn{
+    margin-left: auto;
+    padding: 8px 18px !important;
+    font-size: 13.5px !important;
+    background: #0e3d2e !important; color: #fff !important;
+    border-color: #0e3d2e !important;
+    box-shadow: 0 4px 12px -6px rgba(14,61,46,.5) !important;
+  }
+  body.lx-search .sr-pills .filter-btn:hover{
+    background: #1a5c45 !important; border-color: #1a5c45 !important; color: #fff !important;
+  }
+  body.lx-search .sr-pills .filter-btn svg{ stroke: #fff }
+
+  /* Secondary filter row (county, beds, min, max, type, Map, Alert)
+     — tighten layout, add a thin inset shadow at bottom to separate from results. */
+  body.lx-search .sr-topbar + div{
+    max-width: none !important;
+    padding: 10px 16px 11px !important;
+    gap: 8px !important;
+    box-shadow: inset 0 -1px 0 rgba(14,61,46,.04);
+  }
+  @media (min-width: 720px){
+    body.lx-search .sr-topbar + div{
+      padding: 12px 20px 14px !important;
+    }
+    body.lx-search .sr-topbar + div > *:first-child{ margin-left: auto }
+    body.lx-search .sr-topbar + div > *:last-child{ margin-right: auto }
+    /* Center the filter chip row on wide screens like Rightmove does */
+    body.lx-search .sr-topbar + div{
+      justify-content: center !important;
+      max-width: 1240px !important; margin: 0 auto !important;
+    }
+    body.lx-search .sr-topbar + div > *{ margin: 0 !important }
+  }
+  body.lx-search .qf-chip{
+    padding: 8px 16px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    min-height: 36px;
+  }
+
+  /* Filter modal — nicer close + headers */
+  body.lx-search #filter-modal .modal{
+    max-width: 540px !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+  @media (min-width: 720px){
+    body.lx-search #filter-modal .modal{ border-radius: 20px !important }
+  }
+  body.lx-search #filter-modal .modal-title{
+    font-family: 'Playfair Display', Georgia, serif !important;
+    font-size: 22px !important; font-weight: 900 !important;
+    color: #0e3d2e !important; letter-spacing: -.01em;
+    margin-bottom: 1.25rem !important;
+  }
+  body.lx-search .filter-section-label{
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 11px !important; font-weight: 700 !important;
+    letter-spacing: .08em !important; text-transform: uppercase;
+    color: #0e3d2e !important;
+    margin-bottom: .6rem !important;
+  }
+  body.lx-search .f-opt{
+    border: 1.5px solid #d8d3c8 !important;
+    border-radius: 999px !important;
+    padding: 7px 15px !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    background: #fff !important; color: #555 !important;
+    transition: all .15s ease;
+  }
+  body.lx-search .f-opt:hover{ border-color: #1a5c45 !important; color: #1a5c45 !important }
+  body.lx-search .f-opt.on{
+    background: #0e3d2e !important; border-color: #0e3d2e !important; color: #fff !important;
+  }
   </style>
 </head>
 <body>
@@ -1363,8 +1864,9 @@
     </div>
   </div>
 
-  <!-- Results grid -->
-  <div id="results-grid" class="listings-grid">
+  <!-- Results list (default). applyResultsView() may add/remove the
+       `listings-list` class based on the saved view preference on load. -->
+  <div id="results-grid" class="listings-grid listings-list">
     <div style="grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#aaa">
       <div class="spinner" style="margin:0 auto 1rem"></div>
       Loading properties…
@@ -1531,7 +2033,7 @@
   <script>
     // ── Grid / List view toggle ───────────────────────────────────────────
     // Preference persists across sessions and pages via localStorage.
-    function getView(){ try { return localStorage.getItem('movin_results_view') || 'grid' } catch(_) { return 'grid' } }
+    function getView(){ try { return localStorage.getItem('movin_results_view') || 'list' } catch(_) { return 'list' } }
     function applyResultsView(){
       var mode = getView() === 'list' ? 'list' : 'grid'
       var grid = document.getElementById('results-grid')
@@ -1543,7 +2045,7 @@
       }
     }
     function setView(mode){
-      if (mode !== 'grid' && mode !== 'list') mode = 'grid'
+      if (mode !== 'grid' && mode !== 'list') mode = 'list'
       try { localStorage.setItem('movin_results_view', mode) } catch(_) {}
       applyResultsView()
     }
@@ -2242,18 +2744,12 @@
       if (typeof renderFooter === 'function') renderFooter()
     }, 400)
   </script>
-  <footer class="site-footer" id="site-footer"></footer>
-  <div id="rv-section" style="padding:1rem 1rem 0;display:none">
-    <div style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
-    <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem"></div>
-  </div>
-  <footer class="site-footer" id="site-footer"></footer>
   <!-- Compare bar -->
   <div id="compare-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid #1a5c45;padding:.75rem 1rem;z-index:500;gap:.75rem;align-items:center;box-shadow:0 -4px 20px rgba(0,0,0,.1)"></div>
 
-  <!-- Recently viewed -->
-  <div id="rv-wrap" style="padding:1rem 1rem 0;display:none">
-    <div style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:16px;font-weight:700;color:#111;margin-bottom:.75rem">Recently viewed</div>
+  <!-- Recently viewed — only shown if the user has history -->
+  <div id="rv-wrap" style="max-width:1240px;margin:0 auto;padding:1.5rem 16px 2rem;display:none">
+    <div style="font-family:'Playfair Display', Georgia, 'Times New Roman', serif;font-size:18px;font-weight:800;color:var(--gd,#0e3d2e);margin-bottom:.85rem">Recently viewed</div>
     <div id="rv-strip" style="display:flex;gap:.75rem;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;scrollbar-width:none"></div>
   </div>
 

@@ -2276,6 +2276,38 @@ function renderFooter() {
   // Absolute root — works from any depth (e.g. /pages/guides/buying.html) so
   // every footer link resolves correctly without `../../` gymnastics.
   var root = '/'
+
+  // ── Defensive de-dup ────────────────────────────────────────────────
+  // Some pages historically shipped with the `<footer id="site-footer">`
+  // element duplicated two or three times, which rendered extra copyright
+  // strips BELOW the real last line. Keep only the LAST occurrence (the
+  // one that's intended to sit at page-end) and strip the rest so there's
+  // definitively nothing visible below the "© 2026 Movin Technologies…"
+  // line other than the compare bar (which is `position:fixed`).
+  var allFooters = document.querySelectorAll('footer#site-footer, footer.site-footer')
+  if (allFooters.length > 1) {
+    for (var k = 0; k < allFooters.length - 1; k++) {
+      try { allFooters[k].parentNode.removeChild(allFooters[k]) } catch (_) {}
+    }
+  }
+  // Also sweep orphan "Recently viewed" wrappers that leaked outside their
+  // own container on legacy builds. Keep the FIRST of each id, drop the rest.
+  var rvWraps = document.querySelectorAll('[id="rv-wrap"], [id="rv-strip"], [id="rv-section"]')
+  var seen = {}
+  for (var r = 0; r < rvWraps.length; r++) {
+    var id = rvWraps[r].id
+    if (seen[id]) { try { rvWraps[r].parentNode.removeChild(rvWraps[r]) } catch (_) {} }
+    else seen[id] = true
+  }
+  // Hide any "Recently viewed" wrapper whose strip has no items — stops the
+  // bare "Recently viewed" heading from appearing below the footer on pages
+  // where the strip ends up empty.
+  var rvCandidates = document.querySelectorAll('#rv-wrap, #rv-section')
+  for (var w = 0; w < rvCandidates.length; w++) {
+    var strip = rvCandidates[w].querySelector('#rv-strip, [id^="rv-strip"]')
+    if (!strip || !strip.children.length) rvCandidates[w].style.display = 'none'
+  }
+
   var footer = document.getElementById('site-footer')
   if (!footer) return
 
