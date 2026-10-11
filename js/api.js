@@ -385,4 +385,13 @@ const scrape = {
   }
 }
 
-window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, lifestyle, scrape, adminRBAC, getUser, getToken, postAuthDest }
+// Agent CRM feed subscriptions (Acquaint XML, etc). Admin-only on the server.
+const feeds = {
+  list()            { return request('GET',    '/api/feeds') },
+  create(body)      { return request('POST',   '/api/feeds', body) },
+  setEnabled(id, enabled) { return request('PATCH', '/api/feeds/' + id, { enabled }) },
+  runNow(id)        { return request('POST',   '/api/feeds/' + id + '/run') },
+  remove(id)        { return request('DELETE', '/api/feeds/' + id) }
+}
+
+window.API = { auth, listings, photos, enquiries, payments, saved, push, bulk, reviews, lifestyle, scrape, adminRBAC, feeds, getUser, getToken, postAuthDest }

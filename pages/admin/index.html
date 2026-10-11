@@ -955,6 +955,7 @@ body::before{
       </div>
       <div class="nav-section">
         <div class="nav-section-label">Settings</div>
+        <div class="nav-item" onclick="switchSection('feeds',this)"><span class="nav-item-icon">🔗</span>CRM feeds</div>
         <div class="nav-item" onclick="switchSection('roles',this)"><span class="nav-item-icon">🛡️</span>Roles &amp; permissions</div>
         <div class="nav-item" onclick="switchSection('audit',this)"><span class="nav-item-icon">📜</span>Audit log</div>
         <div class="nav-item" onclick="switchSection('settings',this)"><span class="nav-item-icon">⚙️</span>Settings</div>
@@ -1403,6 +1404,50 @@ body::before{
     </div>
 
     <!-- SETTINGS -->
+    <!-- CRM FEEDS -->
+    <div id="section-feeds" class="section">
+      <div class="topbar">
+        <div>
+          <div class="topbar-title">CRM feeds</div>
+          <div class="topbar-sub">Auto-import listings from an agent's CRM XML feed (Acquaint, etc). Syncs every hour.</div>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-ghost btn-sm" onclick="loadFeeds()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header"><div class="card-title">Attach a new feed</div></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Agent email *</label>
+              <input class="form-input" type="email" id="feed-email" placeholder="info@example.com"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Source</label>
+              <select class="form-input form-select" id="feed-source">
+                <option value="acquaint">Acquaint CRM</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Feed URL *</label>
+              <input class="form-input" type="url" id="feed-url" placeholder="https://data.acquaintcrm.co.uk/datafeeds/standardxml/xxxx-0.xml"/>
+            </div>
+          </div>
+          <div id="feed-alert"></div>
+          <button class="btn btn-primary" onclick="createFeed()">Attach feed</button>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <div class="card-header"><div class="card-title">Active feeds</div></div>
+        <div class="card-body" id="feeds-list">
+          <div style="text-align:center;padding:2rem;color:#aaa">Loading…</div>
+        </div>
+      </div>
+    </div>
+
     <div id="section-settings" class="section">
       <div class="topbar"><div class="topbar-title">Settings</div></div>
       <div class="content-card">
@@ -1630,9 +1675,102 @@ async function loadSection(id) {
     case 'audit':         await loadAuditLogs(); break
     case 'reviews':       await loadReviews(); break
     case 'notifications': await loadNotifications(); break
+    case 'feeds':         await loadFeeds(); break
   }
   // Re-evaluate which tables overflow once fresh content is in the DOM
   setTimeout(markScrollableTables, 80)
+}
+
+// ── CRM feeds (Acquaint, …) ───────────────────────────────
+function fEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])}) }
+function fFmtDate(s){ if(!s) return '—'; try { return new Date(s).toLocaleString('en-IE',{dateStyle:'short',timeStyle:'short'}) } catch(_){ return s } }
+
+async function loadFeeds() {
+  var box = document.getElementById('feeds-list')
+  box.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa"><span class="spinner"></span></div>'
+  try {
+    var data = await window.API.feeds.list()
+    var feeds = (data && data.feeds) || []
+    if (!feeds.length) {
+      box.innerHTML = '<div style="text-align:center;padding:2rem;color:#aaa">No feeds yet. Attach one above.</div>'
+      return
+    }
+    box.innerHTML = feeds.map(function(f){
+      var statusColor = f.last_run_ok === true ? '#1a5c45' : (f.last_run_ok === false ? '#c0392b' : '#888')
+      var statusLabel = f.last_run_ok === true ? 'OK' : (f.last_run_ok === false ? 'Failed' : 'Not run yet')
+      return '<div style="padding:1rem;border:1px solid #eee;border-radius:10px;margin-bottom:.75rem">' +
+        '<div style="display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;align-items:start">' +
+          '<div style="min-width:0;flex:1">' +
+            '<div style="font-weight:700;color:#0e3d2e">' + fEsc(f.agent_name || f.agent_email) + ' <span style="font-weight:400;color:#888;font-size:12px">(' + fEsc(f.source) + ')</span></div>' +
+            '<div style="font-size:12px;color:#666;word-break:break-all;margin-top:.25rem">' + fEsc(f.feed_url) + '</div>' +
+            '<div style="font-size:12px;margin-top:.5rem">' +
+              '<span style="color:' + statusColor + ';font-weight:600">● ' + statusLabel + '</span>' +
+              ' · Last run: ' + fFmtDate(f.last_run_at) +
+              ' · ' + (f.last_count != null ? (f.last_count + ' listings') : '—') +
+            '</div>' +
+            (f.last_run_msg ? '<div style="font-size:11px;color:#888;margin-top:.25rem;font-family:ui-monospace,monospace">' + fEsc(f.last_run_msg) + '</div>' : '') +
+          '</div>' +
+          '<div style="display:flex;gap:.4rem;flex-wrap:wrap">' +
+            '<button class="btn btn-primary btn-sm" onclick="runFeedNow(\'' + f.id + '\', this)">Run now</button>' +
+            '<button class="btn btn-ghost btn-sm" onclick="toggleFeed(\'' + f.id + '\',' + (!f.enabled) + ')">' + (f.enabled ? 'Pause' : 'Resume') + '</button>' +
+            '<button class="btn btn-ghost btn-sm" style="color:#c0392b" onclick="removeFeed(\'' + f.id + '\')">Remove</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    }).join('')
+  } catch (err) {
+    box.innerHTML = '<div style="color:#c0392b;padding:1rem">Could not load feeds: ' + fEsc(err.message || 'error') + '</div>'
+  }
+}
+
+async function createFeed() {
+  var email = (document.getElementById('feed-email').value || '').trim()
+  var url   = (document.getElementById('feed-url').value || '').trim()
+  var src   = document.getElementById('feed-source').value
+  var al    = document.getElementById('feed-alert')
+  al.innerHTML = ''
+  if (!email || !url) {
+    al.innerHTML = '<div style="color:#c0392b;margin:.5rem 0">Agent email and feed URL are required.</div>'
+    return
+  }
+  try {
+    await window.API.feeds.create({ agent_email: email, feed_url: url, source: src })
+    al.innerHTML = '<div style="color:#1a5c45;margin:.5rem 0">Feed attached. Click "Run now" below to pull listings immediately.</div>'
+    document.getElementById('feed-email').value = ''
+    document.getElementById('feed-url').value = ''
+    await loadFeeds()
+  } catch (err) {
+    al.innerHTML = '<div style="color:#c0392b;margin:.5rem 0">' + fEsc(err.message || 'Could not attach feed') + '</div>'
+  }
+}
+
+async function runFeedNow(id, btn) {
+  var original = btn ? btn.textContent : ''
+  if (btn) { btn.disabled = true; btn.textContent = 'Running…' }
+  try {
+    var res = await window.API.feeds.runNow(id)
+    if (res && res.ok) {
+      toast('Sync complete: created ' + (res.created||0) + ', updated ' + (res.updated||0) + ', archived ' + (res.archived||0))
+    } else {
+      toast('Sync failed: ' + ((res && res.message) || 'unknown error'))
+    }
+    await loadFeeds()
+  } catch (err) {
+    toast('Sync failed: ' + (err.message || 'error'))
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = original }
+  }
+}
+
+async function toggleFeed(id, enabled) {
+  try { await window.API.feeds.setEnabled(id, enabled); await loadFeeds() }
+  catch (err) { toast('Could not update: ' + (err.message || 'error')) }
+}
+
+async function removeFeed(id) {
+  if (!confirm('Remove this feed subscription? Imported listings stay — only the auto-sync stops.')) return
+  try { await window.API.feeds.remove(id); await loadFeeds() }
+  catch (err) { toast('Could not remove: ' + (err.message || 'error')) }
 }
 
 // ── Agent applications ────────────────────────────────────
