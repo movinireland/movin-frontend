@@ -1182,7 +1182,7 @@ body::before{
 
       <div class="lx-hero-stats">
         <div class="lx-hero-stat"><div class="lx-hero-stat-num" id="lx-hero-live-count">—</div><div class="lx-hero-stat-label">Live listings</div></div>
-        <div class="lx-hero-stat"><div class="lx-hero-stat-num">32</div><div class="lx-hero-stat-label">Counties covered</div></div>
+        <div class="lx-hero-stat"><div class="lx-hero-stat-num" id="lx-hero-county-count">32</div><div class="lx-hero-stat-label">Counties covered</div></div>
         <div class="lx-hero-stat"><div class="lx-hero-stat-num"><em>€0</em></div><div class="lx-hero-stat-label">Listing fee for everyone</div></div>
         <div class="lx-hero-stat"><div class="lx-hero-stat-num">100%</div><div class="lx-hero-stat-label">Irish owned</div></div>
       </div>
@@ -1540,10 +1540,22 @@ async function loadLuxeFeatured(){
 //    Animates the number from 0 to the live count over ~1.2s. ──────
 async function loadLuxeLiveCount(){
   var el = document.getElementById('lx-hero-live-count')
+  var cel = document.getElementById('lx-hero-county-count')
   if (!el || !window.API) return
   try{
-    var data = await window.API.listings.search({ limit: 1 })
+    // Pull enough rows to compute the distinct-county count accurately.
+    // The server's `total` is still the authoritative live-listing number.
+    var data = await window.API.listings.search({ limit: 500 })
     var n = (data && data.total) || (data && data.listings ? data.listings.length : 0)
+    if (cel && data && data.listings) {
+      var set = {}
+      data.listings.forEach(function(l){
+        var c = (l.county||'').replace(/^\s*(County|Co\.?)\s*/i,'').trim()
+        if (c) set[c.toLowerCase()] = 1
+      })
+      var cCount = Object.keys(set).length
+      if (cCount > 0) cel.textContent = String(cCount)
+    }
     if (!n) { el.textContent = '—'; return }
 
     // Respect reduced-motion — show the final number immediately
