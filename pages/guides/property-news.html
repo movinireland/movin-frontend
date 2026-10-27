@@ -163,10 +163,6 @@
     </form>
   </div>
 
-  <div class="pn-coming">
-    <h3>📰 More articles coming soon</h3>
-    <p>We're building out our news desk. Subscribe above and we'll let you know when new analysis goes live.</p>
-  </div>
 </div>
 
 <footer class="site-footer" id="site-footer"></footer>
@@ -186,23 +182,114 @@
   var ARTICLES = [
     // ── Featured (top of page) ────────────────────────────────────────────
     {
-      cat: 'market',  catLabel:'Market data',
-      title: 'Irish house prices climb 8.6% year-on-year in the latest CSO release',
-      excerpt: "The CSO Residential Property Price Index for April 2026 shows the national median at €365,000 — up 8.6% YoY. Growth cooled slightly from 9.1% in Q1, with the biggest gains still outside Dublin (Donegal +11.4%, Kerry +10.8%, Limerick +10.1%).",
-      date:  '2026-07-18',
-      href:  '../house-price-index.html',
+      cat: 'policy',  catLabel:'Policy & law',
+      title: 'Budget 2027 — the housing measures that affect buyers, sellers and landlords',
+      excerpt: "The Minister for Finance confirmed Help to Buy and the First Home Scheme both continue to end-2029, with the HTB cap unchanged at €30,000 or 10% of the purchase price. Stamp duty bands held steady. For landlords, the rented-residential tax relief is extended with new conditions on security of tenure.",
+      date:  '2026-10-14',
+      href:  'buying.html#help-to-buy',
       featured: true
     },
     {
-      cat: 'mortgages',  catLabel:'Mortgages',
-      title: "ECB cuts main rate again — what it means for Irish mortgage holders",
-      excerpt: "With the deposit facility rate now at 2.00%, tracker holders see immediate relief and new fixed rates are creeping below 3.5% on high-BER homes. Here's how to decide between fix, tracker or variable in mid-2026.",
-      date:  '2026-06-25',
-      href:  'mortgage.html#rates',
+      cat: 'market',  catLabel:'Market data',
+      title: 'CSO Q3 2026: Irish house prices up 7.9% YoY as growth continues to cool',
+      excerpt: "The latest Residential Property Price Index puts the national median at €378,500 — annual growth has eased from 8.6% in Q2 to 7.9% in Q3. Dublin lags the national rate at +6.4%; the strongest gains stay in the West and Border regions (Mayo +10.6%, Donegal +10.2%).",
+      date:  '2026-10-21',
+      href:  '../house-price-index.html',
       featured: true
     },
 
     // ── Rest ──────────────────────────────────────────────────────────────
+    {
+      cat: 'mortgages',  catLabel:'Mortgages',
+      title: "ECB holds the deposit rate at 2.00% — but Irish fixed rates still edging down",
+      excerpt: "The ECB left the deposit facility unchanged at its October meeting, pausing the easing cycle. In Ireland, competition between PTSB, AIB and Avant has pushed 3- and 5-year green fixed rates on A- and B-rated homes below 3.25%. Switcher offers are at a two-year high.",
+      date:  '2026-10-18',
+      href:  'mortgage.html#rates'
+    },
+    {
+      cat: 'policy',  catLabel:'Policy & law',
+      title: 'Vacant Property Refurbishment Grant raised to €75,000 (and €90,000 for derelict)',
+      excerpt: "The Department of Housing confirmed the grant uplift from October applications onwards. The grant can be combined with SEAI Home Energy Upgrade grants on the same property. Eligibility still requires the home to have been vacant two years, and to be occupied as a principal residence or let on the open market.",
+      date:  '2026-10-09',
+      href:  'buying.html#help-to-buy'
+    },
+    {
+      cat: 'market',  catLabel:'Market data',
+      title: 'Autumn 2026 asking-price report: supply up 14% in Dublin, down 6% nationally',
+      excerpt: "A clearer two-tier picture is emerging. Dublin and the commuter counties are seeing the strongest listing growth since 2021 as sellers come back to market; outside the Pale, supply is still tight and bidding wars are the norm, especially on sub-€350,000 three-beds.",
+      date:  '2026-10-07',
+      href:  '../house-price-index.html'
+    },
+    {
+      cat: 'rentals', catLabel:'Rentals',
+      title: 'New RPZ regime — six months in, how is it actually working?',
+      excerpt: "The reformed Rent Pressure Zone framework commenced in July. Early RTB data shows new-tenancy rents in Dublin up 3.1% on the previous quarter — within the HICP cap — while re-let activity has picked up. We summarise what tenants, landlords and renters moving between tenancies need to know.",
+      date:  '2026-09-30',
+      href:  'renting.html#rpz'
+    },
+    {
+      cat: 'how-to',  catLabel:'How-to',
+      title: 'Buying in autumn 2026: how the market has changed since spring',
+      excerpt: "If you paused your search over summer, five things are different: more Dublin listings, slower rate movement, longer average time-on-market in commuter towns, lender willingness to issue AIP exemptions, and the Vacant Property grant uplift. Here is how to adjust your strategy.",
+      date:  '2026-09-24',
+      href:  'buying.html'
+    },
+    {
+      cat: 'policy',  catLabel:'Policy & law',
+      title: 'SEAI Home Energy Upgrade grants: higher caps for solar PV and heat pumps',
+      excerpt: "Grant levels for solar PV were raised from €1,800 to €2,100 per kWp (to a cap of 6kWp), and the air-to-water heat pump grant stayed at €6,500 but is now payable without going through a One-Stop Shop for homeowners managing their own works.",
+      date:  '2026-09-16',
+      href:  'energy-efficiency.html'
+    },
+    {
+      cat: 'mortgages', catLabel:'Mortgages',
+      title: 'Switcher mortgage approvals hit a two-year high as cashback offers return',
+      excerpt: "BPFI data for August shows switcher approvals up 48% YoY. PTSB, AIB and Bank of Ireland are all back with 2–3% cashback on switch, with Avant leading on headline rate. We walk through when the cashback actually beats the lower rate.",
+      date:  '2026-09-11',
+      href:  'mortgage.html#rates'
+    },
+    {
+      cat: 'market', catLabel:'Market data',
+      title: 'H1 2026 completions report: 15,100 new homes delivered — annual run-rate ~34,000',
+      excerpt: "CSO housing-completions data for H1 came in soft. Apartment completions are up 12% YoY while scheme-housing is down 7%. The industry is now flagging utility connections — electricity and water — as the biggest delivery bottleneck.",
+      date:  '2026-09-04',
+      href:  '../house-price-index.html'
+    },
+    {
+      cat: 'rentals', catLabel:'Rentals',
+      title: "Student-accommodation squeeze: what college-town renters should expect this term",
+      excerpt: "Average student-accommodation rents in Galway, Cork, Limerick and Dublin are at new highs. We cover the available support (SUSI, Rent Tax Credit of €1,000, rental deposit scheme) and the rights every student renter has if things go wrong.",
+      date:  '2026-08-28',
+      href:  'renting.html'
+    },
+    {
+      cat: 'policy', catLabel:'Policy & law',
+      title: "Local Property Tax revaluation — are your bands set to change?",
+      excerpt: "The 2026 revaluation cycle lands on 1 November. Most homes will stay in their current band but a meaningful minority — especially in high-growth counties like Mayo and Donegal — will move up. Here's how the self-assessment works.",
+      date:  '2026-08-20',
+      href:  'landlords.html#tax'
+    },
+    {
+      cat: 'how-to', catLabel:'How-to',
+      title: 'Selling this autumn? Five things that are moving properties fastest',
+      excerpt: "Based on the last six months of sale-agreed outcomes on Movin: BER C or better, honest asking price, 3D tour, floor plan on the listing, and photos taken in natural daylight. We break down why each one matters.",
+      date:  '2026-08-14',
+      href:  'selling.html'
+    },
+    {
+      cat: 'market',  catLabel:'Market data',
+      title: 'Irish house prices climb 8.6% year-on-year in the Q2 CSO release',
+      excerpt: "The CSO Residential Property Price Index for Q2 2026 shows the national median at €365,000 — up 8.6% YoY. Growth cooled slightly from 9.1% in Q1, with the biggest gains still outside Dublin (Donegal +11.4%, Kerry +10.8%, Limerick +10.1%).",
+      date:  '2026-07-18',
+      href:  '../house-price-index.html'
+    },
+    {
+      cat: 'mortgages',  catLabel:'Mortgages',
+      title: "ECB rate cuts earlier this year — recap and what it meant for Irish mortgages",
+      excerpt: "A review of the ECB's spring and summer easing cycle, how it fed through to tracker and new fixed rates, and how to decide between fix, tracker or variable going into 2027.",
+      date:  '2026-06-25',
+      href:  'mortgage.html#rates'
+    },
     {
       cat: 'policy',  catLabel:'Policy & law',
       title: 'Help-to-Buy extended to end-2029 — what buyers need to know',
